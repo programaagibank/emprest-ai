@@ -3,7 +3,7 @@ package br.com.emprestai.model;
 import java.time.LocalDate;
 
 public class Cliente {
-    private int idCliente;
+    private int clienteId;
     private String nome;
     private double RemuneracaoLiqMes;
     private LocalDate dtNasc;
@@ -13,18 +13,18 @@ public class Cliente {
     private String scoreCredito;
 
     public Cliente(int idCliente, String nome, double remuneracaoLiqMes, LocalDate dtNasc) {
-        this.idCliente = idCliente;
+        this.clienteId = idCliente;
         this.nome = nome;
         this.RemuneracaoLiqMes = remuneracaoLiqMes;
         this.dtNasc = dtNasc;
     }
 
     public int getIdCliente() {
-        return idCliente;
+        return clienteId;
     }
 
     public void setIdCliente(int idCliente) {
-        this.idCliente = idCliente;
+        this.clienteId = clienteId;
     }
 
     public String getNome() {
@@ -86,7 +86,7 @@ public class Cliente {
     @Override
     public String toString() {
         return "{" +
-                "\"idCliente\": " + idCliente +
+                "\"idCliente\": " + clienteId +
                 ", \"nome\": \"" + nome + "\"" +
                 ", \"RemuneracaoLiqMes\": " + RemuneracaoLiqMes +
                 ", \"dtNasc\": \"" + dtNasc + "\"" +

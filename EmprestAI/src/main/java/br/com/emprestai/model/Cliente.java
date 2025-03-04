@@ -12,10 +12,9 @@ public class Cliente {
     private String tipoVinculo;
     private String scoreCredito;
 
-    public Cliente(int clienteId, String nome, double remuneracaoLiqMes, LocalDate dtNasc) {
-        this.clienteId = clienteId;
+    public Cliente(String nome, double renda, LocalDate dtNasc) {
         this.nome = nome;
-        this.RemuneracaoLiqMes = remuneracaoLiqMes;
+        this.rendaPessFamilia = renda;
         this.dtNasc = dtNasc;
     }
 

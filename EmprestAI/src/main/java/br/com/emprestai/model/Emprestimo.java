@@ -21,20 +21,29 @@ public class Emprestimo {
     private double taxaMulta;
     private int emprestimoOrigemId;
 
+    public Emprestimo(double valorTotal, int quantidadeParcelas, double juros,
+            Date dataInicio, double valorSeguro, double valorIOF,
+            double outrosCustos, Date dataContratacao, double jurosMora, double taxaMulta) {
+
+        this.valorTotal = valorTotal;
+        this.quantidadeParcelas = quantidadeParcelas;
+        this.juros = juros;
+        this.dataInicio = dataInicio;
+        this.valorSeguro = valorSeguro;
+        this.valorIOF = valorIOF;
+        this.outrosCustos = outrosCustos;
+        this.dataContratacao = dataContratacao;
+        this.jurosMora = jurosMora;
+        this.taxaMulta = taxaMulta;
+
+    }
+
     public int getEmprestimoId() {
         return emprestimoId;
     }
 
-    public void setEmprestimoId(int emprestimoId) {
-        this.emprestimoId = emprestimoId;
-    }
-
     public String getCpfClienteId() {
         return cpfClienteId;
-    }
-
-    public void setCpfClienteId(String cpfClienteId) {
-        this.cpfClienteId = cpfClienteId;
     }
 
     public double getValorTotal() {
@@ -73,16 +82,8 @@ public class Emprestimo {
         return statusEmprestimoId;
     }
 
-    public void setStatusEmprestimoId(String statusEmprestimoId) {
-        this.statusEmprestimoId = statusEmprestimoId;
-    }
-
     public int getTipoEmprestimoId() {
         return tipoEmprestimoId;
-    }
-
-    public void setTipoEmprestimoId(int tipoEmprestimoId) {
-        this.tipoEmprestimoId = tipoEmprestimoId;
     }
 
     public double getValorSeguro() {
@@ -121,10 +122,6 @@ public class Emprestimo {
         return motivoEncerramentoId;
     }
 
-    public void setMotivoEncerramentoId(int motivoEncerramentoId) {
-        this.motivoEncerramentoId = motivoEncerramentoId;
-    }
-
     public double getJurosMora() {
         return jurosMora;
     }
@@ -143,10 +140,6 @@ public class Emprestimo {
 
     public int getEmprestimoOrigemId() {
         return emprestimoOrigemId;
-    }
-
-    public void setEmprestimoOrigemId(int emprestimoOrigemId) {
-        this.emprestimoOrigemId = emprestimoOrigemId;
     }
 
     @Override

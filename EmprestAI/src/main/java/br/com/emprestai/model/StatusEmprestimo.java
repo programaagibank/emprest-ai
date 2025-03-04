@@ -4,6 +4,10 @@ public class StatusEmprestimo {
     private int statusParcelaId;
     private String descStatusParcela;
 
+    public StatusEmprestimo(String descStatusParcela) {
+        this.descStatusParcela = descStatusParcela;
+    }
+
     public int getStatusParcelaId() {
         return statusParcelaId;
     }

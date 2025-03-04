@@ -39,4 +39,10 @@ bin/
 .vscode/
 
 ### Mac OS ###
+<<<<<<< HEAD
 .DS_Store
+=======
+.DS_Store
+
+.idea/
+>>>>>>> d14b41a38da3b4df594219ba978fcda5e5b8c3d4

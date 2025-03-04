@@ -1,4 +1,4 @@
-package br.com.emprestai.repository;
+package br.com.emprestai.server;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,14 +11,15 @@ public class DataBaseConnection {
     private static Connection connection;
 
     public static synchronized Connection getConnection() throws SQLException, IOException {
-        if(connection == null || connection.isClosed()){
+
+        if (connection == null || connection.isClosed()) {
             Properties props = new Properties();
-            try(InputStream in = DataBaseConnection.class.getResourceAsStream("/config.properties")){
-                if(in == null){
+            try (InputStream in = DataBaseConnection.class.getResourceAsStream("/config.properties")) {
+                if (in == null) {
                     throw new RuntimeException("Arquivo config.properties não existe!");
                 }
                 props.load(in);
-            } catch (Exception e){
+            } catch (Exception e) {
                 String message = String.format("Erro ao carregar arquivo, %s", e.getMessage());
                 throw new RuntimeException(message);
             }
@@ -27,7 +28,7 @@ public class DataBaseConnection {
             String username = props.getProperty("db.username");
             String password = props.getProperty("db.password");
 
-            if(url == null || username == null || password == null){
+            if (url == null || username == null || password == null) {
                 throw new RuntimeException("Propriedades não setadas");
             }
 
@@ -38,11 +39,11 @@ public class DataBaseConnection {
     }
 
     public static void closeConnection() {
-        if(connection != null){
+        if (connection != null) {
             try {
                 connection.close();
                 System.out.println("Conexão fechada");
-            } catch (SQLException e){
+            } catch (SQLException e) {
                 String message = String.format("Erro ao fechar conexão %S", e.getMessage());
                 System.out.println(message);
             }

@@ -12,20 +12,20 @@ public class Parcela {
     private Date dataPagamento;
     private String status;
 
+    public Parcela(int numeroParcela, double valorPago, Date dataNascimento, Date dataPagamento, String status) {
+        this.numeroParcela = numeroParcela;
+        this.valorPago = valorPago;
+        this.dataNascimento = dataNascimento;
+        this.dataPagamento = dataPagamento;
+        this.status = status;
+    }
+
     public int getParcelaId() {
         return parcelaId;
     }
 
-    public void setIdParcela(int idParcela) {
-        this.parcelaId = idParcela;
-    }
-
     public int getEmprestimoId() {
         return emprestimoId;
-    }
-
-    public void setIdEmprestimo(int emprestimoId) {
-        this.emprestimoId = emprestimoId;
     }
 
     public int getNumeroParcela() {

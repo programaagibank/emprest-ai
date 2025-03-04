@@ -1,18 +1,16 @@
 package br.com.emprestai.server;
 
+import br.com.emprestai.controller.ClienteController;
 import com.sun.net.httpserver.HttpServer;
-
+import java.io.IOException;
 import java.net.InetSocketAddress;
 
 public class Servidor {
-    public static void iniciar() throws Exception {
+    public static void iniciar() throws IOException {
         HttpServer server = HttpServer.create(new InetSocketAddress(8080), 0);
-
-        Rotas.registrarRotas(server);
-
-        server.setExecutor(null);
+        server.createContext("/clientes", new ClienteController());
+        server.setExecutor(null); // Usa o executor padrão
         server.start();
-
-        System.out.println("Servidor rodando na porta 8080.");
+        System.out.println("Servidor rodando em http://localhost:8080/clientes");
     }
 }

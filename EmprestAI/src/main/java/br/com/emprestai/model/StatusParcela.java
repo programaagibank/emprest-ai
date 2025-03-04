@@ -4,12 +4,12 @@ public class StatusParcela {
     private int statusParcelaId;
     private String descStatusParcela;
 
-    public int getStatusParcela() {
-        return statusParcelaId;
+    public StatusParcela(String descStatusParcela) {
+        this.descStatusParcela = descStatusParcela;
     }
 
-    public void setStatusParcela(int statusParcela) {
-        this.statusParcelaId = statusParcela;
+    public int getStatusParcela() {
+        return statusParcelaId;
     }
 
     public String getDescStatusParcela() {

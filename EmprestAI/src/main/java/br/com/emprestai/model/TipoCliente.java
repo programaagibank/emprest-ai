@@ -4,12 +4,12 @@ public class TipoCliente {
     private int tipoClienteId;
     private String descTipoCliente;
 
-    public int getTipoClienteId() {
-        return tipoClienteId;
+    public TipoCliente(String descTipoCliente) {
+        this.descTipoCliente = descTipoCliente;
     }
 
-    public void setTipoClienteId(int tipoClienteId) {
-        this.tipoClienteId = tipoClienteId;
+    public int getTipoClienteId() {
+        return tipoClienteId;
     }
 
     public String getDescTipoCliente() {

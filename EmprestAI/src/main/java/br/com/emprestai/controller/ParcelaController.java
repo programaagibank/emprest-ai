@@ -1,4 +1,5 @@
 package br.com.emprestai.controller;
 
-public class CancelamentoController {
+public class ParcelaController {
+    
 }

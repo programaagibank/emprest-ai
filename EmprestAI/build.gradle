@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'application'
 }
 
 group = 'br.com.emprestai'
@@ -14,6 +15,12 @@ dependencies {
     implementation 'mysql:mysql-connector-java:8.0.33'
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
+    implementation 'org.hibernate:hibernate-core:5.5.6.Final'
+    implementation 'org.slf4j:slf4j-api:1.7.32'
+    implementation 'org.slf4j:slf4j-simple:1.7.32'
+    implementation 'javax.servlet:javax.servlet-api:4.0.1'
+    implementation 'org.glassfish:javax.el:3.0.0'
+    implementation 'com.google.code.gson:gson:2.8.8'
 }
 
 test {

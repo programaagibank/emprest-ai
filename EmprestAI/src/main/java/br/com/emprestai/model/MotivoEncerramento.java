@@ -4,12 +4,13 @@ public class MotivoEncerramento {
     private int motivoEncerramentoId;
     private String descEncerramento;
 
-    public int getMotivoEncerramentoId() {
-        return motivoEncerramentoId;
+    public MotivoEncerramento(String descEncerramento) {
+
+        this.descEncerramento = descEncerramento;
     }
 
-    public void setMotivoEncerramentoId(int motivoEncerramentoId) {
-        this.motivoEncerramentoId = motivoEncerramentoId;
+    public int getMotivoEncerramentoId() {
+        return motivoEncerramentoId;
     }
 
     public String getDescEncerramento() {

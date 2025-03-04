@@ -7,7 +7,6 @@ import com.sun.net.httpserver.HttpHandler;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Arrays;
 import java.util.Optional;
 
 public class ClienteController implements HttpHandler {
@@ -18,8 +17,8 @@ public class ClienteController implements HttpHandler {
             ClienteRepositoryImpl clienteRepo = new ClienteRepositoryImpl();
             String path = exchange.getRequestURI().getPath(); // ex.: "/clientes/2"
             String[] pathParts = path.split("/");
-            int idCliente = Integer.parseInt(pathParts[4]);
-            Optional<Cliente> clienteOpt = clienteRepo.findById(idCliente);
+            int clienteId = Integer.parseInt(pathParts[4]);
+            Optional<Cliente> clienteOpt = clienteRepo.findById(clienteId);
             String response = "";
             if(clienteOpt.isPresent()){
                 Cliente cliente = clienteOpt.get();

@@ -12,18 +12,18 @@ public class Cliente {
     private String tipoVinculo;
     private String scoreCredito;
 
-    public Cliente(int idCliente, String nome, double remuneracaoLiqMes, LocalDate dtNasc) {
-        this.clienteId = idCliente;
+    public Cliente(int clienteId, String nome, double remuneracaoLiqMes, LocalDate dtNasc) {
+        this.clienteId = clienteId;
         this.nome = nome;
         this.RemuneracaoLiqMes = remuneracaoLiqMes;
         this.dtNasc = dtNasc;
     }
 
-    public int getIdCliente() {
+    public int getClienteId() {
         return clienteId;
     }
 
-    public void setIdCliente(int idCliente) {
+    public void setClienteId(int clienteId) {
         this.clienteId = clienteId;
     }
 
@@ -86,7 +86,7 @@ public class Cliente {
     @Override
     public String toString() {
         return "{" +
-                "\"idCliente\": " + clienteId +
+                "\"clienteId\": " + clienteId +
                 ", \"nome\": \"" + nome + "\"" +
                 ", \"RemuneracaoLiqMes\": " + RemuneracaoLiqMes +
                 ", \"dtNasc\": \"" + dtNasc + "\"" +

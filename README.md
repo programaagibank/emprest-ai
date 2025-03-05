@@ -25,7 +25,7 @@
 - [@Josué Davi da Costa](https://github.com/josdcosta)
 - [@Carollina Guedes](https://github.com/CarollinaGuedes)
 - [@Victor Augusto Ferreira](https://github.com/Victor-augusto-ferreira)
-- [@João Formigari Ferreira](https://github.com/Joao-Formigari)
+- [@João Formigari](https://github.com/Joao-Formigari)
 
 
 <br>

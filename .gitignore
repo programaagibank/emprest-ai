@@ -1,0 +1,3 @@
+# Arquivos temporários e de build
+*.vscode
+*.config.properties

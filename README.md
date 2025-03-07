@@ -92,7 +92,7 @@ CPF depende do governo, portanto é interessante pensar em relação a mudanças
   "idCliente": "[cpf ou autoincremente]",
   "nome": "[nome]",
   "remuneracaoLiquidaMensal": "[valor em reais]",
-  "idade": "[número]",
+  "dataNascimento": "[número]",
   "rendaPessoasFamilia": "[valor em reais]",
   "qtdePessoasFamilia": "[número]",
   "tipoVinculo": "[aposentado, servidor, pensionista, empregado ou nulo]",
@@ -119,7 +119,7 @@ O cliente / setores do banco envia os dados para o sistema simular as condiçõe
 
 ### 5.2. Processo Passo a Passo
 **Passo 1: Consulta de Dados do Cliente**  
-O sistema busca o `idCliente` na base e retorna `remuneracaoLiquidaMensal`, `idade`, `tipoVinculo` (para consignado) e por meio do `idCliente` consulta o analisador de risco que retorna o `scoreCredito` (para pessoal). Se não encontrado, "Erro: Cliente não encontrado".
+O sistema busca o `idCliente` na base e retorna `remuneracaoLiquidaMensal`, `dataNascimento`, `tipoVinculo` (para consignado) e por meio do `idCliente` consulta o analisador de risco que retorna o `scoreCredito` (para pessoal). Se não encontrado, "Erro: Cliente não encontrado".
 
 **Passo 2: Verificação Inicial de Elegibilidade**  
 Empréstimo Consignado:  
@@ -560,6 +560,7 @@ Saldo de R$ 5.000,00 (20 parcelas, 1,90%). Setor interno confirma quitação, Em
     Parcela ≤ (remuneracaoLiquida * margemConsignavel) - soma de parcelas ativas.
 
 #### 11.1.2. Idade Máxima
+    Idade = dataAtual - dataNascimento
     idade + quantidadeParcelas / 12 ≤ idadeMaximaConsignado: A idade aproximada do cliente ao final do contrato não deve exceder idadeMaximaConsignado.
     
 #### 11.1.3. Quantidade de Parcelas
@@ -577,6 +578,7 @@ Saldo de R$ 5.000,00 (20 parcelas, 1,90%). Setor interno confirma quitação, Em
 ### 11.2. Empréstimo Pessoal
 
 #### 11.2.1. Idade Máxima
+    Idade = dataAtual - dataNascimento
     idade + quantidadeParcelas / 12 ≤ idadeMaximaPessoal: A idade aproximada do cliente ao final do contrato não deve exceder idadeMaximaPessoal.
     
 #### 11.2.2. Valor do Empréstimo

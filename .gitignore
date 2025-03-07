@@ -1,3 +1,17 @@
 # Arquivos temporários e de build
-*.vscode
-*config.properties
+# IDEs e configurações locais
+.vscode/
+.idea/
+*.iml
+
+# Gradle e build
+.gradle/
+build/
+
+# Configurações locais
+local.properties
+config.properties
+
+# Logs e arquivos temporários
+*.log
+.DS_Store

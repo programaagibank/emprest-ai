@@ -22,13 +22,13 @@ create table clientes (
 
 create table servicos (
     id_servico int primary key not null auto_increment,
-    desc_servico varchar(45) not null,
+    dsc_servico varchar(45) not null,
     abrev_servico varchar(3) not null
 );
 
 create table status_emprestimos (
     id_status_emprestimo int primary key not null auto_increment,
-    desc_status_emprestimo varchar(45)
+    dsc_status_emprestimo varchar(45)
 );
 
 create table motivo_encerramentos (
@@ -62,7 +62,7 @@ create table emprestimos (
 
 create table status_parcelas (
     id_status_parcelas int primary key not null auto_increment,
-    desc_status_parcelas varchar(45) not null
+    dsc_status_parcelas varchar(45) not null
 );
 
 create table parcelas (

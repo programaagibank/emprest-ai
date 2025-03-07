@@ -10,9 +10,16 @@ repositories {
 }
 
 dependencies {
-    // MySQL Connector/J para JDBC
+    implementation 'mysql:mysql-connector-java:8.0.33'  // Conector MySQL para JDBC
+
+    // Vamos implementar dependencia pra JSON??
+
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
+
+    // (Sugestão) Biblioteca para log de ações no gerenciador
+    implementation 'org.slf4j:slf4j-api:2.0.12'
+    implementation 'ch.qos.logback:logback-classic:1.5.3'
 }
 
 test {

@@ -5,6 +5,7 @@ import java.time.LocalDate;
 
 public class DateUtils {
     public static LocalDate primeiroDiaUtil(LocalDate dia){
+        dia = dia.plusDays(1);
         if (dia == null) {
             throw new IllegalArgumentException("A data não pode ser nula");
         }

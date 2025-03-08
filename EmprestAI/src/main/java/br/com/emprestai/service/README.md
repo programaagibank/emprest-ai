@@ -1,5 +1,5 @@
 
-# Título do Projeto
+# Calculadora Emprestimo
 
 Cálculo para taxa efetiva utilizando metodo de Newton-Raphson
 

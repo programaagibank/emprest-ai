@@ -11,7 +11,7 @@ build/
 
 # Configurações locais
 local.properties
-config.properties
+database.properties
 
 # Logs e arquivos temporários
 *.log

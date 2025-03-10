@@ -2,12 +2,13 @@ package br.com.emprestai.database;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
 public class DatabaseConnection {
-    public static void getConnection() throws SQLException, IOException {
+    public static Connection getConnection() throws SQLException, IOException {
         Properties props = new Properties();
         FileInputStream in = new FileInputStream("src/main/resources/database.properties");
         props.load(in);
@@ -17,7 +18,8 @@ public class DatabaseConnection {
 
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            DriverManager.getConnection(url, user, password);
+            //Somente retornei a conexão
+            return DriverManager.getConnection(url, user, password);
         } catch (ClassNotFoundException e) {
             throw new SQLException("Driver MySQL não encontrado", e);
         }

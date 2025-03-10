@@ -100,8 +100,7 @@ public class CalculadoraEmprestimo {
             frlin = frlin(parcelaMensal, taxaEfetiva, qtdeParcelas);
             // Verifica convergência: se |f(r)| < tolerância, para
             if (fr.abs().compareTo(TOLERANCIA) < 0) {
-                System.out.println("teste");
-                return taxaEfetiva.setScale(6, HALF_UP);
+                return taxaEfetiva.setScale(4, HALF_UP);
             }
             taxaEfetiva = taxaEfetiva.subtract(fr.divide(frlin, DECIMAL128));
         }

@@ -1,7 +1,7 @@
 package br.com.emprestai.dao.clienteDAO;
 
-import br.com.emprestai.dataBaseConfig.DatabaseConfig;
-import br.com.emprestai.dataBaseConfig.exception.ApiException;
+import br.com.emprestai.database.DatabaseConnection;
+import br.com.emprestai.database.exception.ApiException;
 import br.com.emprestai.model.Cliente;
 
 import java.sql.*;
@@ -24,7 +24,7 @@ public class ClienteDAO {
                 "score INT NOT NULL" +
                 ")";
 
-        try (Connection conn = DatabaseConfig.getConnection();
+        try (Connection conn = DatabaseConnection.getConnection();
              Statement stmt = conn.createStatement()) {
             stmt.execute(sql);
             System.out.println("Tabela clientes criada ou já existente!");
@@ -39,7 +39,7 @@ public class ClienteDAO {
                 "renda_familiar_liquida, qtd_pessoas_na_casa, id_tipo_cliente, score) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
-        try (Connection conn = DatabaseConfig.getConnection();
+        try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             stmt.setString(1, cliente.getCpf_cliente());
@@ -79,7 +79,7 @@ public class ClienteDAO {
         List<Cliente> clientes = new ArrayList<>();
         String sql = "SELECT * FROM clientes";
 
-        try (Connection conn = DatabaseConfig.getConnection();
+        try (Connection conn = DatabaseConnection.getConnection();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
 
@@ -97,7 +97,7 @@ public class ClienteDAO {
     public Cliente buscarPorId(Long id) {
         String sql = "SELECT * FROM clientes WHERE id_cliente = ?";
 
-        try (Connection conn = DatabaseConfig.getConnection();
+        try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setLong(1, id);
@@ -120,7 +120,7 @@ public class ClienteDAO {
                 "data_nascimento = ?, renda_familiar_liquida = ?, qtd_pessoas_na_casa = ?, " +
                 "id_tipo_cliente = ?, score = ? WHERE id_cliente = ?";
 
-        try (Connection conn = DatabaseConfig.getConnection();
+        try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, cliente.getCpf_cliente());
@@ -149,7 +149,7 @@ public class ClienteDAO {
         }
     }
 
-    // Atualização parcial de cliente (PATCH)
+    // Atualização parcial de cliente
     public Cliente atualizarParcial(Long id, Cliente clienteAtualizado) {
         Cliente clienteExistente = buscarPorId(id);
 
@@ -185,7 +185,7 @@ public class ClienteDAO {
     public void excluir(Long id) {
         String sql = "DELETE FROM clientes WHERE id_cliente = ?";
 
-        try (Connection conn = DatabaseConfig.getConnection();
+        try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setLong(1, id);

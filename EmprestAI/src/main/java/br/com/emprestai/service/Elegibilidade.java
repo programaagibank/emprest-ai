@@ -28,7 +28,7 @@ public class Elegibilidade {
         return parcela <= margemDisponivel;
     }
 
-    // 11.1.2 Idade Máxima
+    // 11.1.2 Idade Máxima Para Empréstimo Consignado
     public static boolean verificarIdadeClienteConsignado(int idade, int parcelas) {
         int anos = parcelas / 12;
         int idadeFinal = idade + anos;

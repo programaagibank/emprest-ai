@@ -1,6 +1,8 @@
 package br.com.emprestai.model;
 
 import java.math.BigDecimal;
+import java.sql.Date;
+import java.time.LocalDate;
 
 public class Cliente {
 
@@ -9,7 +11,7 @@ public class Cliente {
     private String cpf_cliente; // Mantido como atributo secundário
     private String nome_cliente;
     private BigDecimal renda_mensal_liquida;
-    private int data_nascimento;
+    private LocalDate data_nascimento;
     private BigDecimal renda_familiar_liquida;
     private int qtd_pessoas_na_casa;
     private TipoVinculo id_tipo_cliente;
@@ -17,7 +19,28 @@ public class Cliente {
 
     // Enum para id_tipo_cliente
     public enum TipoVinculo {
-        APOSENTADO, SERVIDOR, PENSIONISTA, EMPREGADO, NULO
+        APOSENTADO(1), SERVIDOR(2), PENSIONISTA(3), EMPREGADO(4);
+        private final int valor;
+
+        // Construtor do enum
+        TipoVinculo(int valor) {
+            this.valor = valor;
+        }
+
+        // Getter para o valor
+        public int getValor() {
+            return valor;
+        }
+
+        // Método estático para buscar o enum pelo valor
+        public static TipoVinculo fromValor(int valor) {
+            for (TipoVinculo tipo : TipoVinculo.values()) {
+                if (tipo.getValor() == valor) {
+                    return tipo;
+                }
+            }
+            throw new IllegalArgumentException("Nenhum TipoCliente encontrado para o valor: " + valor);
+        }
     }
 
     // Construtor vazio
@@ -25,7 +48,7 @@ public class Cliente {
     }
 
     // Construtor com parâmetros
-    public Cliente(String cpf_cliente, String nome_cliente, BigDecimal renda_mensal_liquida, int data_nascimento,
+    public Cliente(String cpf_cliente, String nome_cliente, BigDecimal renda_mensal_liquida, LocalDate data_nascimento,
                    BigDecimal renda_familiar_liquida, int qtd_pessoas_na_casa, TipoVinculo id_tipo_cliente, int score) {
         this.cpf_cliente = cpf_cliente;
         this.nome_cliente = nome_cliente;
@@ -70,11 +93,11 @@ public class Cliente {
         this.renda_mensal_liquida = renda_mensal_liquida;
     }
 
-    public int getData_nascimento() {
+    public LocalDate getData_nascimento() {
         return data_nascimento;
     }
 
-    public void setData_nascimento(int data_nascimento) {
+    public void setData_nascimento(LocalDate data_nascimento) {
         this.data_nascimento = data_nascimento;
     }
 

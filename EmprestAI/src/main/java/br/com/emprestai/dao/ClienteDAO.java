@@ -1,9 +1,10 @@
-package br.com.emprestai.dao.clienteDAO;
+package br.com.emprestai.dao;
 
 import br.com.emprestai.database.DatabaseConnection;
 import br.com.emprestai.database.exception.ApiException;
 import br.com.emprestai.model.Cliente;
 
+import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +29,8 @@ public class ClienteDAO {
              Statement stmt = conn.createStatement()) {
             stmt.execute(sql);
             System.out.println("Tabela clientes criada ou já existente!");
-        } catch (SQLException e) {
+            //Adicionei o IOException para parar de reclamar erro
+        } catch (SQLException | IOException e) {
             throw new ApiException("Erro ao criar tabela: " + e.getMessage(), 500);
         }
     }
@@ -45,7 +47,7 @@ public class ClienteDAO {
             stmt.setString(1, cliente.getCpf_cliente());
             stmt.setString(2, cliente.getNome_cliente());
             stmt.setBigDecimal(3, cliente.getRenda_mensal_liquida());
-            stmt.setInt(4, cliente.getData_nascimento());
+            stmt.setDate(4, Date.valueOf(cliente.getData_nascimento()));
             stmt.setBigDecimal(5, cliente.getRenda_familiar_liquida());
             stmt.setInt(6, cliente.getQtd_pessoas_na_casa());
             stmt.setString(7, cliente.getId_tipo_cliente().name());
@@ -66,7 +68,8 @@ public class ClienteDAO {
             }
 
             return cliente;
-        } catch (SQLException e) {
+            //Adicionei o IOException para parar de reclamar erro
+        } catch (SQLException | IOException e) {
             if (e.getMessage().contains("Duplicate entry") && e.getMessage().contains("cpf_cliente")) {
                 throw new ApiException("CPF já cadastrado no sistema", 409);
             }
@@ -88,7 +91,8 @@ public class ClienteDAO {
             }
 
             return clientes;
-        } catch (SQLException e) {
+            //Adicionei o IOException para parar de reclamar erro
+        } catch (SQLException | IOException e) {
             throw new ApiException("Erro ao buscar clientes: " + e.getMessage(), 500);
         }
     }
@@ -109,7 +113,8 @@ public class ClienteDAO {
                     throw new ApiException("Cliente não encontrado com ID: " + id, 404);
                 }
             }
-        } catch (SQLException e) {
+            //Adicionei o IOException para parar de reclamar erro
+        } catch (SQLException | IOException e) {
             throw new ApiException("Erro ao buscar cliente: " + e.getMessage(), 500);
         }
     }
@@ -126,7 +131,7 @@ public class ClienteDAO {
             stmt.setString(1, cliente.getCpf_cliente());
             stmt.setString(2, cliente.getNome_cliente());
             stmt.setBigDecimal(3, cliente.getRenda_mensal_liquida());
-            stmt.setInt(4, cliente.getData_nascimento());
+            stmt.setDate(4, Date.valueOf(cliente.getData_nascimento()));
             stmt.setBigDecimal(5, cliente.getRenda_familiar_liquida());
             stmt.setInt(6, cliente.getQtd_pessoas_na_casa());
             stmt.setString(7, cliente.getId_tipo_cliente().name());
@@ -141,7 +146,8 @@ public class ClienteDAO {
 
             cliente.setId_cliente(id);
             return cliente;
-        } catch (SQLException e) {
+            //Adicionei o IOException para parar de reclamar erro
+        } catch (SQLException | IOException e) {
             if (e.getMessage().contains("Entada duplicada") && e.getMessage().contains("cpf_cliente")) {
                 throw new ApiException("CPF já cadastrado para outro cliente", 409);
             }
@@ -162,7 +168,7 @@ public class ClienteDAO {
         if (clienteAtualizado.getRenda_mensal_liquida() != null) {
             clienteExistente.setRenda_mensal_liquida(clienteAtualizado.getRenda_mensal_liquida());
         }
-        if (clienteAtualizado.getData_nascimento() != 0) {
+        if (clienteAtualizado.getData_nascimento() != null) {
             clienteExistente.setData_nascimento(clienteAtualizado.getData_nascimento());
         }
         if (clienteAtualizado.getRenda_familiar_liquida() != null) {
@@ -195,7 +201,8 @@ public class ClienteDAO {
             if (affectedRows == 0) {
                 throw new ApiException("Cliente não encontrado com ID: " + id, 404);
             }
-        } catch (SQLException e) {
+            //Adicionei o IOException para parar de reclamar erro
+        } catch (SQLException | IOException e) {
             throw new ApiException("Erro ao excluir cliente: " + e.getMessage(), 500);
         }
     }
@@ -207,10 +214,10 @@ public class ClienteDAO {
         cliente.setCpf_cliente(rs.getString("cpf_cliente"));
         cliente.setNome_cliente(rs.getString("nome_cliente"));
         cliente.setRenda_mensal_liquida(rs.getBigDecimal("renda_mensal_liquida"));
-        cliente.setData_nascimento(rs.getInt("data_nascimento"));
+        cliente.setData_nascimento(rs.getDate("data_nascimento").toLocalDate());
         cliente.setRenda_familiar_liquida(rs.getBigDecimal("renda_familiar_liquida"));
         cliente.setQtd_pessoas_na_casa(rs.getInt("qtd_pessoas_na_casa"));
-        cliente.setId_tipo_cliente(Cliente.TipoVinculo.valueOf(rs.getString("id_tipo_cliente")));
+        cliente.setId_tipo_cliente(Cliente.TipoVinculo.fromValor(rs.getInt("id_tipo_cliente")));
         cliente.setScore(rs.getInt("score"));
         return cliente;
     }

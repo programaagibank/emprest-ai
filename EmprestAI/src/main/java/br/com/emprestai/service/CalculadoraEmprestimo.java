@@ -16,6 +16,7 @@ import static java.time.temporal.ChronoUnit.DAYS;
 import static java.time.temporal.ChronoUnit.YEARS;
 
 public class CalculadoraEmprestimo {
+
     private static final BigDecimal PERCENTUAL_FIXO_IOF = new BigDecimal("0.0038");
     private static final BigDecimal PERCENTUAL_VAR_IOF = new BigDecimal("0.000082");
     private static final BigDecimal PERCENTUAL_FIXO_SEG = new BigDecimal("0.0025");
@@ -83,16 +84,24 @@ public class CalculadoraEmprestimo {
 
     //Utilizando metodo de Newton-Raphson
     public static BigDecimal calcTxEfetivaMes(double valorEmprestimo, BigDecimal parcelaMensal, double taxaNominal, int qtdeParcelas) {
+        // Tolerância para convergência (ex.: 0,000001)
+        BigDecimal TOLERANCIA = new BigDecimal("0.000001");
+        // Número máximo de iterações
+        int MAX_ITERACOES = 100;
         if (valorEmprestimo <= 0 || parcelaMensal.doubleValue() < 0 || taxaNominal <= 0 || qtdeParcelas <= 1) {
             throw new IllegalArgumentException("Valores inválidos");
         }
         BigDecimal taxaEfetiva = BigDecimal.valueOf(taxaNominal);
         BigDecimal fr;
         BigDecimal frlin;
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < MAX_ITERACOES; i++) {
             //Calculo da parcela
             fr = fr(valorEmprestimo, parcelaMensal, taxaEfetiva, qtdeParcelas);
             frlin = frlin(parcelaMensal, taxaEfetiva, qtdeParcelas);
+            // Verifica convergência: se |f(r)| < tolerância, para
+            if (fr.abs().compareTo(TOLERANCIA) < 0) {
+                return taxaEfetiva.setScale(4, HALF_UP);
+            }
             taxaEfetiva = taxaEfetiva.subtract(fr.divide(frlin, DECIMAL128));
         }
         return taxaEfetiva.setScale(4, HALF_UP);
@@ -155,8 +164,6 @@ public class CalculadoraEmprestimo {
             throw new IllegalArgumentException("Valores inválidos");
         }
         BigDecimal saldoDevedorAtualizado = ZERO;
-        BigDecimal umMaisTaxa = ONE.add(BigDecimal.valueOf(taxaJurosMensal));
-        BigDecimal valorPresenteParcela;
 
         List<BigDecimal> parcelasVP = calcParcelaVP(parcelaMensal, taxaJurosMensal, qtdeParcelas);
         for (int i = 0; i < parcelasVP.size(); i++) {

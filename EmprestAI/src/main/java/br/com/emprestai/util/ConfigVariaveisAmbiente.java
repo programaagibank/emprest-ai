@@ -2,27 +2,27 @@ package br.com.emprestai.util;
 
 public class ConfigVariaveisAmbiente {
 
-    private double jurosMinimoPessoal;
-    private double jurosMaximoPessoal;
-    private double jurosMinimoConsignado;
-    private double jurosMaximoConsignado;
-    private double valorMinimoPessoal;
-    private double valorMaximoPessoal;
-    private double valorMinimoConsignado;
-    private double prazoMinimoPessoal;
-    private double prazoMaximoPessoal;
-    private double prazoMinimoConsignado;
-    private double prazoMaximoConsignado;
-    private double carenciaMaximaPessoal;
-    private double carenciaMaximaConsignado;
-    private double idadeMaximaConsignado;
-    private double idadeMaximaPessoal;
-    private double margemConsignavel;
-    private double iof;
-    private double percentualRendaPessoal;
-    private double percentualMinimoRefinanciamento;
-    private double percentualJurosMora;
-    private double percentualMultaAtraso;
+    private double jurosMinimoPessoal = 8.49;
+    private double jurosMaximoPessoal = 9.99;
+    private double jurosMinimoConsignado = 1.80;
+    private double jurosMaximoConsignado = 2.14;
+    private double valorMinimoPessoal = 100.00;
+    private double valorMaximoPessoal = 20000;
+    private double valorMinimoConsignado = 1000;
+    private double prazoMinimoPessoal = 6;
+    private double prazoMaximoPessoal = 30;
+    private double prazoMinimoConsignado = 24;
+    private double prazoMaximoConsignado = 94;
+    private double carenciaMaximaPessoal = 30;
+    private double carenciaMaximaConsignado = 60;
+    private double idadeMaximaConsignado = 80;
+    private double idadeMaximaPessoal = 75;
+    private double margemConsignavel = 35;
+    private double iof = 0.38;
+    private double percentualRendaPessoal = 30;
+    private double percentualMinimoRefinanciamento = 20;
+    private double percentualJurosMora = 0.033;
+    private double percentualMultaAtraso = 2;
 
     public double getJurosMaximoPessoal() {
         return jurosMaximoPessoal;

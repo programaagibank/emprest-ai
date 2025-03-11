@@ -1,6 +1,17 @@
 package br.com.emprestai.util;
 
-public class ConfigVariaveisAmbiente {
+public class ParametrosEmprestimo {
+
+    //Padrão Singleton
+
+    ParametrosEmprestimo INSTANCE = new ParametrosEmprestimo();
+
+    private ParametrosEmprestimo() {
+    }
+
+    public ParametrosEmprestimo getINSTANCE() {
+        return INSTANCE;
+    }
 
     private double jurosMinimoPessoal = 8.49;
     private double jurosMaximoPessoal = 9.99;

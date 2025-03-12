@@ -1,5 +1,9 @@
 package br.com.emprestai.model;
 
+import br.com.emprestai.enums.MotivosEncerramentosEmpEnum;
+import br.com.emprestai.enums.StatusEmpEnum;
+import br.com.emprestai.enums.TipoEmpEnum;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
@@ -10,37 +14,15 @@ public class Emprestimo {
     private int quantidadeParcelas;
     private double juros;
     private LocalDate dataInicio;
-    private StatusEmprestimo idStatusEmprestimo;
-    private int idTipoEmprestimo;
+    private StatusEmpEnum idStatusEmprestimo;
+    private TipoEmpEnum idTipoEmprestimo;
     private BigDecimal valorSeguro;
     private BigDecimal valorIOF;
     private BigDecimal outrosCustos;
     private LocalDate dataContratacao;
-    private int idMotivoEncerramento;
+    private MotivosEncerramentosEmpEnum idMotivoEncerramento;
     private double jurosMora;
     private double taxaMulta;
     private long idEmprestimoOrigem;
-
-    public enum StatusEmprestimo{
-        APROVADO(1), NEGADO(2);
-        private final int valor;
-
-        StatusEmprestimo(int valor){
-            this.valor = valor;
-        }
-
-        public int getValor(){
-            return valor;
-        }
-
-        public static StatusEmprestimo fromValor(int valor){
-            for(StatusEmprestimo tipo: StatusEmprestimo.values()){
-                if (tipo.getValor() == valor){
-                    return tipo;
-                }
-            }
-            throw new IllegalArgumentException("Nenhum StatusEmprestimo encontrado para o valor: " + valor);
-        }
-    }
 }
 

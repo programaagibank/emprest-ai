@@ -22,18 +22,18 @@ class CalculadoraEmprestimoTest {
     void contratoPrice() {
         double valorEmprestimo = 5000.00;
         int qtdeParcelas = 24;
-        double taxaJurosMensal = 0.0949;
+        double taxaJurosMensal = 9.49;
         LocalDate dataContratacao = LocalDate.of(2025, 3, 7);// Sexta-feira
         LocalDate dataLiberacaoCred = LocalDate.of(2025, 3, 10);// Segunda-feira
         LocalDate dataFimContrato = LocalDate.of(2027, 3, 10);// Segunda-feira
         LocalDate dtNasc = LocalDate.of(1995, 1, 1);
-        BigDecimal seguro = new BigDecimal("40.00");
-        BigDecimal iof = new BigDecimal("170.00");
+        double seguro = 40.00;
+        double iof = 170.00;
         boolean contratarSeguro = true;
-        BigDecimal valorTotalFinanciado = new BigDecimal("5210.00");
-        BigDecimal parcelaMensal = new BigDecimal("557.73");
-        BigDecimal saldoDevedorPresente = new BigDecimal("5210.00");
-        BigDecimal taxaEfetivaMensal = new BigDecimal("0.1003");
+        double valorTotalFinanciado = 5210.00;
+        double parcelaMensal = 557.73;
+        double saldoDevedorPresente = 5210.00;
+        double taxaEfetivaMensal = 10.03;
         Map<String, Object> resultado = CalculadoraEmprestimo.contratoPrice(
                 valorEmprestimo, qtdeParcelas, taxaJurosMensal, dataContratacao, dtNasc, contratarSeguro);
 
@@ -53,7 +53,7 @@ class CalculadoraEmprestimoTest {
     @Test
     void calcParcela() {
         BigDecimal valorTotalFinanciado = new BigDecimal("5209.32");
-        double taxaJurosMensal = 0.0949;
+        double taxaJurosMensal = 9.49;
         int qtdeParcelas = 24;
         assertEquals(new BigDecimal("557.66"), CalculadoraEmprestimo.calcParcela(valorTotalFinanciado, taxaJurosMensal, qtdeParcelas).setScale(2, HALF_UP));
     }
@@ -72,7 +72,6 @@ class CalculadoraEmprestimoTest {
     void calcIOF() {
         double valorEmprestimo = 5000.00;
         BigDecimal seguro = new BigDecimal("40.00");
-        int qtdeParcelas = 24;
         LocalDate dataLiberacaoCred = LocalDate.of(2025, 3, 10);// Segunda-feira
         LocalDate dataFimContrato = LocalDate.of(2026, 3, 10);// Segunda-feira
         assertEquals(new BigDecimal("170.00"), CalculadoraEmprestimo.calcIOF(valorEmprestimo, seguro, dataLiberacaoCred, dataFimContrato).setScale(2, HALF_UP));
@@ -82,15 +81,15 @@ class CalculadoraEmprestimoTest {
     void calcTxEfetivaMes() {
         double valorEmprestimo = 5000;
         BigDecimal parcelaMensal = new BigDecimal("557.73");
-        double taxaJurosMensal = 0.0949;
+        double taxaJurosMensal = 9.49;
         int qtdeParcelas = 24;
-        assertEquals(new BigDecimal("0.1003"),CalculadoraEmprestimo.calcTxEfetivaMes(valorEmprestimo, parcelaMensal, taxaJurosMensal, qtdeParcelas));
+        assertEquals(new BigDecimal("10.03"),CalculadoraEmprestimo.calcTxEfetivaMes(valorEmprestimo, parcelaMensal, taxaJurosMensal, qtdeParcelas));
     }
 
     @Test
     void calcSaldoDevSemJuros() {
         BigDecimal parcelaMensal = new BigDecimal("557.73");
-        double taxaJurosMensal = 0.0949;
+        double taxaJurosMensal = 9.49;
         int qtdeParcela = 24;
         assertEquals(new BigDecimal("5209.96"), CalculadoraEmprestimo.calcSaldoDevedorPresente(parcelaMensal, taxaJurosMensal, qtdeParcela).setScale(2, HALF_UP));
     }

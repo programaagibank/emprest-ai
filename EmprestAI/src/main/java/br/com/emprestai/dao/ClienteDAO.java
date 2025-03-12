@@ -11,27 +11,13 @@ import java.util.List;
 
 public class ClienteDAO {
 
-    // Método para criar a tabela no banco de dados (executar uma vez)
-    public void criarTabela() {
-        String sql = "CREATE TABLE IF NOT EXISTS clientes (" +
-                "id_cliente BIGINT AUTO_INCREMENT PRIMARY KEY, " +
-                "cpf_cliente VARCHAR(14) UNIQUE NOT NULL, " +
-                "nome_cliente VARCHAR(100) NOT NULL, " +
-                "renda_mensal_liquida DECIMAL(10,2) NOT NULL, " +
-                "data_nascimento INT NOT NULL, " +
-                "renda_familiar_liquida DECIMAL(10,2) NOT NULL, " +
-                "qtd_pessoas_na_casa INT NOT NULL, " +
-                "id_tipo_cliente ENUM('APOSENTADO', 'SERVIDOR', 'PENSIONISTA', 'EMPREGADO', 'NULO') NOT NULL, " +
-                "score INT NOT NULL" +
-                ")";
 
+    public void conectar() {
         try (Connection conn = DatabaseConnection.getConnection();
-             Statement stmt = conn.createStatement()) {
-            stmt.execute(sql);
-            System.out.println("Tabela clientes criada ou já existente!");
-            //Adicionei o IOException para parar de reclamar erro
+             Statement statement = conn.createStatement()) {
+         //Adicionei o IOException para parar de reclamar erro
         } catch (SQLException | IOException e) {
-            throw new ApiException("Erro ao criar tabela: " + e.getMessage(), 500);
+            throw new ApiException("Erro ao conectar: " + e.getMessage(), 500);
         }
     }
 
@@ -42,24 +28,24 @@ public class ClienteDAO {
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+             PreparedStatement statement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
-            stmt.setString(1, cliente.getCpf_cliente());
-            stmt.setString(2, cliente.getNome_cliente());
-            stmt.setBigDecimal(3, cliente.getRenda_mensal_liquida());
-            stmt.setDate(4, Date.valueOf(cliente.getData_nascimento()));
-            stmt.setBigDecimal(5, cliente.getRenda_familiar_liquida());
-            stmt.setInt(6, cliente.getQtd_pessoas_na_casa());
-            stmt.setString(7, cliente.getId_tipo_cliente().name());
-            stmt.setInt(8, cliente.getScore());
+            statement.setString(1, cliente.getCpf_cliente());
+            statement.setString(2, cliente.getNome_cliente());
+            statement.setBigDecimal(3, cliente.getRenda_mensal_liquida());
+            statement.setDate(4, Date.valueOf(cliente.getData_nascimento()));
+            statement.setBigDecimal(5, cliente.getRenda_familiar_liquida());
+            statement.setInt(6, cliente.getQtd_pessoas_na_casa());
+            statement.setString(7, cliente.getId_tipo_cliente().name());
+            statement.setInt(8, cliente.getScore());
 
-            int affectedRows = stmt.executeUpdate();
+            int affectedRows = statement.executeUpdate();
 
             if (affectedRows == 0) {
                 throw new ApiException("Falha ao criar cliente, nenhuma linha afetada.", 500);
             }
 
-            try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+            try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
                     cliente.setId_cliente(generatedKeys.getLong(1));
                 } else {
@@ -83,8 +69,8 @@ public class ClienteDAO {
         String sql = "SELECT * FROM clientes";
 
         try (Connection conn = DatabaseConnection.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
+             Statement statement = conn.createStatement();
+             ResultSet rs = statement.executeQuery(sql)) {
 
             while (rs.next()) {
                 clientes.add(mapearResultSet(rs));
@@ -102,11 +88,11 @@ public class ClienteDAO {
         String sql = "SELECT * FROM clientes WHERE id_cliente = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+             PreparedStatement statement = conn.prepareStatement(sql)) {
 
-            stmt.setLong(1, id);
+            statement.setLong(1, id);
 
-            try (ResultSet rs = stmt.executeQuery()) {
+            try (ResultSet rs = statement.executeQuery()) {
                 if (rs.next()) {
                     return mapearResultSet(rs);
                 } else {
@@ -126,19 +112,19 @@ public class ClienteDAO {
                 "id_tipo_cliente = ?, score = ? WHERE id_cliente = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+             PreparedStatement statement = conn.prepareStatement(sql)) {
 
-            stmt.setString(1, cliente.getCpf_cliente());
-            stmt.setString(2, cliente.getNome_cliente());
-            stmt.setBigDecimal(3, cliente.getRenda_mensal_liquida());
-            stmt.setDate(4, Date.valueOf(cliente.getData_nascimento()));
-            stmt.setBigDecimal(5, cliente.getRenda_familiar_liquida());
-            stmt.setInt(6, cliente.getQtd_pessoas_na_casa());
-            stmt.setString(7, cliente.getId_tipo_cliente().name());
-            stmt.setInt(8, cliente.getScore());
-            stmt.setLong(9, id);
+            statement.setString(1, cliente.getCpf_cliente());
+            statement.setString(2, cliente.getNome_cliente());
+            statement.setBigDecimal(3, cliente.getRenda_mensal_liquida());
+            statement.setDate(4, Date.valueOf(cliente.getData_nascimento()));
+            statement.setBigDecimal(5, cliente.getRenda_familiar_liquida());
+            statement.setInt(6, cliente.getQtd_pessoas_na_casa());
+            statement.setString(7, cliente.getId_tipo_cliente().name());
+            statement.setInt(8, cliente.getScore());
+            statement.setLong(9, id);
 
-            int affectedRows = stmt.executeUpdate();
+            int affectedRows = statement.executeUpdate();
 
             if (affectedRows == 0) {
                 throw new ApiException("Cliente não encontrado com ID: " + id, 404);
@@ -192,11 +178,11 @@ public class ClienteDAO {
         String sql = "DELETE FROM clientes WHERE id_cliente = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+             PreparedStatement statement = conn.prepareStatement(sql)) {
 
-            stmt.setLong(1, id);
+            statement.setLong(1, id);
 
-            int affectedRows = stmt.executeUpdate();
+            int affectedRows = statement.executeUpdate();
 
             if (affectedRows == 0) {
                 throw new ApiException("Cliente não encontrado com ID: " + id, 404);

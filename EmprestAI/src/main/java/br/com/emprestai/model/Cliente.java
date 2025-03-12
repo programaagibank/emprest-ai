@@ -25,7 +25,7 @@ public class Cliente {
 
     // Construtor com parâmetros
     public Cliente(String cpf_cliente, String nome_cliente, BigDecimal renda_mensal_liquida, LocalDate data_nascimento,
-                   BigDecimal renda_familiar_liquida, int qtd_pessoas_na_casa, TipoVinculo id_tipo_cliente, int score) {
+                   BigDecimal renda_familiar_liquida, int qtd_pessoas_na_casa, VinculoEnum id_tipo_cliente, int score) {
         this.cpf_cliente = cpf_cliente;
         this.nome_cliente = nome_cliente;
         this.renda_mensal_liquida = renda_mensal_liquida;
@@ -93,11 +93,11 @@ public class Cliente {
         this.qtd_pessoas_na_casa = qtd_pessoas_na_casa;
     }
 
-    public TipoVinculo getId_tipo_cliente() {
+    public VinculoEnum getId_tipo_cliente() {
         return id_tipo_cliente;
     }
 
-    public void setId_tipo_cliente(TipoVinculo id_tipo_cliente) {
+    public void setId_tipo_cliente(VinculoEnum id_tipo_cliente) {
         this.id_tipo_cliente = id_tipo_cliente;
     }
 

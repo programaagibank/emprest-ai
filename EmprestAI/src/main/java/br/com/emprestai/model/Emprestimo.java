@@ -24,5 +24,29 @@ public class Emprestimo {
     private double jurosMora;
     private double taxaMulta;
     private long idEmprestimoOrigem;
+
+    public Emprestimo() {
+    }
+
+    public Emprestimo(long idCliente, long idContrato, BigDecimal valorTotal, int quantidadeParcelas, double juros, LocalDate dataInicio,
+                      StatusEmpEnum idStatusEmprestimo, BigDecimal valorSeguro, BigDecimal valorIOF, BigDecimal outrosCustos,
+                      LocalDate dataContratacao, MotivosEncerramentosEmpEnum idMotivoEncerramento, double jurosMora, double taxaMulta, long idEmprestimoOrigem){
+        this.idCliente = idCliente;
+        this.idContrato = idContrato;
+        this.valorTotal = valorTotal;
+        this.quantidadeParcelas = quantidadeParcelas;
+        this.juros = juros;
+        this.dataInicio = dataInicio;
+        this.idStatusEmprestimo = idStatusEmprestimo;
+        this.valorSeguro = valorSeguro;
+        this.valorIOF = valorIOF;
+        this.outrosCustos = outrosCustos;
+        this.dataContratacao = dataContratacao;
+        this.idMotivoEncerramento = idMotivoEncerramento;
+        this.jurosMora = jurosMora;
+        this.taxaMulta = taxaMulta;
+        this.idEmprestimoOrigem = idEmprestimoOrigem;
+    }
+
 }
 

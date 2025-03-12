@@ -1,5 +1,7 @@
 package br.com.emprestai.model;
 
+import br.com.emprestai.enums.VinculoEnum;
+
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.time.LocalDate;
@@ -14,34 +16,8 @@ public class Cliente {
     private LocalDate data_nascimento;
     private BigDecimal renda_familiar_liquida;
     private int qtd_pessoas_na_casa;
-    private TipoVinculo id_tipo_cliente;
+    private VinculoEnum id_tipo_cliente;
     private int score;
-
-    // Enum para id_tipo_cliente
-    public enum TipoVinculo {
-        APOSENTADO(1), SERVIDOR(2), PENSIONISTA(3), EMPREGADO(4);
-        private final int valor;
-
-        // Construtor do enum
-        TipoVinculo(int valor) {
-            this.valor = valor;
-        }
-
-        // Getter para o valor
-        public int getValor() {
-            return valor;
-        }
-
-        // Método estático para buscar o enum pelo valor
-        public static TipoVinculo fromValor(int valor) {
-            for (TipoVinculo tipo : TipoVinculo.values()) {
-                if (tipo.getValor() == valor) {
-                    return tipo;
-                }
-            }
-            throw new IllegalArgumentException("Nenhum TipoCliente encontrado para o valor: " + valor);
-        }
-    }
 
     // Construtor vazio
     public Cliente() {

@@ -1,39 +1,60 @@
 package br.com.emprestai.util;
 
-public class ParametrosEmprestimo {
+public class EmprestimoParams {
+    // Singleton
+    private static final EmprestimoParams INSTANCE = new EmprestimoParams();
 
-    //Padrão Singleton
-
-    ParametrosEmprestimo INSTANCE = new ParametrosEmprestimo();
-
-    private ParametrosEmprestimo() {
+    private EmprestimoParams() {
     }
 
-    public ParametrosEmprestimo getINSTANCE() {
+    public static EmprestimoParams getInstance() {
         return INSTANCE;
     }
 
+    // Taxas de juros
     private double jurosMinimoPessoal = 8.49;
     private double jurosMaximoPessoal = 9.99;
     private double jurosMinimoConsignado = 1.80;
     private double jurosMaximoConsignado = 2.14;
+
+    // Valores limites
     private double valorMinimoPessoal = 100.00;
-    private double valorMaximoPessoal = 20000;
-    private double valorMinimoConsignado = 1000;
+    private double valorMaximoPessoal = 20000.00;
+    private double valorMinimoConsignado = 1000.00;
+
+    // Prazos
     private double prazoMinimoPessoal = 6;
     private double prazoMaximoPessoal = 30;
     private double prazoMinimoConsignado = 24;
     private double prazoMaximoConsignado = 94;
+
+    // Carências
     private double carenciaMaximaPessoal = 30;
     private double carenciaMaximaConsignado = 60;
+
+    // Idades máximas
     private double idadeMaximaConsignado = 80;
     private double idadeMaximaPessoal = 75;
+
+    // Percentuais
     private double margemConsignavel = 35;
-    private double iof = 0.38;
+    private double percentualIofFixo = 0.38;
+    private double percentualIofVar = 0.0082;
+    private double percentualSegFixo = 0.25;
+    private double percentualSegVar = 0.005;
     private double percentualRendaPessoal = 30;
     private double percentualMinimoRefinanciamento = 20;
     private double percentualJurosMora = 0.033;
     private double percentualMultaAtraso = 2;
+
+    // Getters e Setters
+    public double getJurosMinimoPessoal() {
+        return jurosMinimoPessoal;
+    }
+
+    public void setJurosMinimoPessoal(double jurosMinimoPessoal) {
+        this.jurosMinimoPessoal = jurosMinimoPessoal;
+    }
 
     public double getJurosMaximoPessoal() {
         return jurosMaximoPessoal;
@@ -41,14 +62,6 @@ public class ParametrosEmprestimo {
 
     public void setJurosMaximoPessoal(double jurosMaximoPessoal) {
         this.jurosMaximoPessoal = jurosMaximoPessoal;
-    }
-
-    public double getJurosMinimoPessoal() {
-        return jurosMinimoPessoal;
-    }
-
-    public void setJurosMinimoPessoal(double jurosMinimoPessoal) {
-        this.jurosMinimoPessoal = jurosMinimoPessoal;
     }
 
     public double getJurosMinimoConsignado() {
@@ -163,12 +176,36 @@ public class ParametrosEmprestimo {
         this.margemConsignavel = margemConsignavel;
     }
 
-    public double getIof() {
-        return iof;
+    public double getPercentualIofFixo() {
+        return percentualIofFixo;
     }
 
-    public void setIof(double iof) {
-        this.iof = iof;
+    public void setPercentualIofFixo(double percentualIofFixo) {
+        this.percentualIofFixo = percentualIofFixo;
+    }
+
+    public double getPercentualIofVar() {
+        return percentualIofVar;
+    }
+
+    public void setPercentualIofVar(double percentualIofVar) {
+        this.percentualIofVar = percentualIofVar;
+    }
+
+    public double getPercentualSegFixo() {
+        return percentualSegFixo;
+    }
+
+    public void setPercentualSegFixo(double percentualSegFixo) {
+        this.percentualSegFixo = percentualSegFixo;
+    }
+
+    public double getPercentualSegVar() {
+        return percentualSegVar;
+    }
+
+    public void setPercentualSegVar(double percentualSegVar) {
+        this.percentualSegVar = percentualSegVar;
     }
 
     public double getPercentualRendaPessoal() {

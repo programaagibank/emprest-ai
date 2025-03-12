@@ -1,5 +1,7 @@
 package br.com.emprestai.service;
 
+import br.com.emprestai.util.EmprestimoParams;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -15,12 +17,8 @@ import static java.math.RoundingMode.HALF_UP;
 import static java.time.temporal.ChronoUnit.DAYS;
 import static java.time.temporal.ChronoUnit.YEARS;
 
-public class CalculadoraEmprestimo   {
-
-    private static final BigDecimal PERCENTUAL_FIXO_IOF = new BigDecimal("0.0038");
-    private static final BigDecimal PERCENTUAL_VAR_IOF = new BigDecimal("0.000082");
-    private static final BigDecimal PERCENTUAL_FIXO_SEG = new BigDecimal("0.0025");
-    private static final BigDecimal PERCENTUAL_IDADE = new BigDecimal("0.00005");
+public class CalculadoraEmprestimo {
+    private static final EmprestimoParams params = EmprestimoParams.getInstance();
     private static final BigDecimal DOZE = new BigDecimal("12");
 
     public static Map<String, Object> contratoPrice(double valorEmprestimo, int qtdeParcelas, double taxaJurosMensal, LocalDate dataContratacao, LocalDate dtNasc, boolean contratarSeguro) {
@@ -44,12 +42,12 @@ public class CalculadoraEmprestimo   {
         dadosContrato.put("dataLiberacaoCred", dataLiberacaoCred);
         dadosContrato.put("dataFimContrato", dataFimContrato);
         dadosContrato.put("taxaJurosMensal", taxaJurosMensal);
-        dadosContrato.put("custoSeguro", seguro.setScale(2, HALF_UP));
-        dadosContrato.put("valorTributos", iof.setScale(2, HALF_UP));
-        dadosContrato.put("valorTotalFinanciado", valorTotalFinanciado.setScale(2, HALF_UP));
-        dadosContrato.put("parcelaMensal", parcelaMensal.setScale(2, HALF_UP));
-        dadosContrato.put("saldoDevedorPresente", saldoDevedorPresente.setScale(2, HALF_UP));
-        dadosContrato.put("taxaEfetivaMensal", taxaEfetivaMensal.setScale(4, HALF_UP));
+        dadosContrato.put("custoSeguro", seguro.setScale(2, HALF_UP).doubleValue());
+        dadosContrato.put("valorTributos", iof.setScale(2, HALF_UP).doubleValue());
+        dadosContrato.put("valorTotalFinanciado", valorTotalFinanciado.setScale(2, HALF_UP).doubleValue());
+        dadosContrato.put("parcelaMensal", parcelaMensal.setScale(2, HALF_UP).doubleValue());
+        dadosContrato.put("saldoDevedorPresente", saldoDevedorPresente.setScale(2, HALF_UP).doubleValue());
+        dadosContrato.put("taxaEfetivaMensal", taxaEfetivaMensal.setScale(4, HALF_UP).doubleValue());
         return dadosContrato;
     }
 
@@ -57,29 +55,34 @@ public class CalculadoraEmprestimo   {
         if (valorTotalFinanciado.doubleValue() <= 0 || qtdeParcelas <= 1 || taxaJurosMensal < 0) {
             throw new IllegalArgumentException("Valores inválidos");
         }
-        BigDecimal umMaisTaxa = ONE.add(BigDecimal.valueOf(taxaJurosMensal));
+        BigDecimal umMaisTaxa = ONE.add(BigDecimal.valueOf(taxaJurosMensal/100));
         BigDecimal denominador = ONE.subtract(umMaisTaxa.pow(-qtdeParcelas, DECIMAL128));
-        return valorTotalFinanciado.multiply(BigDecimal.valueOf(taxaJurosMensal)).divide(denominador, DECIMAL128);
+        return valorTotalFinanciado.multiply(BigDecimal.valueOf(taxaJurosMensal/100)).divide(denominador, DECIMAL128);
     }
 
     public static BigDecimal calcSeguro(double valorEmprestimo, LocalDate dtNasc, LocalDate dataContratacao, int qtdeParcelas) {
+        BigDecimal segFixo = new BigDecimal(Double.toString(params.getPercentualSegFixo()/100));
+        BigDecimal segVar = new BigDecimal(Double.toString(params.getPercentualSegVar()/100));
         if (valorEmprestimo <= 0 || qtdeParcelas <= 1) {
             throw new IllegalArgumentException("Valores inválidos");
         }
         long idade = YEARS.between(dtNasc, dataContratacao);
         BigDecimal fatorParcelas = BigDecimal.valueOf(qtdeParcelas).divide(DOZE, DECIMAL128);
-        return (new BigDecimal(valorEmprestimo).multiply(PERCENTUAL_FIXO_SEG.add(PERCENTUAL_IDADE.multiply(BigDecimal.valueOf(idade))).multiply(fatorParcelas)));
+        return (new BigDecimal(valorEmprestimo).multiply(segFixo.add(segVar.multiply(BigDecimal.valueOf(idade))).multiply(fatorParcelas)));
     }
 
     public static BigDecimal calcIOF(double valorEmprestimo, BigDecimal seguro, LocalDate dataLiberacaoCred, LocalDate dataFimContrato) {
+        BigDecimal percentualFixoIof = new BigDecimal(Double.toString(params.getPercentualIofFixo()/100));
+        BigDecimal percentualVarIof = new BigDecimal(Double.toString(params.getPercentualIofVar()/100));
         if (valorEmprestimo <= 0 || seguro.doubleValue() < 0) {
             throw new IllegalArgumentException("Valores inválidos");
         }
         long diasDeContrato = DAYS.between(dataLiberacaoCred, dataFimContrato);
         long diasIOF = Long.min(diasDeContrato, 365);
-        BigDecimal percentualVarIOF = PERCENTUAL_VAR_IOF.multiply(BigDecimal.valueOf(diasIOF));
         BigDecimal valorEmprestimoSeg = new BigDecimal(valorEmprestimo).add(seguro);
-        return (valorEmprestimoSeg.multiply((PERCENTUAL_FIXO_IOF.add(percentualVarIOF))));
+        BigDecimal fixoIof = percentualFixoIof.multiply(valorEmprestimoSeg);
+        BigDecimal varIof = percentualVarIof.multiply(BigDecimal.valueOf(diasIOF)).multiply(valorEmprestimoSeg);
+        return fixoIof.add(varIof);
     }
 
     //Utilizando metodo de Newton-Raphson
@@ -91,7 +94,7 @@ public class CalculadoraEmprestimo   {
         if (valorEmprestimo <= 0 || parcelaMensal.doubleValue() < 0 || taxaNominal <= 0 || qtdeParcelas <= 1) {
             throw new IllegalArgumentException("Valores inválidos");
         }
-        BigDecimal taxaEfetiva = BigDecimal.valueOf(taxaNominal);
+        BigDecimal taxaEfetiva = BigDecimal.valueOf(taxaNominal/100);
         BigDecimal fr;
         BigDecimal frlin;
         for (int i = 0; i < MAX_ITERACOES; i++) {
@@ -100,11 +103,11 @@ public class CalculadoraEmprestimo   {
             frlin = frlin(parcelaMensal, taxaEfetiva, qtdeParcelas);
             // Verifica convergência: se |f(r)| < tolerância, para
             if (fr.abs().compareTo(TOLERANCIA) < 0) {
-                return taxaEfetiva.setScale(4, HALF_UP);
+                return taxaEfetiva.multiply(BigDecimal.valueOf(100)).setScale(2, HALF_UP);
             }
             taxaEfetiva = taxaEfetiva.subtract(fr.divide(frlin, DECIMAL128));
         }
-        return taxaEfetiva.setScale(4, HALF_UP);
+        return taxaEfetiva.multiply(BigDecimal.valueOf(100)).setScale(2, HALF_UP);
     }
 
     private static BigDecimal fr(double valorEmprestimo, BigDecimal parcelaMensal, BigDecimal taxaNominal, int qtdeParcelas) {
@@ -179,7 +182,7 @@ public class CalculadoraEmprestimo   {
         if (parcelaMensal.doubleValue() <= 0 || taxaJurosMensal <= 0 || qtdeParcelas <= 1) {
             throw new IllegalArgumentException("Valores inválidos");
         }
-        BigDecimal umMaisTaxa = ONE.add(BigDecimal.valueOf(taxaJurosMensal));
+        BigDecimal umMaisTaxa = ONE.add(BigDecimal.valueOf(taxaJurosMensal/100));
         for (int i = 1; i <= qtdeParcelas; i++) {
             // Calcula o valor presente da parcela i: PMT / (1 + r)^i
             parcelasVP.add(parcelaMensal.divide(umMaisTaxa.pow(i, DECIMAL128), DECIMAL128));
@@ -187,3 +190,4 @@ public class CalculadoraEmprestimo   {
         return parcelasVP;
     }
 }
+

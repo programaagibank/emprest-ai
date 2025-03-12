@@ -104,7 +104,7 @@ CPF depende do governo, portanto é interessante pensar em relação a mudanças
 
 ## 5. SIMULAÇÃO DE EMPRÉSTIMO
 O cliente / setores do banco envia os dados para o sistema simular as condições do empréstimo.
-### 5.1. Requisição
+### 5.1. Uso de dados para simular o emprestimo
 #### Empréstimo Consignado | Empréstimo Pessoal
 ```json
 {
@@ -201,9 +201,9 @@ Com base no `valorTotalFinanciado`, `quantidadeParcelas`, `taxaJurosMensal` e `d
 
 ## 6. CONCESSÃO DE EMPRÉSTIMO
 O cliente / setores do banco solicita formalmente a concessão do empréstimo ao sistema.
-### 6.1. Requisição
+### 6.1. Uso de dados para a concessão de emprestimo
 #### Empréstimo Consignado | Empréstimo Pessoal
-**Requisição:**
+
 ```json
 {
   "idCliente": "[cpf ou autoincremente]",
@@ -232,18 +232,8 @@ O cliente solicita o cancelamento do contrato ao sistema dentro do prazo legal.
   - **Condições**:
     - O valor liberado deve ser devolvido integralmente pelo cliente, descontando eventuais custos já incorridos (ex.: IOF pago ao governo, se houver).
   - **Custos**: Sem multa ou juros adicionais, conforme CDC. Apenas custos operacionais obrigatórios (ex.: IOF) podem ser retidos, se aplicável.
-  
-  #### 6.4.3. Requisição
-  ```json
-  {
-    "idCliente": "[cpf ou autoincremente]",
-    "idEmprestimo": "[identificador único]",
-    "dataSolicitacao": "[data no formato DD/MM/AAAA]",
-    "motivoCancelamento": "[texto opcional]"
-  }
-  ```
-  
-  #### 6.4.4. Verificação do Prazo
+   
+  #### 6.4.3. Verificação do Prazo
   - Calcula a diferença entre `dataSolicitacao` e a data de concessão do empréstimo (obtida do registro do contrato em 6.2).
   - Se a diferença for maior que 7 dias corridos, retorna "Erro: Prazo de cancelamento expirado".
 
@@ -252,7 +242,7 @@ O cliente solicita o cancelamento do contrato ao sistema dentro do prazo legal.
 ## 7. CONSULTA DE DADOS DE EMPRÉSTIMO
 O cliente / setores do banco consulta os dados do empréstimo diretamente no sistema. Essas consultas podem envolver vários filtros, como status, atrasos, etc... abaixo a consulta principal que retornará todos valores de um emprestimo.
 
-### 7.1. Requisição
+### 7.1. Uso de dados para consulta de empréstimo
 ```json
 {
   "idCliente": "[cpf ou autoincremente]",
@@ -317,7 +307,7 @@ O cliente / setores do banco consulta os dados do empréstimo diretamente no sis
 
 ## 8. PAGAMENTO DO EMPRÉSTIMO
 O cliente / setores do banco informa o pagamento das parcelas para registro no sistema.
-### 8.1. Requisição
+### 8.1. Uso de dados para pagamento do empréstimo
 #### Pagamento Parcela
 ```json
 {
@@ -390,7 +380,7 @@ O cliente / setores do banco informa o pagamento das parcelas para registro no s
 
 ## 9. REFINANCIAMENTO DO EMPRÉSTIMO
 O cliente / setores do banco solicita o refinanciamento do contrato existente ao sistema.
-### 9.1. Requisição
+### 9.1. Uso de dados para refinanciamento do empréstimo
 
 ```json
 {
@@ -478,7 +468,7 @@ O Setor Interno envia os dados ao sistema após coordenar com o cliente e quitar
   - **Consignado**: [11.1.1](#1111-margem-consignável), [11.1.2](#1112-idade-máxima).
   - **Pessoal**: [11.2.6](#1126-capacidade-de-pagamento),[11.1.2](#1112-idade-máxima), [11.2.5](#1125-score-de-crédito).
 
-#### Requisição
+#### Uso de dados para elegibilidade
 ```json
 {
   "idCliente": "[cpf ou autoincremente]",
@@ -521,7 +511,7 @@ O Setor Interno solicita ao sistema os dados do contrato para coordenar a quita�
   - **Consignado**: [11.1.1](#1111-margem-consignável), [11.1.2](#1112-idade-máxima).
   - **Pessoal**: [11.2.6](#1126-capacidade-de-pagamento), [11.2.5](#1125-score-de-crédito).
 
-#### Requisição (Setor Interno)
+#### Uso de dados do Setor Interno
 ```json
 {
   "idCliente": "[cpf ou autoincremente]",

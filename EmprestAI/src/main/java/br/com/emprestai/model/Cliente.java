@@ -1,4 +1,4 @@
-package br.com.emprestai.model;
+gipackage br.com.emprestai.model;
 
 import java.math.BigDecimal;
 import java.sql.Date;

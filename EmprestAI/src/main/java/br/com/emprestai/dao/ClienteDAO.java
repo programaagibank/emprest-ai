@@ -2,6 +2,7 @@ package br.com.emprestai.dao;
 
 import br.com.emprestai.database.DatabaseConnection;
 import br.com.emprestai.database.exception.ApiException;
+import br.com.emprestai.enums.VinculoEnum;
 import br.com.emprestai.model.Cliente;
 
 import java.io.IOException;
@@ -217,7 +218,7 @@ public class ClienteDAO {
         cliente.setData_nascimento(rs.getDate("data_nascimento").toLocalDate());
         cliente.setRenda_familiar_liquida(rs.getBigDecimal("renda_familiar_liquida"));
         cliente.setQtd_pessoas_na_casa(rs.getInt("qtd_pessoas_na_casa"));
-        cliente.setId_tipo_cliente(Cliente.TipoVinculo.fromValor(rs.getInt("id_tipo_cliente")));
+        cliente.setId_tipo_cliente(VinculoEnum.fromValor(rs.getInt("id_tipo_cliente")));
         cliente.setScore(rs.getInt("score"));
         return cliente;
     }

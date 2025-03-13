@@ -11,37 +11,37 @@ class ElegibilidadeTest {
         double valorParcela = 875.00;
         double renda_liquida = 2500;
         double parcelasAtivas = 0;
-        assertTrue(Elegibilidade.verificarMargemEmprestimoConsig(valorParcela,renda_liquida,parcelasAtivas));
+        assertTrue(Elegibilidade.verificarMargemEmprestimoConsig(valorParcela, renda_liquida, parcelasAtivas));
     }
     @Test
     void verificarMargemEmprestimoConsigFalse() {
-        double parcela = -10;
-        double renda_liquida = 150;
-        double parcelasAtivas = 100;
-        assertFalse(Elegibilidade.verificarMargemEmprestimoConsig(parcela,renda_liquida,parcelasAtivas));
+        double valorparcela = 600;
+        double renda_liquida = 1500;
+        double parcelasAtivas = 0;
+        assertFalse(Elegibilidade.verificarMargemEmprestimoConsig(valorparcela, renda_liquida, parcelasAtivas));
     }
 
     @Test
     void verificarIdadeClienteConsigTrue() {
         int idade = 18;
-        int parcelas = 24;
-        assertTrue(Elegibilidade.verificarIdadeClienteConsig(idade,parcelas));
+        int qtdeParcelas = 24;
+        assertTrue(Elegibilidade.verificarIdadeClienteConsig(idade, qtdeParcelas));
     }
     @Test
     void verificarIdadeClienteConsigFalse() {
-        int idade = 80;
-        int parcelas = 0;
-        assertFalse(Elegibilidade.verificarIdadeClienteConsig(idade,parcelas));
+        int idade = 79;
+        int qtdeparcelas = 24;
+        assertFalse(Elegibilidade.verificarIdadeClienteConsig(idade, qtdeparcelas));
     }
 
-   @Test
+    @Test
     void verificarQtdeParcelasConsigTrue() {
         int parcelas = 30;
         assertTrue(Elegibilidade.verificarQtdeParcelasConsig(parcelas));
     }
     @Test
     void verificarQtdeParcelasConsigFalse() {
-        int parcelas =0;
+        int parcelas = 0;
         assertFalse(Elegibilidade.verificarQtdeParcelasConsig(parcelas));
     }
 
@@ -52,7 +52,7 @@ class ElegibilidadeTest {
     }
     @Test
     void verificarTaxaJurosEmprestimoConsigFalse() {
-        double juros = -0.010;
+        double juros = 0.03;
         assertFalse(Elegibilidade.verificarTaxaJurosEmprestimoConsig(juros));
     }
 
@@ -63,18 +63,18 @@ class ElegibilidadeTest {
     }
     @Test
     void verificarVinculoEmprestimoConsigFalse() {
-        VinculoEnum vinculo = null;;
+        VinculoEnum vinculo = null;
         assertFalse(Elegibilidade.verificarVinculoEmprestimoConsig(vinculo));
     }
 
     @Test
     void verificacarCarenciaEmprestimoConsigTrue() {
-    int dias = 60;
-    assertTrue(Elegibilidade.verificacarCarenciaEmprestimoConsig(dias));
+        int dias = 60;
+        assertTrue(Elegibilidade.verificacarCarenciaEmprestimoConsig(dias));
     }
     @Test
     void verificacarCarenciaEmprestimoConsigFalse() {
-        int dias = 0;
+        int dias = 61;
         assertFalse(Elegibilidade.verificacarCarenciaEmprestimoConsig(dias));
     }
 
@@ -93,26 +93,26 @@ class ElegibilidadeTest {
     void verificarComprometimentoPessoalTrue() {
         double parcela = 24;
         double rendaLiquida = 1500;
-        assertTrue(Elegibilidade.verificarComprometimentoPessoal(parcela,rendaLiquida));
+        assertTrue(Elegibilidade.verificarComprometimentoPessoal(parcela, rendaLiquida));
     }
     @Test
     void verificarComprometimentoPessoalFalse() {
         double parcela = 12;
         double rendaLiquida = 0;
-        assertFalse(Elegibilidade.verificarComprometimentoPessoal(parcela,rendaLiquida));
+        assertFalse(Elegibilidade.verificarComprometimentoPessoal(parcela, rendaLiquida));
     }
 
     @Test
     void verificarIdadePessoalTrue() {
         int idade = 35;
         int parcelas = 24;
-        assertTrue(Elegibilidade.verificarIdadePessoal(idade,parcelas));
+        assertTrue(Elegibilidade.verificarIdadePessoal(idade, parcelas));
     }
     @Test
     void verificarIdadePessoalFalse() {
-        int idade = 16;
-        int parcelas = 0;
-        assertFalse(Elegibilidade.verificarIdadePessoal(idade,parcelas));
+        int idade = 74;
+        int parcelas = 24;
+        assertFalse(Elegibilidade.verificarIdadePessoal(idade, parcelas));
     }
 
     @Test
@@ -144,15 +144,15 @@ class ElegibilidadeTest {
         int idade = 55;
         int parcelas = 12;
         int score = 900;
-        assertTrue(Elegibilidade.verificarElegibilidadePessoal(rendaLiquida,parcela,idade,parcelas,score));
+        assertTrue(Elegibilidade.verificarElegibilidadePessoal(rendaLiquida, parcela, idade, parcelas, score));
     }
     @Test
     void verificarElegibilidadePessoalFalse() {
         double rendaLiquida = 1000;
-        double parcela = 18;
+        double parcela = 180;
         int idade = 18;
         int parcelas = 3;
         int score = 150;
-        assertFalse(Elegibilidade.verificarElegibilidadePessoal(rendaLiquida,parcela,idade,parcelas,score));
+        assertFalse(Elegibilidade.verificarElegibilidadePessoal(rendaLiquida, parcela, idade, parcelas, score));
     }
 }

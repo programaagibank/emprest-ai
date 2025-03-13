@@ -49,11 +49,11 @@ public class Elegibilidade {
     }
 
     // 11.1.3 Quantidade de Parcelas
-    public static boolean verificarQtdeParcelasConsig(int parcelas) {
-        if(parcelas < 24 || parcelas > 92){
+    public static boolean verificarQtdeParcelasConsig(int qtdeparcelas) {
+        if(qtdeparcelas < 24 || qtdeparcelas > 92){
             throw new IllegalArgumentException("Quantidade de parcelas não pode ser inferior a 24 e superior a 92 parcelas");
         }
-        return parcelas >= PARCELAS_MINIMAS_CONSIGNADO && parcelas <= PARCELAS_MAXIMAS_CONSIGNADO;
+        return qtdeparcelas >= PARCELAS_MINIMAS_CONSIGNADO && qtdeparcelas <= PARCELAS_MAXIMAS_CONSIGNADO;
     }
 
     // 11.1.4 Taxa de Juros

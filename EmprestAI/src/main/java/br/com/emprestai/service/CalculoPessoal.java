@@ -1,7 +1,5 @@
 package br.com.emprestai.service;
 
-import static br.com.emprestai.service.CalculoConsignado.calculoDeJurosMoraEMulta;
-
 public class CalculoPessoal {
 
 

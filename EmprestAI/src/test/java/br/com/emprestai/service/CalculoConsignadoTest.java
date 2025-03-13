@@ -11,7 +11,7 @@ class CalculoConsignadoTest {
         double parcelasAtivas = 30;
         double valorEsperado = 320;
         double resultado = CalculoConsignado.calcularMargemEmprestimoConsig(rendaLiquida, parcelasAtivas);
-        assertEquals(valorEsperado, resultado, 0.0001, "Margem de 35% para consignado");
+        assertEquals(valorEsperado, resultado, 0.0001);
     }
 
     @Test
@@ -19,7 +19,7 @@ class CalculoConsignadoTest {
         double quantidadeParcelas = 36;
         double valorEsperado = 0.0186;
         double resultado = CalculoConsignado.calcularTaxaJurosMensal(quantidadeParcelas);
-        assertEquals(valorEsperado, resultado, 0.0001, "Taxa de juros para 36 parcelas");
+        assertEquals(valorEsperado, resultado, 0.0001);
     }
 
     @Test
@@ -28,6 +28,6 @@ class CalculoConsignadoTest {
         double diasAtraso = 10;
         double valorEsperado = 13.98;
         double resultado = CalculoConsignado.calcularJurosMoraEMulta(valorParcela, diasAtraso);
-        assertEquals(valorEsperado, resultado, 0.0001, "Cálculo de juros de mora e multa");
+        assertEquals(valorEsperado, resultado, 0.0001);
     }
 }

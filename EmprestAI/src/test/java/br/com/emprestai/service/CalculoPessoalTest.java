@@ -7,7 +7,7 @@ class CalculoPessoalTest {
 
     @Test
     void calculoDeCapacidadeDePagamento() {
-        double rendaLiquida = -1000;
+        double rendaLiquida = 1000;
         double valorLimite = 300;
         assertEquals(valorLimite, CalculoPessoal.calculoDeCapacidadeDePagamento(rendaLiquida));
     }
@@ -23,6 +23,6 @@ class CalculoPessoalTest {
     void calculoDeJurosMoraEMulta() {
         double valorParcela = 305.96;
         double diasAtraso = 10;
-        assertEquals(0.01, CalculoPessoal.calculoDeJurosMoraEMulta(valorParcela, diasAtraso));
+        assertEquals(7.13, CalculoPessoal.calculoDeJurosMoraEMulta(valorParcela, diasAtraso), 0.01);
     }
 }

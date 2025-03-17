@@ -20,6 +20,13 @@ create table clientes (
     foreign key (id_tipo_cliente) references tipo_clientes (id_tipo_cliente)
 );
 
+CREATE TABLE login_usuarios (
+    id_login_usuario int primary key auto_increment not null,
+    login_cpf_cliente varchar(11) not null,
+    senha varchar(65) not null,
+    foreign key(login_cpf_cliente) references clientes (cpf_cliente)
+);
+
 create table servicos (
     id_servico int primary key not null auto_increment,
     dsc_servico varchar(45) not null,

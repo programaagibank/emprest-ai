@@ -55,8 +55,8 @@ public class ParcelaDAO {
             stmt.setDouble(5, parcela.getValorPresenteParcela());
             stmt.setDouble(6, parcela.getJuros());
             stmt.setDouble(7, parcela.getAmortizacao());
-            stmt.setLong(8, parcela.getIdStatusParcela());
-            stmt.setDate(9, parcela.getDataPagamento());
+            stmt.setString(8, String.valueOf(parcela.getIdStatusParcela()));
+            stmt.setDate(9, Date.valueOf(parcela.getDataPagamento()));
             stmt.setDouble(10, parcela.getMulta());
             stmt.setDouble(11, parcela.getJurosMora());
 
@@ -78,7 +78,6 @@ public class ParcelaDAO {
             //Adicionei o IOException para parar de reclamar erro
         }
     }
-
     // Buscar todas as parcelas
     public List<Parcela> buscarTodos() {
         List<Parcela> parcelas = new ArrayList<>();
@@ -138,8 +137,8 @@ public class ParcelaDAO {
             stmt.setDouble(5, parcela.getValorPresenteParcela());
             stmt.setDouble(6, parcela.getJuros());
             stmt.setDouble(7, parcela.getAmortizacao());
-            stmt.setLong(8, parcela.getIdStatusParcela());
-            stmt.setDate(9, parcela.getDataPagamento());
+            stmt.setString(8, String.valueOf(parcela.getIdStatusParcela()));
+            stmt.setDate(9, Date.valueOf(parcela.getDataPagamento()));
             stmt.setDouble(10, parcela.getMulta());
             stmt.setDouble(11, parcela.getJurosMora());
             stmt.setLong(12, id);
@@ -157,7 +156,6 @@ public class ParcelaDAO {
             throw new RuntimeException(e);
         }
     }
-
         // Excluir parcela
         public void excluir(Long id){
             String sql = "DELETE FROM parcelas WHERE idParcela = ?";
@@ -184,7 +182,7 @@ public class ParcelaDAO {
         parcela.setNumeroParcela(rs.getInt("numeroParcela"));
         parcela.setDataVencimento(rs.getDate("dataVencimento").toLocalDate());
         parcela.setValorPresenteParcela(rs.getDouble("valorPresenteParcela"));
-        parcela.setJuros(rs.getBigDecimal("juros"));
+        parcela.setJuros(rs.getDouble("juros"));
         parcela.setAmortizacao(rs.getInt("amortização"));
         parcela.setIdStatusParcela(StatusEmpParcela.fromValor(rs.getInt("idStatusParcela")));
         parcela.setDataPagamento(rs.getDate("dataPagamento").toLocalDate());

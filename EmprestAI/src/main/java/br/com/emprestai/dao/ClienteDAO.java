@@ -13,29 +13,14 @@ import java.util.List;
 public class ClienteDAO {
 
     // Método para criar a tabela no banco de dados (executar uma vez)
-    public void criarTabela() {
-        String sql = "CREATE TABLE IF NOT EXISTS clientes (" +
-                "id_cliente BIGINT AUTO_INCREMENT PRIMARY KEY, " +
-                "cpf_cliente VARCHAR(14) UNIQUE NOT NULL, " +
-                "nome_cliente VARCHAR(100) NOT NULL, " +
-                "renda_mensal_liquida DECIMAL(10,2) NOT NULL, " +
-                "data_nascimento INT NOT NULL, " +
-                "renda_familiar_liquida DECIMAL(10,2) NOT NULL, " +
-                "qtd_pessoas_na_casa INT NOT NULL, " +
-                "id_tipo_cliente ENUM('APOSENTADO', 'SERVIDOR', 'PENSIONISTA', 'EMPREGADO', 'NULO') NOT NULL, " +
-                "score INT NOT NULL" +
-                ")";
+    public void conexao() {
 
         try (Connection conn = DatabaseConnection.getConnection();
              Statement stmt = conn.createStatement()) {
-            stmt.execute(sql);
-            System.out.println("Tabela clientes criada ou já existente!");
-            //Adicionei o IOException para parar de reclamar erro
         } catch (SQLException | IOException e) {
-            throw new ApiException("Erro ao criar tabela: " + e.getMessage(), 500);
+            throw new ApiException("Erro ao conetar com o banco: " + e.getMessage(), 500);
         }
     }
-
     // Criar cliente
     public Cliente criar(Cliente cliente) {
         String sql = "INSERT INTO clientes (cpf_cliente, nome_cliente, renda_mensal_liquida, data_nascimento, " +

@@ -16,3 +16,4 @@ database.properties
 # Logs e arquivos temporários
 *.log
 .DS_Store
+/EmprestAI/src/main/resources/database.properties

@@ -5,7 +5,6 @@ public class CalculoPessoal {
     private static final double PERCENTUAL_MULTA_ATRASO = 0.02;
     private static final double PERCENTUAL_JUROS_MORA = 0.00033;
 
-    // 12.1 Capacidade de Pagamento
     public static double calculoDeCapacidadeDePagamento(double rendaLiquida) {
         if (rendaLiquida <= 0) {
             throw new IllegalArgumentException("O Valor da renda líquida não pode ser inferior a zero.");
@@ -14,7 +13,6 @@ public class CalculoPessoal {
         return capacidadeMaxima;
     }
 
-    // 12.3 Taxa de Juros Mensal
     public static double calculoTaxaDeJurosMensal(double score) {
         if (score <= 0 || score > 1000) {
             throw new IllegalArgumentException("Score fora da tolerância");
@@ -37,7 +35,6 @@ public class CalculoPessoal {
         return taxaMax - ((taxaMax - taxaMin) * (score - scoreMin)) / (scoreMax - scoreMin);
     }
 
-    // 12.9 Juros Mora e Multa por Atraso
     public static double calculoDeJurosMoraEMulta(double valorParcela, double diasAtraso) {
         if (valorParcela <= 0) {
             throw new IllegalArgumentException("O valor da parcela não pode ser igual a zero");

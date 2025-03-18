@@ -1,7 +1,7 @@
 package br.com.emprestai.enums;
 
 public enum StatusEmpEnum{
-    APROVADO(1), NEGADO(2);
+    APROVADO(1), NEGADO(2), ENCERRADO(3);
     private final int valor;
 
     StatusEmpEnum(int valor){

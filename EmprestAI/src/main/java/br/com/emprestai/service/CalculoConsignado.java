@@ -1,13 +1,11 @@
 package br.com.emprestai.service;
 
+import br.com.emprestai.util.EmprestimoParams;
+
 public class CalculoConsignado {
 
-    private static final double MARGEM_CONSIGNAVEL = 0.35;
-    private static final double JUROS_MINIMO_CONSIGNADO = 0.018;
-    private static final double JUROS_MAXIMO_CONSIGNADO = 0.0214;
-    private static final double PRAZO_MINIMO_CONSIGNADO = 24;
-    private static final double PERCENTUAL_MULTA_ATRASO = 0.02;
-    private static final double PERCENTUAL_JUROS_MORA = 0.00033;
+    private static final EmprestimoParams params = EmprestimoParams.getInstance();
+
 
     // 12.2 Margem Consignável
     public static double calcularMargemEmprestimoConsig(double rendaLiquida, double parcelasAtivas) {
@@ -17,7 +15,7 @@ public class CalculoConsignado {
         if (parcelasAtivas < 0) {
             throw new IllegalArgumentException("As parcelas ativas não podem ser negativas");
         }
-        double margemMaxima = (rendaLiquida * MARGEM_CONSIGNAVEL) - parcelasAtivas;
+        double margemMaxima = (rendaLiquida * params.getMargemConsignavel()) - parcelasAtivas;
         if (margemMaxima < 0) {
             throw new IllegalStateException("A margem consignável não pode ser negativa");
         }
@@ -29,12 +27,12 @@ public class CalculoConsignado {
         if (quantidadeParcelas <= 0) {
             throw new IllegalArgumentException("A quantidade de parcelas deve ser maior que zero");
         }
-        if (quantidadeParcelas < PRAZO_MINIMO_CONSIGNADO) {
-            throw new IllegalArgumentException("A quantidade de parcelas não pode ser inferior ao prazo mínimo de " + PRAZO_MINIMO_CONSIGNADO);
+        if (quantidadeParcelas < params.getPrazoMinimoConsignado()) {
+            throw new IllegalArgumentException("A quantidade de parcelas não pode ser inferior ao prazo mínimo de " + params.getPrazoMinimoConsignado());
         }
-        double taxaJurosMensal = JUROS_MINIMO_CONSIGNADO + 0.00005 * (quantidadeParcelas - PRAZO_MINIMO_CONSIGNADO);
-        if (taxaJurosMensal > JUROS_MAXIMO_CONSIGNADO) {
-            return JUROS_MAXIMO_CONSIGNADO;
+        double taxaJurosMensal = params.getJurosMinimoConsignado() + 0.00005 * (quantidadeParcelas - params.getPrazoMinimoConsignado());
+        if (taxaJurosMensal > params.getJurosMaximoConsignado()) {
+            return params.getJurosMaximoConsignado();
         }
         return taxaJurosMensal;
     }
@@ -47,8 +45,8 @@ public class CalculoConsignado {
         if (diasAtraso < 0) {
             throw new IllegalArgumentException("Os dias de atraso não podem ser negativos");
         }
-        double multa = valorParcela * PERCENTUAL_MULTA_ATRASO;
-        double jurosMora = valorParcela * PERCENTUAL_JUROS_MORA * diasAtraso;
+        double multa = valorParcela * params.getPercentualMultaAtraso();
+        double jurosMora = valorParcela *  params.getPercentualJurosMora()* diasAtraso;
         return multa + jurosMora;
     }
 }

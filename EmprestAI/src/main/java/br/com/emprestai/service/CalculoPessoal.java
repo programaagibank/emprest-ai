@@ -1,15 +1,16 @@
 package br.com.emprestai.service;
 
+import br.com.emprestai.util.EmprestimoParams;
+
 public class CalculoPessoal {
-    private static final double PERCENTUAL_RENDA_PESSOAL = 0.30;
-    private static final double PERCENTUAL_MULTA_ATRASO = 0.02;
-    private static final double PERCENTUAL_JUROS_MORA = 0.00033;
+
+    private static final EmprestimoParams params = EmprestimoParams.getInstance();
 
     public static double calculoDeCapacidadeDePagamento(double rendaLiquida) {
         if (rendaLiquida <= 0) {
             throw new IllegalArgumentException("O Valor da renda líquida não pode ser inferior a zero.");
         }
-        double capacidadeMaxima = rendaLiquida * PERCENTUAL_RENDA_PESSOAL;
+        double capacidadeMaxima = rendaLiquida *  params.getPercentualRendaPessoal();
         return capacidadeMaxima;
     }
 
@@ -42,8 +43,8 @@ public class CalculoPessoal {
         if (diasAtraso < 0) {
             throw new IllegalArgumentException("Dias de atraso precisam ser maior do que zero");
         }
-        double multa = valorParcela * PERCENTUAL_MULTA_ATRASO;
-        double jurosMora = valorParcela * PERCENTUAL_JUROS_MORA * diasAtraso;
+        double multa = valorParcela * params.getPercentualMultaAtraso();
+        double jurosMora = valorParcela * params.getPercentualJurosMora() * diasAtraso;
         return multa + jurosMora;
     }
 }

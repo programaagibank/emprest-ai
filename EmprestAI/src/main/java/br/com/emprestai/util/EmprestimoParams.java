@@ -32,9 +32,40 @@ public class EmprestimoParams {
     private double carenciaMaximaPessoal = 30;
     private double carenciaMaximaConsignado = 60;
 
+    //Score
+
+    public int getScoreMinimoPessoal() {
+        return scoreMinimoPessoal;
+    }
+
+    public void setScoreMinimoPessoal(int scoreMinimoPessoal) {
+        this.scoreMinimoPessoal = scoreMinimoPessoal;
+    }
+
+    private  int  scoreMinimoPessoal = 201;
+
     // Idades máximas
     private double idadeMaximaConsignado = 80;
     private double idadeMaximaPessoal = 75;
+    private double idadeMinimaPessoal = 18;
+
+    public double getIdadeMinimaPessoal() {
+        return idadeMinimaPessoal;
+    }
+
+    public void setIdadeMinimaPessoal(double idadeMinimaPessoal) {
+        this.idadeMinimaPessoal = idadeMinimaPessoal;
+    }
+
+    public double getIdadeMinimaConsignado() {
+        return idadeMinimaConsignado;
+    }
+
+    public void setIdadeMinimaConsignado(double idadeMinimaConsignado) {
+        this.idadeMinimaConsignado = idadeMinimaConsignado;
+    }
+
+    private double idadeMinimaConsignado = 18;
 
     // Percentuais
     private double margemConsignavel = 35;
@@ -46,6 +77,11 @@ public class EmprestimoParams {
     private double percentualMinimoRefinanciamento = 20;
     private double percentualJurosMora = 0.033;
     private double percentualMultaAtraso = 2;
+
+    //Renda minima
+    private  double rendaMinimaPessoal = 1000;
+
+
 
     // Getters e Setters
     public double getJurosMinimoPessoal() {
@@ -238,5 +274,13 @@ public class EmprestimoParams {
 
     public void setPercentualMultaAtraso(double percentualMultaAtraso) {
         this.percentualMultaAtraso = percentualMultaAtraso;
+
+    }
+    public double getRendaMinimaPessoal() {
+        return rendaMinimaPessoal;
+    }
+
+    public void setRendaMinimaPessoal(double rendaMinimaPessoal) {
+        this.rendaMinimaPessoal = rendaMinimaPessoal;
     }
 }

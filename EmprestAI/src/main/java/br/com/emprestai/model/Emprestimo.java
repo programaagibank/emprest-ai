@@ -6,10 +6,13 @@ import br.com.emprestai.enums.TipoEmpEnum;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 public class Emprestimo {
-    private long idContrato;
-    private long idCliente;
+    private long id_contrato;
+    private String nome_cliente;
+    private String cpf_cliente;
+    private long id_cliente;
     private BigDecimal valorTotal;
     private int quantidadeParcelas;
     private double juros;
@@ -24,17 +27,18 @@ public class Emprestimo {
     private double jurosMora;
     private double taxaMulta;
     private long idEmprestimoOrigem;
+    private List<Parcela> parcelaList;
 
     //Construtor vazio
     public Emprestimo() {
     }
 
     //Construtor com parâmetros
-    public Emprestimo(long idCliente, long idContrato, BigDecimal valorTotal, int quantidadeParcelas, double juros, LocalDate dataInicio,
+    public Emprestimo(long id_contrato, String nome_cliente, String cpf_cliente, long id_cliente, BigDecimal valorTotal, int quantidadeParcelas, double juros, LocalDate dataInicio,
                       StatusEmpEnum idStatusEmprestimo, BigDecimal valorSeguro, BigDecimal valorIOF, BigDecimal outrosCustos,
-                      LocalDate dataContratacao, MotivosEncerramentosEmpEnum idMotivoEncerramento, double jurosMora, double taxaMulta, long idEmprestimoOrigem){
-        this.idCliente = idCliente;
-        this.idContrato = idContrato;
+                      LocalDate dataContratacao, MotivosEncerramentosEmpEnum idMotivoEncerramento, double jurosMora, double taxaMulta, long idEmprestimoOrigem, List<Parcela> parcelaList){
+        this.id_cliente = id_cliente;
+        this.id_contrato = id_contrato;
         this.valorTotal = valorTotal;
         this.quantidadeParcelas = quantidadeParcelas;
         this.juros = juros;
@@ -48,21 +52,24 @@ public class Emprestimo {
         this.jurosMora = jurosMora;
         this.taxaMulta = taxaMulta;
         this.idEmprestimoOrigem = idEmprestimoOrigem;
+        this.nome_cliente = nome_cliente;
+        this.cpf_cliente = cpf_cliente;
+        this.parcelaList = parcelaList;
     }
 
     // Getters e setters
     public long getIdCliente(){
-        return idCliente;
+        return id_cliente;
     }
     public void setIdCliente(long idCliente){
-        this.idCliente = idCliente;
+        this.id_cliente = idCliente;
     }
 
     public long getIdContrato(){
-        return idContrato;
+        return id_contrato;
     }
     public void setIdContrato(long idContrato){
-        this.idContrato = idContrato;
+        this.id_contrato = idContrato;
     }
 
     public BigDecimal getValorTotal(){
@@ -161,6 +168,27 @@ public class Emprestimo {
     }
     public void setIdEmprestimoOrigem(long idEmprestimoOrigem){
         this.idEmprestimoOrigem = idEmprestimoOrigem;
+    }
+
+    public String getCpf_cliente(){
+        return cpf_cliente;
+    }
+    public void setCpf_cliente(String cpf_cliente){
+        this.cpf_cliente = cpf_cliente;
+    }
+
+    public String getNome_cliente(){
+        return nome_cliente;
+    }
+    public void setNome_cliente(String nome_cliente){
+        this.nome_cliente = nome_cliente;
+    }
+
+    public List<Parcela> getParcelaList() {
+        return parcelaList;
+    }
+    public void setParcelaList(List<Parcela> parcelaList) {
+        this.parcelaList = parcelaList;
     }
 }
 

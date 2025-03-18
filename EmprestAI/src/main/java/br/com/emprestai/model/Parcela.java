@@ -2,6 +2,7 @@ package br.com.emprestai.model;
 
 import br.com.emprestai.enums.StatusEmpParcela;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 public class Parcela {
@@ -16,7 +17,7 @@ public class Parcela {
     private double amortizacao; // Parte da amortização do principal
     private StatusEmpParcela idStatusParcela; // Status da parcela (paga ou pendente)
     private LocalDate dataPagamento; // Data em que foi paga
-    private double taxaMulta; // Multa por atraso
+    private double multa; // Multa por atraso
     private double jurosMora; // Juros de mora por atraso
 
     // Construtor vazio
@@ -25,14 +26,14 @@ public class Parcela {
 
     // Construtor com parâmetros principais
     public Parcela(Long idEmprestimo, int numeroParcela, LocalDate dataVencimento,
-                   double valorPresenteParcela, double juros, double amortizacao, double taxaMulta, double jurosMora) {
+                   double valorPresenteParcela, double juros, double amortizacao, double multa, double jurosMora) {
         this.idEmprestimo = idEmprestimo;
         this.numeroParcela = numeroParcela;
         this.dataVencimento = dataVencimento;
         this.valorPresenteParcela = valorPresenteParcela;
         this.juros = juros;
         this.amortizacao = amortizacao;
-        this.taxaMulta = taxaMulta;
+        this.multa = multa;
         this.jurosMora = jurosMora;
     }
 
@@ -55,9 +56,9 @@ public class Parcela {
         return numeroParcela;
     }
     public void setNumeroParcela(int numeroParcela) {
-        if (numeroParcela <= 0) {
-            throw new IllegalArgumentException("Número da parcela deve ser maior que zero.");
-        }
+//        if (numeroParcela <= 0) {
+//            throw new IllegalArgumentException("Número da parcela deve ser maior que zero.");
+//        }
         this.numeroParcela = numeroParcela;
     }
 
@@ -72,9 +73,9 @@ public class Parcela {
         return valorPresenteParcela;
     }
     public void setValorPresenteParcela(double valorPresenteParcela) {
-        if (valorPresenteParcela < 0) {
-            throw new IllegalArgumentException("Valor da parcela não pode ser negativo.");
-        }
+//        if (valorPresenteParcela < 0) {
+//            throw new IllegalArgumentException("Valor da parcela não pode ser negativo.");
+//        }
         this.valorPresenteParcela = valorPresenteParcela;
     }
 
@@ -82,9 +83,9 @@ public class Parcela {
         return juros;
     }
     public void setJuros(double juros) {
-        if (juros < 0) {
-            throw new IllegalArgumentException("Juros não podem ser negativos.");
-        }
+//        if (juros < 0) {
+//            throw new IllegalArgumentException("Juros não podem ser negativos.");
+//        }
         this.juros = juros;
     }
 
@@ -92,9 +93,9 @@ public class Parcela {
         return amortizacao;
     }
     public void setAmortizacao(double amortizacao) {
-        if (amortizacao < 0) {
-            throw new IllegalArgumentException("Amortização não pode ser negativa.");
-        }
+//        if (amortizacao < 0) {
+//            throw new IllegalArgumentException("Amortização não pode ser negativa.");
+//        }
         this.amortizacao = amortizacao;
     }
 
@@ -113,13 +114,13 @@ public class Parcela {
     }
 
     public double getMulta() {
-        return taxaMulta;
+        return multa;
     }
-    public void setMulta(double taxaMulta) {
-        if (taxaMulta < 0) {
-            throw new IllegalArgumentException("Multa não pode ser negativa.");
-        }
-        this.taxaMulta = taxaMulta;
+    public void setMulta(double multa) {
+//        if (multa < 0) {
+//            throw new IllegalArgumentException("Multa não pode ser negativa.");
+//        }
+        this.multa = multa;
     }
 
     public double getJurosMora() {

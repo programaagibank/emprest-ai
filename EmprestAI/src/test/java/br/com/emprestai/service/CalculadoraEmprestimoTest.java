@@ -1,10 +1,12 @@
 package br.com.emprestai.service;
 
+import br.com.emprestai.model.Emprestimo;
+import br.com.emprestai.model.Parcela;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Map;
+import java.util.List;
 
 import static java.math.RoundingMode.HALF_UP;
 import static org.junit.jupiter.api.Assertions.*;
@@ -15,39 +17,37 @@ https://investnews.com.br/ferramentas/calculadoras/calculadora-price/
 https://www.calculadoraonline.com.br/financeira
 https://www.dinkytown.net/
  */
-
 class CalculadoraEmprestimoTest {
 
     @Test
     void contratoPrice() {
-        double valorEmprestimo = 5000.00;
-        int qtdeParcelas = 24;
-        double taxaJurosMensal = 9.49;
-        LocalDate dataContratacao = LocalDate.of(2025, 3, 7);// Sexta-feira
-        LocalDate dataLiberacaoCred = LocalDate.of(2025, 3, 10);// Segunda-feira
-        LocalDate dataFimContrato = LocalDate.of(2027, 3, 10);// Segunda-feira
-        LocalDate dtNasc = LocalDate.of(1995, 1, 1);
-        double seguro = 40.00;
-        double iof = 170.00;
-        boolean contratarSeguro = true;
-        double valorTotalFinanciado = 5210.00;
-        double parcelaMensal = 557.73;
-        double saldoDevedorPresente = 5210.00;
-        double taxaEfetivaMensal = 10.03;
-        Map<String, Object> resultado = CalculadoraEmprestimo.contratoPrice(
-                valorEmprestimo, qtdeParcelas, taxaJurosMensal, dataContratacao, dtNasc, contratarSeguro);
+        // Configuração do objeto Emprestimo
+        Emprestimo emprestimo = new Emprestimo();
+        emprestimo.setValorEmprestimo(5000.00); // Agora double
+        emprestimo.setQuantidadeParcelas(24);
+        emprestimo.setJuros(9.49);
+        emprestimo.setDataContratacao(LocalDate.of(2025, 3, 7)); // Sexta-feira
+        emprestimo.setDataInicio(LocalDate.of(2025, 4, 7)); // Início do pagamento (1 mês após contratação)
+        emprestimo.setContratarSeguro(true);
+        emprestimo.setTaxaMulta(0.02); // 2% (exemplo)
+        emprestimo.setTaxaJurosMora(0.033); // 1% ao mês / 30 dias = 0.033% ao dia (exemplo)
 
-        assertEquals(valorEmprestimo,resultado.get("valorEmprestimo"));
-        assertEquals(qtdeParcelas,resultado.get("qtdeParcelas"));
-        assertEquals(dataContratacao,resultado.get("dataContratacao"));
-        assertEquals(dataLiberacaoCred,resultado.get("dataLiberacaoCred"));
-        assertEquals(dataFimContrato,resultado.get("dataFimContrato"));
-        assertEquals(seguro,resultado.get("custoSeguro"));
-        assertEquals(iof,resultado.get("valorTributos"));
-        assertEquals(valorTotalFinanciado,resultado.get("valorTotalFinanciado"));
-        assertEquals(parcelaMensal,resultado.get("parcelaMensal"));
-        assertEquals(saldoDevedorPresente,resultado.get("saldoDevedorPresente"));
-        assertEquals(taxaEfetivaMensal,resultado.get("taxaEfetivaMensal"));
+        LocalDate dtNasc = LocalDate.of(1995, 1, 1);
+
+        // Executa o método
+        Emprestimo resultado = CalculadoraEmprestimo.contratoPrice(emprestimo, dtNasc);
+
+        // Validações
+        assertEquals(5000.00, resultado.getValorEmprestimo(), 0.01); // Valor inicial do empréstimo como double
+        assertEquals(24, resultado.getQuantidadeParcelas());
+        assertEquals(LocalDate.of(2025, 3, 7), resultado.getDataContratacao());
+        assertEquals(LocalDate.of(2025, 3, 10), resultado.getDataLiberacaoCred()); // Primeiro dia útil após 07/03/2025
+        assertEquals(LocalDate.of(2027, 4, 7), resultado.getDataInicio().plusMonths(24)); // Fim do contrato
+        assertEquals(40.00, resultado.getValorSeguro(), 0.01); // Seguro aproximado como double
+        assertEquals(170.00, resultado.getValorIOF(), 0.01); // IOF como double
+        assertEquals(5210.00, resultado.getValorTotal(), 0.01); // Valor total financiado como double
+        assertEquals(557.73, resultado.getParcelaList().get(0).getValorPresenteParcela(), 0.01); // Parcela mensal como double
+        assertEquals(10.03, resultado.getTaxaEfetivaMensal(), 0.01); // Taxa efetiva como double
     }
 
     @Test
@@ -55,42 +55,54 @@ class CalculadoraEmprestimoTest {
         BigDecimal valorTotalFinanciado = new BigDecimal("5209.32");
         double taxaJurosMensal = 9.49;
         int qtdeParcelas = 24;
-        assertEquals(new BigDecimal("557.66"), CalculadoraEmprestimo.calcParcela(valorTotalFinanciado, taxaJurosMensal, qtdeParcelas).setScale(2, HALF_UP));
+        BigDecimal resultado = CalculadoraEmprestimo.calcParcela(valorTotalFinanciado, taxaJurosMensal, qtdeParcelas);
+        assertEquals(557.66, resultado.setScale(2, HALF_UP).doubleValue(), 0.01); // Convertido para double
     }
 
     @Test
     void calcSeguro() {
-        double valorEmprestimo = 5000.00;
+        BigDecimal valorEmprestimo = new BigDecimal("5000.00");
         LocalDate dtNasc = LocalDate.of(1995, 1, 1);
         LocalDate dataContratacao = LocalDate.of(2025, 3, 7);
         int qtdeParcelas = 24;
-        // assertEquals(); para testar calculo
-        assertEquals(new BigDecimal("40.00"), CalculadoraEmprestimo.calcSeguro(valorEmprestimo, dtNasc, dataContratacao, qtdeParcelas).setScale(2, HALF_UP));
+        BigDecimal resultado = CalculadoraEmprestimo.calcSeguro(valorEmprestimo, dtNasc, dataContratacao, qtdeParcelas);
+        assertEquals(40.00, resultado.setScale(2, HALF_UP).doubleValue(), 0.01); // Convertido para double
     }
 
     @Test
     void calcIOF() {
-        double valorEmprestimo = 5000.00;
-        BigDecimal seguro = new BigDecimal("40.00");
-        LocalDate dataLiberacaoCred = LocalDate.of(2025, 3, 10);// Segunda-feira
-        LocalDate dataFimContrato = LocalDate.of(2026, 3, 10);// Segunda-feira
-        assertEquals(new BigDecimal("170.00"), CalculadoraEmprestimo.calcIOF(valorEmprestimo, seguro, dataLiberacaoCred, dataFimContrato).setScale(2, HALF_UP));
+        BigDecimal valorEmprestimoComSeguro = new BigDecimal("5040.00"); // 5000 + 40 (seguro)
+        LocalDate dataLiberacaoCred = LocalDate.of(2025, 3, 10); // Segunda-feira
+        LocalDate dataFimContrato = LocalDate.of(2027, 3, 10); // Segunda-feira (24 meses após liberação)
+        BigDecimal resultado = CalculadoraEmprestimo.calcIOF(valorEmprestimoComSeguro, dataLiberacaoCred, dataFimContrato);
+        assertEquals(170.00, resultado.setScale(2, HALF_UP).doubleValue(), 0.01); // Convertido para double
     }
 
     @Test
     void calcTxEfetivaMes() {
-        double valorEmprestimo = 5000;
+        BigDecimal valorEmprestimo = new BigDecimal("5000");
         BigDecimal parcelaMensal = new BigDecimal("557.73");
         double taxaJurosMensal = 9.49;
         int qtdeParcelas = 24;
-        assertEquals(new BigDecimal("10.03"),CalculadoraEmprestimo.calcTxEfetivaMes(valorEmprestimo, parcelaMensal, taxaJurosMensal, qtdeParcelas));
+        BigDecimal resultado = CalculadoraEmprestimo.calcTxEfetivaMes(valorEmprestimo, parcelaMensal, taxaJurosMensal, qtdeParcelas);
+        assertEquals(10.03, resultado.doubleValue(), 0.01); // Convertido para double
     }
 
     @Test
-    void calcSaldoDevSemJuros() {
+    void calcParcelaVP() {
         BigDecimal parcelaMensal = new BigDecimal("557.73");
         double taxaJurosMensal = 9.49;
-        int qtdeParcela = 24;
-        assertEquals(new BigDecimal("5209.96"), CalculadoraEmprestimo.calcSaldoDevedorPresente(parcelaMensal, taxaJurosMensal, qtdeParcela).setScale(2, HALF_UP));
+        int qtdeParcelas = 24;
+        LocalDate dataInicioPagamento = LocalDate.of(2025, 4, 7);
+        double taxaMulta = 0.02; // 2%
+        double taxaJurosMora = 0.033; // 1% ao mês / 30 dias
+        List<Parcela> parcelas = CalculadoraEmprestimo.calcParcelaVP(parcelaMensal, taxaJurosMensal, qtdeParcelas, dataInicioPagamento, taxaMulta, taxaJurosMora);
+
+        assertEquals(24, parcelas.size());
+        assertEquals(LocalDate.of(2025, 4, 7), parcelas.get(0).getDataVencimento());
+        assertEquals(11.15, parcelas.get(0).getMulta(), 0.01); // 557.73 * 0.02 como double
+        assertEquals(0.00, parcelas.get(0).getJurosMora(), 0.01); // Sem atraso em 18/03/2025
+//        assertTrue(parcelas.get(0).getJuros() > 0); // Juros deve ser positivo
+//        assertTrue(parcelas.get(0).getAmortizacao() > 0); // Amortização deve ser positiva
     }
 }

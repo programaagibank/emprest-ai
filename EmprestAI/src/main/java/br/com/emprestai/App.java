@@ -23,7 +23,7 @@ public class App {
         boolean contratarSeguro = true; // Contratar seguro?
         LocalDate dataInicioPagamento = LocalDate.of(2025, 4, 1); // Data de início do pagamento (1º de abril de 2025)
 
-        // Chamar o método simularEmprestimo
+        // Chamar o metodo simularEmprestimo
         Map<String, Object> resultado = emprestimoController.obterEmprestimo(
                 idCliente, valorEmprestimo, tipoEmp, parcelas, contratarSeguro, dataInicioPagamento);
 

@@ -19,9 +19,16 @@ public class EmprestimoController {
     // Método genérico para obter os dados do empréstimo (antigo simularEmprestimo)
     public Map<String, Object> obterEmprestimo(Long idCliente, double valorEmprestimo, TipoEmpEnum tipoEmp,
                                                int parcelas, boolean contratarSeguro, LocalDate dataInicioPagamento) {
+        Emprestimo emprestimo = new Emprestimo();
+        emprestimo.setDataContratacao(LocalDate.now());
+        emprestimo.setDataInicio(dataInicioPagamento);
+        emprestimo.setValorEmprestimo(valorEmprestimo);
+        emprestimo.setIdTipoEmprestimo(tipoEmp.getValor());
+        emprestimo.setQuantidadeParcelas(parcelas);
+        emprestimo.setContratarSeguro(contratarSeguro);
         Map<String, Object> response = new HashMap<>();
 
-        try {
+//        try {
             // Passo 1: Buscar o cliente
             Cliente cliente = clienteDAO.buscarPorId(idCliente);
             if (cliente == null) {
@@ -32,27 +39,26 @@ public class EmprestimoController {
             //TODO taxa de juros será retornado pelos metodos do service, eu passaria informações do cliente e retornaria taxa de juros
 
             double taxaJurosMensal = 1.80;
+            emprestimo.setJuros(taxaJurosMensal);
 
             // Passo 3: Calcular o contrato usando CalculadoraEmprestimo
-            Map<String, Object> contrato = CalculadoraEmprestimo.contratoPrice(
-                    valorEmprestimo, parcelas, taxaJurosMensal, LocalDate.now(),
-                    cliente.getData_nascimento(), contratarSeguro);
+            CalculadoraEmprestimo.contratoPrice(emprestimo, cliente.getData_nascimento());
 
             // Passo 4: Montar a resposta
             response.put("idCliente", idCliente);
-            response.putAll(contrato);
             response.put("cliente", cliente);
+            response.put("emprestimo", emprestimo.toString());
 
-        } catch (IllegalArgumentException e) {
-            response.put("mensagem", e.getMessage());
-        } catch (Exception e) {
-            response.put("mensagem", "Tentativa de obter empréstimo falhou: " + e.getMessage());
-        }
+//        } catch (IllegalArgumentException e) {
+//            response.put("mensagem", e.getMessage());
+//        } catch (Exception e) {
+//            response.put("mensagem", "Tentativa de obter empréstimo falhou: " + e.getMessage());
+//        }
 
         return response;
     }
 
-    // Método para conceder o empréstimo, reutilizando obterEmprestimo
+    // Metodo para conceder o empréstimo, reutilizando obterEmprestimo
     public Map<String, Object> concederEmprestimo(Long idCliente, double valorEmprestimo, TipoEmpEnum tipoEmp,
                                                   int parcelas, boolean contratarSeguro, LocalDate dataInicioPagamento) {
         Map<String, Object> response = new HashMap<>();

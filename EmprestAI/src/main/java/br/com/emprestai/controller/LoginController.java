@@ -2,6 +2,7 @@ package br.com.emprestai.controller;
 
 import br.com.emprestai.model.Login;
 import br.com.emprestai.service.LoginService;
+import org.mindrot.jbcrypt.BCrypt;
 
 public class LoginController {
     //private loginDAO loginDAO = new loginDAO();
@@ -12,6 +13,13 @@ public class LoginController {
         if (login == null) {
             throw new IllegalArgumentException("Erro: Cliente não encontrado");
         }
-        return LoginService.checarSenha(senha, login.getSenhaBanco());
+        String senhaHash = login.getSenhaBanco();
+        return BCrypt.checkpw(senha, senhaHash);
+    }
+
+    public static String senhaHash(String plainPassword) {
+        // Gera um hash com um salt automático (work factor padrão é 10, mas pode ser
+        // ajustado)
+        return BCrypt.hashpw(plainPassword, BCrypt.gensalt());
     }
 }

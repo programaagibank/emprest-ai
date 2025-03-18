@@ -31,6 +31,7 @@ public class Menu {
         }
     }
 
+    // O usuario só podera fazer qualquer ação depois que logar com usuario e senha.
     private static void exibirOpcoes() {
         System.out.println("\n--- Menu ---");
         System.out.println("1. Logar na conta");

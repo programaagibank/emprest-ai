@@ -19,6 +19,21 @@ public class Cliente {
     private VinculoEnum id_tipo_cliente;
     private int score;
 
+    @Override
+    public String toString() {
+        return "Cliente{" +
+                "id_cliente=" + id_cliente +
+                ", cpf_cliente='" + cpf_cliente + '\'' +
+                ", nome_cliente='" + nome_cliente + '\'' +
+                ", renda_mensal_liquida=" + renda_mensal_liquida +
+                ", data_nascimento=" + data_nascimento +
+                ", renda_familiar_liquida=" + renda_familiar_liquida +
+                ", qtd_pessoas_na_casa=" + qtd_pessoas_na_casa +
+                ", id_tipo_cliente=" + id_tipo_cliente +
+                ", score=" + score +
+                '}';
+    }
+
     // Construtor vazio
     public Cliente() {
     }

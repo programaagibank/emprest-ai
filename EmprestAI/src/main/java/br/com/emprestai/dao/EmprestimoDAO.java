@@ -8,10 +8,7 @@ import br.com.emprestai.enums.TipoEmpEnum;
 import br.com.emprestai.model.Emprestimo;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class EmprestimoDAO {
     public Emprestimo buscarEmpPorCPF(Long id_emprestimo) {
@@ -60,6 +57,49 @@ public class EmprestimoDAO {
             }
         } catch (SQLException | IOException e) {
             throw new ApiException("Erro ao buscar emprestimo: " + e.getMessage(), 500);
+        }
+    }
+    public Emprestimo criar(Emprestimo emprestimo){
+        String sql = "INSERT INTO emprestimos (id_cliente, valor_total, quantidade_parcelas, juros, data_inicio, id_status_emprestimo, id_tipo_emprestimo,\n" +
+                "valor_seguro, valor_IOF, outros_custos, data_contratacao, id_motivo_encerramento, juros_mora, taxa_multa, id_emprestimo_origem)\n" +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NULL);";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+
+            stmt.setLong(1, emprestimo.getIdCliente());
+            stmt.setBigDecimal(2, emprestimo.getValorTotal());
+            stmt.setInt(3, emprestimo.getQuantidadeParcelas());
+            stmt.setDouble(4, emprestimo.getJuros());
+            stmt.setDate(5, Date.valueOf(emprestimo.getDataInicio()));
+            stmt.setString(6, emprestimo.getIdStatusEmprestimo().name());
+            stmt.setString(7, emprestimo.getIdTipoEmprestimo().name());
+            stmt.setBigDecimal(8, emprestimo.getValorSeguro());
+            stmt.setBigDecimal(9, emprestimo.getValorIOF());
+            stmt.setBigDecimal(10, emprestimo.getOutrosCustos());
+            stmt.setDate(11, Date.valueOf(emprestimo.getDataContratacao()));
+            stmt.setString(12, emprestimo.getIdMotivoEncerramento().name());
+            stmt.setDouble(13, emprestimo.getJurosMora());
+            stmt.setDouble(14, emprestimo.getTaxaMulta());
+
+            int affectedRows = stmt.executeUpdate();
+
+            if (affectedRows == 0) {
+                throw new ApiException("Falha ao criar emprestimo, nenhuma linha afetada.", 500);
+            }
+
+            try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    emprestimo.setIdContrato(generatedKeys.getLong(1));
+                } else {
+                    throw new ApiException("Falha ao criar emprestimo, nenhum ID obtido.", 500);
+                }
+            }
+
+            return emprestimo;
+            //Adicionei o IOException para parar de reclamar erro
+        } catch (SQLException | IOException e) {
+            throw new ApiException("Erro ao criar emprestimo: " + e.getMessage(), 500);
         }
     }
     private Emprestimo mapearResultSet(ResultSet rs) throws SQLException {

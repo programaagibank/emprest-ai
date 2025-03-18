@@ -1,5 +1,6 @@
 package br.com.emprestai.service;
 
+import br.com.emprestai.controller.LoginController;
 import br.com.emprestai.util.DatabaseUtil;
 import br.com.emprestai.model.Login;
 import br.com.emprestai.util.EmprestimoParams;
@@ -21,7 +22,7 @@ public class LoginService {
         System.out.println("Digite sua senha:");
         String senha = scanner.nextLine();
 
-        if (authenticateUser(usuario, senha)) {
+        if (LoginController.validaLogin(usuario, senha)) {
             System.out.println("Login realizado com sucesso!");
             return true;
         } else {

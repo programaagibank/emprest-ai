@@ -26,11 +26,11 @@ public class CalculoConsignado {
 
     // 12.3 Taxa de Juros Mensal
     public static double calcularTaxaJurosMensal(double quantidadeParcelas) {
-        if (quantidadeParcelas < PRAZO_MINIMO_CONSIGNADO) {
-            throw new IllegalArgumentException("A quantidade de parcelas não pode ser inferior ao prazo mínimo de " + PRAZO_MINIMO_CONSIGNADO);
-        }
         if (quantidadeParcelas <= 0) {
             throw new IllegalArgumentException("A quantidade de parcelas deve ser maior que zero");
+        }
+        if (quantidadeParcelas < PRAZO_MINIMO_CONSIGNADO) {
+            throw new IllegalArgumentException("A quantidade de parcelas não pode ser inferior ao prazo mínimo de " + PRAZO_MINIMO_CONSIGNADO);
         }
         double taxaJurosMensal = JUROS_MINIMO_CONSIGNADO + 0.00005 * (quantidadeParcelas - PRAZO_MINIMO_CONSIGNADO);
         if (taxaJurosMensal > JUROS_MAXIMO_CONSIGNADO) {

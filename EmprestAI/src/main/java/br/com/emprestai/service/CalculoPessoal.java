@@ -10,7 +10,8 @@ public class CalculoPessoal {
         if (rendaLiquida <= 0) {
             throw new IllegalArgumentException("O Valor da renda líquida não pode ser inferior a zero.");
         }
-        double capacidadeMaxima = rendaLiquida *  params.getPercentualRendaPessoal();
+
+        double capacidadeMaxima = rendaLiquida * (params.getPercentualRendaPessoal() / 100);
         return capacidadeMaxima;
     }
 
@@ -43,8 +44,9 @@ public class CalculoPessoal {
         if (diasAtraso < 0) {
             throw new IllegalArgumentException("Dias de atraso precisam ser maior do que zero");
         }
-        double multa = valorParcela * params.getPercentualMultaAtraso();
-        double jurosMora = valorParcela * params.getPercentualJurosMora() * diasAtraso;
+
+        double multa = valorParcela * (params.getPercentualMultaAtraso() / 100);
+        double jurosMora = valorParcela * (params.getPercentualJurosMora() / 100) * diasAtraso;
         return multa + jurosMora;
     }
 }

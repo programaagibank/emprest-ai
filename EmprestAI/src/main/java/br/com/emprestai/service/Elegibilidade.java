@@ -1,10 +1,13 @@
 package br.com.emprestai.service;
 
 import br.com.emprestai.enums.VinculoEnum;
+import br.com.emprestai.util.EmprestimoParams;
 
 public class Elegibilidade {
     // Empréstimo Consignado
-    private static final double MARGEM_CONSIGNAVEL = 0.35;
+    private static final EmprestimoParams params = EmprestimoParams.getInstance();
+
+    //private static final double MARGEM_CONSIGNAVEL = 0.35;
     private static final int IDADE_MAXIMA_CONSIGNADO = 80;
     private static final int PARCELAS_MINIMAS_CONSIGNADO = 24;
     private static final int PARCELAS_MAXIMAS_CONSIGNADO = 92;
@@ -22,7 +25,7 @@ public class Elegibilidade {
     // 11.1.1 Margem Consignável
     public static boolean verificarMargemEmprestimoConsig(double valorParcela, double rendaLiquida, double parcelasAtivas) {
         if (valorParcela <= 0 || rendaLiquida <= 0 || parcelasAtivas < 0) return false;
-        double margemDisponivel = (rendaLiquida * MARGEM_CONSIGNAVEL) - parcelasAtivas;
+        double margemDisponivel = (rendaLiquida * params.getMargemConsignavel()) - parcelasAtivas;
         return valorParcela <= margemDisponivel;
     }
 

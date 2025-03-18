@@ -193,6 +193,28 @@ public class ClienteDAO {
         }
     }
 
+    // Buscar cliente por CPF
+    public Cliente buscarPorCPF(String cpf_cliente) {
+        String sql = "SELECT * FROM clientes WHERE cpf_cliente = ?";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, cpf_cliente);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return mapearResultSet(rs);
+                } else {
+                    throw new ApiException("Cliente não encontrado com CPF: " + cpf_cliente, 404);
+                }
+            }
+            //Adicionei o IOException para parar de reclamar erro
+        } catch (SQLException | IOException e) {
+            throw new ApiException("Erro ao buscar cliente: " + e.getMessage(), 500);
+        }
+    }
+
     // Método auxiliar para mapear ResultSet para objeto Cliente
     private Cliente mapearResultSet(ResultSet rs) throws SQLException {
         Cliente cliente = new Cliente();

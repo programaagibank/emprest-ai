@@ -7,7 +7,7 @@ import org.mindrot.jbcrypt.BCrypt;
 public class LoginController {
     //private loginDAO loginDAO = new loginDAO();
 
-    public boolean validaLogin(String CPF, String senha){
+    public static boolean validaLogin(String CPF, String senha){
         // Passo 1: Buscar o cliente
         Login login = null; //= loginDAO.buscarPorCPF("42218555840");
         if (login == null) {

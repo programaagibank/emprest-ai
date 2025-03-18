@@ -25,4 +25,6 @@ class CalculoPessoalTest {
         double diasAtraso = 10;
         assertEquals(7.13, CalculoPessoal.calculoDeJurosMoraEMulta(valorParcela, diasAtraso), 0.01);
     }
-}
+
+
+    }

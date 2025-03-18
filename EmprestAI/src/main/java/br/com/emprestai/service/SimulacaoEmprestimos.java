@@ -2,7 +2,7 @@ package br.com.emprestai.service;
 
 public class SimulacaoEmprestimos {
 
-    public static SimulacaoResultado simularEmprestimoPessoal(double valor, int parcelas, double score, boolean contratarSeguro, double rendaLiquida, int idade) {
+    public static  simularEmprestimoPessoal(double valor, int parcelas, double score, boolean contratarSeguro, double rendaLiquida, int idade) {
         double capacidade = CalculoPessoal.calculoDeCapacidadeDePagamento(rendaLiquida);
         double taxaJuros = CalculoPessoal.calculoTaxaDeJurosMensal(score) / 100;
         double iof = valor * 0.0038 + valor * 0.000082 * Math.min(parcelas * 30, 365);
@@ -32,16 +32,3 @@ public class SimulacaoEmprestimos {
     }
 }
 
-class SimulacaoResultado {
-    public double valorTotalFinanciado;
-    public double parcelaMensal;
-    public double iof;
-    public double custoSeguro;
-
-    SimulacaoResultado(double valorTotalFinanciado, double parcelaMensal, double iof, double custoSeguro) {
-        this.valorTotalFinanciado = valorTotalFinanciado;
-        this.parcelaMensal = parcelaMensal;
-        this.iof = iof;
-        this.custoSeguro = custoSeguro;
-    }
-}

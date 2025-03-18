@@ -14,13 +14,37 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class EmprestimoDAO {
-    public Emprestimo buscarEmpPorCPF(String cpf_cliente) {
+    public Emprestimo buscarEmpPorCPF(Long id_emprestimo) {
         String sql = "select e.id_emprestimo, e.id_cliente , e.valor_total, e.quantidade_parcelas, e.juros, e.data_inicio, e.id_status_emprestimo, e.id_tipo_emprestimo,\n" +
                 "e.valor_seguro, e.valor_IOF, e.outros_custos, e.data_contratacao, e.id_motivo_encerramento, e.juros_mora,\n" +
                 "e.taxa_multa, e.id_emprestimo_origem, c.cpf_cliente, c.nome_cliente\n" +
                 "from emprestimos e\n" +
                 "inner join clientes c on e.id_cliente = c.id_cliente\n" +
                 "where c.cpf_cliente = ?";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setLong(1, id_emprestimo);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return mapearResultSet(rs);
+                } else {
+                    throw new ApiException("Emprestimo não encontrado com contrato: " + id_emprestimo, 404);
+                }
+            }
+        } catch (SQLException | IOException e) {
+            throw new ApiException("Erro ao buscar emprestimo: " + e.getMessage(), 500);
+        }
+    }
+    public Emprestimo buscarEmpPorEMP(String cpf_cliente) {
+        String sql = "select e.id_emprestimo, e.id_cliente , e.valor_total, e.quantidade_parcelas, e.juros, e.data_inicio, e.id_status_emprestimo, e.id_tipo_emprestimo,\n" +
+                "e.valor_seguro, e.valor_IOF, e.outros_custos, e.data_contratacao, e.id_motivo_encerramento, e.juros_mora,\n" +
+                "e.taxa_multa, e.id_emprestimo_origem, c.cpf_cliente, c.nome_cliente\n" +
+                "from emprestimos e\n" +
+                "inner join clientes c on e.id_cliente = c.id_cliente\n" +
+                "where e.id_emprestimo = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {

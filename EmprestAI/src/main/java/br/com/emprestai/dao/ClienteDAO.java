@@ -38,9 +38,9 @@ public class ClienteDAO {
                 try (PreparedStatement stmtCliente = conn.prepareStatement(sqlCliente, Statement.RETURN_GENERATED_KEYS)) {
                     stmtCliente.setString(1, cliente.getCpfCliente());
                     stmtCliente.setString(2, cliente.getNomecliente());
-                    stmtCliente.setBigDecimal(3, cliente.getRendaMensalLiquida());
+                    stmtCliente.setDouble(3, cliente.getRendaMensalLiquida());
                     stmtCliente.setDate(4, Date.valueOf(cliente.getDataNascimento()));
-                    stmtCliente.setBigDecimal(5, cliente.getRendaFamiliarLiquida());
+                    stmtCliente.setDouble(5, cliente.getRendaFamiliarLiquida());
                     stmtCliente.setInt(6, cliente.getQtdePessoasNaCasa());
                     stmtCliente.setString(7, cliente.getIdTipoCliente().name());
                     stmtCliente.setInt(8, cliente.getScore());
@@ -152,9 +152,9 @@ public class ClienteDAO {
 
             stmt.setString(1, cliente.getCpfCliente());
             stmt.setString(2, cliente.getNomecliente());
-            stmt.setBigDecimal(3, cliente.getRendaMensalLiquida());
+            stmt.setDouble(3, cliente.getRendaMensalLiquida());
             stmt.setDate(4, Date.valueOf(cliente.getDataNascimento()));
-            stmt.setBigDecimal(5, cliente.getRendaFamiliarLiquida());
+            stmt.setDouble(5, cliente.getRendaFamiliarLiquida());
             stmt.setInt(6, cliente.getQtdePessoasNaCasa());
             stmt.setString(7, cliente.getIdTipoCliente().name());
             stmt.setInt(8, cliente.getScore());
@@ -186,13 +186,13 @@ public class ClienteDAO {
         if (clienteAtualizado.getNomecliente() != null) {
             clienteExistente.setNomecliente(clienteAtualizado.getNomecliente());
         }
-        if (clienteAtualizado.getRendaMensalLiquida() != null) {
+        if (clienteAtualizado.getRendaMensalLiquida() != 0) {
             clienteExistente.setRendaMensalLiquida(clienteAtualizado.getRendaMensalLiquida());
         }
         if (clienteAtualizado.getDataNascimento() != null) {
             clienteExistente.setDataNascimento(clienteAtualizado.getDataNascimento());
         }
-        if (clienteAtualizado.getRendaFamiliarLiquida() != null) {
+        if (clienteAtualizado.getRendaFamiliarLiquida() != 0) {
             clienteExistente.setRendaFamiliarLiquida(clienteAtualizado.getRendaFamiliarLiquida());
         }
         if (clienteAtualizado.getQtdePessoasNaCasa() != 0) {
@@ -270,9 +270,9 @@ public class ClienteDAO {
         cliente.setIdCliente(rs.getLong("id_cliente"));
         cliente.setCpfCliente(rs.getString("cpf_cliente"));
         cliente.setNomecliente(rs.getString("nome_cliente"));
-        cliente.setRendaMensalLiquida(rs.getBigDecimal("renda_mensal_liquida"));
+        cliente.setRendaMensalLiquida(rs.getDouble("renda_mensal_liquida"));
         cliente.setDataNascimento(rs.getDate("data_nascimento").toLocalDate());
-        cliente.setRendaFamiliarLiquida(rs.getBigDecimal("renda_familiar_liquida"));
+        cliente.setRendaFamiliarLiquida(rs.getDouble("renda_familiar_liquida"));
         cliente.setQtdePessoasNaCasa(rs.getInt("qtd_pessoas_na_casa"));
         cliente.setIdTipoCliente(VinculoEnum.fromValor(rs.getInt("id_tipo_cliente")));
         cliente.setScore(rs.getInt("score"));

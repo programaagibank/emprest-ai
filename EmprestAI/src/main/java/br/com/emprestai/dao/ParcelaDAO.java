@@ -55,7 +55,7 @@ public class ParcelaDAO {
             stmt.setDouble(5, parcela.getValorPresenteParcela());
             stmt.setDouble(6, parcela.getJuros());
             stmt.setDouble(7, parcela.getAmortizacao());
-            stmt.setString(8, String.valueOf(parcela.getIdStatusParcela()));
+            stmt.setString(8, String.valueOf(parcela.getstatusParcela()));
             stmt.setDate(9, Date.valueOf(parcela.getDataPagamento()));
             stmt.setDouble(10, parcela.getMulta());
             stmt.setDouble(11, parcela.getJurosMora());
@@ -137,7 +137,7 @@ public class ParcelaDAO {
             stmt.setDouble(5, parcela.getValorPresenteParcela());
             stmt.setDouble(6, parcela.getJuros());
             stmt.setDouble(7, parcela.getAmortizacao());
-            stmt.setString(8, String.valueOf(parcela.getIdStatusParcela()));
+            stmt.setString(8, String.valueOf(parcela.getstatusParcela()));
             stmt.setDate(9, Date.valueOf(parcela.getDataPagamento()));
             stmt.setDouble(10, parcela.getMulta());
             stmt.setDouble(11, parcela.getJurosMora());
@@ -184,7 +184,7 @@ public class ParcelaDAO {
         parcela.setValorPresenteParcela(rs.getDouble("valorPresenteParcela"));
         parcela.setJuros(rs.getDouble("juros"));
         parcela.setAmortizacao(rs.getInt("amortização"));
-        parcela.setIdStatusParcela(StatusEmpParcela.fromValor(rs.getInt("idStatusParcela")));
+        parcela.setStatusParcela(StatusEmpParcela.fromValor(rs.getInt("idStatusParcela")));
         parcela.setDataPagamento(rs.getDate("dataPagamento").toLocalDate());
         parcela.setJurosMora(rs.getDouble("jurosMora"));
         parcela.setMulta(rs.getDouble("taxaMulta"));

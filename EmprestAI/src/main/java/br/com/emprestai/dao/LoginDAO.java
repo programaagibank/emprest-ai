@@ -17,8 +17,8 @@ public class LoginDAO {
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
-            stmt.setString(1, login.getUsuarioBanco());
-            stmt.setString(2, login.getSenhaBanco());
+            stmt.setString(1, login.getUsername());
+            stmt.setString(2, login.getSenha());
             int affectedRows = stmt.executeUpdate();
 
             if (affectedRows == 0) {
@@ -27,8 +27,8 @@ public class LoginDAO {
 
             try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
-                    login.setUsuarioBanco(String.valueOf(generatedKeys.getLong(1)));
-                    login.setSenhaBanco(String.valueOf(generatedKeys.getLong(2)));
+                    login.setUsername(String.valueOf(generatedKeys.getLong(1)));
+                    login.setSenha(String.valueOf(generatedKeys.getLong(2)));
                 } else {
                     throw new ApiException("Falha ao criar login, nenhum usuário obtido.", 500);
                 }
@@ -67,7 +67,7 @@ public class LoginDAO {
     }
 
     private Login mapearResultSet(ResultSet rs) throws SQLException {
-        Login login = new Login(
+        Login login = new Login(null,
                 String.valueOf(rs.getLong("usuarioBanco")),
                 rs.getString("senhaBanco"));
         return login;

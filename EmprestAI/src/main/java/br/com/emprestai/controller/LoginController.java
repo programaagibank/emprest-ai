@@ -16,7 +16,7 @@ public class LoginController {
         if (login == null) {
             throw new IllegalArgumentException("Erro: Cliente não encontrado");
         }
-        String senhaHash = login.getSenhaBanco();
+        String senhaHash = login.getSenha();
         return BCrypt.checkpw(senha, senhaHash);
 
     }
@@ -24,7 +24,7 @@ public class LoginController {
     public static Login criarLogin(String CPF, String senha){
         // Passo 1: Buscar o cliente
         LoginDAO loginDao = new LoginDAO();
-        Login login = new Login(CPF, senhaHash(senha));
+        Login login = new Login(null, CPF, senhaHash(senha));
 
         Login loginUser = loginDao.criar(login);
         if (loginUser == null) {

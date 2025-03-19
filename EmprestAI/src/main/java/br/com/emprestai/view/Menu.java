@@ -1,7 +1,9 @@
 package br.com.emprestai.view;
 
+import br.com.emprestai.database.DatabaseConnection;
 import br.com.emprestai.util.DatabaseUtil;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -84,7 +86,7 @@ public class Menu {
         System.out.print("Digite sua senha: ");
         String senha = scanner.nextLine();
 
-        try (Connection connection = DatabaseUtil.getConnection()) {
+        try (Connection connection = DatabaseConnection.getConnection()) {
             String query = "SELECT COUNT(*) FROM clientes WHERE login_usuarios = ? AND senha = ?";
             try (PreparedStatement stmt = connection.prepareStatement(query)) {
                 stmt.setString(1, usuario);
@@ -101,6 +103,8 @@ public class Menu {
             }
         } catch (SQLException e) {
             System.out.println("Erro ao conectar ao banco de dados: " + e.getMessage());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
 
         return false;

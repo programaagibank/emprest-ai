@@ -18,6 +18,7 @@ public class LoginController {
         }
         String senhaHash = login.getSenhaBanco();
         return BCrypt.checkpw(senha, senhaHash);
+
     }
 
     public static Login criarLogin(String CPF, String senha){

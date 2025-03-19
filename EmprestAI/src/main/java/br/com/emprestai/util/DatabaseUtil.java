@@ -8,6 +8,16 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 public class DatabaseUtil {
+
+    // conexão do banco de dados
+    public static void main(String[] args) {
+        try (Connection connection = DatabaseUtil.getConnection()) {
+            System.out.println("Conexão bem-sucedida!");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     private static final Properties properties = new Properties();
 
     static {
@@ -30,6 +40,7 @@ public class DatabaseUtil {
         String url = properties.getProperty("url");
         String user = properties.getProperty("user");
         String password = properties.getProperty("password");
+
         return DriverManager.getConnection(url, user, password);
     }
 }

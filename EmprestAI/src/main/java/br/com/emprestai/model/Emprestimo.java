@@ -2,6 +2,7 @@ package br.com.emprestai.model;
 
 import br.com.emprestai.enums.MotivosEncerramentosEmpEnum;
 import br.com.emprestai.enums.StatusEmpEnum;
+import br.com.emprestai.enums.TipoEmpEnum;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -17,13 +18,13 @@ public class Emprestimo {
     private int quantidadeParcelas;
     private double juros;
     private LocalDate dataInicio;
-    private StatusEmpEnum idStatusEmprestimo;
-    private int idTipoEmprestimo;
+    private StatusEmpEnum statusEmprestimo;
+    private TipoEmpEnum tipoEmprestimo;
     private double valorSeguro;
     private double valorIOF;
     private double outrosCustos;
     private LocalDate dataContratacao;
-    private MotivosEncerramentosEmpEnum idMotivoEncerramento;
+    private MotivosEncerramentosEmpEnum motivoEncerramento;
     private double taxaJurosMora;
     private double taxaMulta;
     private long idEmprestimoOrigem;
@@ -38,28 +39,38 @@ public class Emprestimo {
     }
 
     //Construtor com parâmetros
-    public Emprestimo(long id_contrato, String nome_cliente, String cpf_cliente, long id_cliente, double valorTotal, int quantidadeParcelas, double juros, LocalDate dataInicio,
-                      StatusEmpEnum idStatusEmprestimo, double valorSeguro, double valorIOF, double outrosCustos,
-                      LocalDate dataContratacao, MotivosEncerramentosEmpEnum idMotivoEncerramento, double taxaJurosMora, double taxaMulta, long idEmprestimoOrigem, List<Parcela> parcelaList, double saldoDevedorAtualizado){
-        this.idCliente = id_cliente;
-        this.idContrato = id_contrato;
+    public Emprestimo(long idContrato, String nomeCliente, String cpfCliente, long idCliente, double valorTotal,
+                      double valorEmprestimo, double valorParcela, int quantidadeParcelas, double juros, LocalDate dataInicio,
+                      StatusEmpEnum statusEmprestimo, TipoEmpEnum tipoEmprestimo, double valorSeguro, double valorIOF,
+                      double outrosCustos, LocalDate dataContratacao, MotivosEncerramentosEmpEnum motivoEncerramento,
+                      double taxaJurosMora, double taxaMulta, long idEmprestimoOrigem, List<Parcela> parcelaList,
+                      double saldoDevedorAtualizado, LocalDate dataLiberacaoCred, Boolean contratarSeguro,
+                      double taxaEfetivaMensal) {
+        this.idContrato = idContrato;
+        this.nomeCliente = nomeCliente;
+        this.cpfCliente = cpfCliente;
+        this.idCliente = idCliente;
         this.valorTotal = valorTotal;
+        this.valorEmprestimo = valorEmprestimo;
+        this.valorParcela = valorParcela;
         this.quantidadeParcelas = quantidadeParcelas;
         this.juros = juros;
         this.dataInicio = dataInicio;
-        this.idStatusEmprestimo = idStatusEmprestimo;
+        this.statusEmprestimo = statusEmprestimo;
+        this.tipoEmprestimo = tipoEmprestimo;
         this.valorSeguro = valorSeguro;
         this.valorIOF = valorIOF;
         this.outrosCustos = outrosCustos;
         this.dataContratacao = dataContratacao;
-        this.idMotivoEncerramento = idMotivoEncerramento;
+        this.motivoEncerramento = motivoEncerramento;
         this.taxaJurosMora = taxaJurosMora;
         this.taxaMulta = taxaMulta;
         this.idEmprestimoOrigem = idEmprestimoOrigem;
-        this.nomeCliente = nome_cliente;
-        this.cpfCliente = cpf_cliente;
         this.parcelaList = parcelaList;
         this.saldoDevedorAtualizado = saldoDevedorAtualizado;
+        this.dataLiberacaoCred = dataLiberacaoCred;
+        this.contratarSeguro = contratarSeguro;
+        this.taxaEfetivaMensal = taxaEfetivaMensal;
     }
 
     // Getters e setters
@@ -105,19 +116,19 @@ public class Emprestimo {
         this.dataInicio = dataInicio;
     }
 
-    public StatusEmpEnum getIdStatusEmprestimo(){
-        return idStatusEmprestimo;
+    public StatusEmpEnum getStatusEmprestimo(){
+        return statusEmprestimo;
     }
 
-    public void setIdStatusEmprestimo(StatusEmpEnum idStatusEmprestimo){
-        this.idStatusEmprestimo = idStatusEmprestimo;
+    public void setStatusEmprestimo(StatusEmpEnum idStatusEmprestimo){
+        this.statusEmprestimo = idStatusEmprestimo;
     }
 
-    public int getIdTipoEmprestimo(){
-        return idTipoEmprestimo;
+    public TipoEmpEnum getTipoEmprestimo(){
+        return tipoEmprestimo;
     }
-    public void setIdTipoEmprestimo(int idTipoEmprestimo){
-        this.idTipoEmprestimo = idTipoEmprestimo;
+    public void setTipoEmprestimo(TipoEmpEnum tipoEmprestimo){
+        this.tipoEmprestimo = tipoEmprestimo;
     }
 
     public double getValorSeguro(){
@@ -149,10 +160,10 @@ public class Emprestimo {
     }
 
     public MotivosEncerramentosEmpEnum getIdMotivoEncerramento(){
-        return idMotivoEncerramento;
+        return motivoEncerramento;
     }
     public void setIdMotivoEncerramento(MotivosEncerramentosEmpEnum idMotivoEncerramento){
-        this.idMotivoEncerramento = idMotivoEncerramento;
+        this.motivoEncerramento = idMotivoEncerramento;
     }
 
     public double getTaxaJurosMora(){
@@ -244,5 +255,35 @@ public class Emprestimo {
         this.valorParcela = valorParcela;
     }
 
+    @Override
+    public String toString() {
+        return "Emprestimo{" +
+                "idContrato=" + idContrato +
+                ", nomeCliente='" + nomeCliente + '\'' +
+                ", cpfCliente='" + cpfCliente + '\'' +
+                ", idCliente=" + idCliente +
+                ", valorTotal=" + valorTotal +
+                ", valorEmprestimo=" + valorEmprestimo +
+                ", valorParcela=" + valorParcela +
+                ", quantidadeParcelas=" + quantidadeParcelas +
+                ", juros=" + juros +
+                ", dataInicio=" + dataInicio +
+                ", statusEmprestimo=" + statusEmprestimo +
+                ", tipoEmprestimo=" + tipoEmprestimo +
+                ", valorSeguro=" + valorSeguro +
+                ", valorIOF=" + valorIOF +
+                ", outrosCustos=" + outrosCustos +
+                ", dataContratacao=" + dataContratacao +
+                ", motivoEncerramento=" + motivoEncerramento +
+                ", taxaJurosMora=" + taxaJurosMora +
+                ", taxaMulta=" + taxaMulta +
+                ", idEmprestimoOrigem=" + idEmprestimoOrigem +
+                ", parcelaList=" + parcelaList +
+                ", saldoDevedorAtualizado=" + saldoDevedorAtualizado +
+                ", dataLiberacaoCred=" + dataLiberacaoCred +
+                ", contratarSeguro=" + contratarSeguro +
+                ", taxaEfetivaMensal=" + taxaEfetivaMensal +
+                '}';
+    }
 }
 

@@ -15,7 +15,7 @@ public class Parcela {
     private double valorPresenteParcela; // Valor da parcela (fixo no sistema Price)
     private double juros; // Parte dos juros na parcela
     private double amortizacao; // Parte da amortização do principal
-    private StatusEmpParcela idStatusParcela; // Status da parcela (paga ou pendente)
+    private StatusEmpParcela statusParcela; // Status da parcela (paga ou pendente)
     private LocalDate dataPagamento; // Data em que foi paga
     private double multa; // Multa por atraso
     private double jurosMora; // Juros de mora por atraso
@@ -99,11 +99,11 @@ public class Parcela {
         this.amortizacao = amortizacao;
     }
 
-    public StatusEmpParcela getIdStatusParcela(){
-        return idStatusParcela;
+    public StatusEmpParcela getstatusParcela(){
+        return statusParcela;
     }
-    public void setIdStatusParcela(StatusEmpParcela idStatusParcela){
-        this.idStatusParcela = idStatusParcela;
+    public void setStatusParcela(StatusEmpParcela statusParcela){
+        this.statusParcela = statusParcela;
     }
 
     public LocalDate getDataPagamento() {
@@ -128,5 +128,22 @@ public class Parcela {
     }
     public void setJurosMora(double jurosMora){
         this.jurosMora = jurosMora;
+    }
+
+    @Override
+    public String toString() {
+        return "Parcela{" +
+                "idParcela=" + idParcela +
+                ", idEmprestimo=" + idEmprestimo +
+                ", numeroParcela=" + numeroParcela +
+                ", dataVencimento=" + dataVencimento +
+                ", valorPresenteParcela=" + valorPresenteParcela +
+                ", juros=" + juros +
+                ", amortizacao=" + amortizacao +
+                ", statusParcela=" + statusParcela +
+                ", dataPagamento=" + dataPagamento +
+                ", multa=" + multa +
+                ", jurosMora=" + jurosMora +
+                '}';
     }
 }

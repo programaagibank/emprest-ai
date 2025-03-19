@@ -1,8 +1,6 @@
 package br.com.emprestai.view;
 
 import br.com.emprestai.database.DatabaseConnection;
-import br.com.emprestai.util.DatabaseUtil;
-
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;

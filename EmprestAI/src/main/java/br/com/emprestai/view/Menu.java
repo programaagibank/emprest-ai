@@ -1,11 +1,15 @@
 package br.com.emprestai.view;
 
-import br.com.emprestai.service.LoginService;
+import br.com.emprestai.util.DatabaseUtil;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Scanner;
 
 public class Menu {
     private static final Scanner scanner = new Scanner(System.in);
-    private static final LoginService loginService = new LoginService();
     private static boolean isLoggedIn = false;
 
     public static void main(String[] args) {
@@ -31,7 +35,6 @@ public class Menu {
         }
     }
 
-    // O usuario só podera fazer qualquer ação depois que logar com usuario e senha.
     private static void exibirOpcoes() {
         System.out.println("\n--- Menu ---");
         System.out.println("1. Logar na conta");
@@ -49,22 +52,22 @@ public class Menu {
     private static boolean processarOpcao(int opcao) {
         switch (opcao) {
             case 1:
-                isLoggedIn = loginService.exibirLogin(); // Deve retornar boolean
+                isLoggedIn = realizarLogin();
                 break;
             case 2:
-                executarSeLogado(() -> loginService.simularEmprestimoConsignado());
+                executarSeLogado(() -> System.out.println("Simulando Empréstimo Consignado..."));
                 break;
             case 3:
-                executarSeLogado(() -> loginService.simularEmprestimoPessoal());
+                executarSeLogado(() -> System.out.println("Simulando Empréstimo Pessoal..."));
                 break;
             case 4:
-                executarSeLogado(() -> loginService.fazerEmprestimoConsignado());
+                executarSeLogado(() -> System.out.println("Fazendo Empréstimo Consignado..."));
                 break;
             case 5:
-                executarSeLogado(() -> loginService.fazerEmprestimoPessoal());
+                executarSeLogado(() -> System.out.println("Fazendo Empréstimo Pessoal..."));
                 break;
             case 6:
-                executarSeLogado(() -> loginService.buscarEmprestimo());
+                executarSeLogado(() -> System.out.println("Buscando Empréstimo..."));
                 break;
             case 0:
                 System.out.println("Saindo...");
@@ -73,6 +76,34 @@ public class Menu {
                 System.out.println("Opção inválida. Tente novamente.");
         }
         return true;
+    }
+
+    private static boolean realizarLogin() {
+        System.out.print("Digite seu usuário: ");
+        String usuario = scanner.nextLine();
+        System.out.print("Digite sua senha: ");
+        String senha = scanner.nextLine();
+
+        try (Connection connection = DatabaseUtil.getConnection()) {
+            String query = "SELECT COUNT(*) FROM clientes WHERE login_usuarios = ? AND senha = ?";
+            try (PreparedStatement stmt = connection.prepareStatement(query)) {
+                stmt.setString(1, usuario);
+                stmt.setString(2, senha);
+
+                try (ResultSet rs = stmt.executeQuery()) {
+                    if (rs.next() && rs.getInt(1) > 0) {
+                        System.out.println("Login bem-sucedido!");
+                        return true;
+                    } else {
+                        System.out.println("Usuário ou senha inválidos.");
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Erro ao conectar ao banco de dados: " + e.getMessage());
+        }
+
+        return false;
     }
 
     private static void executarSeLogado(Runnable acao) {

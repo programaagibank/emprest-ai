@@ -47,14 +47,16 @@ public class CalculadoraEmprestimo {
         BigDecimal iof = calcIOF(valorTotalComSeguro, dataInicioPagamento, dataFimContrato);
         BigDecimal valorTotalFinanciado = (valorEmprestimo.add(iof).add(seguro));
 
+        emprestimo.setValorSeguro(seguro.doubleValue());
         emprestimo.setValorIOF(iof.doubleValue());
         emprestimo.setValorTotal(valorTotalFinanciado.doubleValue());
 
         BigDecimal parcelaMensal = calcParcela(valorTotalFinanciado, taxaJurosMensal, qtdeParcelas);
+        emprestimo.setValorParcela(parcelaMensal.doubleValue());
         BigDecimal taxaEfetivaMensal = calcTxEfetivaMes(valorEmprestimo, parcelaMensal, taxaJurosMensal, qtdeParcelas);
         emprestimo.setTaxaEfetivaMensal(taxaEfetivaMensal.doubleValue());
 
-        List<Parcela> parcelas = calcParcelaVP(parcelaMensal, taxaJurosMensal, qtdeParcelas, dataInicioPagamento, taxaMulta, taxaJurosMora);
+        List<Parcela> parcelas = calcParcelaVP(parcelaMensal, valorTotalFinanciado, taxaJurosMensal, qtdeParcelas, dataInicioPagamento, taxaMulta, taxaJurosMora);
 
         //Parcelas do Emprestimo
         emprestimo.setParcelaList(parcelas);
@@ -187,14 +189,14 @@ public class CalculadoraEmprestimo {
 //        return saldoDevedorAtualizado;
 //    }
 
-    public static List<Parcela> calcParcelaVP(BigDecimal parcelaMensal, double taxaJurosMensal, int qtdeParcelas, LocalDate dataInicioPagamento, double taxaMulta, double taxaJurosMora) {
+    public static List<Parcela> calcParcelaVP(BigDecimal parcelaMensal, BigDecimal valorTotalFinanciado, double taxaJurosMensal, int qtdeParcelas, LocalDate dataInicioPagamento, double taxaMulta, double taxaJurosMora) {
         if (parcelaMensal.doubleValue() <= 0 || taxaJurosMensal <= 0 || qtdeParcelas <= 1) {
             throw new IllegalArgumentException("Valores inválidos");
         }
 
         List<Parcela> parcelas = new ArrayList<>();
         BigDecimal umMaisTaxa = ONE.add(BigDecimal.valueOf(taxaJurosMensal / 100));
-        BigDecimal saldoDevedor = parcelaMensal.multiply(BigDecimal.valueOf(qtdeParcelas)); // Saldo inicial estimado
+        BigDecimal saldoDevedor = valorTotalFinanciado; // Saldo inicial estimado
         BigDecimal taxa = BigDecimal.valueOf(taxaJurosMensal / 100);
 
         for (int i = 1; i <= qtdeParcelas; i++) {

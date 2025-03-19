@@ -30,13 +30,13 @@ public class ClienteDAO {
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
-            stmt.setString(1, cliente.getCpf_cliente());
-            stmt.setString(2, cliente.getNome_cliente());
-            stmt.setBigDecimal(3, cliente.getRenda_mensal_liquida());
-            stmt.setDate(4, Date.valueOf(cliente.getData_nascimento()));
-            stmt.setBigDecimal(5, cliente.getRenda_familiar_liquida());
-            stmt.setInt(6, cliente.getQtd_pessoas_na_casa());
-            stmt.setString(7, cliente.getId_tipo_cliente().name());
+            stmt.setString(1, cliente.getCpfCliente());
+            stmt.setString(2, cliente.getNomecliente());
+            stmt.setBigDecimal(3, cliente.getRendaMensalLiquida());
+            stmt.setDate(4, Date.valueOf(cliente.getDataNascimento()));
+            stmt.setBigDecimal(5, cliente.getRendaFamiliarLiquida());
+            stmt.setInt(6, cliente.getQtdePessoasNaCasa());
+            stmt.setString(7, cliente.getIdTipoCliente().name());
             stmt.setInt(8, cliente.getScore());
 
             int affectedRows = stmt.executeUpdate();
@@ -47,7 +47,7 @@ public class ClienteDAO {
 
             try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
-                    cliente.setId_cliente(generatedKeys.getLong(1));
+                    cliente.setIdCliente(generatedKeys.getLong(1));
                 } else {
                     throw new ApiException("Falha ao criar cliente, nenhum ID obtido.", 500);
                 }
@@ -114,13 +114,13 @@ public class ClienteDAO {
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setString(1, cliente.getCpf_cliente());
-            stmt.setString(2, cliente.getNome_cliente());
-            stmt.setBigDecimal(3, cliente.getRenda_mensal_liquida());
-            stmt.setDate(4, Date.valueOf(cliente.getData_nascimento()));
-            stmt.setBigDecimal(5, cliente.getRenda_familiar_liquida());
-            stmt.setInt(6, cliente.getQtd_pessoas_na_casa());
-            stmt.setString(7, cliente.getId_tipo_cliente().name());
+            stmt.setString(1, cliente.getCpfCliente());
+            stmt.setString(2, cliente.getNomecliente());
+            stmt.setBigDecimal(3, cliente.getRendaMensalLiquida());
+            stmt.setDate(4, Date.valueOf(cliente.getDataNascimento()));
+            stmt.setBigDecimal(5, cliente.getRendaFamiliarLiquida());
+            stmt.setInt(6, cliente.getQtdePessoasNaCasa());
+            stmt.setString(7, cliente.getIdTipoCliente().name());
             stmt.setInt(8, cliente.getScore());
             stmt.setLong(9, id);
 
@@ -130,7 +130,7 @@ public class ClienteDAO {
                 throw new ApiException("Cliente não encontrado com ID: " + id, 404);
             }
 
-            cliente.setId_cliente(id);
+            cliente.setIdCliente(id);
             return cliente;
             //Adicionei o IOException para parar de reclamar erro
         } catch (SQLException | IOException e) {
@@ -145,26 +145,26 @@ public class ClienteDAO {
     public Cliente atualizarParcial(Long id, Cliente clienteAtualizado) {
         Cliente clienteExistente = buscarPorId(id);
 
-        if (clienteAtualizado.getCpf_cliente() != null) {
-            clienteExistente.setCpf_cliente(clienteAtualizado.getCpf_cliente());
+        if (clienteAtualizado.getCpfCliente() != null) {
+            clienteExistente.setCpfCliente(clienteAtualizado.getCpfCliente());
         }
-        if (clienteAtualizado.getNome_cliente() != null) {
-            clienteExistente.setNome_cliente(clienteAtualizado.getNome_cliente());
+        if (clienteAtualizado.getNomecliente() != null) {
+            clienteExistente.setNomecliente(clienteAtualizado.getNomecliente());
         }
-        if (clienteAtualizado.getRenda_mensal_liquida() != null) {
-            clienteExistente.setRenda_mensal_liquida(clienteAtualizado.getRenda_mensal_liquida());
+        if (clienteAtualizado.getRendaMensalLiquida() != null) {
+            clienteExistente.setRendaMensalLiquida(clienteAtualizado.getRendaMensalLiquida());
         }
-        if (clienteAtualizado.getData_nascimento() != null) {
-            clienteExistente.setData_nascimento(clienteAtualizado.getData_nascimento());
+        if (clienteAtualizado.getDataNascimento() != null) {
+            clienteExistente.setDataNascimento(clienteAtualizado.getDataNascimento());
         }
-        if (clienteAtualizado.getRenda_familiar_liquida() != null) {
-            clienteExistente.setRenda_familiar_liquida(clienteAtualizado.getRenda_familiar_liquida());
+        if (clienteAtualizado.getRendaFamiliarLiquida() != null) {
+            clienteExistente.setRendaFamiliarLiquida(clienteAtualizado.getRendaFamiliarLiquida());
         }
-        if (clienteAtualizado.getQtd_pessoas_na_casa() != 0) {
-            clienteExistente.setQtd_pessoas_na_casa(clienteAtualizado.getQtd_pessoas_na_casa());
+        if (clienteAtualizado.getQtdePessoasNaCasa() != 0) {
+            clienteExistente.setQtdePessoasNaCasa(clienteAtualizado.getQtdePessoasNaCasa());
         }
-        if (clienteAtualizado.getId_tipo_cliente() != null) {
-            clienteExistente.setId_tipo_cliente(clienteAtualizado.getId_tipo_cliente());
+        if (clienteAtualizado.getIdTipoCliente() != null) {
+            clienteExistente.setIdTipoCliente(clienteAtualizado.getIdTipoCliente());
         }
         if (clienteAtualizado.getScore() != 0) {
             clienteExistente.setScore(clienteAtualizado.getScore());
@@ -218,14 +218,14 @@ public class ClienteDAO {
     // Método auxiliar para mapear ResultSet para objeto Cliente
     private Cliente mapearResultSet(ResultSet rs) throws SQLException {
         Cliente cliente = new Cliente();
-        cliente.setId_cliente(rs.getLong("id_cliente"));
-        cliente.setCpf_cliente(rs.getString("cpf_cliente"));
-        cliente.setNome_cliente(rs.getString("nome_cliente"));
-        cliente.setRenda_mensal_liquida(rs.getBigDecimal("renda_mensal_liquida"));
-        cliente.setData_nascimento(rs.getDate("data_nascimento").toLocalDate());
-        cliente.setRenda_familiar_liquida(rs.getBigDecimal("renda_familiar_liquida"));
-        cliente.setQtd_pessoas_na_casa(rs.getInt("qtd_pessoas_na_casa"));
-        cliente.setId_tipo_cliente(VinculoEnum.fromValor(rs.getInt("id_tipo_cliente")));
+        cliente.setIdCliente(rs.getLong("id_cliente"));
+        cliente.setCpfCliente(rs.getString("cpf_cliente"));
+        cliente.setNomecliente(rs.getString("nome_cliente"));
+        cliente.setRendaMensalLiquida(rs.getBigDecimal("renda_mensal_liquida"));
+        cliente.setDataNascimento(rs.getDate("data_nascimento").toLocalDate());
+        cliente.setRendaFamiliarLiquida(rs.getBigDecimal("renda_familiar_liquida"));
+        cliente.setQtdePessoasNaCasa(rs.getInt("qtd_pessoas_na_casa"));
+        cliente.setIdTipoCliente(VinculoEnum.fromValor(rs.getInt("id_tipo_cliente")));
         cliente.setScore(rs.getInt("score"));
         return cliente;
     }

@@ -3,33 +3,32 @@ package br.com.emprestai.model;
 import br.com.emprestai.enums.VinculoEnum;
 
 import java.math.BigDecimal;
-import java.sql.Date;
 import java.time.LocalDate;
 
 public class Cliente {
 
     // Atributos
-    private Long id_cliente; // Autoincrementado no banco
-    private String cpf_cliente; // Mantido como atributo secundário
-    private String nome_cliente;
-    private BigDecimal renda_mensal_liquida;
-    private LocalDate data_nascimento;
-    private BigDecimal renda_familiar_liquida;
-    private int qtd_pessoas_na_casa;
-    private VinculoEnum id_tipo_cliente;
+    private Long idCliente; // Autoincrementado no banco
+    private String cpfCliente; // Mantido como atributo secundário
+    private String nomecliente;
+    private BigDecimal rendaMensalLiquida;
+    private LocalDate dataNascimento;
+    private BigDecimal rendaFamiliarLiquida;
+    private int qtdePessoasNaCasa;
+    private VinculoEnum idTipoCliente;
     private int score;
 
     @Override
     public String toString() {
         return "Cliente{" +
-                "id_cliente=" + id_cliente +
-                ", cpf_cliente='" + cpf_cliente + '\'' +
-                ", nome_cliente='" + nome_cliente + '\'' +
-                ", renda_mensal_liquida=" + renda_mensal_liquida +
-                ", data_nascimento=" + data_nascimento +
-                ", renda_familiar_liquida=" + renda_familiar_liquida +
-                ", qtd_pessoas_na_casa=" + qtd_pessoas_na_casa +
-                ", id_tipo_cliente=" + id_tipo_cliente +
+                "id_cliente=" + idCliente +
+                ", cpf_cliente='" + cpfCliente + '\'' +
+                ", nome_cliente='" + nomecliente + '\'' +
+                ", renda_mensal_liquida=" + rendaMensalLiquida +
+                ", data_nascimento=" + dataNascimento +
+                ", renda_familiar_liquida=" + rendaFamiliarLiquida +
+                ", qtd_pessoas_na_casa=" + qtdePessoasNaCasa +
+                ", id_tipo_cliente=" + idTipoCliente +
                 ", score=" + score +
                 '}';
     }
@@ -41,79 +40,79 @@ public class Cliente {
     // Construtor com parâmetros
     public Cliente(String cpf_cliente, String nome_cliente, BigDecimal renda_mensal_liquida, LocalDate data_nascimento,
                    BigDecimal renda_familiar_liquida, int qtd_pessoas_na_casa, VinculoEnum id_tipo_cliente, int score) {
-        this.cpf_cliente = cpf_cliente;
-        this.nome_cliente = nome_cliente;
-        this.renda_mensal_liquida = renda_mensal_liquida;
-        this.data_nascimento = data_nascimento;
-        this.renda_familiar_liquida = renda_familiar_liquida;
-        this.qtd_pessoas_na_casa = qtd_pessoas_na_casa;
-        this.id_tipo_cliente = id_tipo_cliente;
+        this.cpfCliente = cpf_cliente;
+        this.nomecliente = nome_cliente;
+        this.rendaMensalLiquida = renda_mensal_liquida;
+        this.dataNascimento = data_nascimento;
+        this.rendaFamiliarLiquida = renda_familiar_liquida;
+        this.qtdePessoasNaCasa = qtd_pessoas_na_casa;
+        this.idTipoCliente = id_tipo_cliente;
         this.score = score;
     }
 
     // Getters e Setters
-    public Long getId_cliente() {
-        return id_cliente;
+    public Long getIdCliente() {
+        return idCliente;
     }
 
-    public void setId_cliente(Long id_cliente) {
-        this.id_cliente = id_cliente;
+    public void setIdCliente(Long idCliente) {
+        this.idCliente = idCliente;
     }
 
-    public String getCpf_cliente() {
-        return cpf_cliente;
+    public String getCpfCliente() {
+        return cpfCliente;
     }
 
-    public void setCpf_cliente(String cpf_cliente) {
-        this.cpf_cliente = cpf_cliente;
+    public void setCpfCliente(String cpfCliente) {
+        this.cpfCliente = cpfCliente;
     }
 
-    public String getNome_cliente() {
-        return nome_cliente;
+    public String getNomecliente() {
+        return nomecliente;
     }
 
-    public void setNome_cliente(String nome_cliente) {
-        this.nome_cliente = nome_cliente;
+    public void setNomecliente(String nomecliente) {
+        this.nomecliente = nomecliente;
     }
 
-    public BigDecimal getRenda_mensal_liquida() {
-        return renda_mensal_liquida;
+    public BigDecimal getRendaMensalLiquida() {
+        return rendaMensalLiquida;
     }
 
-    public void setRenda_mensal_liquida(BigDecimal renda_mensal_liquida) {
-        this.renda_mensal_liquida = renda_mensal_liquida;
+    public void setRendaMensalLiquida(BigDecimal rendaMensalLiquida) {
+        this.rendaMensalLiquida = rendaMensalLiquida;
     }
 
-    public LocalDate getData_nascimento() {
-        return data_nascimento;
+    public LocalDate getDataNascimento() {
+        return dataNascimento;
     }
 
-    public void setData_nascimento(LocalDate data_nascimento) {
-        this.data_nascimento = data_nascimento;
+    public void setDataNascimento(LocalDate dataNascimento) {
+        this.dataNascimento = dataNascimento;
     }
 
-    public BigDecimal getRenda_familiar_liquida() {
-        return renda_familiar_liquida;
+    public BigDecimal getRendaFamiliarLiquida() {
+        return rendaFamiliarLiquida;
     }
 
-    public void setRenda_familiar_liquida(BigDecimal renda_familiar_liquida) {
-        this.renda_familiar_liquida = renda_familiar_liquida;
+    public void setRendaFamiliarLiquida(BigDecimal rendaFamiliarLiquida) {
+        this.rendaFamiliarLiquida = rendaFamiliarLiquida;
     }
 
-    public int getQtd_pessoas_na_casa() {
-        return qtd_pessoas_na_casa;
+    public int getQtdePessoasNaCasa() {
+        return qtdePessoasNaCasa;
     }
 
-    public void setQtd_pessoas_na_casa(int qtd_pessoas_na_casa) {
-        this.qtd_pessoas_na_casa = qtd_pessoas_na_casa;
+    public void setQtdePessoasNaCasa(int qtdePessoasNaCasa) {
+        this.qtdePessoasNaCasa = qtdePessoasNaCasa;
     }
 
-    public VinculoEnum getId_tipo_cliente() {
-        return id_tipo_cliente;
+    public VinculoEnum getIdTipoCliente() {
+        return idTipoCliente;
     }
 
-    public void setId_tipo_cliente(VinculoEnum id_tipo_cliente) {
-        this.id_tipo_cliente = id_tipo_cliente;
+    public void setIdTipoCliente(VinculoEnum idTipoCliente) {
+        this.idTipoCliente = idTipoCliente;
     }
 
     public int getScore() {

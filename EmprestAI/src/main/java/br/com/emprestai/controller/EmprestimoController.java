@@ -16,7 +16,7 @@ public class EmprestimoController {
     private ClienteDAO clienteDAO = new ClienteDAO();
     //private EmprestimoDAO emprestimoDAO = new EmprestimoDAO();
 
-    // Método genérico para obter os dados do empréstimo (antigo simularEmprestimo)
+    // Metodo genérico para obter os dados do empréstimo (antigo simularEmprestimo)
     public Map<String, Object> obterEmprestimo(Long idCliente, double valorEmprestimo, TipoEmpEnum tipoEmp,
                                                int parcelas, boolean contratarSeguro, LocalDate dataInicioPagamento) {
         Emprestimo emprestimo = new Emprestimo();
@@ -42,7 +42,7 @@ public class EmprestimoController {
             emprestimo.setJuros(taxaJurosMensal);
 
             // Passo 3: Calcular o contrato usando CalculadoraEmprestimo
-            CalculadoraEmprestimo.contratoPrice(emprestimo, cliente.getData_nascimento());
+            CalculadoraEmprestimo.contratoPrice(emprestimo, cliente.getDataNascimento());
 
             // Passo 4: Montar a resposta
             response.put("idCliente", idCliente);

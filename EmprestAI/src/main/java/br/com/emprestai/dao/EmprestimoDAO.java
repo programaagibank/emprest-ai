@@ -59,7 +59,7 @@ public class EmprestimoDAO {
             throw new ApiException("Erro ao buscar emprestimo: " + e.getMessage(), 500);
         }
     }
-    public Emprestimo criar(Emprestimo emprestimo){
+    public Emprestimo criarEmp(Emprestimo emprestimo){
         String sql = "INSERT INTO emprestimos (id_cliente, valor_total, quantidade_parcelas, juros, data_inicio, id_status_emprestimo, id_tipo_emprestimo,\n" +
                 "valor_seguro, valor_IOF, outros_custos, data_contratacao, id_motivo_encerramento, juros_mora, taxa_multa, id_emprestimo_origem)\n" +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NULL);";
@@ -68,18 +68,18 @@ public class EmprestimoDAO {
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             stmt.setLong(1, emprestimo.getIdCliente());
-            stmt.setBigDecimal(2, emprestimo.getValorTotal());
+            stmt.setDouble(2, emprestimo.getValorTotal());
             stmt.setInt(3, emprestimo.getQuantidadeParcelas());
             stmt.setDouble(4, emprestimo.getJuros());
             stmt.setDate(5, Date.valueOf(emprestimo.getDataInicio()));
             stmt.setString(6, emprestimo.getIdStatusEmprestimo().name());
-            stmt.setString(7, emprestimo.getIdTipoEmprestimo().name());
-            stmt.setBigDecimal(8, emprestimo.getValorSeguro());
-            stmt.setBigDecimal(9, emprestimo.getValorIOF());
-            stmt.setBigDecimal(10, emprestimo.getOutrosCustos());
+            stmt.setInt(7, emprestimo.getIdTipoEmprestimo());
+            stmt.setDouble(8, emprestimo.getValorSeguro());
+            stmt.setDouble(9, emprestimo.getValorIOF());
+            stmt.setDouble(10, emprestimo.getOutrosCustos());
             stmt.setDate(11, Date.valueOf(emprestimo.getDataContratacao()));
             stmt.setString(12, emprestimo.getIdMotivoEncerramento().name());
-            stmt.setDouble(13, emprestimo.getJurosMora());
+            stmt.setDouble(13, emprestimo.getTaxaJurosMora());
             stmt.setDouble(14, emprestimo.getTaxaMulta());
 
             int affectedRows = stmt.executeUpdate();
@@ -106,21 +106,21 @@ public class EmprestimoDAO {
         Emprestimo emprestimo = new Emprestimo();
         emprestimo.setIdCliente(rs.getLong("id_cliente"));
         emprestimo.setIdEmprestimoOrigem(rs.getLong("id_emprestimo_origem"));
-        emprestimo.setCpf_cliente(rs.getString("cpf_cliente"));
+        emprestimo.setCpfCliente(rs.getString("cpf_cliente"));
         emprestimo.setIdStatusEmprestimo(StatusEmpEnum.fromValor(rs.getInt("id_status_emprestimo")));
         emprestimo.setIdContrato(rs.getLong("id_emprestimo"));
-        emprestimo.setNome_cliente(rs.getString("nome_cliente"));
-        emprestimo.setValorTotal(rs.getBigDecimal("valor_total"));
+        emprestimo.setNomeCliente(rs.getString("nome_cliente"));
+        emprestimo.setValorTotal(rs.getDouble("valor_total"));
         emprestimo.setQuantidadeParcelas(rs.getInt("quantidade_parcelas"));
         emprestimo.setJuros(rs.getDouble("juros"));
         emprestimo.setDataInicio(rs.getDate("data_inicio").toLocalDate());
-        emprestimo.setIdTipoEmprestimo(TipoEmpEnum.fromValor(rs.getInt("id_tipo_emprestimo")));
-        emprestimo.setValorSeguro(rs.getBigDecimal("valor_seguro"));
-        emprestimo.setValorIOF(rs.getBigDecimal("valor_IOF"));
-        emprestimo.setOutrosCustos(rs.getBigDecimal("outros_custos"));
+        emprestimo.setIdTipoEmprestimo(rs.getInt("id_tipo_emprestimo"));
+        emprestimo.setValorSeguro(rs.getDouble("valor_seguro"));
+        emprestimo.setValorIOF(rs.getDouble("valor_IOF"));
+        emprestimo.setOutrosCustos(rs.getDouble("outros_custos"));
         emprestimo.setDataContratacao(rs.getDate("data_contratacao").toLocalDate());
         emprestimo.setIdMotivoEncerramento(MotivosEncerramentosEmpEnum.fromValor(rs.getInt("id_motivo_encerramento")));
-        emprestimo.setJurosMora(rs.getDouble("juros_mora"));
+        emprestimo.setTaxaJurosMora(rs.getDouble("juros_mora"));
         emprestimo.setTaxaMulta(rs.getDouble("taxa_multa"));
         //TODO Adcionar metodo set para a lista de parcerlas
         return emprestimo;

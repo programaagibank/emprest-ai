@@ -1,9 +1,10 @@
 package br.com.emprestai.dao;
-
 import br.com.emprestai.database.DatabaseConnection;
 import br.com.emprestai.database.exception.ApiException;
 import br.com.emprestai.enums.VinculoEnum;
 import br.com.emprestai.model.Cliente;
+import br.com.emprestai.model.Login;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.io.IOException;
 import java.sql.*;
@@ -12,54 +13,91 @@ import java.util.List;
 
 public class ClienteDAO {
 
-    // Método para criar a tabela no banco de dados (executar uma vez)
+    // Método para verificar conexão (mantido como no original)
     public void conexao() {
-
         try (Connection conn = DatabaseConnection.getConnection();
              Statement stmt = conn.createStatement()) {
         } catch (SQLException | IOException e) {
-            throw new ApiException("Erro ao conetar com o banco: " + e.getMessage(), 500);
+            throw new ApiException("Erro ao conectar com o banco: " + e.getMessage(), 500);
         }
     }
-    // Criar cliente
-    public Cliente criar(Cliente cliente) {
-        String sql = "INSERT INTO clientes (cpf_cliente, nome_cliente, renda_mensal_liquida, data_nascimento, " +
+
+    // Criar cliente e login
+    public Cliente criar(Cliente cliente, Login login) {
+        String sqlCliente = "INSERT INTO clientes (cpf_cliente, nome_cliente, renda_mensal_liquida, data_nascimento, " +
                 "renda_familiar_liquida, qtd_pessoas_na_casa, id_tipo_cliente, score) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        String sqlLogin = "INSERT INTO login (id_cliente, username, senha) VALUES (?, ?, ?)";
 
-            stmt.setString(1, cliente.getCpfCliente());
-            stmt.setString(2, cliente.getNomecliente());
-            stmt.setBigDecimal(3, cliente.getRendaMensalLiquida());
-            stmt.setDate(4, Date.valueOf(cliente.getDataNascimento()));
-            stmt.setBigDecimal(5, cliente.getRendaFamiliarLiquida());
-            stmt.setInt(6, cliente.getQtdePessoasNaCasa());
-            stmt.setString(7, cliente.getIdTipoCliente().name());
-            stmt.setInt(8, cliente.getScore());
+        try (Connection conn = DatabaseConnection.getConnection()) {
+            conn.setAutoCommit(false); // Iniciar transação
 
-            int affectedRows = stmt.executeUpdate();
+            try {
+                // 1. Inserir o cliente
+                try (PreparedStatement stmtCliente = conn.prepareStatement(sqlCliente, Statement.RETURN_GENERATED_KEYS)) {
+                    stmtCliente.setString(1, cliente.getCpfCliente());
+                    stmtCliente.setString(2, cliente.getNomecliente());
+                    stmtCliente.setBigDecimal(3, cliente.getRendaMensalLiquida());
+                    stmtCliente.setDate(4, Date.valueOf(cliente.getDataNascimento()));
+                    stmtCliente.setBigDecimal(5, cliente.getRendaFamiliarLiquida());
+                    stmtCliente.setInt(6, cliente.getQtdePessoasNaCasa());
+                    stmtCliente.setString(7, cliente.getIdTipoCliente().name());
+                    stmtCliente.setInt(8, cliente.getScore());
 
-            if (affectedRows == 0) {
-                throw new ApiException("Falha ao criar cliente, nenhuma linha afetada.", 500);
-            }
+                    int affectedRows = stmtCliente.executeUpdate();
 
-            try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
-                if (generatedKeys.next()) {
-                    cliente.setIdCliente(generatedKeys.getLong(1));
-                } else {
-                    throw new ApiException("Falha ao criar cliente, nenhum ID obtido.", 500);
+                    if (affectedRows == 0) {
+                        throw new ApiException("Falha ao criar cliente, nenhuma linha afetada.", 500);
+                    }
+
+                    try (ResultSet generatedKeys = stmtCliente.getGeneratedKeys()) {
+                        if (generatedKeys.next()) {
+                            cliente.setIdCliente(generatedKeys.getLong(1));
+                        } else {
+                            throw new ApiException("Falha ao criar cliente, nenhum ID obtido.", 500);
+                        }
+                    }
                 }
-            }
 
-            return cliente;
-            //Adicionei o IOException para parar de reclamar erro
-        } catch (SQLException | IOException e) {
-            if (e.getMessage().contains("Duplicate entry") && e.getMessage().contains("cpf_cliente")) {
-                throw new ApiException("CPF já cadastrado no sistema", 409);
+                // 2. Inserir o login (id_login é auto-incrementado no banco)
+                String senhaCriptografada = BCrypt.hashpw(login.getSenha(), BCrypt.gensalt());
+                try (PreparedStatement stmtLogin = conn.prepareStatement(sqlLogin, Statement.RETURN_GENERATED_KEYS)) {
+                    stmtLogin.setLong(1, cliente.getIdCliente());
+                    stmtLogin.setString(2, login.getUsername());
+                    stmtLogin.setString(3, senhaCriptografada);
+
+                    int affectedRowsLogin = stmtLogin.executeUpdate();
+
+                    if (affectedRowsLogin == 0) {
+                        throw new ApiException("Falha ao criar login, nenhuma linha afetada.", 500);
+                    }
+
+                    try (ResultSet generatedKeysLogin = stmtLogin.getGeneratedKeys()) {
+                        if (generatedKeysLogin.next()) {
+                            login.setIdLogin(generatedKeysLogin.getLong(1)); // Recupera o id_login gerado
+                            login.setIdLogin(cliente.getIdCliente());
+                        } else {
+                            throw new ApiException("Falha ao criar login, nenhum ID obtido.", 500);
+                        }
+                    }
+                }
+
+                conn.commit(); // Confirmar transação
+                return cliente;
+
+            } catch (SQLException e) {
+                conn.rollback(); // Reverter em caso de erro
+                if (e.getMessage().contains("Duplicate entry") && e.getMessage().contains("cpf_cliente")) {
+                    throw new ApiException("CPF já cadastrado no sistema", 409);
+                }
+                if (e.getMessage().contains("Duplicate entry") && e.getMessage().contains("username")) {
+                    throw new ApiException("Username já cadastrado no sistema", 409);
+                }
+                throw new ApiException("Erro ao criar cliente e login: " + e.getMessage(), 500);
             }
-            throw new ApiException("Erro ao criar cliente: " + e.getMessage(), 500);
+        } catch (SQLException | IOException e) {
+            throw new ApiException("Erro ao conectar ou executar transação: " + e.getMessage(), 500);
         }
     }
 
@@ -77,7 +115,6 @@ public class ClienteDAO {
             }
 
             return clientes;
-            //Adicionei o IOException para parar de reclamar erro
         } catch (SQLException | IOException e) {
             throw new ApiException("Erro ao buscar clientes: " + e.getMessage(), 500);
         }
@@ -99,7 +136,6 @@ public class ClienteDAO {
                     throw new ApiException("Cliente não encontrado com ID: " + id, 404);
                 }
             }
-            //Adicionei o IOException para parar de reclamar erro
         } catch (SQLException | IOException e) {
             throw new ApiException("Erro ao buscar cliente: " + e.getMessage(), 500);
         }
@@ -132,7 +168,6 @@ public class ClienteDAO {
 
             cliente.setIdCliente(id);
             return cliente;
-            //Adicionei o IOException para parar de reclamar erro
         } catch (SQLException | IOException e) {
             if (e.getMessage().contains("Entada duplicada") && e.getMessage().contains("cpf_cliente")) {
                 throw new ApiException("CPF já cadastrado para outro cliente", 409);
@@ -175,21 +210,36 @@ public class ClienteDAO {
 
     // Excluir cliente
     public void excluir(Long id) {
-        String sql = "DELETE FROM clientes WHERE id_cliente = ?";
+        String sqlLogin = "DELETE FROM login WHERE id_cliente = ?";
+        String sqlCliente = "DELETE FROM clientes WHERE id_cliente = ?";
 
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (Connection conn = DatabaseConnection.getConnection()) {
+            conn.setAutoCommit(false); // Iniciar transação
 
-            stmt.setLong(1, id);
+            try {
+                // 1. Deletar o login associado
+                try (PreparedStatement stmtLogin = conn.prepareStatement(sqlLogin)) {
+                    stmtLogin.setLong(1, id);
+                    stmtLogin.executeUpdate();
+                }
 
-            int affectedRows = stmt.executeUpdate();
+                // 2. Deletar o cliente
+                try (PreparedStatement stmtCliente = conn.prepareStatement(sqlCliente)) {
+                    stmtCliente.setLong(1, id);
+                    int affectedRows = stmtCliente.executeUpdate();
 
-            if (affectedRows == 0) {
-                throw new ApiException("Cliente não encontrado com ID: " + id, 404);
+                    if (affectedRows == 0) {
+                        throw new ApiException("Cliente não encontrado com ID: " + id, 404);
+                    }
+                }
+
+                conn.commit(); // Confirmar transação
+            } catch (SQLException e) {
+                conn.rollback(); // Reverter em caso de erro
+                throw new ApiException("Erro ao excluir cliente: " + e.getMessage(), 500);
             }
-            //Adicionei o IOException para parar de reclamar erro
         } catch (SQLException | IOException e) {
-            throw new ApiException("Erro ao excluir cliente: " + e.getMessage(), 500);
+            throw new ApiException("Erro ao conectar ou executar transação: " + e.getMessage(), 500);
         }
     }
 
@@ -209,7 +259,6 @@ public class ClienteDAO {
                     throw new ApiException("Cliente não encontrado com CPF: " + cpf_cliente, 404);
                 }
             }
-            //Adicionei o IOException para parar de reclamar erro
         } catch (SQLException | IOException e) {
             throw new ApiException("Erro ao buscar cliente: " + e.getMessage(), 500);
         }

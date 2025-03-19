@@ -18,6 +18,7 @@ public class Cliente {
     private VinculoEnum idTipoCliente;
     private int score;
 
+
     @Override
     public String toString() {
         return "Cliente{" +
@@ -30,6 +31,7 @@ public class Cliente {
                 ", qtd_pessoas_na_casa=" + qtdePessoasNaCasa +
                 ", id_tipo_cliente=" + idTipoCliente +
                 ", score=" + score +
+
                 '}';
     }
 

@@ -1,20 +1,20 @@
 package br.com.emprestai.service;
 
-public class CalculoPessoal {
-    private static final double PERCENTUAL_RENDA_PESSOAL = 0.30;
-    private static final double PERCENTUAL_MULTA_ATRASO = 0.02;
-    private static final double PERCENTUAL_JUROS_MORA = 0.00033;
+import br.com.emprestai.util.EmprestimoParams;
 
-    // 12.1 Capacidade de Pagamento
+public class CalculoPessoal {
+
+    private static final EmprestimoParams params = EmprestimoParams.getInstance();
+
     public static double calculoDeCapacidadeDePagamento(double rendaLiquida) {
         if (rendaLiquida <= 0) {
             throw new IllegalArgumentException("O Valor da renda líquida não pode ser inferior a zero.");
         }
-        double capacidadeMaxima = rendaLiquida * PERCENTUAL_RENDA_PESSOAL;
+
+        double capacidadeMaxima = rendaLiquida * (params.getPercentualRendaPessoal() / 100);
         return capacidadeMaxima;
     }
 
-    // 12.3 Taxa de Juros Mensal
     public static double calculoTaxaDeJurosMensal(double score) {
         if (score <= 0 || score > 1000) {
             throw new IllegalArgumentException("Score fora da tolerância");
@@ -37,7 +37,6 @@ public class CalculoPessoal {
         return taxaMax - ((taxaMax - taxaMin) * (score - scoreMin)) / (scoreMax - scoreMin);
     }
 
-    // 12.9 Juros Mora e Multa por Atraso
     public static double calculoDeJurosMoraEMulta(double valorParcela, double diasAtraso) {
         if (valorParcela <= 0) {
             throw new IllegalArgumentException("O valor da parcela não pode ser igual a zero");
@@ -45,8 +44,9 @@ public class CalculoPessoal {
         if (diasAtraso < 0) {
             throw new IllegalArgumentException("Dias de atraso precisam ser maior do que zero");
         }
-        double multa = valorParcela * PERCENTUAL_MULTA_ATRASO;
-        double jurosMora = valorParcela * PERCENTUAL_JUROS_MORA * diasAtraso;
+
+        double multa = valorParcela * (params.getPercentualMultaAtraso() / 100);
+        double jurosMora = valorParcela * (params.getPercentualJurosMora() / 100) * diasAtraso;
         return multa + jurosMora;
     }
 }

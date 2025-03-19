@@ -15,14 +15,15 @@ public class App {
         EmprestimoController emprestimoController = new EmprestimoController();
 
         // Definir os parâmetros para a simulação
-        Long idCliente = 1L;              // ID do cliente
-        double valorEmprestimo = 5000.00;           // Valor do empréstimo
-        TipoEmpEnum tipoEmp = TipoEmpEnum.CONSIGNADO; // Tipo de empréstimo (supondo que o enum tenha CONSIGNADO e PESSOAL)
-        int parcelas = 24;                          // Quantidade de parcelas
-        boolean contratarSeguro = true;             // Contratar seguro?
+        Long idCliente = 1L; // ID do cliente
+        double valorEmprestimo = 5000.00; // Valor do empréstimo
+        TipoEmpEnum tipoEmp = TipoEmpEnum.CONSIGNADO; // Tipo de empréstimo (supondo que o enum tenha CONSIGNADO e
+                                                      // PESSOAL)
+        int parcelas = 24; // Quantidade de parcelas
+        boolean contratarSeguro = true; // Contratar seguro?
         LocalDate dataInicioPagamento = LocalDate.of(2025, 4, 1); // Data de início do pagamento (1º de abril de 2025)
 
-        // Chamar o método simularEmprestimo
+        // Chamar o metodo simularEmprestimo
         Map<String, Object> resultado = emprestimoController.obterEmprestimo(
                 idCliente, valorEmprestimo, tipoEmp, parcelas, contratarSeguro, dataInicioPagamento);
 

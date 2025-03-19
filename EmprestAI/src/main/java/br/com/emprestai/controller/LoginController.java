@@ -12,7 +12,7 @@ public class LoginController {
         // Passo 1: Buscar o cliente
         LoginDAO loginDao = new LoginDAO();
 
-        Login login = loginDao.buscarPorUsuario("42218555840");
+        Login login = loginDao.buscarPorUsuario(CPF);
         if (login == null) {
             throw new IllegalArgumentException("Erro: Cliente não encontrado");
         }

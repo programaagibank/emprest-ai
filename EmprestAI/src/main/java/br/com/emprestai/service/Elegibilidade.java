@@ -120,10 +120,10 @@ public class Elegibilidade {
     }
 
     // Verificação da elegibilidade para empréstimo pessoal
-    public static boolean verificarElegibilidadePessoal(double rendaLiquida, double parcela, int idade, int parcelas, int score) {
-        if (rendaLiquida <= 0 || parcela <= 0) return false;
+    public static boolean verificarElegibilidadePessoal(double rendaLiquida, double valorParcela, int idade, int parcelas, int score) {
+        if (rendaLiquida <= 0 || valorParcela <= 0) return false;
         return verificarRendaMinimaPessoal(rendaLiquida) &&
-                verificarComprometimentoPessoal(parcela, rendaLiquida) &&
+                verificarComprometimentoPessoal(valorParcela, rendaLiquida) &&
                 verificarIdadePessoal(idade, parcelas) &&
                 verificarScorePessoal(score) &&
                 verificarParcelasPessoal(parcelas, score);

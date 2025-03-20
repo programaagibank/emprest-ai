@@ -205,6 +205,7 @@ public class Menu {
             System.out.println("Tipo de Cliente: " + cliente.getTipoCliente());
         }
         System.out.println("Valor do Empréstimo: R$ " + emprestimo.getValorEmprestimo());
+        System.out.println("Valor do Total: R$ " + emprestimo.getValorTotal());
         System.out.println("Quantidade de Parcelas: " + emprestimo.getQuantidadeParcelas());
         System.out.println("Taxa de Juros Mensal: " + emprestimo.getJuros() + "%");
         System.out.println("Valor por Parcela: R$ " + emprestimo.getValorParcela());

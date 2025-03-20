@@ -4,27 +4,30 @@ import br.com.emprestai.enums.VinculoEnum;
 
 import java.time.LocalDate;
 
+import java.time.LocalDate;
+
 public class Cliente {
 
     // Atributos
     private Long idCliente; // Autoincrementado no banco
-    private String cpfCliente; // Mantido como atributo secundário
+    private String cpfCliente; // Usado como identificador de login
     private String nomecliente;
     private double rendaMensalLiquida;
     private LocalDate dataNascimento;
     private double rendaFamiliarLiquida;
     private int qtdePessoasNaCasa;
-    private VinculoEnum idTipoCliente;
+    private VinculoEnum tipoCliente;
     private int score;
+    private String senha; // Mantido para login
 
     // Construtor vazio
     public Cliente() {
     }
 
-    // Construtor com parâmetros
+    // Construtor com parâmetros (sem senha)
     public Cliente(String cpfCliente, String nomecliente, double rendaMensalLiquida,
-            LocalDate dataNascimento, double rendaFamiliarLiquida, int qtdePessoasNaCasa, VinculoEnum idTipoCliente,
-            int score) {
+                   LocalDate dataNascimento, double rendaFamiliarLiquida, int qtdePessoasNaCasa,
+                   VinculoEnum tipoCliente, int score) {
 
         this.cpfCliente = cpfCliente;
         this.nomecliente = nomecliente;
@@ -32,8 +35,18 @@ public class Cliente {
         this.dataNascimento = dataNascimento;
         this.rendaFamiliarLiquida = rendaFamiliarLiquida;
         this.qtdePessoasNaCasa = qtdePessoasNaCasa;
-        this.idTipoCliente = idTipoCliente;
+        this.tipoCliente = tipoCliente;
         this.score = score;
+    }
+
+    // Construtor com todos os parâmetros incluindo senha
+    public Cliente(String cpfCliente, String nomecliente, double rendaMensalLiquida,
+                   LocalDate dataNascimento, double rendaFamiliarLiquida, int qtdePessoasNaCasa,
+                   VinculoEnum tipoCliente, int score, String senha) {
+
+        this(cpfCliente, nomecliente, rendaMensalLiquida, dataNascimento, rendaFamiliarLiquida,
+                qtdePessoasNaCasa, tipoCliente, score);
+        this.senha = senha;
     }
 
     // Getters e Setters
@@ -93,12 +106,12 @@ public class Cliente {
         this.qtdePessoasNaCasa = qtdePessoasNaCasa;
     }
 
-    public VinculoEnum getIdTipoCliente() {
-        return idTipoCliente;
+    public VinculoEnum getTipoCliente() {
+        return tipoCliente;
     }
 
-    public void setIdTipoCliente(VinculoEnum idTipoCliente) {
-        this.idTipoCliente = idTipoCliente;
+    public void setTipoCliente(VinculoEnum tipoCliente) {
+        this.tipoCliente = tipoCliente;
     }
 
     public int getScore() {
@@ -112,6 +125,14 @@ public class Cliente {
         this.score = score;
     }
 
+    public String getSenha() {
+        return senha;
+    }
+
+    public void setSenha(String senha) {
+        this.senha = senha;
+    }
+
     @Override
     public String toString() {
         return "Cliente{" +
@@ -122,7 +143,7 @@ public class Cliente {
                 ", dataNascimento=" + dataNascimento +
                 ", rendaFamiliarLiquida=" + rendaFamiliarLiquida +
                 ", qtdePessoasNaCasa=" + qtdePessoasNaCasa +
-                ", idTipoCliente=" + idTipoCliente +
+                ", tipoCliente=" + tipoCliente +
                 ", score=" + score +
                 '}';
     }

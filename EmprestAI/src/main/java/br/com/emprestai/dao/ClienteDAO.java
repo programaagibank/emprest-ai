@@ -4,7 +4,6 @@ import br.com.emprestai.database.DatabaseConnection;
 import br.com.emprestai.database.exception.ApiException;
 import br.com.emprestai.enums.VinculoEnum;
 import br.com.emprestai.model.Cliente;
-import br.com.emprestai.model.Login;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.io.IOException;

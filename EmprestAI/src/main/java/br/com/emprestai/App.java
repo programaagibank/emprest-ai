@@ -1,10 +1,8 @@
 package br.com.emprestai;
 
 import br.com.emprestai.controller.ClienteController;
-import br.com.emprestai.controller.LoginController;
 import br.com.emprestai.dao.ClienteDAO;
 import br.com.emprestai.model.Cliente;
-import br.com.emprestai.model.Login;
 
 import java.io.InputStream;
 import java.time.LocalDate;

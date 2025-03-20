@@ -23,10 +23,10 @@ public class EmprestimoParams {
     private double valorMinimoConsignado = 1000.00;
 
     // Prazos
-    private double prazoMinimoPessoal = 6;
-    private double prazoMaximoPessoal = 30;
-    private double prazoMinimoConsignado = 24;
-    private double prazoMaximoConsignado = 94;
+    private int prazoMinimoPessoal = 6;
+    private int prazoMaximoPessoal = 30;
+    private int prazoMinimoConsignado = 24;
+    private int prazoMaximoConsignado = 94;
 
     // Carências
     private double carenciaMaximaPessoal = 30;
@@ -140,35 +140,35 @@ public class EmprestimoParams {
         this.valorMinimoConsignado = valorMinimoConsignado;
     }
 
-    public double getPrazoMinimoPessoal() {
+    public int getPrazoMinimoPessoal() {
         return prazoMinimoPessoal;
     }
 
-    public void setPrazoMinimoPessoal(double prazoMinimoPessoal) {
+    public void setPrazoMinimoPessoal(int prazoMinimoPessoal) {
         this.prazoMinimoPessoal = prazoMinimoPessoal;
     }
 
-    public double getPrazoMaximoPessoal() {
+    public int getPrazoMaximoPessoal() {
         return prazoMaximoPessoal;
     }
 
-    public void setPrazoMaximoPessoal(double prazoMaximoPessoal) {
+    public void setPrazoMaximoPessoal(int prazoMaximoPessoal) {
         this.prazoMaximoPessoal = prazoMaximoPessoal;
     }
 
-    public double getPrazoMinimoConsignado() {
+    public int getPrazoMinimoConsignado() {
         return prazoMinimoConsignado;
     }
 
-    public void setPrazoMinimoConsignado(double prazoMinimoConsignado) {
+    public void setPrazoMinimoConsignado(int prazoMinimoConsignado) {
         this.prazoMinimoConsignado = prazoMinimoConsignado;
     }
 
-    public double getPrazoMaximoConsignado() {
+    public int getPrazoMaximoConsignado() {
         return prazoMaximoConsignado;
     }
 
-    public void setPrazoMaximoConsignado(double prazoMaximoConsignado) {
+    public void setPrazoMaximoConsignado(int prazoMaximoConsignado) {
         this.prazoMaximoConsignado = prazoMaximoConsignado;
     }
 

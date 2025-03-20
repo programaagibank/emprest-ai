@@ -1,92 +1,111 @@
-
 package br.com.emprestai.controller;
 
 import br.com.emprestai.enums.TipoEmpEnum;
 import br.com.emprestai.dao.ClienteDAO;
-//import br.com.emprestai.dao.EmprestimoDAO;
+import br.com.emprestai.dao.EmprestimoDAO;
 import br.com.emprestai.model.Cliente;
 import br.com.emprestai.model.Emprestimo;
 import br.com.emprestai.service.CalculadoraEmprestimo;
+import br.com.emprestai.service.CalculoConsignado;
+import br.com.emprestai.service.CalculoPessoal;
+import br.com.emprestai.service.Elegibilidade;
 
-import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.Map;
+import static br.com.emprestai.enums.StatusEmpEnum.APROVADO;
+import static br.com.emprestai.enums.StatusEmpEnum.NEGADO;
+import static java.time.temporal.ChronoUnit.DAYS;
+import static java.time.temporal.ChronoUnit.YEARS;
 
 public class EmprestimoController {
-    private ClienteDAO clienteDAO = new ClienteDAO();
-    //private EmprestimoDAO emprestimoDAO = new EmprestimoDAO();
+    private final ClienteDAO clienteDAO;
+    private final EmprestimoDAO emprestimoDAO;
 
-    // Metodo genérico para obter os dados do empréstimo (antigo simularEmprestimo)
-    public Map<String, Object> obterEmprestimo(Long idCliente, double valorEmprestimo, TipoEmpEnum tipoEmp,
-                                               int parcelas, boolean contratarSeguro, LocalDate dataInicioPagamento) {
-        Emprestimo emprestimo = new Emprestimo();
-        emprestimo.setDataContratacao(LocalDate.now());
-        emprestimo.setDataInicio(dataInicioPagamento);
-        emprestimo.setValorEmprestimo(valorEmprestimo);
-        emprestimo.setIdTipoEmprestimo(tipoEmp.getValor());
-        emprestimo.setQuantidadeParcelas(parcelas);
-        emprestimo.setContratarSeguro(contratarSeguro);
-        Map<String, Object> response = new HashMap<>();
-
-//        try {
-            // Passo 1: Buscar o cliente
-            Cliente cliente = clienteDAO.buscarPorId(idCliente);
-            if (cliente == null) {
-                throw new IllegalArgumentException("Erro: Cliente não encontrado");
-            }
-
-            // Passo 2: Definir taxa de juros
-            //TODO taxa de juros será retornado pelos metodos do service, eu passaria informações do cliente e retornaria taxa de juros
-
-            double taxaJurosMensal = 1.80;
-            emprestimo.setJuros(taxaJurosMensal);
-
-            // Passo 3: Calcular o contrato usando CalculadoraEmprestimo
-            CalculadoraEmprestimo.contratoPrice(emprestimo, cliente.getDataNascimento());
-
-            // Passo 4: Montar a resposta
-            response.put("idCliente", idCliente);
-            response.put("cliente", cliente);
-            response.put("emprestimo", emprestimo.toString());
-
-//        } catch (IllegalArgumentException e) {
-//            response.put("mensagem", e.getMessage());
-//        } catch (Exception e) {
-//            response.put("mensagem", "Tentativa de obter empréstimo falhou: " + e.getMessage());
-//        }
-
-        return response;
+    // Construtor com injeção de dependências
+    public EmprestimoController(ClienteDAO clienteDAO, EmprestimoDAO emprestimoDAO) {
+        this.clienteDAO = clienteDAO;
+        this.emprestimoDAO = emprestimoDAO;
     }
 
-    // Metodo para conceder o empréstimo, reutilizando obterEmprestimo
-    public Map<String, Object> concederEmprestimo(Long idCliente, double valorEmprestimo, TipoEmpEnum tipoEmp,
-                                                  int parcelas, boolean contratarSeguro, LocalDate dataInicioPagamento) {
-        Map<String, Object> response = new HashMap<>();
-
+    public Emprestimo obterEmprestimo(Cliente cliente, Emprestimo emprestimo) {
         try {
-            // Passo 1: Obter os dados do empréstimo
-            Map<String, Object> dadosEmprestimo = obterEmprestimo(idCliente, valorEmprestimo, tipoEmp, parcelas,
-                    contratarSeguro, dataInicioPagamento);
+            // Tipo do Emprestimo
+            TipoEmpEnum tipoEmp = emprestimo.getTipoEmprestimo();
 
-            // Passo 2: Criar o objeto Emprestimo para salvar no banco
-            //TODO criar um emprestimo
+            int carenciaEmDias = (int) DAYS.between(emprestimo.getDataContratacao(), emprestimo.getDataInicio());
 
-            // Passo 3: Salvar no banco
-            // Long idEmprestimo = emprestimoDAO.salvar(emprestimo);
-            //emprestimo.setId(idEmprestimo);
+            // Passo 3: Chamar o processamento específico
+            boolean elegivel = switch (tipoEmp) {
+                case PESSOAL -> processarEmprestimoPessoal(cliente, emprestimo);
+                case CONSIGNADO -> processarEmprestimoConsignado(cliente, emprestimo, carenciaEmDias);
+                default -> throw new IllegalArgumentException("Tipo de empréstimo inválido.");
+            };
 
-            long idEmprestimo = 0;
-            // Passo 4: Montar a resposta com informações adicionais
-            response.putAll(dadosEmprestimo); // Copia todos os dados obtidos
-            response.put("idEmprestimo", idEmprestimo);
-            response.put("dataConcessao", LocalDate.now());
+            // Definir se o empréstimo é elegível
+            emprestimo.setStatusEmprestimo(elegivel ? APROVADO : NEGADO);
 
         } catch (Exception e) {
-            response.put("mensagem", "Erro ao conceder o empréstimo: " + e.getMessage());
+            throw new RuntimeException("Erro ao processar empréstimo: " + e.getMessage(), e);
         }
 
-        return response;
+        return emprestimo;
     }
 
+    // Metodo para conceder o empréstimo
+    public Emprestimo salvarEmprestimo(Emprestimo emprestimo) {
+        try {
 
+            if (emprestimo.getStatusEmprestimo() == NEGADO) {
+                throw new IllegalStateException("Empréstimo não é elegível para concessão.");
+            }
+
+            // Salvar no banco e obter o ID
+            Emprestimo idEmprestimo = emprestimoDAO.criarEmp(emprestimo);
+
+            return emprestimo;
+
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao conceder empréstimo: " + e.getMessage(), e);
+        }
+    }
+
+    private boolean processarEmprestimoPessoal(Cliente cliente, Emprestimo emprestimo) {
+        double rendaLiquida = cliente.getRendaMensalLiquida();
+        int idade = (int) YEARS.between(cliente.getDataNascimento(), emprestimo.getDataContratacao());
+
+        double taxaJurosMensal = CalculoPessoal.calculoTaxaDeJurosMensal(cliente.getScore());
+        emprestimo.setJuros(taxaJurosMensal);
+
+        CalculadoraEmprestimo.contratoPrice(emprestimo, cliente.getDataNascimento());
+
+        return Elegibilidade.verificarElegibilidadePessoal(
+                rendaLiquida,
+                emprestimo.getValorParcela(),
+                idade,
+                emprestimo.getQuantidadeParcelas(),
+                cliente.getScore()
+        );
+    }
+
+    private boolean processarEmprestimoConsignado(Cliente cliente, Emprestimo emprestimo, int carenciaEmDias) {
+        double rendaLiquida = cliente.getRendaMensalLiquida();
+        int idade = (int) YEARS.between(cliente.getDataNascimento(), emprestimo.getDataContratacao());
+
+        // Obter parcelas ativas do cliente
+        double parcelasAtivas = 0;
+
+        double taxaJurosMensal = CalculoConsignado.calcularTaxaJurosMensal(emprestimo.getQuantidadeParcelas());
+        emprestimo.setJuros(taxaJurosMensal);
+
+        CalculadoraEmprestimo.contratoPrice(emprestimo, cliente.getDataNascimento());
+
+        return Elegibilidade.verificarElegibilidadeConsignado(
+                rendaLiquida,
+                emprestimo.getValorParcela(),
+                parcelasAtivas,
+                idade,
+                emprestimo.getQuantidadeParcelas(),
+                taxaJurosMensal,
+                cliente.getIdTipoCliente(),
+                carenciaEmDias
+        );
+    }
 }

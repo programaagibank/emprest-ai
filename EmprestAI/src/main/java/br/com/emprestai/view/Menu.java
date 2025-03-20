@@ -2,9 +2,13 @@ package br.com.emprestai.service;
 
 import br.com.emprestai.App;
 import br.com.emprestai.controller.ClienteController;
+import br.com.emprestai.controller.EmprestimoController;
 import br.com.emprestai.dao.ClienteDAO;
+import br.com.emprestai.dao.EmprestimoDAO;
+import br.com.emprestai.enums.TipoEmpEnum;
 import br.com.emprestai.enums.VinculoEnum;
 import br.com.emprestai.model.Cliente;
+import br.com.emprestai.model.Emprestimo;
 import br.com.emprestai.util.EmprestimoParams;
 import java.io.InputStream;
 import java.time.LocalDate;
@@ -48,7 +52,7 @@ public class Menu {
         System.out.print("Escolha uma opção: ");
     }
 
-    public boolean exibirLogin() {
+    public Cliente exibirLogin() {
         System.out.println("Digite seu CPF:"); // Ajustado para CPF
         String cpf = scanner.nextLine();
         System.out.println("Digite sua senha:");
@@ -62,30 +66,14 @@ public class Menu {
             } catch (Exception e) {
                 System.out.println("Bem-vindo ao sistema!");
             }
-            return true;
+            return cliente;
         } else {
             System.out.println("CPF ou senha incorretos.");
-            return false;
+            return null;
         }
     }
 
-    public void mostrarMenuConsignado() {
-        System.out.println("Bem-vindo ao Gerenciador de Empréstimos para Empréstimo Consignados");
-        System.out.println("Escolha uma opção:");
-        System.out.println("1. Simular Empréstimo Consignado");
-        System.out.println("2. Buscar Seu Empréstimos Consignado");
-        System.out.println("0. Voltar ao menu anterior");
-    }
-
-    public void mostrarMenuPessoal() {
-        System.out.println("Bem-vindo ao Gerenciador de Empréstimos para Empréstimo Pessoal");
-        System.out.println("Escolha uma opção:");
-        System.out.println("1. Simular Empréstimo Pessoal");
-        System.out.println("2. Buscar Seu Empréstimo Pessoal");
-        System.out.println("0. Voltar ao menu anterior");
-    }
-
-    public boolean exibirCriarUsuario() {
+    public Cliente exibirCriarUsuario() {
         System.out.println("\n===== Criar Novo Usuário =====");
 
         System.out.print("Digite o CPF: ");
@@ -109,7 +97,7 @@ public class Menu {
             dataNascimento = LocalDate.parse(dataInput, formatter);
         } catch (DateTimeParseException e) {
             System.out.println("Formato de data inválido. Use o formato dd/mm/aaaa (ex.: 20/03/1990).");
-            return false;
+            return null;
         }
 
         System.out.print("Digite a renda familiar líquida: ");
@@ -141,12 +129,12 @@ public class Menu {
         // O score pode ser calculado automaticamente pelo controller ou DAO, então deixei fora por enquanto
 
         try {
-            clienteController.criarCliente(novoCliente);
+            Cliente cliente = clienteController.criarCliente(novoCliente);
             System.out.println("Usuário criado com sucesso!");
-            return true;
+            return cliente;
         } catch (Exception e) {
             System.out.println("Erro ao criar usuário: " + e.getMessage());
-            return false;
+            return null;
         }
     }
 
@@ -157,20 +145,71 @@ public class Menu {
         System.out.println("0. Deslogar");
     }
 
-    public void simularEmprestimoConsignado() {
-        System.out.println("Simulação de Empréstimo Consignado");
-        System.out.println("Valor: R$ " + params.getValorMinimoConsignado());
-        System.out.println("Taxa de juros: " + params.getJurosMinimoConsignado() + "% ao mês");
-        System.out.println("Parcelas: " + params.getPrazoMinimoConsignado() + "x de R$ "
-                + (params.getValorMinimoConsignado() / params.getPrazoMinimoConsignado()));
+    public void mostrarMenuConsignado() {
+        System.out.println("Bem-vindo ao Gerenciador de Empréstimos para Empréstimo Consignados");
+        System.out.println("Escolha uma opção:");
+        System.out.println("1. Simular Empréstimo Consignado");
+        System.out.println("2. Buscar Seu Empréstimos Consignado");
+        System.out.println("0. Voltar ao menu anterior");
     }
 
-    public void simularEmprestimoPessoal() {
-        System.out.println("Simulação de Empréstimo Pessoal");
-        System.out.println("Valor: R$ " + params.getValorMinimoPessoal());
-        System.out.println("Taxa de juros: " + params.getJurosMinimoPessoal() + "% ao mês");
-        System.out.println("Parcelas: " + params.getPrazoMinimoPessoal() + "x de R$ "
-                + (params.getValorMinimoPessoal() / params.getPrazoMinimoPessoal()));
+    public void mostrarMenuPessoal() {
+        System.out.println("Bem-vindo ao Gerenciador de Empréstimos para Empréstimo Pessoal");
+        System.out.println("Escolha uma opção:");
+        System.out.println("1. Simular Empréstimo Pessoal");
+        System.out.println("2. Buscar Seu Empréstimo Pessoal");
+        System.out.println("0. Voltar ao menu anterior");
+    }
+
+
+    public void simularEmprestimo(Cliente cliente, TipoEmpEnum tipoEmp) {
+        Scanner scanner = new Scanner(System.in);
+
+        // === Dados do Empréstimo ===
+        Emprestimo emprestimo = new Emprestimo();
+        emprestimo.setTipoEmprestimo(tipoEmp);
+
+        System.out.print("Digite o valor do empréstimo (ex.: 10000.0): ");
+        emprestimo.setValorEmprestimo(scanner.nextDouble());
+
+        System.out.print("Digite a quantidade de parcelas (ex.: 12): ");
+        emprestimo.setQuantidadeParcelas(scanner.nextInt());
+        scanner.nextLine(); // Consumir o \n após nextInt
+
+        System.out.print("Contratar seguro? Digite S ou N: ");
+        String seguro = scanner.nextLine();
+        if(seguro.equalsIgnoreCase("S")){
+            emprestimo.setContratarSeguro(true);
+        } else if(seguro.equalsIgnoreCase("N")) {
+            emprestimo.setContratarSeguro(false);
+        } else {
+            throw new IllegalArgumentException("Opção inválida!");
+        }
+
+        System.out.print("Digite os dias de carência até o início (ex.: 30): ");
+        int diasCarencia = scanner.nextInt();
+        emprestimo.setDataContratacao(LocalDate.now());
+        emprestimo.setDataInicio(LocalDate.now().plusDays(diasCarencia));
+
+        // === Cálculo da Simulação ===
+        EmprestimoController emprestimoController = new EmprestimoController(new ClienteDAO(), new EmprestimoDAO());
+        emprestimoController.obterEmprestimo(cliente, emprestimo);
+        // === Exibição dos Resultados ===
+        System.out.println("\nResultado da simulação:");
+        System.out.println("Tipo: " + emprestimo.getTipoEmprestimo());
+        System.out.println("Renda Mensal Líquida: R$ " + cliente.getRendaMensalLiquida());
+        System.out.println("Idade: " + (LocalDate.now().getYear() - cliente.getDataNascimento().getYear()));
+        if (tipoEmp == TipoEmpEnum.PESSOAL) {
+            System.out.println("Score: " + cliente.getScore());
+        } else {
+            System.out.println("Tipo de Cliente: " + cliente.getTipoCliente());
+        }
+        System.out.println("Valor do Empréstimo: R$ " + emprestimo.getValorEmprestimo());
+        System.out.println("Quantidade de Parcelas: " + emprestimo.getQuantidadeParcelas());
+        System.out.println("Taxa de Juros Mensal: " + emprestimo.getJuros() + "%");
+        System.out.println("Valor por Parcela: R$ " + emprestimo.getValorParcela());
+        System.out.println("Data de Contratação: " + emprestimo.getDataContratacao());
+        System.out.println("Data de Início: " + emprestimo.getDataInicio());
     }
 
     public void fazerEmprestimoConsignado() {

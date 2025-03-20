@@ -36,10 +36,7 @@ public class ElegibilidadeConsignado {
 
     // 11.1.4 Taxa de Juros
     public static void verificarTaxaJurosEmprestimoConsig(double juros) {
-        if (juros < 0.0180) throw new ValidationException("Taxa de juros abaixo do mínimo permitido (1.80%).");
-        if (juros > 0.0214) throw new ValidationException("Taxa de juros acima do máximo permitido (2.14%).");
-
-        if (juros < params.getJurosMinimoConsignado() || juros > params.getJurosMaximoConsignado()) {
+        if (juros < params.getJurosMinimoConsignado()/100 || juros > params.getJurosMaximoConsignado()/100) {
             throw new ValidationException("Taxa de juros fora do intervalo permitido pelo sistema.");
         }
     }

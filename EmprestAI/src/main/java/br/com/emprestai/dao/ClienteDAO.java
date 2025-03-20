@@ -25,7 +25,7 @@ public class ClienteDAO {
         }
 
         String sqlCliente = "INSERT INTO clientes (cpf_cliente, nome_cliente, renda_mensal_liquida, data_nascimento, " +
-                "renda_familiar_liquida, qtd_pessoas_na_casa, id_tipo_cliente, score, senha) " +
+                "renda_familiar_liquida, qtd_pessoas_na_casa, id_tipo_cliente, score, senha_acesso) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = DatabaseConnection.getConnection()) {
@@ -259,6 +259,7 @@ public class ClienteDAO {
         cliente.setDataNascimento(rs.getDate("data_nascimento").toLocalDate());
         cliente.setRendaFamiliarLiquida(rs.getDouble("renda_familiar_liquida"));
         cliente.setQtdePessoasNaCasa(rs.getInt("qtd_pessoas_na_casa"));
+        cliente.setSenha(rs.getString("senha_acesso"));
 
         int tipoClienteValue = rs.getInt("id_tipo_cliente");
         cliente.setTipoCliente(VinculoEnum.fromValor(tipoClienteValue));

@@ -1,26 +1,33 @@
 package br.com.emprestai;
 
+import br.com.emprestai.enums.TipoEmpEnum;
+import br.com.emprestai.service.Menu;
 
-
-import br.com.emprestai.service.LoginService;
 import java.util.Scanner;
+
+import static br.com.emprestai.enums.TipoEmpEnum.CONSIGNADO;
+import static br.com.emprestai.enums.TipoEmpEnum.PESSOAL;
 
 public class App {
     public static void main(String[] args) {
-        LoginService loginService = new LoginService();
+        Menu menu = new Menu();
         Scanner scanner = new Scanner(System.in);
 
-        loginService.carregarPropriedadesBanco(); // Novo método a ser adicionado
+        menu.carregarPropriedadesBanco(); // Novo mwtodo a ser adicionado
 
         while (true) {
-            loginService.mostrarMenuPrincipal(); // Novo método a ser adicionado
+            menu.mostrarMenuPrincipal(); // Novo metodo a ser adicionado
             int opcao = Integer.parseInt(scanner.nextLine());
 
             switch (opcao) {
                 case 1 -> {
-                    if (loginService.exibirLogin()) {
-                        loginService.mostrarMenu();
-                        handleMenuEmprestimos(loginService, scanner);
+                    if (menu.exibirLogin()) {
+                        mostrarTipoEmprestimo(menu, scanner);
+                    }
+                }
+                case 2 -> {
+                    if (menu.exibirCriarUsuario()) {
+                        mostrarTipoEmprestimo(menu, scanner);
                     }
                 }
                 case 0 -> {
@@ -33,19 +40,45 @@ public class App {
         }
     }
 
-    private static void handleMenuEmprestimos(LoginService loginService, Scanner scanner) {
+    private static void mostrarTipoEmprestimo(Menu menu, Scanner scanner) {
         while (true) {
+            menu.mostrarTelaTipoEmprestimo();
             int opcao = Integer.parseInt(scanner.nextLine());
             switch (opcao) {
-                case 1 -> loginService.exibirLogin();
-                case 2 -> loginService.simularEmprestimoConsignado();
-                case 3 -> loginService.simularEmprestimoPessoal();
-                case 4 -> loginService.fazerEmprestimoConsignado();
-                case 5 -> loginService.fazerEmprestimoPessoal();
-                case 6 -> loginService.buscarEmprestimo();
+                case 1 -> handleMenuEmprestimos(menu, scanner, CONSIGNADO);
+                case 2 -> handleMenuEmprestimos(menu, scanner, PESSOAL);
                 case 0 -> { return; }
                 default -> System.out.println("Opção inválida.");
             }
+        }
+    }
+
+    private static void handleMenuEmprestimos(Menu menu, Scanner scanner, TipoEmpEnum tipoEmp) {
+        while (true) {
+            if(tipoEmp == CONSIGNADO){
+                menu.mostrarMenuConsignado();
+                int opcao = Integer.parseInt(scanner.nextLine());
+                switch (opcao) {
+                    case 1 -> menu.exibirLogin();
+                    case 2 -> menu.simularEmprestimoConsignado();
+                    case 3 -> menu.buscarEmprestimo();
+                    case 0 -> { return; }
+                    default -> System.out.println("Opção inválida.");
+                }
+            } else if(tipoEmp == PESSOAL) {
+                menu.mostrarMenuPessoal();
+                int opcao = Integer.parseInt(scanner.nextLine());
+                switch (opcao) {
+                    case 1 -> menu.exibirLogin();
+                    case 2 -> menu.simularEmprestimoPessoal();
+                    case 3 -> menu.buscarEmprestimo();
+                    case 0 -> { return; }
+                    default -> System.out.println("Opção inválida.");
+                }
+            } else {
+                System.out.println("Opção inválida.");
+            }
+
         }
     }
 }

@@ -4,11 +4,13 @@ import br.com.emprestai.enums.VinculoEnum;
 
 import java.time.LocalDate;
 
+import java.time.LocalDate;
+
 public class Cliente {
 
     // Atributos
     private Long idCliente; // Autoincrementado no banco
-    private String cpfCliente; // Mantido como atributo secundário
+    private String cpfCliente; // Usado como identificador de login
     private String nomecliente;
     private double rendaMensalLiquida;
     private LocalDate dataNascimento;
@@ -16,16 +18,16 @@ public class Cliente {
     private int qtdePessoasNaCasa;
     private VinculoEnum tipoCliente;
     private int score;
-    private String senha;
+    private String senha; // Mantido para login
 
     // Construtor vazio
     public Cliente() {
     }
 
-    // Construtor com parâmetros
+    // Construtor com parâmetros (sem senha)
     public Cliente(String cpfCliente, String nomecliente, double rendaMensalLiquida,
-            LocalDate dataNascimento, double rendaFamiliarLiquida, int qtdePessoasNaCasa,
-            VinculoEnum tipoCliente, int score, String senha) {
+                   LocalDate dataNascimento, double rendaFamiliarLiquida, int qtdePessoasNaCasa,
+                   VinculoEnum tipoCliente, int score) {
 
         this.cpfCliente = cpfCliente;
         this.nomecliente = nomecliente;
@@ -35,6 +37,15 @@ public class Cliente {
         this.qtdePessoasNaCasa = qtdePessoasNaCasa;
         this.tipoCliente = tipoCliente;
         this.score = score;
+    }
+
+    // Construtor com todos os parâmetros incluindo senha
+    public Cliente(String cpfCliente, String nomecliente, double rendaMensalLiquida,
+                   LocalDate dataNascimento, double rendaFamiliarLiquida, int qtdePessoasNaCasa,
+                   VinculoEnum tipoCliente, int score, String senha) {
+
+        this(cpfCliente, nomecliente, rendaMensalLiquida, dataNascimento, rendaFamiliarLiquida,
+                qtdePessoasNaCasa, tipoCliente, score);
         this.senha = senha;
     }
 
@@ -99,7 +110,7 @@ public class Cliente {
         return tipoCliente;
     }
 
-    public void setipoCliente(VinculoEnum tipoCliente) {
+    public void setTipoCliente(VinculoEnum tipoCliente) {
         this.tipoCliente = tipoCliente;
     }
 
@@ -113,6 +124,7 @@ public class Cliente {
         }
         this.score = score;
     }
+
     public String getSenha() {
         return senha;
     }

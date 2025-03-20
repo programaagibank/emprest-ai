@@ -1,6 +1,5 @@
 package br.com.emprestai.service;
 
-import br.com.emprestai.controller.LoginController;
 import br.com.emprestai.database.DatabaseConnection;
 import br.com.emprestai.util.EmprestimoParams;
 

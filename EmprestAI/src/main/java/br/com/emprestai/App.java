@@ -51,15 +51,15 @@ public class App {
                     System.out.print("Digite a senha: ");
                     String senha = scanner.nextLine();
 
-                    try {
-                        if (LoginController.validaLogin(cpf, senha)) {
-                            System.out.println("Login realizado com sucesso!");
-                        } else {
-                            System.out.println("CPF ou senha inválidos.");
-                        }
-                    } catch (Exception e) {
-                        System.out.println("Erro: " + e.getMessage());
-                    }
+//                    try {
+//                        if (LoginController.validaLogin(cpf, senha)) {
+//                            System.out.println("Login realizado com sucesso!");
+//                        } else {
+//                            System.out.println("CPF ou senha inválidos.");
+//                        }
+//                    } catch (Exception e) {
+//                        System.out.println("Erro: " + e.getMessage());
+//                    }
                 }
                 case 2 -> {
                     System.out.print("Digite o CPF: ");
@@ -80,7 +80,7 @@ public class App {
 
                     try {
                         Cliente novoCliente = new Cliente(cpf, nome, rendaMensal, dataNascimento, 0, 0, null, 0);
-                        Login login = LoginController.criarLogin(cpf, senha);
+//                        Login login = LoginController.criarLogin(cpf, senha);
                         clienteController.criarCliente(novoCliente);
                         System.out.println("Cliente cadastrado com sucesso!");
                     } catch (Exception e) {

@@ -1,33 +1,99 @@
 package br.com.emprestai;
 
-import br.com.emprestai.controller.EmprestimoController;
-import br.com.emprestai.enums.TipoEmpEnum;
+import br.com.emprestai.controller.ClienteController;
+import br.com.emprestai.controller.LoginController;
+import br.com.emprestai.dao.ClienteDAO;
+import br.com.emprestai.model.Cliente;
+import br.com.emprestai.model.Login;
 
+import java.io.InputStream;
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Map;
-
-import static br.com.emprestai.enums.TipoEmpEnum.CONSIGNADO;
+import java.util.Properties;
+import java.util.Scanner;
 
 public class App {
     public static void main(String[] args) {
-        // Instanciar o EmprestimoController
-        EmprestimoController emprestimoController = new EmprestimoController();
+        // Carregar propriedades do banco de dados
+        Properties properties = new Properties();
+        try (InputStream input = App.class.getClassLoader().getResourceAsStream("database.properties")) {
+            if (input == null) {
+                throw new RuntimeException("Arquivo database.properties não encontrado no classpath.");
+            }
+            properties.load(input);
+        } catch (Exception e) {
+            System.out.println("Erro ao carregar configurações do banco de dados: " + e.getMessage());
+            return;
+        }
 
-        // Definir os parâmetros para a simulação
-        Long idCliente = 1L; // ID do cliente
-        double valorEmprestimo = 5000.00; // Valor do empréstimo
-        TipoEmpEnum tipoEmp = TipoEmpEnum.CONSIGNADO; // Tipo de empréstimo (supondo que o enum tenha CONSIGNADO e
-                                                      // PESSOAL)
-        int parcelas = 24; // Quantidade de parcelas
-        boolean contratarSeguro = true; // Contratar seguro?
-        LocalDate dataInicioPagamento = LocalDate.of(2025, 4, 1); // Data de início do pagamento (1º de abril de 2025)
+        // Exemplo de uso das propriedades carregadas
+        String dbUrl = properties.getProperty("db.url");
+        String dbUsername = properties.getProperty("db.username");
+        String dbPassword = properties.getProperty("db.password");
 
-        // Chamar o metodo simularEmprestimo
-        Map<String, Object> resultado = emprestimoController.obterEmprestimo(
-                idCliente, valorEmprestimo, tipoEmp, parcelas, contratarSeguro, dataInicioPagamento);
+        System.out.println("Conectando ao banco de dados em: " + dbUrl);
 
-        resultado.forEach((item, valor) -> System.out.println(item + " : " + valor));
+        ClienteDAO clienteDAO = new ClienteDAO();
+        ClienteController clienteController = new ClienteController(clienteDAO);
+        Scanner scanner = new Scanner(System.in);
 
+        while (true) {
+            System.out.println("Escolha uma opção:");
+            System.out.println("1 - Logar");
+            System.out.println("2 - Cadastrar Usuário");
+            System.out.println("0 - Sair");
+            int opcao = scanner.nextInt();
+            scanner.nextLine(); // Consumir a quebra de linha
+
+            switch (opcao) {
+                case 1 -> {
+                    System.out.print("Digite o CPF: ");
+                    String cpf = scanner.nextLine();
+                    System.out.print("Digite a senha: ");
+                    String senha = scanner.nextLine();
+
+//                    try {
+//                        if (LoginController.validaLogin(cpf, senha)) {
+//                            System.out.println("Login realizado com sucesso!");
+//                        } else {
+//                            System.out.println("CPF ou senha inválidos.");
+//                        }
+//                    } catch (Exception e) {
+//                        System.out.println("Erro: " + e.getMessage());
+//                    }
+                }
+                case 2 -> {
+                    System.out.print("Digite o CPF: ");
+                    String cpf = scanner.nextLine();
+
+                    System.out.print("Digite o nome: ");
+                    String nome = scanner.nextLine();
+
+                    System.out.print("Digite a renda mensal líquida: ");
+                    double rendaMensal = scanner.nextDouble();
+
+                    scanner.nextLine(); // Consumir a quebra de linha
+                    System.out.print("Digite a data de nascimento (AAAA-MM-DD): ");
+                    LocalDate dataNascimento = LocalDate.parse(scanner.nextLine());
+
+                    System.out.print("Digite a senha: ");
+                    String senha = scanner.nextLine();
+
+                    try {
+                        Cliente novoCliente = new Cliente(cpf, nome, rendaMensal, dataNascimento, 0, 0, null, 0);
+//                        Login login = LoginController.criarLogin(cpf, senha);
+                        clienteController.criarCliente(novoCliente);
+                        System.out.println("Cliente cadastrado com sucesso!");
+                    } catch (Exception e) {
+                        System.out.println("Erro ao cadastrar cliente: " + e.getMessage());
+                    }
+                }
+                case 0 -> {
+                    System.out.println("Saindo...");
+                    scanner.close();
+                    return;
+                }
+                default -> System.out.println("Opção inválida. Tente novamente.");
+            }
+        }
     }
 }

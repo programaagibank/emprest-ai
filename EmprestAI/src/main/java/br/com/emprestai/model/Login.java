@@ -1,35 +1,52 @@
 package br.com.emprestai.model;
 
 public class Login {
-    private String usuarioBanco;
-    private String senhaBanco;
+    private Long idLogin; // Autoincrementado no banco
+    private String cpf; // Chave estrangeira para clientes
+    private String senha; // Será criptografada com Bcrypt
 
-    public Login(String usuarioBanco, String senhaBanco) {
-        this.usuarioBanco = usuarioBanco;
-        this.senhaBanco = senhaBanco;
+
+    public Login() {
     }
 
-    public String getUsuarioBanco() {
-        return usuarioBanco;
+    // Construtor com parâmetros
+    public Login(Long idLogin, String username, String senha) {
+        this.idLogin = idLogin;
+        this.cpf = username;
+        this.senha = senha;
     }
 
-    public void setUsuarioBanco(String usuarioBanco) {
-        this.usuarioBanco = usuarioBanco;
+    // Getters e Setters
+    public Long getIdLogin() {
+        return idLogin;
     }
 
-    public String getSenhaBanco() {
-        return senhaBanco;
+    public void setIdLogin(Long idLogin) {
+        this.idLogin = idLogin;
     }
 
-    public void setSenhaBanco(String senhaBanco) {
-        this.senhaBanco = senhaBanco;
+    public String getUsername() {
+        return cpf;
     }
 
-   @Override
+    public void setUsername(String username) {
+        this.cpf = username;
+    }
+
+    public String getSenha() {
+        return senha;
+    }
+
+    public void setSenha(String senha) {
+        this.senha = senha;
+    }
+
+    @Override
     public String toString() {
         return "Login{" +
-                "usuarioBanco='" + usuarioBanco + '\'' +
-                ", senhaBanco='" + senhaBanco + '\'' +
+                "id_login=" + idLogin +
+                ", username='" + cpf + '\'' +
+                ", senha='[PROTEGIDA]'" +
                 '}';
     }
 }

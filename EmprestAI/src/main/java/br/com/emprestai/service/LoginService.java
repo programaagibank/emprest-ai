@@ -1,9 +1,10 @@
 package br.com.emprestai.service;
 
 import br.com.emprestai.controller.LoginController;
-import br.com.emprestai.util.DatabaseUtil;
-import br.com.emprestai.model.Login;
+import br.com.emprestai.database.DatabaseConnection;
 import br.com.emprestai.util.EmprestimoParams;
+
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -32,7 +33,7 @@ public class LoginService {
     }
 
     private boolean authenticateUser(String usuario, String senha) {
-        try (Connection connection = DatabaseUtil.getConnection()) {
+        try (Connection connection = DatabaseConnection.getConnection() ) {
             String query = "SELECT * FROM users WHERE username = ?";
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1, usuario);
@@ -47,7 +48,7 @@ public class LoginService {
             } else {
                 return false;
             }
-        } catch (SQLException e) {
+        } catch (SQLException | IOException e) {
             e.printStackTrace();
             return false;
         }

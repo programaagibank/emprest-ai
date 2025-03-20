@@ -2,7 +2,6 @@ package br.com.emprestai.model;
 
 import br.com.emprestai.enums.VinculoEnum;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 
 public class Cliente {
@@ -11,42 +10,29 @@ public class Cliente {
     private Long idCliente; // Autoincrementado no banco
     private String cpfCliente; // Mantido como atributo secundário
     private String nomecliente;
-    private BigDecimal rendaMensalLiquida;
+    private double rendaMensalLiquida;
     private LocalDate dataNascimento;
-    private BigDecimal rendaFamiliarLiquida;
+    private double rendaFamiliarLiquida;
     private int qtdePessoasNaCasa;
     private VinculoEnum idTipoCliente;
     private int score;
-
-    @Override
-    public String toString() {
-        return "Cliente{" +
-                "id_cliente=" + idCliente +
-                ", cpf_cliente='" + cpfCliente + '\'' +
-                ", nome_cliente='" + nomecliente + '\'' +
-                ", renda_mensal_liquida=" + rendaMensalLiquida +
-                ", data_nascimento=" + dataNascimento +
-                ", renda_familiar_liquida=" + rendaFamiliarLiquida +
-                ", qtd_pessoas_na_casa=" + qtdePessoasNaCasa +
-                ", id_tipo_cliente=" + idTipoCliente +
-                ", score=" + score +
-                '}';
-    }
 
     // Construtor vazio
     public Cliente() {
     }
 
     // Construtor com parâmetros
-    public Cliente(String cpf_cliente, String nome_cliente, BigDecimal renda_mensal_liquida, LocalDate data_nascimento,
-                   BigDecimal renda_familiar_liquida, int qtd_pessoas_na_casa, VinculoEnum id_tipo_cliente, int score) {
-        this.cpfCliente = cpf_cliente;
-        this.nomecliente = nome_cliente;
-        this.rendaMensalLiquida = renda_mensal_liquida;
-        this.dataNascimento = data_nascimento;
-        this.rendaFamiliarLiquida = renda_familiar_liquida;
-        this.qtdePessoasNaCasa = qtd_pessoas_na_casa;
-        this.idTipoCliente = id_tipo_cliente;
+    public Cliente(String cpfCliente, String nomecliente, double rendaMensalLiquida,
+            LocalDate dataNascimento, double rendaFamiliarLiquida, int qtdePessoasNaCasa, VinculoEnum idTipoCliente,
+            int score) {
+
+        this.cpfCliente = cpfCliente;
+        this.nomecliente = nomecliente;
+        this.rendaMensalLiquida = rendaMensalLiquida;
+        this.dataNascimento = dataNascimento;
+        this.rendaFamiliarLiquida = rendaFamiliarLiquida;
+        this.qtdePessoasNaCasa = qtdePessoasNaCasa;
+        this.idTipoCliente = idTipoCliente;
         this.score = score;
     }
 
@@ -75,11 +61,11 @@ public class Cliente {
         this.nomecliente = nomecliente;
     }
 
-    public BigDecimal getRendaMensalLiquida() {
+    public double getRendaMensalLiquida() {
         return rendaMensalLiquida;
     }
 
-    public void setRendaMensalLiquida(BigDecimal rendaMensalLiquida) {
+    public void setRendaMensalLiquida(double rendaMensalLiquida) {
         this.rendaMensalLiquida = rendaMensalLiquida;
     }
 
@@ -91,11 +77,11 @@ public class Cliente {
         this.dataNascimento = dataNascimento;
     }
 
-    public BigDecimal getRendaFamiliarLiquida() {
+    public double getRendaFamiliarLiquida() {
         return rendaFamiliarLiquida;
     }
 
-    public void setRendaFamiliarLiquida(BigDecimal rendaFamiliarLiquida) {
+    public void setRendaFamiliarLiquida(double rendaFamiliarLiquida) {
         this.rendaFamiliarLiquida = rendaFamiliarLiquida;
     }
 
@@ -126,4 +112,18 @@ public class Cliente {
         this.score = score;
     }
 
+    @Override
+    public String toString() {
+        return "Cliente{" +
+                "idCliente=" + idCliente +
+                ", cpfCliente='" + cpfCliente + '\'' +
+                ", nomecliente='" + nomecliente + '\'' +
+                ", rendaMensalLiquida=" + rendaMensalLiquida +
+                ", dataNascimento=" + dataNascimento +
+                ", rendaFamiliarLiquida=" + rendaFamiliarLiquida +
+                ", qtdePessoasNaCasa=" + qtdePessoasNaCasa +
+                ", idTipoCliente=" + idTipoCliente +
+                ", score=" + score +
+                '}';
+    }
 }

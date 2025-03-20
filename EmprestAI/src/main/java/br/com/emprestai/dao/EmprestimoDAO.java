@@ -72,8 +72,8 @@ public class EmprestimoDAO {
             stmt.setInt(3, emprestimo.getQuantidadeParcelas());
             stmt.setDouble(4, emprestimo.getJuros());
             stmt.setDate(5, Date.valueOf(emprestimo.getDataInicio()));
-            stmt.setString(6, emprestimo.getIdStatusEmprestimo().name());
-            stmt.setInt(7, emprestimo.getIdTipoEmprestimo());
+            stmt.setString(6, emprestimo.getStatusEmprestimo().name());
+            stmt.setString(7, emprestimo.getStatusEmprestimo().name());
             stmt.setDouble(8, emprestimo.getValorSeguro());
             stmt.setDouble(9, emprestimo.getValorIOF());
             stmt.setDouble(10, emprestimo.getOutrosCustos());
@@ -102,19 +102,20 @@ public class EmprestimoDAO {
             throw new ApiException("Erro ao criar emprestimo: " + e.getMessage(), 500);
         }
     }
+
     private Emprestimo mapearResultSet(ResultSet rs) throws SQLException {
         Emprestimo emprestimo = new Emprestimo();
         emprestimo.setIdCliente(rs.getLong("id_cliente"));
         emprestimo.setIdEmprestimoOrigem(rs.getLong("id_emprestimo_origem"));
         emprestimo.setCpfCliente(rs.getString("cpf_cliente"));
-        emprestimo.setIdStatusEmprestimo(StatusEmpEnum.fromValor(rs.getInt("id_status_emprestimo")));
+        emprestimo.setStatusEmprestimo(StatusEmpEnum.fromValor(rs.getInt("id_status_emprestimo")));
         emprestimo.setIdContrato(rs.getLong("id_emprestimo"));
         emprestimo.setNomeCliente(rs.getString("nome_cliente"));
         emprestimo.setValorTotal(rs.getDouble("valor_total"));
         emprestimo.setQuantidadeParcelas(rs.getInt("quantidade_parcelas"));
         emprestimo.setJuros(rs.getDouble("juros"));
         emprestimo.setDataInicio(rs.getDate("data_inicio").toLocalDate());
-        emprestimo.setIdTipoEmprestimo(rs.getInt("id_tipo_emprestimo"));
+        emprestimo.setTipoEmprestimo(TipoEmpEnum.fromValor(rs.getInt("id_tipo_emprestimo")));
         emprestimo.setValorSeguro(rs.getDouble("valor_seguro"));
         emprestimo.setValorIOF(rs.getDouble("valor_IOF"));
         emprestimo.setOutrosCustos(rs.getDouble("outros_custos"));

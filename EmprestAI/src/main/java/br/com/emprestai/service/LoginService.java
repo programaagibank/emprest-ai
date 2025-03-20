@@ -1,13 +1,18 @@
 package br.com.emprestai.service;
 
+import br.com.emprestai.App;
+import br.com.emprestai.controller.ClienteController;
+import br.com.emprestai.dao.ClienteDAO;
 import br.com.emprestai.database.DatabaseConnection;
+import br.com.emprestai.model.Cliente;
 import br.com.emprestai.util.EmprestimoParams;
-
+import java.io.InputStream;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Properties;
 import java.util.Scanner;
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -15,38 +20,68 @@ public class LoginService {
 
     private static final Scanner scanner = new Scanner(System.in);
     private static final EmprestimoParams params = EmprestimoParams.getInstance();
+    private Properties properties = new Properties();
+    private ClienteController clienteController;
+
+    public LoginService() {
+        ClienteDAO clienteDAO = new ClienteDAO();
+        this.clienteController = new ClienteController(clienteDAO);
+    }
+
+    // Método adicionado do App.java
+    public void carregarPropriedadesBanco() {
+        try (InputStream input = App.class.getClassLoader().getResourceAsStream("database.properties")) {
+            if (input == null) {
+                throw new RuntimeException("Arquivo database.properties não encontrado no classpath.");
+            }
+            properties.load(input);
+            System.out.println("Conectando ao banco de dados em: " + properties.getProperty("db.url"));
+        } catch (Exception e) {
+            System.out.println("Erro ao carregar configurações do banco de dados: " + e.getMessage());
+        }
+    }
+
+    // Método adicionado do App.java (menu principal simplificado)
+    public void mostrarMenuPrincipal() {
+        System.out.println("\n===== Sistema de Gerenciamento de Clientes =====");
+        System.out.println("1 - Logar");
+        System.out.println("0 - Sair");
+        System.out.print("Escolha uma opção: ");
+    }
 
     public boolean exibirLogin() {
-        System.out.println("Digite seu usuário:");
-        String usuario = scanner.nextLine();
+        System.out.println("Digite seu CPF:"); // Ajustado para CPF
+        String cpf = scanner.nextLine();
         System.out.println("Digite sua senha:");
         String senha = scanner.nextLine();
 
-        if (LoginController.validaLogin(usuario, senha)) {
+        if (authenticateUser(cpf, senha)) {
             System.out.println("Login realizado com sucesso!");
+            try {
+                Cliente cliente = clienteController.buscarClientePorCPF(cpf);
+                System.out.println("Bem-vindo, " + cliente.getNomecliente() + "!");
+            } catch (Exception e) {
+                System.out.println("Bem-vindo ao sistema!");
+            }
             return true;
         } else {
-            System.out.println("Usuário ou senha incorretos.");
+            System.out.println("CPF ou senha incorretos.");
             return false;
         }
     }
 
-    private boolean authenticateUser(String usuario, String senha) {
-        try (Connection connection = DatabaseConnection.getConnection() ) {
-            String query = "SELECT * FROM users WHERE username = ?";
+    private boolean authenticateUser(String cpf, String senha) {
+        try (Connection connection = DatabaseConnection.getConnection()) {
+            String query = "SELECT * FROM users WHERE cpf = ?"; // Ajustado para CPF
             PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setString(1, usuario);
+            preparedStatement.setString(1, cpf);
             ResultSet resultSet = preparedStatement.executeQuery();
 
             if (resultSet.next()) {
-                // Obtém o hash da senha armazenada no banco de dados
                 String senhaHash = resultSet.getString("password");
-
-                // Verifica se a senha fornecida corresponde ao hash armazenado
                 return BCrypt.checkpw(senha, senhaHash);
-            } else {
-                return false;
             }
+            return false;
         } catch (SQLException | IOException e) {
             e.printStackTrace();
             return false;

@@ -1,7 +1,7 @@
 package br.com.emprestai.enums;
 
 public enum StatusEmpParcela {
-    PAGA(1), PENDENTE(2), ATRASADA(3), PAGA EM ATRASO(4);
+    PAGA(1), PENDENTE(2), ATRASADA(3), PAGA_EM_ATRASO(4);
     private final int valor;
 
     StatusEmpParcela(int valor) {this.valor = valor; }

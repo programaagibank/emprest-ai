@@ -7,11 +7,10 @@ import br.com.emprestai.enums.TipoEmpEnum;
 import java.time.LocalDate;
 import java.util.List;
 
+import static br.com.emprestai.enums.VinculoEnum.*;
+
 public class Emprestimo {
     private long idContrato;
-    private String nomeCliente;
-    private String cpfCliente;
-    private long idCliente;
     private double valorTotal;
     private double valorEmprestimo;
     private double valorParcela;
@@ -33,23 +32,15 @@ public class Emprestimo {
     private LocalDate dataLiberacaoCred;
     private Boolean contratarSeguro;
     private double taxaEfetivaMensal;
+    private Cliente cliente;
 
     //Construtor vazio
     public Emprestimo() {
     }
 
     //Construtor com parâmetros
-    public Emprestimo(long idContrato, String nomeCliente, String cpfCliente, long idCliente, double valorTotal,
-                      double valorEmprestimo, double valorParcela, int quantidadeParcelas, double juros, LocalDate dataInicio,
-                      StatusEmpEnum statusEmprestimo, TipoEmpEnum tipoEmprestimo, double valorSeguro, double valorIOF,
-                      double outrosCustos, LocalDate dataContratacao, MotivosEncerramentosEmpEnum motivoEncerramento,
-                      double taxaJurosMora, double taxaMulta, long idEmprestimoOrigem, List<Parcela> parcelaList,
-                      double saldoDevedorAtualizado, LocalDate dataLiberacaoCred, Boolean contratarSeguro,
-                      double taxaEfetivaMensal) {
+    public Emprestimo(long idContrato, double valorTotal, double valorEmprestimo, double valorParcela, int quantidadeParcelas, double juros, LocalDate dataInicio, StatusEmpEnum statusEmprestimo, TipoEmpEnum tipoEmprestimo, double valorSeguro, double valorIOF, double outrosCustos, LocalDate dataContratacao, MotivosEncerramentosEmpEnum motivoEncerramento, double taxaJurosMora, double taxaMulta, long idEmprestimoOrigem, List<Parcela> parcelaList, double saldoDevedorAtualizado, LocalDate dataLiberacaoCred, Boolean contratarSeguro, double taxaEfetivaMensal, Cliente cliente) {
         this.idContrato = idContrato;
-        this.nomeCliente = nomeCliente;
-        this.cpfCliente = cpfCliente;
-        this.idCliente = idCliente;
         this.valorTotal = valorTotal;
         this.valorEmprestimo = valorEmprestimo;
         this.valorParcela = valorParcela;
@@ -71,15 +62,9 @@ public class Emprestimo {
         this.dataLiberacaoCred = dataLiberacaoCred;
         this.contratarSeguro = contratarSeguro;
         this.taxaEfetivaMensal = taxaEfetivaMensal;
+        this.cliente = cliente;
     }
 
-    // Getters e setters
-    public long getIdCliente(){
-        return idCliente;
-    }
-    public void setIdCliente(long idCliente){
-        this.idCliente = idCliente;
-    }
 
     public long getIdContrato(){
         return idContrato;
@@ -98,6 +83,7 @@ public class Emprestimo {
     public int getQuantidadeParcelas(){
         return quantidadeParcelas;
     }
+
     public void setQuantidadeParcelas(int quantidadeParcelas){
         this.quantidadeParcelas = quantidadeParcelas;
     }
@@ -127,6 +113,7 @@ public class Emprestimo {
     public TipoEmpEnum getTipoEmprestimo(){
         return tipoEmprestimo;
     }
+
     public void setTipoEmprestimo(TipoEmpEnum tipoEmprestimo){
         this.tipoEmprestimo = tipoEmprestimo;
     }
@@ -148,6 +135,7 @@ public class Emprestimo {
     public double getOutrosCustos(){
         return outrosCustos;
     }
+
     public void setOutrosCustos(double outrosCustos){
         this.outrosCustos = outrosCustos;
     }
@@ -162,8 +150,8 @@ public class Emprestimo {
     public MotivosEncerramentosEmpEnum getIdMotivoEncerramento(){
         return motivoEncerramento;
     }
-    public void setIdMotivoEncerramento(MotivosEncerramentosEmpEnum idMotivoEncerramento){
-        this.motivoEncerramento = idMotivoEncerramento;
+    public void setMotivoEncerramento(MotivosEncerramentosEmpEnum motivoEncerramento){
+        this.motivoEncerramento = motivoEncerramento;
     }
 
     public double getTaxaJurosMora(){
@@ -187,26 +175,14 @@ public class Emprestimo {
         this.idEmprestimoOrigem = idEmprestimoOrigem;
     }
 
-    public String getCpfCliente(){
-        return cpfCliente;
-    }
-    public void setCpfCliente(String cpfCliente){
-        this.cpfCliente = cpfCliente;
-    }
-
-    public String getNomeCliente(){
-        return nomeCliente;
-    }
-    public void setNomeCliente(String nomeCliente){
-        this.nomeCliente = nomeCliente;
-    }
-
     public List<Parcela> getParcelaList() {
         return parcelaList;
     }
+
     public void setParcelaList(List<Parcela> parcelaList) {
         this.parcelaList = parcelaList;
     }
+
     public double getSaldoDevedorAtualizado() {
         return saldoDevedorAtualizado;
     }
@@ -255,13 +231,18 @@ public class Emprestimo {
         this.valorParcela = valorParcela;
     }
 
+    public Cliente getCliente() {
+        return cliente;
+    }
+
+    public void setCliente(Cliente cliente) {
+        this.cliente = cliente;
+    }
+
     @Override
     public String toString() {
         return "Emprestimo{" +
                 "idContrato=" + idContrato +
-                ", nomeCliente='" + nomeCliente + '\'' +
-                ", cpfCliente='" + cpfCliente + '\'' +
-                ", idCliente=" + idCliente +
                 ", valorTotal=" + valorTotal +
                 ", valorEmprestimo=" + valorEmprestimo +
                 ", valorParcela=" + valorParcela +
@@ -283,6 +264,7 @@ public class Emprestimo {
                 ", dataLiberacaoCred=" + dataLiberacaoCred +
                 ", contratarSeguro=" + contratarSeguro +
                 ", taxaEfetivaMensal=" + taxaEfetivaMensal +
+                ", cliente=" + cliente +
                 '}';
     }
 }

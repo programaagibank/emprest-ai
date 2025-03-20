@@ -22,9 +22,10 @@ public class Cliente {
     }
 
     // Construtor com parâmetros
-    public Cliente(Long idCliente, String cpfCliente, String nomecliente, double rendaMensalLiquida,
-                   LocalDate dataNascimento, double rendaFamiliarLiquida, int qtdePessoasNaCasa, VinculoEnum idTipoCliente, int score) {
-        this.idCliente = idCliente;
+    public Cliente(String cpfCliente, String nomecliente, double rendaMensalLiquida,
+            LocalDate dataNascimento, double rendaFamiliarLiquida, int qtdePessoasNaCasa, VinculoEnum idTipoCliente,
+            int score) {
+
         this.cpfCliente = cpfCliente;
         this.nomecliente = nomecliente;
         this.rendaMensalLiquida = rendaMensalLiquida;

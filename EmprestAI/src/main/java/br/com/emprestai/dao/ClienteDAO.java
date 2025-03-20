@@ -14,55 +14,42 @@ import java.util.List;
 
 public class ClienteDAO {
 
-    // Método para verificar conexão (mantido como no original)
-    public void conexao() {
-        try (Connection conn = DatabaseConnection.getConnection();
-                Statement stmt = conn.createStatement()) {
-        } catch (SQLException | IOException e) {
-            throw new ApiException("Erro ao conectar com o banco: " + e.getMessage(), 500);
-        }
-    }
-
-    // Criar cliente e login
     public Cliente criar(Cliente cliente, Login login) {
+        if (cliente == null || login == null) {
+            throw new IllegalArgumentException("Cliente e Login não podem ser nulos.");
+        }
+
         String sqlCliente = "INSERT INTO clientes (cpf_cliente, nome_cliente, renda_mensal_liquida, data_nascimento, " +
                 "renda_familiar_liquida, qtd_pessoas_na_casa, id_tipo_cliente, score) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-
         String sqlLogin = "INSERT INTO login (id_cliente, username, senha) VALUES (?, ?, ?)";
 
         try (Connection conn = DatabaseConnection.getConnection()) {
-            conn.setAutoCommit(false); // Iniciar transação
+            conn.setAutoCommit(false);
 
-            try {
-                // 1. Inserir o cliente
-                try (PreparedStatement stmtCliente = conn.prepareStatement(sqlCliente,
-                        Statement.RETURN_GENERATED_KEYS)) {
-                    stmtCliente.setString(1, cliente.getCpfCliente());
-                    stmtCliente.setString(2, cliente.getNomecliente());
-                    stmtCliente.setDouble(3, cliente.getRendaMensalLiquida());
-                    stmtCliente.setDate(4, Date.valueOf(cliente.getDataNascimento()));
-                    stmtCliente.setDouble(5, cliente.getRendaFamiliarLiquida());
-                    stmtCliente.setInt(6, cliente.getQtdePessoasNaCasa());
-                    stmtCliente.setString(7, cliente.getIdTipoCliente().name());
-                    stmtCliente.setInt(8, cliente.getScore());
+            try (PreparedStatement stmtCliente = conn.prepareStatement(sqlCliente, Statement.RETURN_GENERATED_KEYS)) {
+                stmtCliente.setString(1, cliente.getCpfCliente());
+                stmtCliente.setString(2, cliente.getNomecliente());
+                stmtCliente.setDouble(3, cliente.getRendaMensalLiquida());
+                stmtCliente.setDate(4, Date.valueOf(cliente.getDataNascimento()));
+                stmtCliente.setDouble(5, cliente.getRendaFamiliarLiquida());
+                stmtCliente.setInt(6, cliente.getQtdePessoasNaCasa());
+                stmtCliente.setString(7, cliente.getIdTipoCliente().name());
+                stmtCliente.setInt(8, cliente.getScore());
 
-                    int affectedRows = stmtCliente.executeUpdate();
+                int affectedRows = stmtCliente.executeUpdate();
+                if (affectedRows == 0) {
+                    throw new ApiException("Falha ao criar cliente, nenhuma linha afetada.", 500);
+                }
 
-                    if (affectedRows == 0) {
-                        throw new ApiException("Falha ao criar cliente, nenhuma linha afetada.", 500);
-                    }
-
-                    try (ResultSet generatedKeys = stmtCliente.getGeneratedKeys()) {
-                        if (generatedKeys.next()) {
-                            cliente.setIdCliente(generatedKeys.getLong(1));
-                        } else {
-                            throw new ApiException("Falha ao criar cliente, nenhum ID obtido.", 500);
-                        }
+                try (ResultSet generatedKeys = stmtCliente.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        cliente.setIdCliente(generatedKeys.getLong(1));
+                    } else {
+                        throw new ApiException("Falha ao criar cliente, nenhum ID obtido.", 500);
                     }
                 }
 
-                // 2. Inserir o login (id_login é auto-incrementado no banco)
                 String senhaCriptografada = BCrypt.hashpw(login.getSenha(), BCrypt.gensalt());
                 try (PreparedStatement stmtLogin = conn.prepareStatement(sqlLogin, Statement.RETURN_GENERATED_KEYS)) {
                     stmtLogin.setLong(1, cliente.getIdCliente());
@@ -70,26 +57,23 @@ public class ClienteDAO {
                     stmtLogin.setString(3, senhaCriptografada);
 
                     int affectedRowsLogin = stmtLogin.executeUpdate();
-
                     if (affectedRowsLogin == 0) {
                         throw new ApiException("Falha ao criar login, nenhuma linha afetada.", 500);
                     }
 
                     try (ResultSet generatedKeysLogin = stmtLogin.getGeneratedKeys()) {
                         if (generatedKeysLogin.next()) {
-                            login.setIdLogin(generatedKeysLogin.getLong(1)); // Recupera o id_login gerado
-                            login.setIdLogin(cliente.getIdCliente());
+                            login.setIdLogin(generatedKeysLogin.getLong(1)); // Mantém o ID gerado para login
                         } else {
                             throw new ApiException("Falha ao criar login, nenhum ID obtido.", 500);
                         }
                     }
                 }
 
-                conn.commit(); // Confirmar transação
+                conn.commit();
                 return cliente;
-
             } catch (SQLException e) {
-                conn.rollback(); // Reverter em caso de erro
+                conn.rollback();
                 if (e.getMessage().contains("Duplicate entry") && e.getMessage().contains("cpf_cliente")) {
                     throw new ApiException("CPF já cadastrado no sistema", 409);
                 }
@@ -145,13 +129,16 @@ public class ClienteDAO {
 
     // Atualizar cliente
     public Cliente atualizar(Long id, Cliente cliente) {
+        if (id == null || cliente == null) {
+            throw new IllegalArgumentException("ID e cliente não podem ser nulos.");
+        }
+
         String sql = "UPDATE clientes SET cpf_cliente = ?, nome_cliente = ?, renda_mensal_liquida = ?, " +
                 "data_nascimento = ?, renda_familiar_liquida = ?, qtd_pessoas_na_casa = ?, " +
                 "id_tipo_cliente = ?, score = ? WHERE id_cliente = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
                 PreparedStatement stmt = conn.prepareStatement(sql)) {
-
             stmt.setString(1, cliente.getCpfCliente());
             stmt.setString(2, cliente.getNomecliente());
             stmt.setDouble(3, cliente.getRendaMensalLiquida());
@@ -163,7 +150,6 @@ public class ClienteDAO {
             stmt.setLong(9, id);
 
             int affectedRows = stmt.executeUpdate();
-
             if (affectedRows == 0) {
                 throw new ApiException("Cliente não encontrado com ID: " + id, 404);
             }
@@ -171,7 +157,7 @@ public class ClienteDAO {
             cliente.setIdCliente(id);
             return cliente;
         } catch (SQLException | IOException e) {
-            if (e.getMessage().contains("Entada duplicada") && e.getMessage().contains("cpf_cliente")) {
+            if (e.getMessage().contains("Duplicate entry") && e.getMessage().contains("cpf_cliente")) {
                 throw new ApiException("CPF já cadastrado para outro cliente", 409);
             }
             throw new ApiException("Erro ao atualizar cliente: " + e.getMessage(), 500);

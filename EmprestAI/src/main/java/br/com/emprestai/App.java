@@ -64,18 +64,22 @@ public class App {
                 case 2 -> {
                     System.out.print("Digite o CPF: ");
                     String cpf = scanner.nextLine();
+
                     System.out.print("Digite o nome: ");
                     String nome = scanner.nextLine();
+
                     System.out.print("Digite a renda mensal líquida: ");
                     double rendaMensal = scanner.nextDouble();
+
                     scanner.nextLine(); // Consumir a quebra de linha
                     System.out.print("Digite a data de nascimento (AAAA-MM-DD): ");
                     LocalDate dataNascimento = LocalDate.parse(scanner.nextLine());
+
                     System.out.print("Digite a senha: ");
                     String senha = scanner.nextLine();
 
                     try {
-                        Cliente novoCliente = new Cliente(null, cpf, nome, rendaMensal, dataNascimento, 0, 0, null, 0);
+                        Cliente novoCliente = new Cliente(cpf, nome, rendaMensal, dataNascimento, 0, 0, null, 0);
                         Login login = LoginController.criarLogin(cpf, senha);
                         clienteController.criarCliente(novoCliente);
                         System.out.println("Cliente cadastrado com sucesso!");

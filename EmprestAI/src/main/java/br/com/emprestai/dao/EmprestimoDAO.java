@@ -67,7 +67,7 @@ public class EmprestimoDAO {
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
-            stmt.setLong(1, emprestimo.getIdCliente());
+            stmt.setLong(1, emprestimo.getCliente().getIdCliente());
             stmt.setDouble(2, emprestimo.getValorTotal());
             stmt.setInt(3, emprestimo.getQuantidadeParcelas());
             stmt.setDouble(4, emprestimo.getJuros());
@@ -105,12 +105,12 @@ public class EmprestimoDAO {
 
     private Emprestimo mapearResultSet(ResultSet rs) throws SQLException {
         Emprestimo emprestimo = new Emprestimo();
-        emprestimo.setIdCliente(rs.getLong("id_cliente"));
+        emprestimo.getCliente().setIdCliente(rs.getLong("id_cliente"));
         emprestimo.setIdEmprestimoOrigem(rs.getLong("id_emprestimo_origem"));
-        emprestimo.setCpfCliente(rs.getString("cpf_cliente"));
+        emprestimo.getCliente().setCpfCliente(rs.getString("cpf_cliente"));
         emprestimo.setStatusEmprestimo(StatusEmpEnum.fromValor(rs.getInt("id_status_emprestimo")));
         emprestimo.setIdContrato(rs.getLong("id_emprestimo"));
-        emprestimo.setNomeCliente(rs.getString("nome_cliente"));
+        emprestimo.getCliente().setNomecliente(rs.getString("nome_cliente"));
         emprestimo.setValorTotal(rs.getDouble("valor_total"));
         emprestimo.setQuantidadeParcelas(rs.getInt("quantidade_parcelas"));
         emprestimo.setJuros(rs.getDouble("juros"));
@@ -120,7 +120,7 @@ public class EmprestimoDAO {
         emprestimo.setValorIOF(rs.getDouble("valor_IOF"));
         emprestimo.setOutrosCustos(rs.getDouble("outros_custos"));
         emprestimo.setDataContratacao(rs.getDate("data_contratacao").toLocalDate());
-        emprestimo.setIdMotivoEncerramento(MotivosEncerramentosEmpEnum.fromValor(rs.getInt("id_motivo_encerramento")));
+        emprestimo.setMotivoEncerramento(MotivosEncerramentosEmpEnum.fromValor(rs.getInt("id_motivo_encerramento")));
         emprestimo.setTaxaJurosMora(rs.getDouble("juros_mora"));
         emprestimo.setTaxaMulta(rs.getDouble("taxa_multa"));
         //TODO Adcionar metodo set para a lista de parcerlas

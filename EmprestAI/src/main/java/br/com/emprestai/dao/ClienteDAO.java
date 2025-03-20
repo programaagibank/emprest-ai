@@ -4,24 +4,29 @@ import br.com.emprestai.database.DatabaseConnection;
 import br.com.emprestai.database.exception.ApiException;
 import br.com.emprestai.enums.VinculoEnum;
 import br.com.emprestai.model.Cliente;
-import org.mindrot.jbcrypt.BCrypt;
-
 import java.io.IOException;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ClienteDAO {
 
-    public Cliente criar(Cliente cliente, Login login) {
-        if (cliente == null || login == null) {
-            throw new IllegalArgumentException("Cliente e Login não podem ser nulos.");
+    public Cliente criar(Cliente cliente) {
+        if (cliente == null) {
+            throw new IllegalArgumentException("Cliente não pode ser nulo.");
+        }
+        if (cliente.getSenha() == null || cliente.getSenha().isEmpty()) {
+            throw new IllegalArgumentException("Senha não pode ser nula ou vazia.");
         }
 
         String sqlCliente = "INSERT INTO clientes (cpf_cliente, nome_cliente, renda_mensal_liquida, data_nascimento, " +
-                "renda_familiar_liquida, qtd_pessoas_na_casa, id_tipo_cliente, score) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-        String sqlLogin = "INSERT INTO login (id_cliente, username, senha) VALUES (?, ?, ?)";
+                "renda_familiar_liquida, qtd_pessoas_na_casa, id_tipo_cliente, score, senha_acesso) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = DatabaseConnection.getConnection()) {
             conn.setAutoCommit(false);
@@ -33,8 +38,10 @@ public class ClienteDAO {
                 stmtCliente.setDate(4, Date.valueOf(cliente.getDataNascimento()));
                 stmtCliente.setDouble(5, cliente.getRendaFamiliarLiquida());
                 stmtCliente.setInt(6, cliente.getQtdePessoasNaCasa());
-                stmtCliente.setString(7, cliente.getIdTipoCliente().name());
+                stmtCliente.setInt(7, cliente.getTipoCliente() != null ? cliente.getTipoCliente().getValor() : 0);
                 stmtCliente.setInt(8, cliente.getScore());
+                String senhaCriptografada = org.mindrot.jbcrypt.BCrypt.hashpw(cliente.getSenha(), org.mindrot.jbcrypt.BCrypt.gensalt());
+                stmtCliente.setString(9, senhaCriptografada);
 
                 int affectedRows = stmtCliente.executeUpdate();
                 if (affectedRows == 0) {
@@ -49,26 +56,6 @@ public class ClienteDAO {
                     }
                 }
 
-                String senhaCriptografada = BCrypt.hashpw(login.getSenha(), BCrypt.gensalt());
-                try (PreparedStatement stmtLogin = conn.prepareStatement(sqlLogin, Statement.RETURN_GENERATED_KEYS)) {
-                    stmtLogin.setLong(1, cliente.getIdCliente());
-                    stmtLogin.setString(2, login.getUsername());
-                    stmtLogin.setString(3, senhaCriptografada);
-
-                    int affectedRowsLogin = stmtLogin.executeUpdate();
-                    if (affectedRowsLogin == 0) {
-                        throw new ApiException("Falha ao criar login, nenhuma linha afetada.", 500);
-                    }
-
-                    try (ResultSet generatedKeysLogin = stmtLogin.getGeneratedKeys()) {
-                        if (generatedKeysLogin.next()) {
-                            login.setIdLogin(generatedKeysLogin.getLong(1)); // Mantém o ID gerado para login
-                        } else {
-                            throw new ApiException("Falha ao criar login, nenhum ID obtido.", 500);
-                        }
-                    }
-                }
-
                 conn.commit();
                 return cliente;
             } catch (SQLException e) {
@@ -76,10 +63,7 @@ public class ClienteDAO {
                 if (e.getMessage().contains("Duplicate entry") && e.getMessage().contains("cpf_cliente")) {
                     throw new ApiException("CPF já cadastrado no sistema", 409);
                 }
-                if (e.getMessage().contains("Duplicate entry") && e.getMessage().contains("username")) {
-                    throw new ApiException("Username já cadastrado no sistema", 409);
-                }
-                throw new ApiException("Erro ao criar cliente e login: " + e.getMessage(), 500);
+                throw new ApiException("Erro ao criar cliente: " + e.getMessage(), 500);
             }
         } catch (SQLException | IOException e) {
             throw new ApiException("Erro ao conectar ou executar transação: " + e.getMessage(), 500);
@@ -92,8 +76,8 @@ public class ClienteDAO {
         String sql = "SELECT * FROM clientes";
 
         try (Connection conn = DatabaseConnection.getConnection();
-                Statement stmt = conn.createStatement();
-                ResultSet rs = stmt.executeQuery(sql)) {
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
                 clientes.add(mapearResultSet(rs));
@@ -107,10 +91,14 @@ public class ClienteDAO {
 
     // Buscar cliente por ID
     public Cliente buscarPorId(Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("ID do cliente não pode ser nulo.");
+        }
+
         String sql = "SELECT * FROM clientes WHERE id_cliente = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
-                PreparedStatement stmt = conn.prepareStatement(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setLong(1, id);
 
@@ -134,19 +122,22 @@ public class ClienteDAO {
 
         String sql = "UPDATE clientes SET cpf_cliente = ?, nome_cliente = ?, renda_mensal_liquida = ?, " +
                 "data_nascimento = ?, renda_familiar_liquida = ?, qtd_pessoas_na_casa = ?, " +
-                "id_tipo_cliente = ?, score = ? WHERE id_cliente = ?";
+                "id_tipo_cliente = ?, score = ?, senha = ? WHERE id_cliente = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
-                PreparedStatement stmt = conn.prepareStatement(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, cliente.getCpfCliente());
             stmt.setString(2, cliente.getNomecliente());
             stmt.setDouble(3, cliente.getRendaMensalLiquida());
             stmt.setDate(4, Date.valueOf(cliente.getDataNascimento()));
             stmt.setDouble(5, cliente.getRendaFamiliarLiquida());
             stmt.setInt(6, cliente.getQtdePessoasNaCasa());
-            stmt.setString(7, cliente.getIdTipoCliente().name());
+            stmt.setInt(7, cliente.getTipoCliente() != null ? cliente.getTipoCliente().getValor() : 0);
             stmt.setInt(8, cliente.getScore());
-            stmt.setLong(9, id);
+            String senhaCriptografada = cliente.getSenha() != null ?
+                    org.mindrot.jbcrypt.BCrypt.hashpw(cliente.getSenha(), org.mindrot.jbcrypt.BCrypt.gensalt()) : null;
+            stmt.setString(9, senhaCriptografada != null ? senhaCriptografada : null);
+            stmt.setLong(10, id);
 
             int affectedRows = stmt.executeUpdate();
             if (affectedRows == 0) {
@@ -165,6 +156,10 @@ public class ClienteDAO {
 
     // Atualização parcial de cliente
     public Cliente atualizarParcial(Long id, Cliente clienteAtualizado) {
+        if (id == null) {
+            throw new IllegalArgumentException("ID do cliente não pode ser nulo.");
+        }
+
         Cliente clienteExistente = buscarPorId(id);
 
         if (clienteAtualizado.getCpfCliente() != null) {
@@ -185,11 +180,14 @@ public class ClienteDAO {
         if (clienteAtualizado.getQtdePessoasNaCasa() != 0) {
             clienteExistente.setQtdePessoasNaCasa(clienteAtualizado.getQtdePessoasNaCasa());
         }
-        if (clienteAtualizado.getIdTipoCliente() != null) {
-            clienteExistente.setIdTipoCliente(clienteAtualizado.getIdTipoCliente());
+        if (clienteAtualizado.getTipoCliente() != null) {
+            clienteExistente.setTipoCliente(clienteAtualizado.getTipoCliente());
         }
         if (clienteAtualizado.getScore() != 0) {
             clienteExistente.setScore(clienteAtualizado.getScore());
+        }
+        if (clienteAtualizado.getSenha() != null) {
+            clienteExistente.setSenha(clienteAtualizado.getSenha());
         }
 
         return atualizar(id, clienteExistente);
@@ -197,20 +195,16 @@ public class ClienteDAO {
 
     // Excluir cliente
     public void excluir(Long id) {
-        String sqlLogin = "DELETE FROM login WHERE id_cliente = ?";
+        if (id == null) {
+            throw new IllegalArgumentException("ID do cliente não pode ser nulo.");
+        }
+
         String sqlCliente = "DELETE FROM clientes WHERE id_cliente = ?";
 
         try (Connection conn = DatabaseConnection.getConnection()) {
             conn.setAutoCommit(false); // Iniciar transação
 
             try {
-                // 1. Deletar o login associado
-                try (PreparedStatement stmtLogin = conn.prepareStatement(sqlLogin)) {
-                    stmtLogin.setLong(1, id);
-                    stmtLogin.executeUpdate();
-                }
-
-                // 2. Deletar o cliente
                 try (PreparedStatement stmtCliente = conn.prepareStatement(sqlCliente)) {
                     stmtCliente.setLong(1, id);
                     int affectedRows = stmtCliente.executeUpdate();
@@ -232,10 +226,14 @@ public class ClienteDAO {
 
     // Buscar cliente por CPF
     public Cliente buscarPorCPF(String cpf_cliente) {
+        if (cpf_cliente == null || cpf_cliente.trim().isEmpty()) {
+            throw new IllegalArgumentException("CPF não pode ser nulo ou vazio.");
+        }
+
         String sql = "SELECT * FROM clientes WHERE cpf_cliente = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
-                PreparedStatement stmt = conn.prepareStatement(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, cpf_cliente);
 
@@ -261,7 +259,11 @@ public class ClienteDAO {
         cliente.setDataNascimento(rs.getDate("data_nascimento").toLocalDate());
         cliente.setRendaFamiliarLiquida(rs.getDouble("renda_familiar_liquida"));
         cliente.setQtdePessoasNaCasa(rs.getInt("qtd_pessoas_na_casa"));
-        cliente.setIdTipoCliente(VinculoEnum.fromValor(rs.getInt("id_tipo_cliente")));
+        cliente.setSenha(rs.getString("senha_acesso"));
+
+        int tipoClienteValue = rs.getInt("id_tipo_cliente");
+        cliente.setTipoCliente(VinculoEnum.fromValor(tipoClienteValue));
+
         cliente.setScore(rs.getInt("score"));
         return cliente;
     }

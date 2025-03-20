@@ -26,7 +26,7 @@ public class Parcela {
 
     // Construtor com parâmetros principais
     public Parcela(Long idEmprestimo, int numeroParcela, LocalDate dataVencimento,
-                   double valorPresenteParcela, double juros, double amortizacao, double multa, double jurosMora) {
+            double valorPresenteParcela, double juros, double amortizacao, double multa, double jurosMora) {
         this.idEmprestimo = idEmprestimo;
         this.numeroParcela = numeroParcela;
         this.dataVencimento = dataVencimento;
@@ -41,6 +41,7 @@ public class Parcela {
     public Long getIdParcela() {
         return idParcela;
     }
+
     public void setIdParcela(Long idParcela) {
         this.idParcela = idParcela;
     }
@@ -48,6 +49,7 @@ public class Parcela {
     public Long getIdEmprestimo() {
         return idEmprestimo;
     }
+
     public void setIdEmprestimo(Long idEmprestimo) {
         this.idEmprestimo = idEmprestimo;
     }
@@ -55,16 +57,19 @@ public class Parcela {
     public int getNumeroParcela() {
         return numeroParcela;
     }
+
     public void setNumeroParcela(int numeroParcela) {
-//        if (numeroParcela <= 0) {
-//            throw new IllegalArgumentException("Número da parcela deve ser maior que zero.");
-//        }
+        // if (numeroParcela <= 0) {
+        // throw new IllegalArgumentException("Número da parcela deve ser maior que
+        // zero.");
+        // }
         this.numeroParcela = numeroParcela;
     }
 
     public LocalDate getDataVencimento() {
         return dataVencimento;
     }
+
     public void setDataVencimento(LocalDate dataVencimento) {
         this.dataVencimento = dataVencimento;
     }
@@ -72,43 +77,49 @@ public class Parcela {
     public double getValorPresenteParcela() {
         return valorPresenteParcela;
     }
+
     public void setValorPresenteParcela(double valorPresenteParcela) {
-//        if (valorPresenteParcela < 0) {
-//            throw new IllegalArgumentException("Valor da parcela não pode ser negativo.");
-//        }
+        // if (valorPresenteParcela < 0) {
+        // throw new IllegalArgumentException("Valor da parcela não pode ser
+        // negativo.");
+        // }
         this.valorPresenteParcela = valorPresenteParcela;
     }
 
     public double getJuros() {
         return juros;
     }
+
     public void setJuros(double juros) {
-//        if (juros < 0) {
-//            throw new IllegalArgumentException("Juros não podem ser negativos.");
-//        }
+        // if (juros < 0) {
+        // throw new IllegalArgumentException("Juros não podem ser negativos.");
+        // }
         this.juros = juros;
     }
 
     public double getAmortizacao() {
         return amortizacao;
     }
+
     public void setAmortizacao(double amortizacao) {
-//        if (amortizacao < 0) {
-//            throw new IllegalArgumentException("Amortização não pode ser negativa.");
-//        }
+        // if (amortizacao < 0) {
+        // throw new IllegalArgumentException("Amortização não pode ser negativa.");
+        // }
         this.amortizacao = amortizacao;
     }
 
-    public StatusEmpParcela getstatusParcela(){
+    public StatusEmpParcela getstatusParcela() {
         return statusParcela;
     }
-    public void setStatusParcela(StatusEmpParcela statusParcela){
+
+    public void setStatusParcela(StatusEmpParcela statusParcela) {
         this.statusParcela = statusParcela;
     }
 
     public LocalDate getDataPagamento() {
         return dataPagamento;
     }
+
     public void setDataPagamento(LocalDate dataPagamento) {
         this.dataPagamento = dataPagamento;
     }
@@ -116,17 +127,19 @@ public class Parcela {
     public double getMulta() {
         return multa;
     }
+
     public void setMulta(double multa) {
-//        if (multa < 0) {
-//            throw new IllegalArgumentException("Multa não pode ser negativa.");
-//        }
+        // if (multa < 0) {
+        // throw new IllegalArgumentException("Multa não pode ser negativa.");
+        // }
         this.multa = multa;
     }
 
     public double getJurosMora() {
         return jurosMora;
     }
-    public void setJurosMora(double jurosMora){
+
+    public void setJurosMora(double jurosMora) {
         this.jurosMora = jurosMora;
     }
 

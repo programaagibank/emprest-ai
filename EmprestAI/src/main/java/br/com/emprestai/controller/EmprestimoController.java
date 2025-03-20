@@ -77,13 +77,14 @@ public class EmprestimoController {
 
         CalculadoraEmprestimo.contratoPrice(emprestimo, cliente.getDataNascimento());
 
-        return ElegibilidadePessoal.verificarElegibilidadePessoal(
+        ElegibilidadePessoal.verificarElegibilidadePessoal(
                 rendaLiquida,
                 emprestimo.getValorParcela(),
                 idade,
                 emprestimo.getQuantidadeParcelas(),
                 cliente.getScore()
         );
+        return true;
     }
 
     private boolean processarEmprestimoConsignado(Cliente cliente, Emprestimo emprestimo, int carenciaEmDias) {
@@ -98,15 +99,16 @@ public class EmprestimoController {
 
         CalculadoraEmprestimo.contratoPrice(emprestimo, cliente.getDataNascimento());
 
-        return ElegibilidadeConsignado.verificarElegibilidadeConsignado(
+        ElegibilidadeConsignado.verificarElegibilidadeConsignado(
                 rendaLiquida,
                 emprestimo.getValorParcela(),
                 parcelasAtivas,
                 idade,
                 emprestimo.getQuantidadeParcelas(),
                 taxaJurosMensal,
-                cliente.getIdTipoCliente(),
+                cliente.getTipoCliente(),
                 carenciaEmDias
         );
+    return true;
     }
 }

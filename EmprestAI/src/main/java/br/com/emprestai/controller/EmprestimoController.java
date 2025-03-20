@@ -8,8 +8,8 @@ import br.com.emprestai.model.Emprestimo;
 import br.com.emprestai.service.CalculadoraEmprestimo;
 import br.com.emprestai.service.CalculoConsignado;
 import br.com.emprestai.service.CalculoPessoal;
-import br.com.emprestai.service.SimulacaoEmprestimos;
-import br.com.emprestai.service.SimulacaoResultado;
+import br.com.emprestai.service.ElegibilidadeConsignado;
+import br.com.emprestai.service.ElegibilidadePessoal;
 
 import static br.com.emprestai.enums.StatusEmpEnum.APROVADO;
 import static br.com.emprestai.enums.StatusEmpEnum.NEGADO;
@@ -40,6 +40,9 @@ public class EmprestimoController {
                 default -> throw new IllegalArgumentException("Tipo de empréstimo inválido.");
             };
 
+            // Definir se o empréstimo é elegível
+            emprestimo.setStatusEmprestimo(elegivel ? APROVADO : NEGADO);
+
         } catch (Exception e) {
             throw new RuntimeException("Erro ao processar empréstimo: " + e.getMessage(), e);
         }
@@ -65,36 +68,45 @@ public class EmprestimoController {
         }
     }
 
-    public SimulacaoResultado SolicitarSimulacaoEmp(Cliente cliente, TipoEmpEnum tipoEmprestimo, double valor, int parcelas) {
-        try {   // Verificar se o cliente é válido
-            if (cliente == null || !clienteDAO.existeCliente(cliente.getId())) {
-                throw new IllegalArgumentException("Cliente inválido ou não encontrado.");
-            }
-            // Calcular idade do cliente
-            int idade = (int) YEARS.between(cliente.getDataNascimento(), java.time.LocalDate.now());
+    private boolean processarEmprestimoPessoal(Cliente cliente, Emprestimo emprestimo) {
+        double rendaLiquida = cliente.getRendaMensalLiquida();
+        int idade = (int) YEARS.between(cliente.getDataNascimento(), emprestimo.getDataContratacao());
 
-            // Processar simulação com base no tipo de empréstimo
-            SimulacaoResultado resultado;
-            switch (tipoEmprestimo) {
-                case PESSOAL:
-                    resultado = SimulacaoEmprestimos.simularEmprestimoPessoal(
-                            valor, parcelas, cliente.getScore(), false, // Seguro como false por padrão
-                            cliente.getRendaMensalLiquida(), idade
-                    );
-                    break;
-                case CONSIGNADO:
-                    resultado = SimulacaoEmprestimos.simularEmprestimoConsignado(
-                            valor, parcelas, cliente.getRendaMensalLiquida()
-                    );
-                    break;
-                default:
-                    throw new IllegalArgumentException("Tipo de empréstimo inválido para simulação.");
-            }
-            return resultado;
-        } catch (IllegalArgumentException e) {
-            throw e; // Propagar exceções específicas
-        } catch (Exception e) {
-            throw new RuntimeException("Erro ao realizar simulação de empréstimo: " + e.getMessage(), e);
-        }
+        double taxaJurosMensal = CalculoPessoal.calculoTaxaDeJurosMensal(cliente.getScore());
+        emprestimo.setJuros(taxaJurosMensal);
+
+        CalculadoraEmprestimo.contratoPrice(emprestimo, cliente.getDataNascimento());
+
+        return ElegibilidadePessoal.verificarElegibilidadePessoal(
+                rendaLiquida,
+                emprestimo.getValorParcela(),
+                idade,
+                emprestimo.getQuantidadeParcelas(),
+                cliente.getScore()
+        );
+    }
+
+    private boolean processarEmprestimoConsignado(Cliente cliente, Emprestimo emprestimo, int carenciaEmDias) {
+        double rendaLiquida = cliente.getRendaMensalLiquida();
+        int idade = (int) YEARS.between(cliente.getDataNascimento(), emprestimo.getDataContratacao());
+
+        // Obter parcelas ativas do cliente
+        double parcelasAtivas = 0;
+
+        double taxaJurosMensal = CalculoConsignado.calcularTaxaJurosMensal(emprestimo.getQuantidadeParcelas());
+        emprestimo.setJuros(taxaJurosMensal);
+
+        CalculadoraEmprestimo.contratoPrice(emprestimo, cliente.getDataNascimento());
+
+        return ElegibilidadeConsignado.verificarElegibilidadeConsignado(
+                rendaLiquida,
+                emprestimo.getValorParcela(),
+                parcelasAtivas,
+                idade,
+                emprestimo.getQuantidadeParcelas(),
+                taxaJurosMensal,
+                cliente.getIdTipoCliente(),
+                carenciaEmDias
+        );
     }
 }

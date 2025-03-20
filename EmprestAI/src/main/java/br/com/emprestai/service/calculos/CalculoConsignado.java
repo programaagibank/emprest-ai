@@ -1,4 +1,4 @@
-package br.com.emprestai.service;
+package br.com.emprestai.service.calculos;
 
 import br.com.emprestai.util.EmprestimoParams;
 

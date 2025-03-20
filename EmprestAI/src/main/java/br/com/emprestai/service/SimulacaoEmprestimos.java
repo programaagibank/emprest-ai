@@ -1,5 +1,8 @@
 package br.com.emprestai.service;
 
+import br.com.emprestai.service.calculos.CalculoConsignado;
+import br.com.emprestai.service.calculos.CalculoPessoal;
+
 public class SimulacaoEmprestimos {
 
     public static SimulacaoResultado simularEmprestimoPessoal(double valor, int parcelas, double score, boolean contratarSeguro, double rendaLiquida, int idade) {

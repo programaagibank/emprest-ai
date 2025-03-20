@@ -3,13 +3,16 @@ package br.com.emprestai.controller;
 import br.com.emprestai.enums.TipoEmpEnum;
 import br.com.emprestai.dao.ClienteDAO;
 import br.com.emprestai.dao.EmprestimoDAO;
+import br.com.emprestai.enums.VinculoEnum;
 import br.com.emprestai.model.Cliente;
 import br.com.emprestai.model.Emprestimo;
-import br.com.emprestai.service.CalculadoraEmprestimo;
-import br.com.emprestai.service.CalculoConsignado;
-import br.com.emprestai.service.CalculoPessoal;
-import br.com.emprestai.service.ElegibilidadeConsignado;
-import br.com.emprestai.service.ElegibilidadePessoal;
+import br.com.emprestai.service.calculos.CalculadoraEmprestimo;
+import br.com.emprestai.service.calculos.CalculoConsignado;
+import br.com.emprestai.service.calculos.CalculoPessoal;
+import br.com.emprestai.service.elegibilidade.ElegibilidadeConsignado;
+import br.com.emprestai.service.elegibilidade.ElegibilidadePessoal;
+
+import java.time.LocalDate;
 
 import static br.com.emprestai.enums.StatusEmpEnum.APROVADO;
 import static br.com.emprestai.enums.StatusEmpEnum.NEGADO;
@@ -110,5 +113,46 @@ public class EmprestimoController {
                 carenciaEmDias
         );
     return true;
+    }
+
+    public static void main(String[] args) {
+        // Criar instâncias dos DAOs (você pode usar mocks ou implementações reais)
+        ClienteDAO clienteDAO = new ClienteDAO(); // Supondo que exista uma implementação
+        EmprestimoDAO emprestimoDAO = new EmprestimoDAO(); // Supondo que exista uma implementação
+
+        // Instanciar o controlador
+        EmprestimoController controller = new EmprestimoController(clienteDAO, emprestimoDAO);
+
+        // Criar um cliente de exemplo
+        Cliente cliente = new Cliente();
+        cliente.setRendaMensalLiquida(5000.0);
+        cliente.setDataNascimento(LocalDate.of(1990, 1, 1));
+        cliente.setScore(750);
+        cliente.setTipoCliente(VinculoEnum.SERVIDOR); // Ajuste conforme sua implementação
+
+        // Criar um empréstimo de exemplo
+        Emprestimo emprestimo = new Emprestimo();
+        emprestimo.setTipoEmprestimo(TipoEmpEnum.PESSOAL); // Testando empréstimo pessoal
+        emprestimo.setValorEmprestimo(10000.0);
+        emprestimo.setQuantidadeParcelas(12);
+        emprestimo.setDataContratacao(LocalDate.now());
+        emprestimo.setDataInicio(LocalDate.now().plusDays(30));
+
+        try {
+            // Testar o método obterEmprestimo
+            Emprestimo resultado = controller.obterEmprestimo(cliente, emprestimo);
+            System.out.println("Status do empréstimo: " + resultado.getStatusEmprestimo());
+
+            // Se aprovado, testar o método salvarEmprestimo
+            if (resultado.getStatusEmprestimo() == br.com.emprestai.enums.StatusEmpEnum.APROVADO) {
+                Emprestimo emprestimoSalvo = controller.salvarEmprestimo(resultado);
+                System.out.println("Empréstimo salvo com sucesso!");
+            } else {
+                System.out.println("Empréstimo não foi salvo porque está negado.");
+            }
+
+        } catch (Exception e) {
+            System.err.println("Erro ao processar: " + e.getMessage());
+        }
     }
 }

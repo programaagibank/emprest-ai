@@ -1,4 +1,4 @@
-package br.com.emprestai.service;
+package br.com.emprestai.service.elegibilidade;
 
 import br.com.emprestai.enums.VinculoEnum;
 import br.com.emprestai.exception.ValidationException;

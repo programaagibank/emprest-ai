@@ -1,5 +1,6 @@
 package br.com.emprestai.service;
 
+import br.com.emprestai.service.calculos.CalculoConsignado;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 

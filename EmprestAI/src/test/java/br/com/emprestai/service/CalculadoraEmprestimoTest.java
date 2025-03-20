@@ -2,6 +2,7 @@ package br.com.emprestai.service;
 
 import br.com.emprestai.model.Emprestimo;
 import br.com.emprestai.model.Parcela;
+import br.com.emprestai.service.calculos.CalculadoraEmprestimo;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;

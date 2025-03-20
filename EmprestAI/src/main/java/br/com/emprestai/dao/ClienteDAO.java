@@ -1,4 +1,5 @@
 package br.com.emprestai.dao;
+
 import br.com.emprestai.database.DatabaseConnection;
 import br.com.emprestai.database.exception.ApiException;
 import br.com.emprestai.enums.VinculoEnum;
@@ -16,7 +17,7 @@ public class ClienteDAO {
     // Método para verificar conexão (mantido como no original)
     public void conexao() {
         try (Connection conn = DatabaseConnection.getConnection();
-             Statement stmt = conn.createStatement()) {
+                Statement stmt = conn.createStatement()) {
         } catch (SQLException | IOException e) {
             throw new ApiException("Erro ao conectar com o banco: " + e.getMessage(), 500);
         }
@@ -35,7 +36,8 @@ public class ClienteDAO {
 
             try {
                 // 1. Inserir o cliente
-                try (PreparedStatement stmtCliente = conn.prepareStatement(sqlCliente, Statement.RETURN_GENERATED_KEYS)) {
+                try (PreparedStatement stmtCliente = conn.prepareStatement(sqlCliente,
+                        Statement.RETURN_GENERATED_KEYS)) {
                     stmtCliente.setString(1, cliente.getCpfCliente());
                     stmtCliente.setString(2, cliente.getNomecliente());
                     stmtCliente.setDouble(3, cliente.getRendaMensalLiquida());
@@ -107,8 +109,8 @@ public class ClienteDAO {
         String sql = "SELECT * FROM clientes";
 
         try (Connection conn = DatabaseConnection.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
+                Statement stmt = conn.createStatement();
+                ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
                 clientes.add(mapearResultSet(rs));
@@ -125,7 +127,7 @@ public class ClienteDAO {
         String sql = "SELECT * FROM clientes WHERE id_cliente = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setLong(1, id);
 
@@ -148,7 +150,7 @@ public class ClienteDAO {
                 "id_tipo_cliente = ?, score = ? WHERE id_cliente = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, cliente.getCpfCliente());
             stmt.setString(2, cliente.getNomecliente());
@@ -248,7 +250,7 @@ public class ClienteDAO {
         String sql = "SELECT * FROM clientes WHERE cpf_cliente = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, cpf_cliente);
 

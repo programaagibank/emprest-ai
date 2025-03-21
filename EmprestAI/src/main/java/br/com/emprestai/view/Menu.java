@@ -211,7 +211,8 @@ public class Menu {
         System.out.println("Taxa de Juros Mensal: " + emprestimo.getJuros() + "%");
         System.out.println("Valor por Parcela: R$ " + emprestimo.getValorParcela());
         System.out.println("Data de Contratação: " + emprestimo.getDataContratacao());
-        System.out.println("Data de Início: " + emprestimo.getDataInicio());
+        System.out.println("Data de liberação do crédito:" + emprestimo.getDataLiberacaoCred());
+        System.out.println("Data de Início pagamento: " + emprestimo.getDataInicio());
     }
 
     public void fazerEmprestimoConsignado() {

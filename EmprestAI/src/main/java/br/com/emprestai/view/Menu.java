@@ -215,7 +215,7 @@ public class Menu {
         System.out.println("Taxa de Juros Mensal: " + String.format("%.2f", emprestimo.getJuros()) + "%");
         System.out.println("Valor por Parcela: R$ " + String.format("%.2f", emprestimo.getValorParcela()));
         System.out.println("Data de Contratação: " + emprestimo.getDataContratacao().format(formatter));
-        System.out.println("Data de liberação do crédito: " + emprestimo.getDataLiberacaoCred().format(formatter));
+        System.out.println("Data de liberação do crédito: " + (emprestimo.getDataLiberacaoCred() != null ? emprestimo.getDataLiberacaoCred().format(formatter) : "Não definida"));
         System.out.println("Data de Início de pagamento: " + emprestimo.getDataInicio().format(formatter));
     }
 

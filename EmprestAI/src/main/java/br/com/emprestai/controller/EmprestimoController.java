@@ -37,6 +37,7 @@ public class EmprestimoController {
             int carenciaEmDias = (int) DAYS.between(emprestimo.getDataContratacao(), emprestimo.getDataInicio());
 
             // Passo 3: Chamar o processamento específico
+
             boolean elegivel = switch (tipoEmp) {
                 case PESSOAL -> processarEmprestimoPessoal(cliente, emprestimo);
                 case CONSIGNADO -> processarEmprestimoConsignado(cliente, emprestimo, carenciaEmDias);
@@ -113,46 +114,5 @@ public class EmprestimoController {
                 carenciaEmDias
         );
     return true;
-    }
-
-    public static void main(String[] args) {
-        // Criar instâncias dos DAOs (você pode usar mocks ou implementações reais)
-        ClienteDAO clienteDAO = new ClienteDAO(); // Supondo que exista uma implementação
-        EmprestimoDAO emprestimoDAO = new EmprestimoDAO(); // Supondo que exista uma implementação
-
-        // Instanciar o controlador
-        EmprestimoController controller = new EmprestimoController(clienteDAO, emprestimoDAO);
-
-        // Criar um cliente de exemplo
-        Cliente cliente = new Cliente();
-        cliente.setRendaMensalLiquida(5000.0);
-        cliente.setDataNascimento(LocalDate.of(1990, 1, 1));
-        cliente.setScore(750);
-        cliente.setTipoCliente(VinculoEnum.SERVIDOR); // Ajuste conforme sua implementação
-
-        // Criar um empréstimo de exemplo
-        Emprestimo emprestimo = new Emprestimo();
-        emprestimo.setTipoEmprestimo(TipoEmpEnum.PESSOAL); // Testando empréstimo pessoal
-        emprestimo.setValorEmprestimo(10000.0);
-        emprestimo.setQuantidadeParcelas(12);
-        emprestimo.setDataContratacao(LocalDate.now());
-        emprestimo.setDataInicio(LocalDate.now().plusDays(30));
-
-        try {
-            // Testar o método obterEmprestimo
-            Emprestimo resultado = controller.obterEmprestimo(cliente, emprestimo);
-            System.out.println("Status do empréstimo: " + resultado.getStatusEmprestimo());
-
-            // Se aprovado, testar o método salvarEmprestimo
-            if (resultado.getStatusEmprestimo() == br.com.emprestai.enums.StatusEmpEnum.APROVADO) {
-                Emprestimo emprestimoSalvo = controller.salvarEmprestimo(resultado);
-                System.out.println("Empréstimo salvo com sucesso!");
-            } else {
-                System.out.println("Empréstimo não foi salvo porque está negado.");
-            }
-
-        } catch (Exception e) {
-            System.err.println("Erro ao processar: " + e.getMessage());
-        }
     }
 }

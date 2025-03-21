@@ -36,7 +36,7 @@ public class ElegibilidadeConsignado {
 
     // 11.1.4 Taxa de Juros
     public static void verificarTaxaJurosEmprestimoConsig(double juros) {
-        if (juros < params.getJurosMinimoConsignado()/100 || juros > params.getJurosMaximoConsignado()/100) {
+        if (juros < params.getJurosMinimoConsignado() || juros > params.getJurosMaximoConsignado()) {
             throw new ValidationException("Taxa de juros fora do intervalo permitido pelo sistema.");
         }
     }
@@ -52,24 +52,12 @@ public class ElegibilidadeConsignado {
     // 11.1.6 Carência
     public static void verificarCarenciaEmprestimoConsig(int dias) {
         if (dias < 0) throw new ValidationException("Carência não pode ser negativa.");
-        if (dias > params.getCarenciaMaximaPessoal()) {
+        if (dias > params.getCarenciaMaximaConsignado()) {
             throw new ValidationException("Carência excede o limite máximo permitido.");
         }
     }
 
-    // 11.2.1 Idade Máxima (Pessoal)
-    public static void verificarIdadePessoal(int idade, int parcelas) {
-        if (idade < 18) throw new ValidationException("Idade mínima para empréstimo pessoal é 18 anos.");
-        if (idade > params.getIdadeMaximaPessoal()) {
-            throw new ValidationException("Idade excede o limite máximo para empréstimo pessoal.");
-        }
 
-        int anos = parcelas / 12;
-        int idadeFinal = idade + anos;
-        if (idadeFinal > params.getIdadeMaximaPessoal()) {
-            throw new ValidationException("Idade final excede o limite máximo para empréstimo pessoal.");
-        }
-    }
 
     // Verificação da elegibilidade para empréstimo consignado
     public static void verificarElegibilidadeConsignado(double rendaLiquida, double valorParcela, double parcelasAtivas,

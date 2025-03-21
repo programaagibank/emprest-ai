@@ -57,11 +57,18 @@ public class ElegibilidadeConsignado {
         }
     }
 
+    // Valor Mínimo para empréstimo consignado
+    public static void verificarValorMinimoEmprestimo(double valorSolicitado) {
+        double valorMinimoConsignado = params.getValorMinimoConsignado();
+        if (valorSolicitado < valorMinimoConsignado) {
+            throw new ValidationException("O valor solicitado (R$ " + valorSolicitado + ") é inferior ao mínimo de R$ " + valorMinimoConsignado + " para empréstimo consignado.");
+        }
+    }
 
 
     // Verificação da elegibilidade para empréstimo consignado
     public static void verificarElegibilidadeConsignado(double rendaLiquida, double valorParcela, double parcelasAtivas,
-                                                        int idade, int parcelas, double taxaJuros, VinculoEnum vinculo, int carencia) {
+                                                        int idade, int parcelas, double taxaJuros, VinculoEnum vinculo, int carencia,double valorSolicitado) {
         if (rendaLiquida <= 0) throw new ValidationException("Renda líquida deve ser maior que zero.");
         if (valorParcela <= 0) throw new ValidationException("Valor da parcela deve ser maior que zero.");
         if (parcelasAtivas < 0) throw new ValidationException("Parcelas ativas não podem ser negativas.");
@@ -69,12 +76,15 @@ public class ElegibilidadeConsignado {
         if (parcelas <= 0) throw new ValidationException("Quantidade de parcelas deve ser maior que zero.");
         if (taxaJuros <= 0) throw new ValidationException("Taxa de juros deve ser maior que zero.");
         if (carencia < 0) throw new ValidationException("Carência não pode ser negativa.");
+        if (valorSolicitado <= 0) throw new ValidationException("Valor solicitado deve ser maior que zero.");
+
 
         verificarMargemEmprestimoConsig(valorParcela, rendaLiquida, parcelasAtivas);
         verificarIdadeClienteConsig(idade, parcelas);
         verificarTaxaJurosEmprestimoConsig(taxaJuros);
         verificarVinculoEmprestimoConsig(vinculo);
         verificarCarenciaEmprestimoConsig(carencia);
+        verificarValorMinimoEmprestimo(valorSolicitado);
     }
 
 }

@@ -37,6 +37,7 @@ public class EmprestimoController {
             int carenciaEmDias = (int) DAYS.between(emprestimo.getDataContratacao(), emprestimo.getDataInicio());
 
             // Passo 3: Chamar o processamento específico
+
             boolean elegivel = switch (tipoEmp) {
                 case PESSOAL -> processarEmprestimoPessoal(cliente, emprestimo);
                 case CONSIGNADO -> processarEmprestimoConsignado(cliente, emprestimo, carenciaEmDias);

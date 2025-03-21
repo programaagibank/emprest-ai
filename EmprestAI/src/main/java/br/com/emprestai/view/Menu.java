@@ -196,24 +196,27 @@ public class Menu {
         EmprestimoController emprestimoController = new EmprestimoController(new ClienteDAO(), new EmprestimoDAO());
         emprestimoController.obterEmprestimo(cliente, emprestimo);
 
+        // === Formatação da data ===
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
         // === Exibição dos Resultados ===
         System.out.println("\nResultado da simulação:");
         System.out.println("Tipo: " + emprestimo.getTipoEmprestimo());
-        System.out.printf("Renda Mensal Líquida: R$ %.2f%n", cliente.getRendaMensalLiquida());
+        System.out.println("Renda Mensal Líquida: R$ " + String.format("%.2f", cliente.getRendaMensalLiquida()));
         System.out.println("Idade: " + (LocalDate.now().getYear() - cliente.getDataNascimento().getYear()));
         if (tipoEmp == TipoEmpEnum.PESSOAL) {
             System.out.println("Score: " + cliente.getScore());
         } else {
             System.out.println("Tipo de Cliente: " + cliente.getTipoCliente());
         }
-        System.out.printf("Valor do Empréstimo: R$ %.2f%n", emprestimo.getValorEmprestimo());
-        System.out.printf("Valor do Total: R$ %.2f%n", emprestimo.getValorTotal());
+        System.out.println("Valor do Empréstimo: R$ " + String.format("%.2f", emprestimo.getValorEmprestimo()));
+        System.out.println("Valor do Total: R$ " + String.format("%.2f", emprestimo.getValorTotal()));
         System.out.println("Quantidade de Parcelas: " + emprestimo.getQuantidadeParcelas());
-        System.out.printf("Taxa de Juros Mensal: %.2f%%%n", emprestimo.getJuros());
-        System.out.printf("Valor por Parcela: R$ %.2f%n", emprestimo.getValorParcela());
-        System.out.println("Data de Contratação: " + emprestimo.getDataContratacao());
-        System.out.println("Data de liberação do crédito: " + emprestimo.getDataLiberacaoCred());
-        System.out.println("Data de Início pagamento: " + emprestimo.getDataInicio());
+        System.out.println("Taxa de Juros Mensal: " + String.format("%.2f", emprestimo.getJuros()) + "%");
+        System.out.println("Valor por Parcela: R$ " + String.format("%.2f", emprestimo.getValorParcela()));
+        System.out.println("Data de Contratação: " + emprestimo.getDataContratacao().format(formatter));
+        System.out.println("Data de liberação do crédito: " + emprestimo.getDataLiberacaoCred().format(formatter));
+        System.out.println("Data de Início de pagamento: " + emprestimo.getDataInicio().format(formatter));
     }
 
     public void fazerEmprestimoConsignado() {

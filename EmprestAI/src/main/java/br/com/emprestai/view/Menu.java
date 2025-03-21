@@ -1,5 +1,6 @@
-package br.com.emprestai.service;
+package br.com.emprestai.view;
 
+import br.com.emprestai.service.LoginService;
 import br.com.emprestai.App;
 import br.com.emprestai.controller.ClienteController;
 import br.com.emprestai.controller.EmprestimoController;
@@ -126,7 +127,8 @@ public class Menu {
         novoCliente.setRendaFamiliarLiquida(rendaFamiliar);
         novoCliente.setQtdePessoasNaCasa(qtdePessoas);
         novoCliente.setTipoCliente(tipoCliente);
-        // O score pode ser calculado automaticamente pelo controller ou DAO, então deixei fora por enquanto
+        // O score pode ser calculado automaticamente pelo controller ou DAO, então
+        // deixei fora por enquanto
 
         try {
             Cliente cliente = clienteController.criarCliente(novoCliente);
@@ -161,7 +163,6 @@ public class Menu {
         System.out.println("0. Voltar ao menu anterior");
     }
 
-
     public void simularEmprestimo(Cliente cliente, TipoEmpEnum tipoEmp) {
         Scanner scanner = new Scanner(System.in);
 
@@ -178,9 +179,9 @@ public class Menu {
 
         System.out.print("Contratar seguro? Digite S ou N: ");
         String seguro = scanner.nextLine();
-        if(seguro.equalsIgnoreCase("S")){
+        if (seguro.equalsIgnoreCase("S")) {
             emprestimo.setContratarSeguro(true);
-        } else if(seguro.equalsIgnoreCase("N")) {
+        } else if (seguro.equalsIgnoreCase("N")) {
             emprestimo.setContratarSeguro(false);
         } else {
             throw new IllegalArgumentException("Opção inválida!");

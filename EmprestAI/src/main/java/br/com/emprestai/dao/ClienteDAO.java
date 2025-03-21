@@ -40,7 +40,8 @@ public class ClienteDAO {
                 stmtCliente.setInt(6, cliente.getQtdePessoasNaCasa());
                 stmtCliente.setInt(7, cliente.getTipoCliente() != null ? cliente.getTipoCliente().getValor() : 0);
                 stmtCliente.setInt(8, cliente.getScore());
-                String senhaCriptografada = org.mindrot.jbcrypt.BCrypt.hashpw(cliente.getSenha(), org.mindrot.jbcrypt.BCrypt.gensalt());
+                String senhaCriptografada = org.mindrot.jbcrypt.BCrypt.hashpw(cliente.getSenha(),
+                        org.mindrot.jbcrypt.BCrypt.gensalt());
                 stmtCliente.setString(9, senhaCriptografada);
 
                 int affectedRows = stmtCliente.executeUpdate();
@@ -76,8 +77,8 @@ public class ClienteDAO {
         String sql = "SELECT * FROM clientes";
 
         try (Connection conn = DatabaseConnection.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
+                Statement stmt = conn.createStatement();
+                ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
                 clientes.add(mapearResultSet(rs));
@@ -98,7 +99,7 @@ public class ClienteDAO {
         String sql = "SELECT * FROM clientes WHERE id_cliente = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setLong(1, id);
 
@@ -125,7 +126,7 @@ public class ClienteDAO {
                 "id_tipo_cliente = ?, score = ?, senha = ? WHERE id_cliente = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, cliente.getCpfCliente());
             stmt.setString(2, cliente.getNomecliente());
             stmt.setDouble(3, cliente.getRendaMensalLiquida());
@@ -134,8 +135,9 @@ public class ClienteDAO {
             stmt.setInt(6, cliente.getQtdePessoasNaCasa());
             stmt.setInt(7, cliente.getTipoCliente() != null ? cliente.getTipoCliente().getValor() : 0);
             stmt.setInt(8, cliente.getScore());
-            String senhaCriptografada = cliente.getSenha() != null ?
-                    org.mindrot.jbcrypt.BCrypt.hashpw(cliente.getSenha(), org.mindrot.jbcrypt.BCrypt.gensalt()) : null;
+            String senhaCriptografada = cliente.getSenha() != null
+                    ? org.mindrot.jbcrypt.BCrypt.hashpw(cliente.getSenha(), org.mindrot.jbcrypt.BCrypt.gensalt())
+                    : null;
             stmt.setString(9, senhaCriptografada != null ? senhaCriptografada : null);
             stmt.setLong(10, id);
 
@@ -233,7 +235,7 @@ public class ClienteDAO {
         String sql = "SELECT * FROM clientes WHERE cpf_cliente = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, cpf_cliente);
 

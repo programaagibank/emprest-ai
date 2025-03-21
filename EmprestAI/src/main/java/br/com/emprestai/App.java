@@ -2,7 +2,7 @@ package br.com.emprestai;
 
 import br.com.emprestai.enums.TipoEmpEnum;
 import br.com.emprestai.model.Cliente;
-import br.com.emprestai.service.Menu;
+import br.com.emprestai.view.Menu;
 
 import java.util.Scanner;
 
@@ -50,7 +50,9 @@ public class App {
             switch (opcao) {
                 case 1 -> handleMenuEmprestimos(menu, scanner, CONSIGNADO, cliente);
                 case 2 -> handleMenuEmprestimos(menu, scanner, PESSOAL, cliente);
-                case 0 -> { return; }
+                case 0 -> {
+                    return;
+                }
                 default -> System.out.println("Opção inválida.");
             }
         }
@@ -58,7 +60,7 @@ public class App {
 
     private static void handleMenuEmprestimos(Menu menu, Scanner scanner, TipoEmpEnum tipoEmp, Cliente cliente) {
         while (true) {
-            if(tipoEmp == CONSIGNADO){
+            if (tipoEmp == CONSIGNADO) {
                 menu.mostrarMenuConsignado();
             } else {
                 menu.mostrarMenuPessoal();
@@ -70,7 +72,9 @@ public class App {
                     return;
                 }
                 case 3 -> menu.buscarEmprestimo();
-                case 0 -> { return; }
+                case 0 -> {
+                    return;
+                }
                 default -> System.out.println("Opção inválida.");
             }
         }

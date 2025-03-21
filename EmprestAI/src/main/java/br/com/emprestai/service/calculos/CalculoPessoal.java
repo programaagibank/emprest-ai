@@ -19,8 +19,8 @@ public class CalculoPessoal {
         if (score <= 0 || score > 1000) {
             throw new IllegalArgumentException("Score fora da tolerância");
         }
-        double taxaMaxima = 0.0999;
-        double taxaMinima = 0.0849;
+        double taxaMaxima = 9.99;
+        double taxaMinima = 8.49;
         if (score == 1000) {
             return taxaMinima;
         } else if (score >= 801 && score < 1000) {

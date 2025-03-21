@@ -78,6 +78,16 @@ public class EmprestimoParams {
     private double percentualJurosMora = 0.033;
     private double percentualMultaAtraso = 2;
 
+    public double getIncrementoTaxaConsig() {
+        return incrementoTaxaConsig;
+    }
+
+    public void setIncrementoTaxaConsig(double incrementoTaxaConsig) {
+        this.incrementoTaxaConsig = incrementoTaxaConsig;
+    }
+
+    private double incrementoTaxaConsig = 0.005;
+
     //Renda minima
     private  double rendaMinimaPessoal = 1000;
 

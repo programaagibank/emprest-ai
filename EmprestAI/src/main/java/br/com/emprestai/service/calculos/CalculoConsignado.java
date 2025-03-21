@@ -31,10 +31,8 @@ public class CalculoConsignado {
             throw new IllegalArgumentException("A quantidade de parcelas não pode ser inferior ao prazo mínimo de " + params.getPrazoMinimoConsignado());
         }
         // Ajusta a taxa para atingir 0.0186 com 36 parcelas
-        double jurosMinimoDecimal = params.getJurosMinimoConsignado() / 100; // Ex.: 1.8% -> 0.018
-        double incrementoPorParcela = (0.0186 - jurosMinimoDecimal) / (36 - params.getPrazoMinimoConsignado()); // Calcula o incremento
-        double taxaJurosMensal = jurosMinimoDecimal + incrementoPorParcela * (quantidadeParcelas - params.getPrazoMinimoConsignado());
-        double jurosMaximoDecimal = params.getJurosMaximoConsignado() / 100;
+        double taxaJurosMensal = params.getJurosMinimoConsignado() + params.getIncrementoTaxaConsig() * (quantidadeParcelas - params.getPrazoMinimoConsignado());
+        double jurosMaximoDecimal = params.getJurosMaximoConsignado();
         if (taxaJurosMensal > jurosMaximoDecimal) {
             return jurosMaximoDecimal;
         }

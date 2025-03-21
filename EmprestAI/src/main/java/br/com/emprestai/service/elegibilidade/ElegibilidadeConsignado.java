@@ -52,7 +52,7 @@ public class ElegibilidadeConsignado {
     // 11.1.6 Carência
     public static void verificarCarenciaEmprestimoConsig(int dias) {
         if (dias < 0) throw new ValidationException("Carência não pode ser negativa.");
-        if (dias > params.getCarenciaMaximaPessoal()) {
+        if (dias > params.getCarenciaMaximaConsignado()) {
             throw new ValidationException("Carência excede o limite máximo permitido.");
         }
     }

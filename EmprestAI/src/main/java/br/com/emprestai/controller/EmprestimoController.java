@@ -111,7 +111,8 @@ public class EmprestimoController {
                 emprestimo.getQuantidadeParcelas(),
                 taxaJurosMensal,
                 cliente.getTipoCliente(),
-                carenciaEmDias
+                carenciaEmDias,
+                emprestimo.getValorEmprestimo()
         );
     return true;
     }

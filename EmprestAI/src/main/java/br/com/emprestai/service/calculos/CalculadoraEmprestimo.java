@@ -44,8 +44,12 @@ public class CalculadoraEmprestimo {
         //Outros valores
         BigDecimal seguro = (emprestimo.getContratarSeguro() ? calcSeguro(valorEmprestimo, dtNasc, dataContratacao, qtdeParcelas) : ZERO);
         BigDecimal valorTotalComSeguro = (valorEmprestimo.add(seguro));
-        BigDecimal iof = calcIOF(valorTotalComSeguro, dataInicioPagamento, dataFimContrato);
-        BigDecimal valorTotalFinanciado = (valorEmprestimo.add(iof).add(seguro));
+        BigDecimal iof = calcIOF(valorTotalComSeguro, dataLiberacaoCred, dataFimContrato);
+        BigDecimal valorTotalSemCarencia = (valorEmprestimo.add(iof).add(seguro));
+
+        int calcularDiasCarencia = (int) DAYS.between(dataContratacao,dataInicioPagamento);
+        BigDecimal resultadoCarencia = calcularCarencia(valorTotalSemCarencia,taxaJurosMensal,calcularDiasCarencia);
+        BigDecimal valorTotalFinanciado = valorTotalSemCarencia.add(resultadoCarencia) ;
 
         emprestimo.setValorSeguro(seguro.doubleValue());
         emprestimo.setValorIOF(iof.doubleValue());
@@ -230,6 +234,23 @@ public class CalculadoraEmprestimo {
 
         return parcelas;
     }
+
+    public static BigDecimal calcularCarencia(BigDecimal valorTotalFinanciado, double taxaDeJurosMensal ,int diasCarencia){
+         if(valorTotalFinanciado == null){
+            throw new IllegalArgumentException("O Total da carência não pode ser menor ou igual a zero");
+        }
+         BigDecimal valorCarencia =  valorTotalFinanciado.multiply(ONE.add(new BigDecimal(conversorTaxaDeJurosDiaria(taxaDeJurosMensal))).pow(diasCarencia));
+
+         return valorCarencia;
+    }
+
+
+    public static double conversorTaxaDeJurosDiaria(double taxaDeJurosMensal){
+        double taxaDeJurosDiaria = Math.pow((1+taxaDeJurosMensal), (double) 1 /30)-1;
+
+        return taxaDeJurosDiaria;
+    }
+
 
     public static BigDecimal multaAtraso(BigDecimal valorParcela, double taxaMulta){
         return valorParcela.multiply(BigDecimal.valueOf(taxaMulta));

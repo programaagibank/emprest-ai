@@ -2,6 +2,7 @@ package br.com.emprestai;
 
 import br.com.emprestai.enums.TipoEmpEnum;
 import br.com.emprestai.model.Cliente;
+import br.com.emprestai.model.Emprestimo;
 import br.com.emprestai.view.Menu;
 
 import java.util.Scanner;
@@ -67,11 +68,23 @@ public class App {
             }
             int opcao = Integer.parseInt(scanner.nextLine());
             switch (opcao) {
-                case 1 -> menu.simularEmprestimo(cliente, tipoEmp);
-                case 2 -> {
+                case 1 -> handleObterEmprestimo(menu, scanner, tipoEmp, cliente);
+                case 2 -> menu.buscarEmprestimo();
+                case 0 -> {
                     return;
                 }
-                case 3 -> menu.buscarEmprestimo();
+                default -> System.out.println("Opção inválida.");
+            }
+        }
+    }
+
+    private static void handleObterEmprestimo(Menu menu, Scanner scanner, TipoEmpEnum tipoEmp, Cliente cliente) {
+        Emprestimo emprestimo = menu.simularEmprestimo(cliente, tipoEmp);
+        menu.mostrarMenuContratar();
+        while (true) {
+            int opcao = Integer.parseInt(scanner.nextLine());
+            switch (opcao) {
+                case 1 -> menu.mostrarConfirmarContrato(emprestimo);
                 case 0 -> {
                     return;
                 }

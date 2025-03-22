@@ -1,5 +1,7 @@
 package br.com.emprestai.view;
 
+import br.com.emprestai.enums.MotivosEncerramentosEmpEnum;
+import br.com.emprestai.enums.StatusEmpEnum;
 import br.com.emprestai.service.LoginService;
 import br.com.emprestai.App;
 import br.com.emprestai.controller.ClienteController;
@@ -18,6 +20,9 @@ import java.time.format.DateTimeParseException;
 import java.util.Properties;
 import java.util.Scanner;
 import org.mindrot.jbcrypt.BCrypt;
+
+import static br.com.emprestai.enums.MotivosEncerramentosEmpEnum.ABERTO;
+import static br.com.emprestai.enums.StatusEmpEnum.APROVADO;
 
 public class Menu {
 
@@ -60,7 +65,7 @@ public class Menu {
         String senha = scanner.nextLine();
         Cliente cliente = clienteController.buscarClientePorCPF(cpf);
 
-        if (LoginService.authenticateUser(cpf, senha, cliente.getSenha())) {
+        if (LoginService.authenticateUser(senha, cliente.getSenha())) {
             System.out.println("Login realizado com sucesso!");
             try {
                 System.out.println("Bem-vindo, " + cliente.getNomecliente() + "!");
@@ -163,7 +168,7 @@ public class Menu {
         System.out.println("0. Voltar ao menu anterior");
     }
 
-    public void simularEmprestimo(Cliente cliente, TipoEmpEnum tipoEmp) {
+    public Emprestimo simularEmprestimo(Cliente cliente, TipoEmpEnum tipoEmp) {
         Scanner scanner = new Scanner(System.in);
 
         // === Dados do Empréstimo ===
@@ -217,6 +222,34 @@ public class Menu {
         System.out.println("Data de Contratação: " + emprestimo.getDataContratacao().format(formatter));
         System.out.println("Data de liberação do crédito: " + (emprestimo.getDataLiberacaoCred() != null ? emprestimo.getDataLiberacaoCred().format(formatter) : "Não definida"));
         System.out.println("Data de Início de pagamento: " + emprestimo.getDataInicio().format(formatter));
+
+        emprestimo.setCliente(cliente);
+
+        return emprestimo;
+    }
+
+    public void mostrarMenuContratar() {
+        System.out.println("Escolha uma opção:");
+        System.out.println("1. Contratar");
+        System.out.println("2. Voltar ao menu anterior");
+    }
+
+    public void mostrarConfirmarContrato(Emprestimo emprestimo) {
+        EmprestimoController emprestimoController = new EmprestimoController(new ClienteDAO(), new EmprestimoDAO());
+        System.out.println("Digite sua senha para confirmar:");
+        String senha = scanner.nextLine();
+        if (LoginService.authenticateUser(senha, emprestimo.getCliente().getSenha())) {
+            try {
+                emprestimo.setStatusEmprestimo(APROVADO);
+                emprestimo.setMotivoEncerramento(ABERTO);
+                emprestimoController.salvarEmprestimo(emprestimo);
+            } catch (Exception e){
+                System.out.println(e.getMessage());
+            }
+            System.out.println("Contratado com sucesso!");
+        } else {
+            System.out.println("CPF ou senha incorretos.");
+        }
     }
 
     public void fazerEmprestimoConsignado() {

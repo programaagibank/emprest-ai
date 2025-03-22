@@ -8,7 +8,10 @@ import br.com.emprestai.enums.TipoEmpEnum;
 import br.com.emprestai.model.Emprestimo;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.sql.*;
+
+import static java.math.RoundingMode.HALF_UP;
 
 public class EmprestimoDAO {
     public Emprestimo buscarEmpPorCPF(Long id_emprestimo) {
@@ -61,8 +64,8 @@ public class EmprestimoDAO {
     }
     public Emprestimo criarEmp(Emprestimo emprestimo){
         String sql = "INSERT INTO emprestimos (id_cliente, valor_total, quantidade_parcelas, juros, data_inicio, id_status_emprestimo, id_tipo_emprestimo,\n" +
-                "valor_seguro, valor_IOF, outros_custos, data_contratacao, id_motivo_encerramento, juros_mora, taxa_multa, id_emprestimo_origem)\n" +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NULL);";
+                "valor_seguro, valor_IOF, outros_custos, data_contratacao, id_motivo_encerramento, juros_mora, taxa_multa, valor_parcela)\n" +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -72,15 +75,16 @@ public class EmprestimoDAO {
             stmt.setInt(3, emprestimo.getQuantidadeParcelas());
             stmt.setDouble(4, emprestimo.getJuros());
             stmt.setDate(5, Date.valueOf(emprestimo.getDataInicio()));
-            stmt.setString(6, emprestimo.getStatusEmprestimo().name());
-            stmt.setString(7, emprestimo.getStatusEmprestimo().name());
+            stmt.setInt(6, emprestimo.getStatusEmprestimo().getValor());
+            stmt.setInt(7, emprestimo.getTipoEmprestimo().getValor());
             stmt.setDouble(8, emprestimo.getValorSeguro());
             stmt.setDouble(9, emprestimo.getValorIOF());
             stmt.setDouble(10, emprestimo.getOutrosCustos());
             stmt.setDate(11, Date.valueOf(emprestimo.getDataContratacao()));
-            stmt.setString(12, emprestimo.getIdMotivoEncerramento().name());
+            stmt.setInt(12, emprestimo.getStatusEmprestimo().getValor());
             stmt.setDouble(13, emprestimo.getTaxaJurosMora());
             stmt.setDouble(14, emprestimo.getTaxaMulta());
+            stmt.setDouble(15, emprestimo.getValorParcela());
 
             int affectedRows = stmt.executeUpdate();
 

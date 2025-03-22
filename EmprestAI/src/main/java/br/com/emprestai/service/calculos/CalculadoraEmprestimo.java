@@ -239,7 +239,7 @@ public class CalculadoraEmprestimo {
          if(valorTotalFinanciado == null){
             throw new IllegalArgumentException("O Total da carência não pode ser menor ou igual a zero");
         }
-         BigDecimal valorCarencia =  valorTotalFinanciado.multiply(ONE.add(new BigDecimal(conversorTaxaDeJurosDiaria(taxaDeJurosMensal))).pow(diasCarencia));
+         BigDecimal valorCarencia =  valorTotalFinanciado.multiply((ONE.add(new BigDecimal(conversorTaxaDeJurosDiaria(taxaDeJurosMensal)/100)).pow(diasCarencia)).subtract(ONE));
 
          return valorCarencia;
     }

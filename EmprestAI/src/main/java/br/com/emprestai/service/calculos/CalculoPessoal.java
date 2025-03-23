@@ -36,17 +36,4 @@ public class CalculoPessoal {
     private static double interpoLinear(double score, double scoreMin, double scoreMax, double taxaMin, double taxaMax) {
         return taxaMax - ((taxaMax - taxaMin) * (score - scoreMin)) / (scoreMax - scoreMin);
     }
-
-    public static double calculoDeJurosMoraEMulta(double valorParcela, double diasAtraso) {
-        if (valorParcela <= 0) {
-            throw new IllegalArgumentException("O valor da parcela não pode ser igual a zero");
-        }
-        if (diasAtraso < 0) {
-            throw new IllegalArgumentException("Dias de atraso precisam ser maior do que zero");
-        }
-
-        double multa = valorParcela * (params.getPercentualMultaAtraso() / 100);
-        double jurosMora = valorParcela * (params.getPercentualJurosMora() / 100) * diasAtraso;
-        return multa + jurosMora;
-    }
 }

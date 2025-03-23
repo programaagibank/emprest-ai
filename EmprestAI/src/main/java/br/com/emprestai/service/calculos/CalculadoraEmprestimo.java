@@ -60,11 +60,6 @@ public class CalculadoraEmprestimo {
         BigDecimal taxaEfetivaMensal = calcTxEfetivaMes(valorEmprestimo, parcelaMensal, taxaJurosMensal, qtdeParcelas);
         emprestimo.setTaxaEfetivaMensal(taxaEfetivaMensal.doubleValue());
 
-        List<Parcela> parcelas = calcParcelaVP(parcelaMensal, valorTotalFinanciado, taxaJurosMensal, qtdeParcelas, dataInicioPagamento, taxaMulta, taxaJurosMora);
-
-        //Parcelas do Emprestimo
-        emprestimo.setParcelaList(parcelas);
-
         return emprestimo;
     }
 
@@ -178,61 +173,49 @@ public class CalculadoraEmprestimo {
         return (resultado1.add(resultado2)).multiply(parcelaMensal);
     }
 
-//    public static BigDecimal calcSaldoDevedorPresente(BigDecimal parcelaMensal, double taxaJurosMensal, int qtdeParcelas) {
-//        if (parcelaMensal.doubleValue() <= 0 || taxaJurosMensal <= 0 || qtdeParcelas <= 1) {
-//            throw new IllegalArgumentException("Valores inválidos");
-//        }
-//        BigDecimal saldoDevedorAtualizado = ZERO;
-//
-//        List<Parcela> parcelasVP = calcParcelaVP(parcelaMensal, taxaJurosMensal, qtdeParcelas);
-//        for (int i = 0; i < parcelasVP.size(); i++) {
-//
-//            // Acumula o valor presente no saldo devedor
-//            saldoDevedorAtualizado = saldoDevedorAtualizado.add(parcelasVP.get(i));
-//        }
-//        return saldoDevedorAtualizado;
-//    }
-
-    public static List<Parcela> calcParcelaVP(BigDecimal parcelaMensal, BigDecimal valorTotalFinanciado, double taxaJurosMensal, int qtdeParcelas, LocalDate dataInicioPagamento, double taxaMulta, double taxaJurosMora) {
-        if (parcelaMensal.doubleValue() <= 0 || taxaJurosMensal <= 0 || qtdeParcelas <= 1) {
+    public static Emprestimo ProcessarValoresParcela(Emprestimo emprestimo) {
+        if (emprestimo.getValorParcela()<= 0 || emprestimo.getJuros() <= 0 || emprestimo.getQuantidadeParcelas() <= 1) {
             throw new IllegalArgumentException("Valores inválidos");
         }
 
-        List<Parcela> parcelas = new ArrayList<>();
-        BigDecimal umMaisTaxa = ONE.add(BigDecimal.valueOf(taxaJurosMensal / 100));
-        BigDecimal saldoDevedor = valorTotalFinanciado; // Saldo inicial estimado
-        BigDecimal taxa = BigDecimal.valueOf(taxaJurosMensal / 100);
+        List<Parcela> parcelas = emprestimo.getParcelaList();
+        BigDecimal umMaisTaxa = ONE.add(BigDecimal.valueOf(emprestimo.getJuros() / 100));
+        BigDecimal saldoDevedor = BigDecimal.valueOf(emprestimo.getValorTotal()); // Saldo inicial estimado
+        BigDecimal taxa = BigDecimal.valueOf(emprestimo.getJuros() / 100);
+        BigDecimal valorParcela = BigDecimal.valueOf(emprestimo.getValorParcela());
+        double saldoDevedorPresenteAtualizado = 0;
 
-        for (int i = 1; i <= qtdeParcelas; i++) {
-            Parcela parcela = new Parcela();
-            LocalDate dataVencimento = dataInicioPagamento.plusMonths(i - 1);
-            parcela.setDataVencimento(dataVencimento); // Ajuste para começar no mês correto
-
-            //Setar numero da parcela
-            parcela.setNumeroParcela(i);
+        for (int i = 1; i <= emprestimo.getQuantidadeParcelas(); i++) {
+            Parcela parcela = parcelas.get(i);
+            LocalDate dataVencimento = parcela.getDataVencimento();
 
             // Calcula os juros sobre o saldo devedor restante
             BigDecimal juros = saldoDevedor.multiply(taxa, DECIMAL128);
             parcela.setJuros(juros.doubleValue());
 
             // Amortização = Parcela mensal - Juros
-            BigDecimal amortizacao = parcelaMensal.subtract(juros, DECIMAL128);
+            BigDecimal amortizacao = valorParcela.subtract(juros, DECIMAL128);
             parcela.setAmortizacao(amortizacao.doubleValue());
 
             // Atualiza o saldo devedor
             saldoDevedor = saldoDevedor.subtract(amortizacao, DECIMAL128);
 
             // Valor presente da parcela (opcional, se precisar)
-            parcela.setValorPresenteParcela(parcelaMensal.divide(umMaisTaxa.pow(i, DECIMAL128), DECIMAL128).doubleValue());
+            parcela.setValorPresenteParcela(valorParcela.divide(umMaisTaxa.pow(i, DECIMAL128), DECIMAL128).doubleValue());
 
-            parcela.setMulta(multaAtraso(parcelaMensal, taxaMulta).doubleValue());
+            saldoDevedorPresenteAtualizado += parcela.getValorPresenteParcela();
 
-            parcela.setJurosMora(valorJurosMora(parcelaMensal, taxaJurosMora, dataVencimento).doubleValue());
+            if(dataVencimento.isAfter(LocalDate.now())){
+                parcela.setMulta(multaAtraso(valorParcela, emprestimo.getTaxaMulta()).doubleValue());
+
+                parcela.setJurosMora(valorJurosMora(valorParcela.doubleValue(), parcela.getJurosMora(), dataVencimento).doubleValue());
+            }
 
             parcelas.add(parcela);
         }
+        emprestimo.setSaldoDevedorAtualizado(saldoDevedorPresenteAtualizado);
 
-        return parcelas;
+        return emprestimo;
     }
 
     public static BigDecimal calcularCarencia(BigDecimal valorTotalFinanciado, double taxaDeJurosMensal ,int diasCarencia){
@@ -256,7 +239,7 @@ public class CalculadoraEmprestimo {
         return valorParcela.multiply(BigDecimal.valueOf(taxaMulta));
     }
 
-    public static BigDecimal valorJurosMora(BigDecimal valorParcela, double taxaJurosMora, LocalDate dataVencimento) {
+    public static BigDecimal valorJurosMora(double valorParcela, double taxaJurosMora, LocalDate dataVencimento) {
         // Data atual (18 de março de 2025, conforme fornecido)
         LocalDate dataAtual = LocalDate.now();
 
@@ -272,7 +255,7 @@ public class CalculadoraEmprestimo {
         BigDecimal taxaDiaria = BigDecimal.valueOf(taxaJurosMora / 100).divide(BigDecimal.valueOf(30), DECIMAL128);
 
         // Calcula os juros de mora: valorParcela * taxaDiaria * diasAtraso
-        BigDecimal jurosMora = valorParcela
+        BigDecimal jurosMora = new BigDecimal(valorParcela)
                 .multiply(taxaDiaria, DECIMAL128)
                 .multiply(BigDecimal.valueOf(diasAtraso), DECIMAL128);
 

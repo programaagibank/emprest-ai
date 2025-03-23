@@ -88,23 +88,4 @@ class CalculadoraEmprestimoTest {
         BigDecimal resultado = CalculadoraEmprestimo.calcTxEfetivaMes(valorEmprestimo, parcelaMensal, taxaJurosMensal, qtdeParcelas);
         assertEquals(10.03, resultado.doubleValue(), 0.01); // Convertido para double
     }
-
-    @Test
-    void calcParcelaVP() {
-        BigDecimal parcelaMensal = new BigDecimal("557.73");
-        BigDecimal valorEmprestimo = new BigDecimal("5210.00");
-        double taxaJurosMensal = 9.49;
-        int qtdeParcelas = 24;
-        LocalDate dataInicioPagamento = LocalDate.of(2025, 4, 7);
-        double taxaMulta = 0.02; // 2%
-        double taxaJurosMora = 0.033; // 1% ao mês / 30 dias
-        List<Parcela> parcelas = CalculadoraEmprestimo.calcParcelaVP(parcelaMensal, valorEmprestimo, taxaJurosMensal, qtdeParcelas, dataInicioPagamento, taxaMulta, taxaJurosMora);
-
-        assertEquals(24, parcelas.size());
-        assertEquals(LocalDate.of(2025, 4, 7), parcelas.get(0).getDataVencimento());
-        assertEquals(11.15, parcelas.get(0).getMulta(), 0.01); // 557.73 * 0.02 como double
-        assertEquals(0.00, parcelas.get(0).getJurosMora(), 0.01); // Sem atraso em 18/03/2025
-        assertTrue(parcelas.get(0).getJuros() > 0); // Juros deve ser positivo
-        assertTrue(parcelas.get(0).getAmortizacao() > 0); // Amortização deve ser positiva
-    }
 }

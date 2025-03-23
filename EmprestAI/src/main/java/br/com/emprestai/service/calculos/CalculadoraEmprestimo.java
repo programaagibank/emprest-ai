@@ -179,15 +179,18 @@ public class CalculadoraEmprestimo {
         }
 
         List<Parcela> parcelas = emprestimo.getParcelaList();
-        BigDecimal umMaisTaxa = ONE.add(BigDecimal.valueOf(emprestimo.getJuros() / 100));
         BigDecimal saldoDevedor = BigDecimal.valueOf(emprestimo.getValorTotal()); // Saldo inicial estimado
         BigDecimal taxa = BigDecimal.valueOf(emprestimo.getJuros() / 100);
+        BigDecimal taxaDiaria = BigDecimal.valueOf(conversorTaxaDeJurosDiaria(emprestimo.getJuros())/100);
+        BigDecimal umMaisTaxa = ONE.add(taxaDiaria);
         BigDecimal valorParcela = BigDecimal.valueOf(emprestimo.getValorParcela());
         double saldoDevedorPresenteAtualizado = 0;
 
         for (int i = 1; i <= emprestimo.getQuantidadeParcelas(); i++) {
             Parcela parcela = parcelas.get(i);
             LocalDate dataVencimento = parcela.getDataVencimento();
+            LocalDate hoje = LocalDate.now();
+            int diasHojeVenc = (int) DAYS.between(hoje, dataVencimento);
 
             // Calcula os juros sobre o saldo devedor restante
             BigDecimal juros = saldoDevedor.multiply(taxa, DECIMAL128);
@@ -201,17 +204,18 @@ public class CalculadoraEmprestimo {
             saldoDevedor = saldoDevedor.subtract(amortizacao, DECIMAL128);
 
 
+            if(parcela.getDataPagamento() != null){
+                if(dataVencimento.isAfter(hoje)){
+                    // Valor presente da parcela
+                    parcela.setValorPresenteParcela(valorParcela.doubleValue());
 
-            if(dataVencimento.isAfter(LocalDate.now())){
-                // Valor presente da parcela
-                parcela.setValorPresenteParcela(valorParcela.doubleValue());
+                    parcela.setMulta(multaAtraso(valorParcela, emprestimo.getTaxaMulta()).doubleValue());
 
-                parcela.setMulta(multaAtraso(valorParcela, emprestimo.getTaxaMulta()).doubleValue());
-
-                parcela.setJurosMora(valorJurosMora(valorParcela.doubleValue(), parcela.getJurosMora(), dataVencimento).doubleValue());
-            } else {
-                // Valor presente da parcela
-                parcela.setValorPresenteParcela(valorParcela.divide(umMaisTaxa.pow(i, DECIMAL128), DECIMAL128).doubleValue());
+                    parcela.setJurosMora(valorJurosMora(valorParcela.doubleValue(), parcela.getJurosMora(), dataVencimento).doubleValue());
+                } else {
+                    // Valor presente da parcela
+                    parcela.setValorPresenteParcela(valorParcela.divide(umMaisTaxa.pow(diasHojeVenc, DECIMAL128), DECIMAL128).doubleValue());
+                }
             }
 
             saldoDevedorPresenteAtualizado += parcela.getValorPresenteParcela();

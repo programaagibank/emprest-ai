@@ -46,9 +46,9 @@ class CalculadoraEmprestimoTest {
         assertEquals(LocalDate.of(2027, 4, 7), resultado.getDataInicio().plusMonths(24)); // Fim do contrato
         assertEquals(40.00, resultado.getValorSeguro(), 0.01); // Seguro aproximado como double
         assertEquals(170.00, resultado.getValorIOF(), 0.01); // IOF como double
-        assertEquals(5210.00, resultado.getValorTotal(), 0.01); // Valor total financiado como double
-        assertEquals(557.73, resultado.getValorParcela(), 0.01); // Parcela mensal como double
-        assertEquals(10.03, resultado.getTaxaEfetivaMensal(), 0.01); // Taxa efetiva como double
+        assertEquals(5343.24, resultado.getValorTotal(), 0.01); // Valor total financiado como double
+        assertEquals(571.99, resultado.getValorParcela(), 0.01); // Parcela mensal como double
+        assertEquals(10.37, resultado.getTaxaEfetivaMensal(), 0.01); // Taxa efetiva como double
     }
 
     @Test

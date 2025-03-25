@@ -98,6 +98,30 @@ public class ParcelaDAO {
         }
     }
 
+    //Pagar Parcela
+    public Parcela pagarParcela(int idEmprestimo, int numeroParcela) {
+        String sql = "SELECT * FROM parcelas WHERE id_emprestimo = ? AND numero_parcela = ?";
+    
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+    
+            stmt.setInt(1, idEmprestimo);
+            stmt.setInt(2, numeroParcela);
+            
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return mapearResultSet(rs);
+                } else {
+                    throw new ApiException("Parcela não encontrada!", 404);
+                }
+            }
+    
+        } catch (SQLException | IOException e) {
+            throw new ApiException("Erro ao buscar parcela: " + e.getMessage(), 500);
+        }
+    }
+    
+
     // Buscar cliente por ID
     public Parcela buscarPorId(Long id) {
         String sql = "SELECT * FROM parcelas WHERE idParcela = ?";

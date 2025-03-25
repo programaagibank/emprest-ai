@@ -18,13 +18,11 @@ import static java.time.temporal.ChronoUnit.DAYS;
 import static java.time.temporal.ChronoUnit.YEARS;
 
 public class EmprestimoController {
-    private final ClienteDAO clienteDAO;
     private final EmprestimoDAO emprestimoDAO;
     private static final EmprestimoParams params = EmprestimoParams.getInstance();
 
     // Construtor com injeção de dependências
-    public EmprestimoController(ClienteDAO clienteDAO, EmprestimoDAO emprestimoDAO) {
-        this.clienteDAO = clienteDAO;
+    public EmprestimoController(EmprestimoDAO emprestimoDAO) {
         this.emprestimoDAO = emprestimoDAO;
     }
 

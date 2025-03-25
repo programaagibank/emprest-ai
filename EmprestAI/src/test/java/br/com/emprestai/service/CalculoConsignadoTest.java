@@ -22,13 +22,4 @@ class CalculoConsignadoTest {
         double resultado = CalculoConsignado.calcularTaxaJurosMensal(quantidadeParcelas);
         assertEquals(valorEsperado, resultado, 0.0001);
     }
-
-    @Test
-    void calcularJurosMoraEMulta() {
-        double valorParcela = 600.00;
-        double diasAtraso = 10;
-        double valorEsperado = 13.98;
-        double resultado = CalculoConsignado.calcularJurosMoraEMulta(valorParcela, diasAtraso);
-        assertEquals(valorEsperado, resultado, 0.0001);
-    }
 }

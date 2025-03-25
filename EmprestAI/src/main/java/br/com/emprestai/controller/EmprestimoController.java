@@ -3,7 +3,6 @@ package br.com.emprestai.controller;
 import br.com.emprestai.enums.TipoEmpEnum;
 import br.com.emprestai.dao.ClienteDAO;
 import br.com.emprestai.dao.EmprestimoDAO;
-import br.com.emprestai.enums.VinculoEnum;
 import br.com.emprestai.model.Cliente;
 import br.com.emprestai.model.Emprestimo;
 import br.com.emprestai.service.calculos.CalculadoraEmprestimo;
@@ -11,8 +10,7 @@ import br.com.emprestai.service.calculos.CalculoConsignado;
 import br.com.emprestai.service.calculos.CalculoPessoal;
 import br.com.emprestai.service.elegibilidade.ElegibilidadeConsignado;
 import br.com.emprestai.service.elegibilidade.ElegibilidadePessoal;
-
-import java.time.LocalDate;
+import br.com.emprestai.util.EmprestimoParams;
 
 import static br.com.emprestai.enums.StatusEmpEnum.APROVADO;
 import static br.com.emprestai.enums.StatusEmpEnum.NEGADO;
@@ -20,12 +18,11 @@ import static java.time.temporal.ChronoUnit.DAYS;
 import static java.time.temporal.ChronoUnit.YEARS;
 
 public class EmprestimoController {
-    private final ClienteDAO clienteDAO;
     private final EmprestimoDAO emprestimoDAO;
+    private static final EmprestimoParams params = EmprestimoParams.getInstance();
 
     // Construtor com injeção de dependências
-    public EmprestimoController(ClienteDAO clienteDAO, EmprestimoDAO emprestimoDAO) {
-        this.clienteDAO = clienteDAO;
+    public EmprestimoController(EmprestimoDAO emprestimoDAO) {
         this.emprestimoDAO = emprestimoDAO;
     }
 
@@ -78,6 +75,9 @@ public class EmprestimoController {
 
         double taxaJurosMensal = CalculoPessoal.calculoTaxaDeJurosMensal(cliente.getScore());
         emprestimo.setJuros(taxaJurosMensal);
+        emprestimo.setTaxaMulta(params.getPercentualMultaAtraso());
+        emprestimo.setTaxaJurosMora(params.getPercentualJurosMora());
+
 
         CalculadoraEmprestimo.contratoPrice(emprestimo, cliente.getDataNascimento());
 

@@ -1,82 +1,31 @@
 package br.com.emprestai;
 
-import br.com.emprestai.enums.TipoEmpEnum;
-import br.com.emprestai.model.Cliente;
-import br.com.emprestai.view.Menu;
-
-import java.util.Scanner;
-
-import static br.com.emprestai.enums.TipoEmpEnum.CONSIGNADO;
-import static br.com.emprestai.enums.TipoEmpEnum.PESSOAL;
+import br.com.emprestai.controller.ClienteController;
+import br.com.emprestai.controller.EmprestimoController;
+import br.com.emprestai.dao.ClienteDAO;
+import br.com.emprestai.dao.EmprestimoDAO;
+import br.com.emprestai.view.*;
 
 public class App {
     public static void main(String[] args) {
-        Menu menu = new Menu();
-        Scanner scanner = new Scanner(System.in);
+        // Criando os DAOs
+        ClienteDAO clienteDAO = new ClienteDAO();
+        EmprestimoDAO emprestimoDAO = new EmprestimoDAO();
 
-        menu.carregarPropriedadesBanco(); // Novo mwtodo a ser adicionado
+        // Criando os Controllers
+        ClienteController clienteController = new ClienteController(clienteDAO);
+        EmprestimoController emprestimoController = new EmprestimoController(emprestimoDAO);
 
-        while (true) {
-            menu.mostrarMenuPrincipal(); // Novo metodo a ser adicionado
-            int opcao = Integer.parseInt(scanner.nextLine());
+        // Criando as Views
+        ClienteView clienteView = new ClienteView(clienteController);
+        EmprestimoView emprestimoView = new EmprestimoView(emprestimoController);
+        PagamentoView pagamentoView = new PagamentoView();
+        ConsultaView consultaView = new ConsultaView();  // Se não precisar de um Controller, pode ser instanciada diretamente.
 
-            switch (opcao) {
-                case 1 -> {
-                    Cliente cliente = menu.exibirLogin();
-                    if (cliente != null) {
-                        mostrarTipoEmprestimo(menu, scanner, cliente);
-                    }
-                }
-                case 2 -> {
-                    Cliente cliente = menu.exibirCriarUsuario();
-                    if (cliente != null) {
-                        mostrarTipoEmprestimo(menu, scanner, cliente);
-                    }
-                }
-                case 0 -> {
-                    System.out.println("Saindo do sistema...");
-                    scanner.close();
-                    return;
-                }
-                default -> System.out.println("Opção inválida.");
-            }
-        }
-    }
+        // Criando o Menu Principal e passando as outras views como dependências
+        MenuPrincipalView menuPrincipal = new MenuPrincipalView(clienteView, emprestimoView, pagamentoView, consultaView);
 
-    private static void mostrarTipoEmprestimo(Menu menu, Scanner scanner, Cliente cliente) {
-        while (true) {
-            menu.mostrarTelaTipoEmprestimo();
-            int opcao = Integer.parseInt(scanner.nextLine());
-            switch (opcao) {
-                case 1 -> handleMenuEmprestimos(menu, scanner, CONSIGNADO, cliente);
-                case 2 -> handleMenuEmprestimos(menu, scanner, PESSOAL, cliente);
-                case 0 -> {
-                    return;
-                }
-                default -> System.out.println("Opção inválida.");
-            }
-        }
-    }
-
-    private static void handleMenuEmprestimos(Menu menu, Scanner scanner, TipoEmpEnum tipoEmp, Cliente cliente) {
-        while (true) {
-            if (tipoEmp == CONSIGNADO) {
-                menu.mostrarMenuConsignado();
-            } else {
-                menu.mostrarMenuPessoal();
-            }
-            int opcao = Integer.parseInt(scanner.nextLine());
-            switch (opcao) {
-                case 1 -> menu.simularEmprestimo(cliente, tipoEmp);
-                case 2 -> {
-                    return;
-                }
-                case 3 -> menu.buscarEmprestimo();
-                case 0 -> {
-                    return;
-                }
-                default -> System.out.println("Opção inválida.");
-            }
-        }
+        // Iniciando a aplicação chamando o menu principal
+        menuPrincipal.inicio();
     }
 }

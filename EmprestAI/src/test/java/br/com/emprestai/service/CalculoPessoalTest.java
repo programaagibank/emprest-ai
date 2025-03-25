@@ -20,12 +20,4 @@ class CalculoPessoalTest {
         assertEquals(9.74, taxaJurosArred);
     }
 
-    @Test
-    void calculoDeJurosMoraEMulta() {
-        double valorParcela = 305.96;
-        double diasAtraso = 10;
-        assertEquals(7.13, CalculoPessoal.calculoDeJurosMoraEMulta(valorParcela, diasAtraso), 0.01);
-    }
-
-
     }

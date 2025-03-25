@@ -1,5 +1,6 @@
 package br.com.emprestai.service.calculos;
 
+import br.com.emprestai.enums.StatusEmpParcela;
 import br.com.emprestai.model.Emprestimo;
 import br.com.emprestai.model.Parcela;
 import br.com.emprestai.util.EmprestimoParams;
@@ -31,8 +32,6 @@ public class CalculadoraEmprestimo {
         BigDecimal valorEmprestimo = new BigDecimal(String.valueOf(emprestimo.getValorEmprestimo()));
         int qtdeParcelas = emprestimo.getQuantidadeParcelas();
         double taxaJurosMensal = emprestimo.getJuros();
-        double taxaMulta = emprestimo.getTaxaMulta();
-        double taxaJurosMora = emprestimo.getTaxaJurosMora();
 
         //Datas
         LocalDate dataContratacao = emprestimo.getDataContratacao();
@@ -173,20 +172,20 @@ public class CalculadoraEmprestimo {
         return (resultado1.add(resultado2)).multiply(parcelaMensal);
     }
 
-    public static Emprestimo ProcessarValoresParcela(Emprestimo emprestimo) {
-        if (emprestimo.getValorParcela()<= 0 || emprestimo.getJuros() <= 0 || emprestimo.getQuantidadeParcelas() <= 1) {
+    public static Emprestimo processarValoresParcela(Emprestimo emprestimo) {
+        if (emprestimo.getValorParcela() <= 0 || emprestimo.getJuros() <= 0 || emprestimo.getQuantidadeParcelas() <= 1) {
             throw new IllegalArgumentException("Valores inválidos");
         }
 
         List<Parcela> parcelas = emprestimo.getParcelaList();
-        BigDecimal saldoDevedor = BigDecimal.valueOf(emprestimo.getValorTotal()); // Saldo inicial estimado
+        BigDecimal saldoDevedor = BigDecimal.valueOf(emprestimo.getValorTotal());
         BigDecimal taxa = BigDecimal.valueOf(emprestimo.getJuros() / 100);
-        BigDecimal taxaDiaria = BigDecimal.valueOf(conversorTaxaDeJurosDiaria(emprestimo.getJuros())/100);
-        BigDecimal umMaisTaxa = ONE.add(taxaDiaria);
+        BigDecimal taxaDiaria = BigDecimal.valueOf(conversorTaxaDeJurosDiaria(emprestimo.getJuros()) / 100);
+        BigDecimal umMaisTaxa = BigDecimal.ONE.add(taxaDiaria);
         BigDecimal valorParcela = BigDecimal.valueOf(emprestimo.getValorParcela());
-        double saldoDevedorPresenteAtualizado = 0;
+        BigDecimal saldoDevedorPresenteAtualizado = BigDecimal.ZERO;
 
-        for (int i = 1; i <= emprestimo.getQuantidadeParcelas(); i++) {
+        for (int i = 0; i < emprestimo.getQuantidadeParcelas(); i++) {
             Parcela parcela = parcelas.get(i);
             LocalDate dataVencimento = parcela.getDataVencimento();
             LocalDate hoje = LocalDate.now();
@@ -203,27 +202,29 @@ public class CalculadoraEmprestimo {
             // Atualiza o saldo devedor
             saldoDevedor = saldoDevedor.subtract(amortizacao, DECIMAL128);
 
+            if (parcela.getDataPagamento() == null) {
+                BigDecimal valorPresente;
+                if (dataVencimento.isBefore(hoje)) {
+                    valorPresente = valorParcela;
+                    parcela.setValorPresenteParcela(valorPresente.doubleValue());
+                    parcela.setStatusParcela(StatusEmpParcela.ATRASADA);
 
-            if(parcela.getDataPagamento() != null){
-                if(dataVencimento.isAfter(hoje)){
-                    // Valor presente da parcela
-                    parcela.setValorPresenteParcela(valorParcela.doubleValue());
+                    BigDecimal multa = multaAtraso(valorParcela, emprestimo.getTaxaMulta());
+                    parcela.setMulta(multa.doubleValue());
 
-                    parcela.setMulta(multaAtraso(valorParcela, emprestimo.getTaxaMulta()).doubleValue());
-
-                    parcela.setJurosMora(valorJurosMora(valorParcela.doubleValue(), parcela.getJurosMora(), dataVencimento).doubleValue());
+                    BigDecimal jurosMora = valorJurosMora(valorParcela.doubleValue(),
+                            emprestimo.getTaxaJurosMora(), dataVencimento);
+                    parcela.setJurosMora(jurosMora.doubleValue());
                 } else {
-                    // Valor presente da parcela
-                    parcela.setValorPresenteParcela(valorParcela.divide(umMaisTaxa.pow(diasHojeVenc, DECIMAL128), DECIMAL128).doubleValue());
+                    valorPresente = valorParcela.divide(umMaisTaxa.pow(diasHojeVenc, DECIMAL128), DECIMAL128);
+                    parcela.setValorPresenteParcela(valorPresente.doubleValue());
                 }
+                saldoDevedorPresenteAtualizado = saldoDevedorPresenteAtualizado.add(
+                        BigDecimal.valueOf(parcela.getValorPresenteParcela()));
             }
-
-            saldoDevedorPresenteAtualizado += parcela.getValorPresenteParcela();
-
-            parcelas.add(parcela);
         }
-        emprestimo.setSaldoDevedorAtualizado(saldoDevedorPresenteAtualizado);
 
+        emprestimo.setSaldoDevedorAtualizado(saldoDevedorPresenteAtualizado.doubleValue());
         return emprestimo;
     }
 
@@ -261,7 +262,7 @@ public class CalculadoraEmprestimo {
         long diasAtraso = ChronoUnit.DAYS.between(dataVencimento, dataAtual);
 
         // Converte a taxa de juros mora mensal para diária (dividindo por 30)
-        BigDecimal taxaDiaria = BigDecimal.valueOf(taxaJurosMora / 100).divide(BigDecimal.valueOf(30), DECIMAL128);
+        BigDecimal taxaDiaria = BigDecimal.valueOf(taxaJurosMora / 100);
 
         // Calcula os juros de mora: valorParcela * taxaDiaria * diasAtraso
         BigDecimal jurosMora = new BigDecimal(valorParcela)

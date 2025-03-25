@@ -11,34 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ParcelaDAO {
-
-    // Método para criar a tabela no banco de dados (executar uma vez)
-    public void criarTabela() {
-        String sql = "CREATE TABLE IF NOT EXISTS parcelas (" +
-                "idParcela BIGINT AUTO_INCREMENT PRIMARY KEY, " +
-                "idEmprestimo BIGINT NOT NULL, " +
-                "numeroParcela INT NOT NULL, " +
-                "dataVencimento DATE NOT NULL, " +
-                "valorPresenteParcela DECIMAL(10,2) NOT NULL, " +
-                "juros DECIMAL(10,2) NOT NULL, " +
-                "amortizacao DECIMAL(10,2) NOT NULL, " +
-                "idStatusParcela ENUM('PAGA', 'PENDENTE') NOT NULL, " +
-                "dataPagamento DATE, " +
-                "taxaMulta DECIMAL(10,2) NOT NULL, " +
-                "jurosMora DECIMAL(10,2) NOT NULL, " +
-                "FOREIGN KEY (idEmprestimo) REFERENCES emprestimos(idEmprestimo)" +
-                ")";
-
-        try (Connection conn = DatabaseConnection.getConnection();
-             Statement stmt = conn.createStatement()) {
-            stmt.execute(sql);
-            System.out.println("Tabela parcelas criada ou já existente!");
-            //Adicionei o IOException para parar de reclamar erro
-        } catch (SQLException | IOException e) {
-            throw new ApiException("Erro ao criar tabela: " + e.getMessage(), 500);
-        }
-    }
-
     // Criar parcela
     public Parcela criar(Parcela parcela) throws SQLException, IOException {
         String sql = "INSERT INTO parcelas (idParcela, idEmprestimo, numeroParcela, dataVencimento, " +

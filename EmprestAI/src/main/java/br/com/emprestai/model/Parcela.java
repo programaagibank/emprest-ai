@@ -13,6 +13,7 @@ public class Parcela {
     private int numeroParcela; // Número da parcela (ex.: 1, 2, 3...)
     private LocalDate dataVencimento; // Data de vencimento da parcela
     private double valorPresenteParcela; // Valor da parcela (fixo no sistema Price)
+    private double valorPago; // Valor pago
     private double juros; // Parte dos juros na parcela
     private double amortizacao; // Parte da amortização do principal
     private StatusEmpParcela statusParcela; // Status da parcela (paga ou pendente)
@@ -26,11 +27,12 @@ public class Parcela {
 
     // Construtor com parâmetros principais
     public Parcela(Long idEmprestimo, int numeroParcela, LocalDate dataVencimento,
-            double valorPresenteParcela, double juros, double amortizacao, double multa, double jurosMora) {
+                   double valorPresenteParcela, double valorPago, double juros, double amortizacao, double multa, double jurosMora) {
         this.idEmprestimo = idEmprestimo;
         this.numeroParcela = numeroParcela;
         this.dataVencimento = dataVencimento;
         this.valorPresenteParcela = valorPresenteParcela;
+        this.valorPago = valorPago;
         this.juros = juros;
         this.amortizacao = amortizacao;
         this.multa = multa;
@@ -84,6 +86,12 @@ public class Parcela {
         // negativo.");
         // }
         this.valorPresenteParcela = valorPresenteParcela;
+    }
+
+    public double getValorPago() { return valorPago; }
+
+    public void setValorPago(double valorPago) {
+        this.valorPago = valorPago
     }
 
     public double getJuros() {
@@ -151,6 +159,7 @@ public class Parcela {
                 ", numeroParcela=" + numeroParcela +
                 ", dataVencimento=" + dataVencimento +
                 ", valorPresenteParcela=" + valorPresenteParcela +
+                ", valorPago=" + valorPago +
                 ", juros=" + juros +
                 ", amortizacao=" + amortizacao +
                 ", statusParcela=" + statusParcela +

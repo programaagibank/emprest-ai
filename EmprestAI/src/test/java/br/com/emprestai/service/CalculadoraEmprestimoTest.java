@@ -131,7 +131,7 @@ class CalculadoraEmprestimoTest {
             assertEquals(10.0, parcelas.get(0).getAmortizacao(), 0.01);
 
             // 2. Verificar parcela atrasada
-            assertEquals(StatusEmpParcela.ATRASADA, parcelas.get(0).getstatusParcela());
+            assertEquals(StatusEmpParcela.ATRASADA, parcelas.get(0).getIdStatus());
             assertEquals(110.0, parcelas.get(0).getValorPresenteParcela(), 0.01);
             assertEquals(2.2, parcelas.get(0).getMulta(), 0.01);
 
@@ -140,7 +140,7 @@ class CalculadoraEmprestimoTest {
 
             // 4. Verificar que parcelas futuras têm valor presente descontado
             assertTrue(parcelas.get(1).getValorPresenteParcela() < 110.0);
-            assertNull(parcelas.get(1).getstatusParcela());
+            assertNull(parcelas.get(1).getIdStatus());
 
             // 5. Verificar saldo devedor atualizado
             assertTrue(resultado.getSaldoDevedorAtualizado() > 0.0);
@@ -155,25 +155,6 @@ class CalculadoraEmprestimoTest {
             });
         }
     }
-    /*
-    @Test
-    void calcularCarencia(){
 
 
-    }
 
-    @Test
-    conversorTaxaDeJurosDiaria(){
-
-    }
-
-    @Test
-    multaAtraso(){
-
-    }
-    @Test
-    valorJurosMora(){
-
-    }
-}
-*/

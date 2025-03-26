@@ -40,6 +40,7 @@ public class ClienteDAO {
                 stmtCliente.setInt(6, cliente.getQtdePessoasNaCasa());
                 stmtCliente.setInt(7, cliente.getTipoCliente() != null ? cliente.getTipoCliente().getValor() : 0);
                 stmtCliente.setInt(8, cliente.getScore());
+                
                 String senhaCriptografada = org.mindrot.jbcrypt.BCrypt.hashpw(cliente.getSenha(),
                         org.mindrot.jbcrypt.BCrypt.gensalt());
                 stmtCliente.setString(9, senhaCriptografada);

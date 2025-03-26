@@ -26,8 +26,7 @@ public class ParcelaDAO {
             stmt.setDate(4, Date.valueOf(parcela.getDataVencimento()));
             stmt.setDouble(5, parcela.getValorPago());
             stmt.setDate(6, Date.valueOf(parcela.getDataPagamento()));
-            stmt.setDouble(7, parcela.getIdStatus());
-
+            stmt.setInt(7, parcela.getIdStatus().getValor());
             int affectedRows = stmt.executeUpdate();
 
             if (affectedRows == 0) {
@@ -43,9 +42,9 @@ public class ParcelaDAO {
             }
 
             return parcela;
-            //Adicionei o IOException para parar de reclamar erro
         }
     }
+
     // Buscar todas as parcelas
     public List<Parcela> buscarTodos() {
         List<Parcela> parcelas = new ArrayList<>();
@@ -60,7 +59,6 @@ public class ParcelaDAO {
             }
 
             return parcelas;
-            //Adicionei o IOException para parar de reclamar erro
         } catch (SQLException | IOException e) {
             throw new ApiException("Erro ao buscar parcelas: " + e.getMessage(), 500);
         }
@@ -82,7 +80,6 @@ public class ParcelaDAO {
                     throw new ApiException("Parcela não encontrado com ID: " + id, 404);
                 }
             }
-            //Adicionei o IOException para parar de reclamar erro
         } catch (SQLException | IOException e) {
             throw new ApiException("Erro ao buscar parcela: " + e.getMessage(), 500);
         }
@@ -91,21 +88,19 @@ public class ParcelaDAO {
     // Atualizar parcela
     public Parcela atualizar(Long id, Parcela parcela) {
         String sql = "UPDATE parcelas SET id_parcela = ?, id_emprestimo = ?, numero_parcela = ?, " +
-                "data_vencimento = ?, valor_pago = ?, id_status = ?, data_pagamento = ?, " +
-                " WHERE id_parcela = ?";
+                "data_vencimento = ?, valor_pago = ?, id_status = ?, data_pagamento = ? " +
+                "WHERE id_parcela = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-
             stmt.setLong(1, parcela.getIdParcela());
             stmt.setLong(2, parcela.getIdEmprestimo());
             stmt.setDouble(3, parcela.getNumeroParcela());
             stmt.setDate(4, Date.valueOf(parcela.getDataVencimento()));
             stmt.setDouble(5, parcela.getValorPago());
-            stmt.setDate(6, Date.valueOf(parcela.getDataPagamento()));
-            stmt.setDouble(7, parcela.getIdStatus());
+            stmt.setInt(6, parcela.getIdStatus().getValor());
+            stmt.setDate(7, Date.valueOf(parcela.getDataPagamento()));
             stmt.setLong(8, id);
-
             int affectedRows = stmt.executeUpdate();
 
             if (affectedRows == 0) {
@@ -114,13 +109,13 @@ public class ParcelaDAO {
 
             parcela.setIdParcela(id);
             return parcela;
-            //Adicionei o IOException para parar de reclamar erro
         } catch (SQLException | IOException e) {
             throw new RuntimeException(e);
         }
     }
+
     // Excluir parcela
-    public void excluir(Long id){
+    public void excluir(Long id) {
         String sql = "DELETE FROM parcelas WHERE id_parcela = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
@@ -133,11 +128,11 @@ public class ParcelaDAO {
             if (affectedRows == 0) {
                 throw new ApiException("Parcela não encontrada com ID: " + id, 404);
             }
-            //Adicionei o IOException para parar de reclamar erro
         } catch (SQLException | IOException e) {
             throw new ApiException("Erro ao excluir parcela: " + e.getMessage(), 500);
         }
     }
+
     private Parcela mapearResultSet(ResultSet rs) throws SQLException {
         Parcela parcela = new Parcela();
         parcela.setIdParcela(rs.getLong("id_parcela"));
@@ -146,7 +141,7 @@ public class ParcelaDAO {
         parcela.setDataVencimento(rs.getDate("data_vencimento").toLocalDate());
         parcela.setValorPago(rs.getDouble("valor_pago"));
         parcela.setDataPagamento(rs.getDate("data_pagamento").toLocalDate());
-        parcela.setidStatus(rs.getDouble("id_status"));
+        parcela.setStatusParcela(StatusEmpParcela.fromValor(rs.getInt("id_status")));
         return parcela;
     }
 }

@@ -2,7 +2,6 @@ package br.com.emprestai.model;
 
 import br.com.emprestai.enums.StatusEmpParcela;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 
 public class Parcela {
@@ -91,7 +90,7 @@ public class Parcela {
     public double getValorPago() { return valorPago; }
 
     public void setValorPago(double valorPago) {
-        this.valorPago = valorPago
+        this.valorPago = valorPago;
     }
 
     public double getJuros() {

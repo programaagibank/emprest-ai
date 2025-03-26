@@ -95,7 +95,7 @@ public class CalculadoraEmprestimo {
         return fixoIof.add(varIof);
     }
 
-    //Utilizando metodo de Newton-Raphson
+    //Utilizando metodo de Newton-Raphson //Até aqui existem testes
     public static BigDecimal calcTxEfetivaMes(BigDecimal valorEmprestimo, BigDecimal parcelaMensal, double taxaNominal, int qtdeParcelas) {
         // Tolerância para convergência (ex.: 0,000001)
         BigDecimal TOLERANCIA = new BigDecimal("0.000001");
@@ -172,7 +172,7 @@ public class CalculadoraEmprestimo {
         return (resultado1.add(resultado2)).multiply(parcelaMensal);
     }
 
-    public static Emprestimo processarValoresParcela(Emprestimo emprestimo) {
+    public static Emprestimo processarValoresParcela(Emprestimo emprestimo) { // Ok
         if (emprestimo.getValorParcela() <= 0 || emprestimo.getJuros() <= 0 || emprestimo.getQuantidadeParcelas() <= 1) {
             throw new IllegalArgumentException("Valores inválidos");
         }
@@ -228,6 +228,7 @@ public class CalculadoraEmprestimo {
         return emprestimo;
     }
 
+    //A fazer
     public static BigDecimal calcularCarencia(BigDecimal valorTotalFinanciado, double taxaDeJurosMensal ,int diasCarencia){
          if(valorTotalFinanciado == null){
             throw new IllegalArgumentException("O Total da carência não pode ser menor ou igual a zero");
@@ -237,7 +238,7 @@ public class CalculadoraEmprestimo {
          return valorCarencia;
     }
 
-
+    // A Fazer
     public static double conversorTaxaDeJurosDiaria(double taxaDeJurosMensal){
         double taxaDeJurosDiaria = Math.pow((1+taxaDeJurosMensal), (double) 1 /30)-1;
 
@@ -248,7 +249,7 @@ public class CalculadoraEmprestimo {
     public static BigDecimal multaAtraso(BigDecimal valorParcela, double taxaMulta){
         return valorParcela.multiply(BigDecimal.valueOf(taxaMulta));
     }
-
+    // A fazer
     public static BigDecimal valorJurosMora(double valorParcela, double taxaJurosMora, LocalDate dataVencimento) {
         // Data atual (18 de março de 2025, conforme fornecido)
         LocalDate dataAtual = LocalDate.now();

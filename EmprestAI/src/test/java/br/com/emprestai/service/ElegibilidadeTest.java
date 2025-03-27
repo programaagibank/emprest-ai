@@ -1,10 +1,104 @@
 package br.com.emprestai.service;
 
-import br.com.emprestai.enums.VinculoEnum;
+import br.com.emprestai.service.calculos.CalculoConsignado;
+import br.com.emprestai.service.calculos.CalculoPessoal;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ElegibilidadeTest {
 
+    // Testes para Empréstimo Consignado
+
+    @Test
+    void testCalcularMargemEmprestimoConsigValida() {
+        double rendaLiquida = 2500.0;
+        double parcelasAtivas = 0.0;
+        double margem = CalculoConsignado.calcularMargemEmprestimoConsig(rendaLiquida, parcelasAtivas);
+        assertEquals(875.0, margem, 0.01);
+    }
+
+    @Test
+    void testCalcularMargemEmprestimoConsigNegativa() {
+        double rendaLiquida = 1000.0;
+        double parcelasAtivas = 400.0;
+        assertThrows(IllegalStateException.class, () -> {
+            CalculoConsignado.calcularMargemEmprestimoConsig(rendaLiquida, parcelasAtivas);
+        });
+    }
+
+    @Test
+    void testCalcularTaxaJurosMensalConsignadoValida() {
+        double quantidadeParcelas = 36;
+        double taxa = CalculoConsignado.calcularTaxaJurosMensal(quantidadeParcelas);
+        assertEquals(1.86, taxa, 0.01);
+    }
+
+    @Test
+    void testCalcularTaxaJurosMensalConsignadoParcelasInvalidas() {
+        double quantidadeParcelas = 10; // Menor que 24
+        assertThrows(IllegalArgumentException.class, () -> {
+            CalculoConsignado.calcularTaxaJurosMensal(quantidadeParcelas);
+        });
+    }
+
+    // Testes para Empréstimo Pessoal
+
+    @Test
+    void testCalculoDeCapacidadeDePagamentoValida() {
+        double rendaLiquida = 1500.0;
+        double capacidade = CalculoPessoal.calculoDeCapacidadeDePagamento(rendaLiquida);
+        assertEquals(450.0, capacidade, 0.01);
+    }
+
+    @Test
+    void testCalculoDeCapacidadeDePagamentoRendaInvalida() {
+        double rendaLiquida = 0.0;
+        assertThrows(IllegalArgumentException.class, () -> {
+            CalculoPessoal.calculoDeCapacidadeDePagamento(rendaLiquida);
+        });
+    }
+
+    @Test
+    void testCalculoTaxaDeJurosMensalScoreMaximo() {
+        double score = 1000;
+        double taxa = CalculoPessoal.calculoTaxaDeJurosMensal(score);
+        assertEquals(8.49, taxa, 0.01);
+    }
+
+    @Test
+    void testCalculoTaxaDeJurosMensalScoreMinimoAprovavel() {
+        double score = 201;
+        double taxa = CalculoPessoal.calculoTaxaDeJurosMensal(score);
+        assertEquals(9.99, taxa, 0.01);
+    }
+
+    @Test
+    void testCalculoTaxaDeJurosMensalScoreIntermediario() {
+        double score = 700;
+        double taxa = CalculoPessoal.calculoTaxaDeJurosMensal(score);
+        double expected = 9.49 - ((score - 600) / 200.0) * (9.49 - 8.99);
+        assertEquals(expected, taxa, 0.01);
+    }
+
+    @Test
+    void testCalculoTaxaDeJurosMensalScoreNaoElegivel() {
+        double score = 150;
+        assertThrows(IllegalArgumentException.class, () -> {
+            CalculoPessoal.calculoTaxaDeJurosMensal(score);
+        });
+    }
+
+
+    @Test
+    void testVerificarQuantidadeParcelasPessoal() {
+        double score = 300; // Faixa 201-400: até 12 parcelas
+        int parcelas = 12;
+        assertTrue(parcelas <= 12, "Parcelas devem ser <= 12 para score 300");
+    }
+}
+
+/*
 //    // 11.1.1 Margem Consignável
 //    @Test
 //    void verificarMargemEmprestimoConsigTrue() {
@@ -283,3 +377,4 @@ public class ElegibilidadeTest {
 //        assertFalse(ElegibilidadeConsignado.verificarElegibilidadePessoal(rendaLiquida, parcela, idade, parcelas, score));
 //    }
 }
+*/

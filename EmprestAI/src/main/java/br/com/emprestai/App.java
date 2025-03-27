@@ -1,31 +1,24 @@
 package br.com.emprestai;
 
-import br.com.emprestai.controller.ClienteController;
-import br.com.emprestai.controller.EmprestimoController;
-import br.com.emprestai.dao.ClienteDAO;
-import br.com.emprestai.dao.EmprestimoDAO;
-import br.com.emprestai.view.*;
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
-public class App {
+import java.io.IOException;
+import java.util.Objects;
+
+public class App extends Application {
+    @Override
+    public void start(Stage stage) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("view/login.fxml"));
+        Scene scene = new Scene(fxmlLoader.load(), 360, 640); // Mobile phone resolution
+        stage.setTitle("Emprest.AI - Gerenciador de Empréstimos");
+        stage.setScene(scene);
+        stage.show();
+    }
+
     public static void main(String[] args) {
-        // Criando os DAOs
-        ClienteDAO clienteDAO = new ClienteDAO();
-        EmprestimoDAO emprestimoDAO = new EmprestimoDAO();
-
-        // Criando os Controllers
-        ClienteController clienteController = new ClienteController(clienteDAO);
-        EmprestimoController emprestimoController = new EmprestimoController(emprestimoDAO);
-
-        // Criando as Views
-        ClienteView clienteView = new ClienteView(clienteController);
-        EmprestimoView emprestimoView = new EmprestimoView(emprestimoController);
-        PagamentoView pagamentoView = new PagamentoView();
-        ConsultaView consultaView = new ConsultaView();  // Se não precisar de um Controller, pode ser instanciada diretamente.
-
-        // Criando o Menu Principal e passando as outras views como dependências
-        MenuPrincipalView menuPrincipal = new MenuPrincipalView(clienteView, emprestimoView, pagamentoView, consultaView);
-
-        // Iniciando a aplicação chamando o menu principal
-        menuPrincipal.inicio();
+        launch();
     }
 }

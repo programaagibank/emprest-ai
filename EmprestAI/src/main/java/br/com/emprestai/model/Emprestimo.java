@@ -6,8 +6,7 @@ import br.com.emprestai.enums.TipoEmpEnum;
 
 import java.time.LocalDate;
 import java.util.List;
-
-import static br.com.emprestai.enums.VinculoEnum.*;
+import java.util.Map;
 
 public class Emprestimo {
     private long idContrato;
@@ -33,13 +32,14 @@ public class Emprestimo {
     private Boolean contratarSeguro;
     private double taxaEfetivaMensal;
     private Cliente cliente;
+    private List<Map<String, Object>> detalhesParcelas; // Novo campo adicionado
 
-    //Construtor vazio
+    // Construtor vazio
     public Emprestimo() {
     }
 
-    //Construtor com parâmetros
-    public Emprestimo(long idContrato, double valorTotal, double valorEmprestimo, double valorParcela, int quantidadeParcelas, double juros, LocalDate dataInicio, StatusEmpEnum statusEmprestimo, TipoEmpEnum tipoEmprestimo, double valorSeguro, double valorIOF, double outrosCustos, LocalDate dataContratacao, MotivosEncerramentosEmpEnum motivoEncerramento, double taxaJurosMora, double taxaMulta, long idEmprestimoOrigem, List<Parcela> parcelaList, double saldoDevedorAtualizado, LocalDate dataLiberacaoCred, Boolean contratarSeguro, double taxaEfetivaMensal, Cliente cliente) {
+    // Construtor com parâmetros (atualizado com detalhesParcelas)
+    public Emprestimo(long idContrato, double valorTotal, double valorEmprestimo, double valorParcela, int quantidadeParcelas, double juros, LocalDate dataInicio, StatusEmpEnum statusEmprestimo, TipoEmpEnum tipoEmprestimo, double valorSeguro, double valorIOF, double outrosCustos, LocalDate dataContratacao, MotivosEncerramentosEmpEnum motivoEncerramento, double taxaJurosMora, double taxaMulta, long idEmprestimoOrigem, List<Parcela> parcelaList, double saldoDevedorAtualizado, LocalDate dataLiberacaoCred, Boolean contratarSeguro, double taxaEfetivaMensal, Cliente cliente, List<Map<String, Object>> detalhesParcelas) {
         this.idContrato = idContrato;
         this.valorTotal = valorTotal;
         this.valorEmprestimo = valorEmprestimo;
@@ -63,115 +63,143 @@ public class Emprestimo {
         this.contratarSeguro = contratarSeguro;
         this.taxaEfetivaMensal = taxaEfetivaMensal;
         this.cliente = cliente;
+        this.detalhesParcelas = detalhesParcelas;
     }
 
-
-    public long getIdContrato(){
+    // Getters e Setters existentes
+    public long getIdContrato() {
         return idContrato;
     }
-    public void setIdContrato(long idContrato){
+
+    public void setIdContrato(long idContrato) {
         this.idContrato = idContrato;
     }
 
-    public double getValorTotal(){
+    public double getValorTotal() {
         return valorTotal;
     }
-    public void setValorTotal(double valorTotal){
+
+    public void setValorTotal(double valorTotal) {
         this.valorTotal = valorTotal;
     }
 
-    public int getQuantidadeParcelas(){
+    public double getValorEmprestimo() {
+        return valorEmprestimo;
+    }
+
+    public void setValorEmprestimo(double valorEmprestimo) {
+        this.valorEmprestimo = valorEmprestimo;
+    }
+
+    public double getValorParcela() {
+        return valorParcela;
+    }
+
+    public void setValorParcela(double valorParcela) {
+        this.valorParcela = valorParcela;
+    }
+
+    public int getQuantidadeParcelas() {
         return quantidadeParcelas;
     }
 
-    public void setQuantidadeParcelas(int quantidadeParcelas){
+    public void setQuantidadeParcelas(int quantidadeParcelas) {
         this.quantidadeParcelas = quantidadeParcelas;
     }
 
-    public double getJuros(){
+    public double getJuros() {
         return juros;
     }
-    public void setJuros(double juros){
+
+    public void setJuros(double juros) {
         this.juros = juros;
     }
 
-    public LocalDate getDataInicio(){
+    public LocalDate getDataInicio() {
         return dataInicio;
     }
-    public void setDataInicio(LocalDate dataInicio){
+
+    public void setDataInicio(LocalDate dataInicio) {
         this.dataInicio = dataInicio;
     }
 
-    public StatusEmpEnum getStatusEmprestimo(){
+    public StatusEmpEnum getStatusEmprestimo() {
         return statusEmprestimo;
     }
 
-    public void setStatusEmprestimo(StatusEmpEnum idStatusEmprestimo){
-        this.statusEmprestimo = idStatusEmprestimo;
+    public void setStatusEmprestimo(StatusEmpEnum statusEmprestimo) {
+        this.statusEmprestimo = statusEmprestimo;
     }
 
-    public TipoEmpEnum getTipoEmprestimo(){
+    public TipoEmpEnum getTipoEmprestimo() {
         return tipoEmprestimo;
     }
 
-    public void setTipoEmprestimo(TipoEmpEnum tipoEmprestimo){
+    public void setTipoEmprestimo(TipoEmpEnum tipoEmprestimo) {
         this.tipoEmprestimo = tipoEmprestimo;
     }
 
-    public double getValorSeguro(){
+    public double getValorSeguro() {
         return valorSeguro;
     }
-    public void setValorSeguro(double valorSeguro){
+
+    public void setValorSeguro(double valorSeguro) {
         this.valorSeguro = valorSeguro;
     }
 
-    public double getValorIOF(){
+    public double getValorIOF() {
         return valorIOF;
     }
-    public void setValorIOF(double valorIOF){
+
+    public void setValorIOF(double valorIOF) {
         this.valorIOF = valorIOF;
     }
 
-    public double getOutrosCustos(){
+    public double getOutrosCustos() {
         return outrosCustos;
     }
 
-    public void setOutrosCustos(double outrosCustos){
+    public void setOutrosCustos(double outrosCustos) {
         this.outrosCustos = outrosCustos;
     }
 
-    public LocalDate getDataContratacao(){
+    public LocalDate getDataContratacao() {
         return dataContratacao;
     }
-    public void setDataContratacao(LocalDate dataContratacao){
+
+    public void setDataContratacao(LocalDate dataContratacao) {
         this.dataContratacao = dataContratacao;
     }
 
-    public MotivosEncerramentosEmpEnum getIdMotivoEncerramento(){
+    public MotivosEncerramentosEmpEnum getIdMotivoEncerramento() {
         return motivoEncerramento;
     }
-    public void setMotivoEncerramento(MotivosEncerramentosEmpEnum motivoEncerramento){
+
+    public void setMotivoEncerramento(MotivosEncerramentosEmpEnum motivoEncerramento) {
         this.motivoEncerramento = motivoEncerramento;
     }
 
-    public double getTaxaJurosMora(){
+    public double getTaxaJurosMora() {
         return taxaJurosMora;
     }
-    public void setTaxaJurosMora(double taxaJurosMora){
+
+    public void setTaxaJurosMora(double taxaJurosMora) {
         this.taxaJurosMora = taxaJurosMora;
     }
 
-    public double getTaxaMulta(){
+    public double getTaxaMulta() {
         return taxaMulta;
     }
-    public void setTaxaMulta(double taxaMulta){
+
+    public void setTaxaMulta(double taxaMulta) {
         this.taxaMulta = taxaMulta;
     }
 
-    public long getIdEmprestimoOrigem(){
+    public long getIdEmprestimoOrigem() {
         return idEmprestimoOrigem;
     }
-    public void setIdEmprestimoOrigem(long idEmprestimoOrigem){
+
+    public void setIdEmprestimoOrigem(long idEmprestimoOrigem) {
         this.idEmprestimoOrigem = idEmprestimoOrigem;
     }
 
@@ -199,14 +227,6 @@ public class Emprestimo {
         this.dataLiberacaoCred = dataLiberacaoCred;
     }
 
-    public double getValorEmprestimo() {
-        return valorEmprestimo;
-    }
-
-    public void setValorEmprestimo(double valorEmprestimo) {
-        this.valorEmprestimo = valorEmprestimo;
-    }
-
     public Boolean getContratarSeguro() {
         return contratarSeguro;
     }
@@ -223,20 +243,21 @@ public class Emprestimo {
         this.taxaEfetivaMensal = taxaEfetivaMensal;
     }
 
-    public double getValorParcela() {
-        return valorParcela;
-    }
-
-    public void setValorParcela(double valorParcela) {
-        this.valorParcela = valorParcela;
-    }
-
     public Cliente getCliente() {
         return cliente;
     }
 
     public void setCliente(Cliente cliente) {
         this.cliente = cliente;
+    }
+
+    // Novo getter e setter para detalhesParcelas
+    public List<Map<String, Object>> getDetalhesParcelas() {
+        return detalhesParcelas;
+    }
+
+    public void setDetalhesParcelas(List<Map<String, Object>> detalhesParcelas) {
+        this.detalhesParcelas = detalhesParcelas;
     }
 
     @Override
@@ -265,7 +286,7 @@ public class Emprestimo {
                 ", contratarSeguro=" + contratarSeguro +
                 ", taxaEfetivaMensal=" + taxaEfetivaMensal +
                 ", cliente=" + cliente +
+                ", detalhesParcelas=" + detalhesParcelas +
                 '}';
     }
 }
-

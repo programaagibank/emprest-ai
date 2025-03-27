@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id 'application'
+    id 'org.openjfx.javafxplugin' version '0.1.0'
 }
 
 group = 'br.com.emprestai'
@@ -10,18 +11,49 @@ repositories {
     mavenCentral()
 }
 
+sourceCompatibility = '23'
+targetCompatibility = '23'
+
+application {
+    mainModule = 'br.com.emprestai'
+    mainClass = 'br.com.emprestai.view.Login'
+}
+
+javafx {
+    version = '23'
+    modules = [ 'javafx.controls', 'javafx.fxml', 'javafx.web' ]
+}
+
 dependencies {
-    //JDBC mysql
-    implementation "mysql:mysql-connector-java:8.0.33"  // Conector MySQL para JDBC
-    // Adiciona a biblioteca jBCrypt
+    // JDBC MySQL - Biblioteca tradicional no classpath
+    implementation 'mysql:mysql-connector-java:8.0.33'
+    // jBCrypt - Biblioteca tradicional no classpath
     implementation 'org.mindrot:jbcrypt:0.4'
-    //Junit - Testes unitários
+    // JUnit - Testes unitários
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
-    
-    implementation 'org.mindrot:jbcrypt:0.4'
+    // Dependências JavaFX
+    implementation 'org.controlsfx:controlsfx:11.2.1'
+    implementation 'com.dlsc.formsfx:formsfx-core:11.6.0'
+    implementation 'net.synedra:validatorfx:0.5.0'
+    implementation 'org.kordamp.ikonli:ikonli-javafx:12.3.1'
+    implementation 'org.kordamp.bootstrapfx:bootstrapfx-core:0.4.0'
+    implementation 'eu.hansolo:tilesfx:21.0.3'
+}
 
+// Configura os argumentos da JVM para compilação
+tasks.withType(JavaCompile) {
+    options.compilerArgs += [
+            '--add-reads', 'br.com.emprestai=ALL-UNNAMED'  // Mantido para compilação
+    ]
+}
 
+// Configura os argumentos da JVM para execução
+tasks.withType(JavaExec) {
+    jvmArgs = [
+            '--module-path', configurations.runtimeClasspath.asPath,
+            '--add-modules', 'javafx.controls,javafx.fxml,javafx.web,org.controlsfx.controls,com.dlsc.formsfx,net.synedra.validatorfx,org.kordamp.ikonli.javafx,org.kordamp.bootstrapfx.core,eu.hansolo.tilesfx'
+    ]
 }
 
 test {

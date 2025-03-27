@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="20.0" styleClass="root" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/17.0.6" fx:controller="br.com.emprestai.view.LoginController">
+<padding>
+    <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+</padding>
+ <Label styleClass="version-label" text="v1.0.0" />
+
+<!-- Top Section: Logo and Version -->
+<HBox alignment="TOP_LEFT" spacing="10.0">
+    <ImageView fx:id="logo" fitHeight="200" fitWidth="200" preserveRatio="true">
+        <image>
+            <Image url="@../../../../images/logo.png" />
+        </image>
+    </ImageView> <!-- Replace with your version -->
+</HBox>
+
+<!-- Main Content -->
+<VBox alignment="CENTER" spacing="15.0" styleClass="content">
+    <!-- Greeting Label -->
+    <Label fx:id="greetingLabel" styleClass="greeting-label" text="Que bom ter você de volta,\nJosue!" />
+
+    <!-- CPF Field -->
+    <Label styleClass="input-label" text="CPF" />
+    <TextField fx:id="cpfField" promptText="Digite seu CPF" styleClass="input-field" />
+
+    <!-- Password Field -->
+    <Label styleClass="input-label" text="Senha" />
+    <PasswordField fx:id="passwordField" promptText="Digite sua senha" styleClass="input-field" />
+
+    <!-- Login Button -->
+    <Button fx:id="loginButton" onAction="#onLoginButtonClick" styleClass="primary-button" text="Entrar" />
+
+    <!-- Privacy Policy Link -->
+    <Hyperlink fx:id="privacyLink" onAction="#onPrivacyLinkClick" styleClass="privacy-link" text="Política de Privacidade" />
+</VBox>
+</VBox>

@@ -34,12 +34,6 @@ public class DashboardController {
     private Button accountButton;
 
     @FXML
-    private Button cardsButton;
-
-    @FXML
-    private Button purchasesButton;
-
-    @FXML
     private Button profileButton;
 
     // Set user data

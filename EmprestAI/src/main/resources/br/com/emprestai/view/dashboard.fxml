@@ -68,8 +68,6 @@
             </padding>
             <Button fx:id="homeButton" text="Início" onAction="#onHomeClick" styleClass="nav-button"/>
             <Button fx:id="accountButton" text="Conta" onAction="#onAccountClick" styleClass="nav-button"/>
-            <Button fx:id="cardsButton" text="Cartões" onAction="#onCardsClick" styleClass="nav-button"/>
-            <Button fx:id="purchasesButton" text="Compras" onAction="#onPurchasesClick" styleClass="nav-button"/>
             <Button fx:id="profileButton" text="Perfil" onAction="#onProfileClick" styleClass="nav-button"/>
         </HBox>
     </bottom>

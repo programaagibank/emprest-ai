@@ -54,7 +54,7 @@ public class LoginController {
             try {
                 // Carrega a tela principal com o MainController
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/br/com/emprestai/view/dashboard.fxml"));
-                Scene mainScene = new Scene(loader.load(), 400, 300);
+                Scene mainScene = new Scene(loader.load(), 360, 640); // Mobile phone resolution
 
                 Stage stage = (Stage) cpfField.getScene().getWindow();
                 stage.setScene(mainScene);

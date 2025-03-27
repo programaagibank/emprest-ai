@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.BorderPane?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="br.com.emprestai.view.DashboardController"
+            styleClass="root"
+            stylesheets="@../../../../css/dashboard.css">
+    <!-- Top Section: Logo and Version -->
+    <top>
+        <HBox alignment="TOP_LEFT" spacing="10.0" styleClass="header">
+            <padding>
+                <Insets bottom="10.0" left="15.0" right="15.0" top="15.0"/>
+            </padding>
+            <ImageView fx:id="logo" fitWidth="80" fitHeight="30" preserveRatio="true">
+                <image>
+                    <Image url="@../images/logo.png"/> <!-- Replace with your logo -->
+                </image>
+            </ImageView>
+            <Label text="v1.0.0" styleClass="version-label"/> <!-- Replace with your version -->
+        </HBox>
+    </top>
+
+    <!-- Center Section: Main Content -->
+    <center>
+        <VBox alignment="CENTER" spacing="15.0" styleClass="content">
+            <padding>
+                <Insets bottom="15.0" left="15.0" right="15.0" top="0.0"/>
+            </padding>
+
+            <!-- Greeting -->
+            <Label fx:id="greetingLabel" text="Olá, Josue!" styleClass="greeting-label"/>
+
+            <!-- Total Outstanding Debt -->
+            <Label text="Saldo Devedor Total" styleClass="section-title"/>
+            <Label fx:id="debtAmount" text="R$ 5.000,00" styleClass="amount-label"/>
+
+            <!-- User Data -->
+            <Label text="Dados do Usuário" styleClass="section-title"/>
+            <Label fx:id="userName" text="Nome: Josue Silva" styleClass="info-label"/>
+            <Label fx:id="userCpf" text="CPF: 123.456.789-00" styleClass="info-label"/>
+
+            <!-- Credit Margin -->
+            <Label text="Margem de Crédito" styleClass="section-title"/>
+            <Label fx:id="creditMargin" text="R$ 2.000,00" styleClass="amount-label"/>
+
+            <!-- Loan Options -->
+            <Label text="Escolha de Empréstimo" styleClass="section-title"/>
+            <HBox alignment="CENTER" spacing="20.0">
+                <Button fx:id="consignadoButton" text="Consignado" onAction="#onConsignadoClick" styleClass="loan-button"/>
+                <Button fx:id="pessoalButton" text="Pessoal" onAction="#onPessoalClick" styleClass="loan-button"/>
+            </HBox>
+        </VBox>
+    </center>
+
+    <!-- Bottom Section: Navigation Bar -->
+    <bottom>
+        <HBox alignment="CENTER" spacing="20.0" styleClass="nav-bar">
+            <padding>
+                <Insets bottom="10.0" left="15.0" right="15.0" top="10.0"/>
+            </padding>
+            <Button fx:id="homeButton" text="Início" onAction="#onHomeClick" styleClass="nav-button"/>
+            <Button fx:id="accountButton" text="Conta" onAction="#onAccountClick" styleClass="nav-button"/>
+            <Button fx:id="cardsButton" text="Cartões" onAction="#onCardsClick" styleClass="nav-button"/>
+            <Button fx:id="purchasesButton" text="Compras" onAction="#onPurchasesClick" styleClass="nav-button"/>
+            <Button fx:id="profileButton" text="Perfil" onAction="#onProfileClick" styleClass="nav-button"/>
+        </HBox>
+    </bottom>
+</BorderPane>

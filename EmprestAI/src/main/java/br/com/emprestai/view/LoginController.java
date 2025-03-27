@@ -1,6 +1,8 @@
 package br.com.emprestai.view;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
@@ -8,6 +10,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.PasswordField;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
+import javafx.stage.Stage;
+
+import java.io.IOException;
 
 public class LoginController {
 
@@ -45,8 +50,22 @@ public class LoginController {
     private void onLoginButtonClick() {
         String cpf = cpfField.getText();
         String password = passwordField.getText();
-        System.out.println("CPF: " + cpf);
-        System.out.println("Senha: " + password);
+        if ("admin".equals(cpf) && "1234".equals(password)) { // Exemplo simples
+            try {
+                // Carrega a tela principal com o MainController
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/br/com/emprestai/view/dashboard.fxml"));
+                Scene mainScene = new Scene(loader.load(), 400, 300);
+
+                Stage stage = (Stage) cpfField.getScene().getWindow();
+                stage.setScene(mainScene);
+                stage.setTitle("EmprestAI - Dashboard");
+                stage.show();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            System.out.println("Login inválido!");
+        }
         // Add your authentication logic here
 
     }

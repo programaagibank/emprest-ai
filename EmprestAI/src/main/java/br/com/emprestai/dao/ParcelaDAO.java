@@ -7,6 +7,7 @@ import br.com.emprestai.model.Parcela;
 
 import java.io.IOException;
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -144,4 +145,31 @@ public class ParcelaDAO {
         parcela.setStatusParcela(StatusEmpParcela.fromValor(rs.getInt("id_status")));
         return parcela;
     }
+
+    // Método para pagar uma parcela
+    public Parcela pagarParcela(Long idParcela, double valorPago, LocalDate dataPagamento) {
+        String sql = "UPDATE parcelas SET valor_pago = ?, data_pagamento = ?, id_status = ? WHERE id_parcela = ?";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            // Definir os parâmetros para a consulta
+            stmt.setDouble(1, valorPago);
+            stmt.setDate(2, Date.valueOf(dataPagamento));
+            stmt.setInt(3, StatusEmpParcela.PAGA.getValor()); // Supondo que o status "PAGA" seja o correspondente
+            stmt.setLong(4, idParcela);
+
+            int affectedRows = stmt.executeUpdate();
+
+            if (affectedRows == 0) {
+                throw new ApiException("Parcela não encontrada com ID: " + idParcela, 404);
+            }
+
+            // Retornar a parcela atualizada
+            return buscarPorId(idParcela);
+        } catch (SQLException | IOException e) {
+            throw new ApiException("Erro ao pagar parcela: " + e.getMessage(), 500);
+        }
+    }
+
 }

@@ -34,9 +34,14 @@ public class ParcelaController {
         return null;
     }
 
-    public List<Parcela> put(List<Parcela> parcela) throws ApiException {
-        return null;
+    public List<Parcela> put(List<Parcela> parcelas) throws ApiException {
+        List<Parcela> parcelasAtualizadas = List.of();
+        for (int i = 0; i < parcelas.size() ; i++) {
+            parcelasAtualizadas.add( parcelaDAO.pagarParcela(parcelas.get(i)));
+        }
+        return parcelas;
     }
+
 
     public void delete(Long id) throws ApiException {
 

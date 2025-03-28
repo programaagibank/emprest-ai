@@ -6,8 +6,8 @@
 <?import javafx.scene.layout.*?>
 
 <VBox spacing="20.0" styleClass="root"
-      stylesheets="@../../../../css/login.css"
-      xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/17.0.6" fx:controller="br.com.emprestai.view.LoginController">
+      stylesheets="@../css/login.css"
+      xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/17.0.6" fx:controller="br.com.emprestai.view.LogarController">
 <padding>
     <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
 </padding>
@@ -17,7 +17,7 @@
 <HBox alignment="TOP_LEFT" spacing="10.0">
     <ImageView fx:id="logo" fitHeight="200" fitWidth="200" preserveRatio="true">
         <image>
-            <Image url="@../../../../images/logo.png" />
+            <Image url="@../images/logo.png" />
         </image>
     </ImageView> <!-- Replace with your version -->
 </HBox>
@@ -40,5 +40,10 @@
 
     <!-- Privacy Policy Link -->
     <Hyperlink fx:id="privacyLink" onAction="#onPrivacyLinkClick" styleClass="privacy-link" text="Política de Privacidade" />
+
+    <VBox fx:id="errorBox" visible="false" managed="false" alignment="CENTER" spacing="10">
+        <Label text="Credenciais inválidas"/>
+        <Label text="O CPF ou a senha estão incorretos."/>
+    </VBox>
 </VBox>
 </VBox>

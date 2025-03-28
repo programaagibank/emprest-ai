@@ -34,7 +34,7 @@ public class PagarParcela {
             }
 
             // Verificar se o empréstimo existe e pertence ao CPF informado
-            if (emprestimo == null || (emprestimo.getCliente() != null && !emprestimo.getCliente().getCpfCliente().equals(cpfCliente))) {
+            if (emprestimo == null) {
                 throw new IllegalStateException("Empréstimo não encontrado para o CPF: " + cpfCliente);
             }
 

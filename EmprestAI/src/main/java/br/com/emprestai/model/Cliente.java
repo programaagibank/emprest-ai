@@ -5,12 +5,12 @@ import br.com.emprestai.enums.VinculoEnum;
 import java.time.LocalDate;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public class Cliente {
 
     // Atributos
     private Long idCliente; // Autoincrementado no banco
-    private String cpfCliente; // Usado como identificador de login
     private String nomecliente;
     private double rendaMensalLiquida;
     private LocalDate dataNascimento;
@@ -18,37 +18,13 @@ public class Cliente {
     private int qtdePessoasNaCasa;
     private VinculoEnum tipoCliente;
     private int score;
-    private String senha; // Mantido para login
+    private String cpfCliente; // Usado como identificador de login
+    private String senha;
+    private List<Emprestimo> emprestimoList;
 
     // Construtor vazio
     public Cliente() {
     }
-
-    // Construtor com parâmetros (sem senha)
-    public Cliente(String cpfCliente, String nomecliente, double rendaMensalLiquida,
-                   LocalDate dataNascimento, double rendaFamiliarLiquida, int qtdePessoasNaCasa,
-                   VinculoEnum tipoCliente, int score) {
-
-        this.cpfCliente = cpfCliente;
-        this.nomecliente = nomecliente;
-        this.rendaMensalLiquida = rendaMensalLiquida;
-        this.dataNascimento = dataNascimento;
-        this.rendaFamiliarLiquida = rendaFamiliarLiquida;
-        this.qtdePessoasNaCasa = qtdePessoasNaCasa;
-        this.tipoCliente = tipoCliente;
-        this.score = score;
-    }
-
-    // Construtor com todos os parâmetros incluindo senha
-    public Cliente(String cpfCliente, String nomecliente, double rendaMensalLiquida,
-                   LocalDate dataNascimento, double rendaFamiliarLiquida, int qtdePessoasNaCasa,
-                   VinculoEnum tipoCliente, int score, String senha) {
-
-        this(cpfCliente, nomecliente, rendaMensalLiquida, dataNascimento, rendaFamiliarLiquida,
-                qtdePessoasNaCasa, tipoCliente, score);
-        this.senha = senha;
-    }
-
     // Getters e Setters
     public Long getIdCliente() {
         return idCliente;
@@ -131,6 +107,14 @@ public class Cliente {
 
     public void setSenha(String senha) {
         this.senha = senha;
+    }
+
+    public List<Emprestimo> getEmprestimoList() {
+        return emprestimoList;
+    }
+
+    public void setEmprestimoList(List<Emprestimo> emprestimoList) {
+        this.emprestimoList = emprestimoList;
     }
 
     @Override

@@ -1,0 +1,26 @@
+/* Estilo para o VBox com o fx:id="errorBox" */
+#errorBox {
+    -fx-background-color: #ffebee;
+    -fx-border-color: #d32f2f;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-padding: 10;
+    -fx-alignment: center;
+    -fx-spacing: 10;
+}
+
+/* Estilo para os Labels dentro do errorBox */
+#errorBox .label {
+    -fx-text-fill: #d32f2f;
+}
+
+/* Estilo específico para o primeiro Label (credenciais inválidas) */
+#errorBox .label:first-child {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
+/* Estilo específico para o segundo Label (mensagem de erro) */
+#errorBox .label:nth-child(2) {
+    -fx-font-size: 12px;
+}

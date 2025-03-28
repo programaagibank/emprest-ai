@@ -24,6 +24,9 @@ public class Parcela {
     public Parcela() {
     }
 
+    public Parcela(long l, int i, LocalDate localDate, double v) {
+    }
+
     // Getters e Setters
     public Long getIdParcela() {
         return idParcela;

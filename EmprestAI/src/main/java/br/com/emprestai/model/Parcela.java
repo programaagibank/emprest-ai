@@ -3,6 +3,7 @@ package br.com.emprestai.model;
 import br.com.emprestai.enums.StatusEmpParcela;
 
 import java.time.LocalDate;
+import java.util.Date;
 
 public class Parcela {
 
@@ -24,7 +25,11 @@ public class Parcela {
     public Parcela() {
     }
 
-    public Parcela(long l, int i, LocalDate localDate, double v) {
+    public Parcela(Double valorPresenteParcela, Double jurosMora, Double multa, LocalDate dataVencimento) {
+        this.valorPresenteParcela = valorPresenteParcela;
+        this.jurosMora = jurosMora;
+        this.multa = multa;
+        this.dataVencimento = dataVencimento;
     }
 
     // Getters e Setters

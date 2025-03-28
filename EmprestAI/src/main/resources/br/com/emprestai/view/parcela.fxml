@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane styleClass="root" stylesheets="@../css/parcela.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.com.emprestai.view.ParcelaViewController">
+    <!-- Top Section: Header -->
+    <top>
+        <HBox alignment="CENTER" spacing="10.0" styleClass="header">
+            <padding>
+                <Insets bottom="10.0" left="15.0" right="15.0" top="15.0" />
+            </padding>
+            <Label text="Seleção de Parcelas" styleClass="greeting-label" />
+        </HBox>
+    </top>
+
+    <!-- Center Section: List of Parcels -->
+    <center>
+        <ScrollPane fitToWidth="true" styleClass="scroll-pane">
+            <content>
+                <VBox fx:id="parcelaList" spacing="10.0" styleClass="content">
+                    <padding>
+                        <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                    </padding>
+                </VBox>
+            </content>
+        </ScrollPane>
+    </center>
+
+    <!-- Bottom Section: Total and Button -->
+    <bottom>
+        <VBox spacing="10.0" styleClass="nav-bar">
+            <padding>
+                <Insets bottom="10.0" left="15.0" right="15.0" top="10.0" />
+            </padding>
+            <Label fx:id="totalLabel" styleClass="amount-label" text="Total a Pagar: R$ 0,00" />
+            <HBox alignment="CENTER" spacing="20.0">
+                <Button fx:id="confirmButton" text="Pagar" onAction="#handleConfirm" styleClass="nav-button" />
+            </HBox>
+        </VBox>
+    </bottom>
+</BorderPane>

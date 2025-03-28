@@ -48,7 +48,6 @@ public class ParcelaController {
         return parcelas;
     }
 
-
     public void delete(Long id) throws ApiException {
 
     }

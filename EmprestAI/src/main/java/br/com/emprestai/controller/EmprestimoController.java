@@ -56,15 +56,15 @@ public class EmprestimoController{
         return List.of();
     }
 
-    public Emprestimo getById(Long id) throws ApiException {
+    public Emprestimo get(Long id) throws ApiException {
         return null;
     }
 
-    public Emprestimo getByCpf(String cpf) throws ApiException {
+    public Emprestimo get(String cpf) throws ApiException {
         return null;
     }
 
-    public Emprestimo getTipoEmp(String cpf, TipoEmpEnum EmpEnum) throws ApiException {
+    public Emprestimo get(String cpf, TipoEmpEnum EmpEnum) throws ApiException {
         return emprestimoDAO.buscarPorCpf(cpf, EmpEnum);
     }
 

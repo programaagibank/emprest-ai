@@ -26,14 +26,14 @@ public class ClienteController {
         return clienteDAO.buscarTodos();
     }
 
-    public Cliente getById(Long idCliente) throws ApiException {
+    public Cliente get(Long idCliente) throws ApiException {
         if (idCliente == null) {
             throw new IllegalArgumentException("ID do cliente não pode ser nulo.");
         }
         return clienteDAO.buscarPorId(idCliente);
     }
 
-    public Cliente getByCpf(String cpf) throws ApiException {
+    public Cliente get(String cpf) throws ApiException {
         if (cpf == null || cpf.trim().isEmpty()) {
             throw new IllegalArgumentException("CPF não pode ser nulo ou vazio.");
         }

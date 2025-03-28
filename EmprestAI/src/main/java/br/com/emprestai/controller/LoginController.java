@@ -18,7 +18,7 @@ public class LoginController {
                 return null;
             }
 
-            Cliente cliente = clienteController.getByCpf(cpf);
+            Cliente cliente = clienteController.get(cpf);
 
             // Verifica se a senha informada corresponde ao hash armazenado
             if(BCrypt.checkpw(senhaInformada, cliente.getSenha())){

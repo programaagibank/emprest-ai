@@ -24,20 +24,6 @@ public class Parcela {
     public Parcela() {
     }
 
-    // Construtor com parâmetros principais
-    public Parcela(Long idEmprestimo, int numeroParcela, LocalDate dataVencimento,
-                   double valorPresenteParcela, double valorPago, double juros, double amortizacao, double multa, double jurosMora) {
-        this.idEmprestimo = idEmprestimo;
-        this.numeroParcela = numeroParcela;
-        this.dataVencimento = dataVencimento;
-        this.valorPresenteParcela = valorPresenteParcela;
-        this.valorPago = valorPago;
-        this.juros = juros;
-        this.amortizacao = amortizacao;
-        this.multa = multa;
-        this.jurosMora = jurosMora;
-    }
-
     // Getters e Setters
     public Long getIdParcela() {
         return idParcela;

@@ -1,7 +1,7 @@
 package br.com.emprestai.dao;
 
 import br.com.emprestai.database.DatabaseConnection;
-import br.com.emprestai.database.exception.ApiException;
+import br.com.emprestai.exception.ApiException;
 import br.com.emprestai.enums.StatusEmpParcela;
 import br.com.emprestai.model.Parcela;
 

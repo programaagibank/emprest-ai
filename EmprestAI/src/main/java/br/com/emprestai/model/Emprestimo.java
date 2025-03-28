@@ -32,37 +32,10 @@ public class Emprestimo {
     private LocalDate dataLiberacaoCred;
     private Boolean contratarSeguro;
     private double taxaEfetivaMensal;
-    private Cliente cliente;
+    private long idCliente;
 
     //Construtor vazio
     public Emprestimo() {
-    }
-
-    //Construtor com parâmetros
-    public Emprestimo(long idContrato, double valorTotal, double valorEmprestimo, double valorParcela, int quantidadeParcelas, double juros, LocalDate dataInicio, StatusEmpEnum statusEmprestimo, TipoEmpEnum tipoEmprestimo, double valorSeguro, double valorIOF, double outrosCustos, LocalDate dataContratacao, MotivosEncerramentosEmpEnum motivoEncerramento, double taxaJurosMora, double taxaMulta, long idEmprestimoOrigem, List<Parcela> parcelaList, double saldoDevedorAtualizado, LocalDate dataLiberacaoCred, Boolean contratarSeguro, double taxaEfetivaMensal, Cliente cliente) {
-        this.idContrato = idContrato;
-        this.valorTotal = valorTotal;
-        this.valorEmprestimo = valorEmprestimo;
-        this.valorParcela = valorParcela;
-        this.quantidadeParcelas = quantidadeParcelas;
-        this.juros = juros;
-        this.dataInicio = dataInicio;
-        this.statusEmprestimo = statusEmprestimo;
-        this.tipoEmprestimo = tipoEmprestimo;
-        this.valorSeguro = valorSeguro;
-        this.valorIOF = valorIOF;
-        this.outrosCustos = outrosCustos;
-        this.dataContratacao = dataContratacao;
-        this.motivoEncerramento = motivoEncerramento;
-        this.taxaJurosMora = taxaJurosMora;
-        this.taxaMulta = taxaMulta;
-        this.idEmprestimoOrigem = idEmprestimoOrigem;
-        this.parcelaList = parcelaList;
-        this.saldoDevedorAtualizado = saldoDevedorAtualizado;
-        this.dataLiberacaoCred = dataLiberacaoCred;
-        this.contratarSeguro = contratarSeguro;
-        this.taxaEfetivaMensal = taxaEfetivaMensal;
-        this.cliente = cliente;
     }
 
 
@@ -231,12 +204,12 @@ public class Emprestimo {
         this.valorParcela = valorParcela;
     }
 
-    public Cliente getCliente() {
-        return cliente;
+    public long getIdCliente() {
+        return idCliente;
     }
 
-    public void setCliente(Cliente cliente) {
-        this.cliente = cliente;
+    public void setIdCliente(long idCliente) {
+        this.idCliente = idCliente;
     }
 
     @Override
@@ -264,7 +237,7 @@ public class Emprestimo {
                 ", dataLiberacaoCred=" + dataLiberacaoCred +
                 ", contratarSeguro=" + contratarSeguro +
                 ", taxaEfetivaMensal=" + taxaEfetivaMensal +
-                ", cliente=" + cliente +
+                ", cliente=" + idCliente +
                 '}';
     }
 }

@@ -5,6 +5,7 @@ import br.com.emprestai.database.exception.ApiException;
 import br.com.emprestai.enums.MotivosEncerramentosEmpEnum;
 import br.com.emprestai.enums.StatusEmpEnum;
 import br.com.emprestai.enums.TipoEmpEnum;
+import br.com.emprestai.model.Cliente;
 import br.com.emprestai.model.Emprestimo;
 
 import java.io.IOException;
@@ -109,6 +110,7 @@ public class EmprestimoDAO {
 
     private Emprestimo mapearResultSet(ResultSet rs) throws SQLException {
         Emprestimo emprestimo = new Emprestimo();
+        Cliente cliente = new Cliente();
         emprestimo.getCliente().setIdCliente(rs.getLong("id_cliente"));
         emprestimo.setIdEmprestimoOrigem(rs.getLong("id_emprestimo_origem"));
         emprestimo.getCliente().setCpfCliente(rs.getString("cpf_cliente"));

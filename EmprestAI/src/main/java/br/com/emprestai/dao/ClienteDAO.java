@@ -14,6 +14,12 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+/****
+ * Cria um novo cliente no sistema.
+ * @param client O objeto Cliente a ser criado.
+ * @return O cliente criado com ID atribuído.
+ * @throws IllegalArgumentException Se o cliente for nulo.
+ */
 public class ClienteDAO {
 
     public Cliente criar(Cliente cliente) {

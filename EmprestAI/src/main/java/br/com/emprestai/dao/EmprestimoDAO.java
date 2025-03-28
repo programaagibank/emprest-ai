@@ -116,6 +116,32 @@ public class EmprestimoDAO implements GenericDAO<Emprestimo> {
         }
     }
 
+    public Emprestimo buscarPorCpf(String cpfCliente, TipoEmpEnum empEnum) {
+        String sql = "select e.id_emprestimo, e.id_cliente , e.valor_total, e.quantidade_parcelas, e.juros, e.data_inicio, e.id_status_emprestimo, e.id_tipo_emprestimo,\n" +
+                "e.valor_seguro, e.valor_IOF, e.outros_custos, e.data_contratacao, e.id_motivo_encerramento, e.juros_mora,\n" +
+                "e.taxa_multa, e.id_emprestimo_origem, c.cpf_cliente, c.nome_cliente\n" +
+                "from emprestimos e\n" +
+                "inner join clientes c on e.id_cliente = c.id_cliente\n" +
+                "where e.id_emprestimo = ? and e.id_tipo_emprestimo = ?";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, cpfCliente);
+            stmt.setInt(2, empEnum.getValor());
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return mapearResultSet(rs);
+                } else {
+                    throw new ApiException("Emprestimo não encontrado com CPF: " + cpfCliente, 404);
+                }
+            }
+        } catch (SQLException | IOException e) {
+            throw new ApiException("Erro ao buscar emprestimo: " + e.getMessage(), 500);
+        }
+    }
+
     @Override
     public Emprestimo atualizar(Emprestimo entidade) throws ApiException {
         return null;

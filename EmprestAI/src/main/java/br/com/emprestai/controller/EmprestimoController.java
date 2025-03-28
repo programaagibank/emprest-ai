@@ -64,6 +64,10 @@ public class EmprestimoController{
         return null;
     }
 
+    public Emprestimo get(String cpf, TipoEmpEnum EmpEnum) throws ApiException {
+        return emprestimoDAO.buscarPorCpf(cpf, EmpEnum);
+    }
+
     public Emprestimo get(Emprestimo emprestimo) throws ApiException {
         try {
             // Tipo do Emprestimo

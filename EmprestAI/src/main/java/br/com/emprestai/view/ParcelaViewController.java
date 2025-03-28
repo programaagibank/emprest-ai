@@ -1,5 +1,11 @@
 package br.com.emprestai.view;
 
+import br.com.emprestai.controller.ClienteController;
+import br.com.emprestai.controller.LoginController;
+import br.com.emprestai.controller.ParcelaController;
+import br.com.emprestai.dao.ClienteDAO;
+import br.com.emprestai.dao.ParcelaDAO;
+import br.com.emprestai.enums.TipoEmpEnum;
 import br.com.emprestai.model.Parcela;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
@@ -17,6 +23,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+import static br.com.emprestai.enums.TipoEmpEnum.CONSIGNADO;
+
 public class ParcelaViewController {
 
     @FXML
@@ -29,6 +37,7 @@ public class ParcelaViewController {
 
     private static final DecimalFormat df = new DecimalFormat("R$ #,##0.00");
     private static final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    private ParcelaController parcelaController = new ParcelaController(new ParcelaDAO());
 
     public void setParcelas(List<Parcela> parcelas) {
         parcelasList = FXCollections.observableArrayList();
@@ -48,11 +57,11 @@ public class ParcelaViewController {
     }
 
     private void carregarDadosFicticios() {
-        List<Parcela> parcelasFicticias = new ArrayList<>();
-        for (int i = 0; i < 12; i++) {
-            double valor = 100.0 + (i * 10);
-            LocalDate vencimento = LocalDate.now().plusMonths(i);
-            parcelasFicticias.add(new Parcela(valor, 0.0, 0.0, vencimento));
+        List<Parcela> parcelasFicticias = List.of();
+        try{
+            parcelasFicticias = parcelaController.get(37, CONSIGNADO);
+        } catch (Exception e){
+            System.out.println(e.getMessage());
         }
         setParcelas(parcelasFicticias);
     }
@@ -106,6 +115,9 @@ public class ParcelaViewController {
             }
         }
         totalLabel.setText("Total a Pagar: " + df.format(total));
+    }
+
+    public void handleReturn() {
     }
 
     public static class ParcelaWrapper {

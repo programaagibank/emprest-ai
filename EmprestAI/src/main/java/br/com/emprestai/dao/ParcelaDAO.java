@@ -1,6 +1,7 @@
 package br.com.emprestai.dao;
 
 import br.com.emprestai.database.DatabaseConnection;
+import br.com.emprestai.enums.TipoEmpEnum;
 import br.com.emprestai.exception.ApiException;
 import br.com.emprestai.enums.StatusEmpParcela;
 import br.com.emprestai.model.Parcela;
@@ -138,9 +139,17 @@ public class ParcelaDAO {
         parcela.setIdParcela(rs.getLong("id_parcela"));
         parcela.setIdEmprestimo(Long.valueOf(rs.getString("id_emprestimo")));
         parcela.setNumeroParcela(rs.getInt("numero_parcela"));
-        parcela.setDataVencimento(rs.getDate("data_vencimento").toLocalDate());
+
+        // Handle data_vencimento
+        java.sql.Date dataVencimento = rs.getDate("data_vencimento");
+        parcela.setDataVencimento(dataVencimento != null ? dataVencimento.toLocalDate() : null);
+
         parcela.setValorPago(rs.getDouble("valor_pago"));
-        parcela.setDataPagamento(rs.getDate("data_pagamento").toLocalDate());
+
+        // Handle data_pagamento
+        java.sql.Date dataPagamento = rs.getDate("data_pagamento");
+        parcela.setDataPagamento(dataPagamento != null ? dataPagamento.toLocalDate() : null);
+
         parcela.setStatusParcela(StatusEmpParcela.fromValor(rs.getInt("id_status")));
         return parcela;
     }
@@ -170,5 +179,29 @@ public class ParcelaDAO {
             throw new ApiException("Erro ao pagar parcela: " + e.getMessage(), 500);
         }
     }
+    public List<Parcela> buscarParcelasPorEmprestimoETipo(Long idEmprestimo, TipoEmpEnum idTipoEmprestimo) throws SQLException {
+        List<Parcela> parcelas = new ArrayList<>();
+        String sql = "SELECT p.* FROM parcelas p " +
+                "INNER JOIN emprestimos e ON p.id_emprestimo = e.id_emprestimo " +
+                "WHERE e.id_emprestimo = ? AND e.id_tipo_emprestimo = ?";
 
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            // Define os parâmetros da consulta
+            stmt.setLong(1, idEmprestimo);
+            stmt.setInt(2, idTipoEmprestimo.getValor());
+
+            // Executa a consulta
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Parcela parcela = mapearResultSet(rs);
+                    parcelas.add(parcela);
+                }
+            }
+        } catch (SQLException | IOException e) {
+            throw new ApiException("Erro ao pagar parcela: " + e.getMessage(), 500);
+        }
+        return parcelas;
+    }
 }

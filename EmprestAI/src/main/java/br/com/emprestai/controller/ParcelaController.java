@@ -1,9 +1,11 @@
 package br.com.emprestai.controller;
 
 import br.com.emprestai.dao.ParcelaDAO;
+import br.com.emprestai.enums.TipoEmpEnum;
 import br.com.emprestai.exception.ApiException;
 import br.com.emprestai.model.Parcela;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public class ParcelaController {
@@ -23,7 +25,11 @@ public class ParcelaController {
     }
 
     public List<Parcela> get() throws ApiException {
-        return List.of();
+        return parcelaDAO.buscarTodos();
+    }
+
+    public List<Parcela> get(long idEmprestimo, TipoEmpEnum empEnum) throws ApiException, SQLException {
+        return parcelaDAO.buscarParcelasPorEmprestimoETipo(idEmprestimo, empEnum);
     }
 
     public Parcela get(Long id) throws ApiException {

@@ -1,37 +1,23 @@
 package br.com.emprestai.view;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 
-public class DashboardController {
+public class EmprestimoViewController {
 
     @FXML
-    private Label greetingLabel;
+    private Circle statusCircle;
 
     @FXML
-    private Label debtAmount;
-
-    @FXML
-    private Label userName;
-
-    @FXML
-    private Label userCpf;
-
-    @FXML
-    private Label creditMargin;
-
-    @FXML
-    private Button consignadoButton;
-
-    @FXML
-    private Button pessoalButton;
+    private Label loanStatus;
 
     @FXML
     private Button homeButton;
@@ -39,29 +25,32 @@ public class DashboardController {
     @FXML
     private Button exitButton;
 
-
     @FXML
-    private Button profileButton;
-
-    // Set user data
-    public void setUserData(String userName, String cpf, String debt, String creditMargin) {
-        greetingLabel.setText("Olá, " + userName + "!");
-        this.userName.setText("Nome: " + userName);
-        this.userCpf.setText("CPF: " + cpf);
-        this.debtAmount.setText("R$ " + debt);
-        this.creditMargin.setText("R$ " + creditMargin);
+    private void initialize() {
+        updateStatus(loanStatus.getText()); // Chama o método com o texto inicial
     }
 
-    @FXML
-    private void onConsignadoClick() {
-        System.out.println("Consignado button clicked");
-        // Add navigation logic to Consignado loan screen
-    }
+    public void updateStatus(String newStatus) {
+        loanStatus.setText(newStatus);
+        // Remove todas as classes de cor anteriores
+        statusCircle.getStyleClass().removeAll("green", "red");
+        // Garante que a classe base esteja presente
+        if (!statusCircle.getStyleClass().contains("status-circle")) {
+            statusCircle.getStyleClass().add("status-circle");
+        }
 
-    @FXML
-    private void onPessoalClick() {
-        System.out.println("Pessoal button clicked");
-        // Add navigation logic to Pessoal loan screen
+        // Aplica a cor com base no status
+        switch (newStatus.toLowerCase()) {
+            case "ativo":
+                statusCircle.getStyleClass().add("green");
+                break;
+            case "atrasado":
+                statusCircle.getStyleClass().add("red");
+                break;
+            default:
+                // Deixa a cor padrão (gray) se não for nenhum dos casos
+                break;
+        }
     }
 
     @FXML
@@ -98,6 +87,9 @@ public class DashboardController {
         }
     }
 
-    public void onProfileClick(MouseEvent mouseEvent) {
+    public void onProfileClick(ActionEvent actionEvent) {
+    }
+
+    public void onClickDetalhes(ActionEvent actionEvent) {
     }
 }

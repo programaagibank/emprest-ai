@@ -16,7 +16,7 @@ targetCompatibility = '23'
 
 application {
     // Remova 'mainModule' e use apenas 'mainClass'
-    mainClass = 'br.com.emprestai.view.Login'
+    mainClass = 'br.com.emprestai.App'
 }
 
 javafx {

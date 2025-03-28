@@ -99,6 +99,11 @@ public class EmprestimoController{
         return null;
     }
 
+    public Emprestimo put( Long idEmprestimo, Long idEmprestimoOrigem) throws ApiException {
+        if(idEmprestimo == null || idEmprestimoOrigem ==null){}
+        return emprestimoDAO.atualizarRefin(idEmprestimo,idEmprestimoOrigem);
+    }
+
     public void delete(Long id) throws ApiException {
 
     }

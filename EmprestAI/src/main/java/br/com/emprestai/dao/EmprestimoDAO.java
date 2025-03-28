@@ -14,7 +14,7 @@ import java.util.List;
 public class EmprestimoDAO implements GenericDAO<Emprestimo> {
 
     @Override
-    public Emprestimo criar(Emprestimo emprestimo){
+    public Emprestimo criar(Emprestimo emprestimo) {
         String sql = "INSERT INTO emprestimos (id_cliente, valor_total, quantidade_parcelas, juros, data_inicio, id_status_emprestimo, id_tipo_emprestimo,\n" +
                 "valor_seguro, valor_IOF, outros_custos, data_contratacao, id_motivo_encerramento, juros_mora, taxa_multa, valor_parcela)\n" +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
@@ -172,5 +172,28 @@ public class EmprestimoDAO implements GenericDAO<Emprestimo> {
         emprestimo.setTaxaMulta(rs.getDouble("taxa_multa"));
         //TODO Adcionar metodo set para a lista de parcerlas
         return emprestimo;
+
+    }
+
+    public Emprestimo atualizarRefin(Long idEmprestimo, Long idEmprestimoOrigem) throws ApiException {
+        Emprestimo emprestimo = buscarPorId(idEmprestimo);
+        if (idEmprestimo == null || idEmprestimoOrigem == null) {
+            throw new IllegalArgumentException("Os IDs não podem ser nulos.");
+
+        }
+
+        Emprestimo emprestimoDeOrigem = buscarPorId(idEmprestimoOrigem);
+        if (emprestimoDeOrigem == null) {
+        }
+
+        return emprestimo;
     }
 }
+
+
+
+
+
+
+
+

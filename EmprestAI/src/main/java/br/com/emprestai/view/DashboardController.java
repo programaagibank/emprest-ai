@@ -54,8 +54,20 @@ public class DashboardController {
 
     @FXML
     private void onConsignadoClick() {
-        System.out.println("Consignado button clicked");
-        // Add navigation logic to Consignado loan screen
+        try {
+            // Carrega o arquivo FXML da tela Consignado
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("emprestimos.fxml"));
+            Scene consignadoScene = new Scene(loader.load(), 360, 640);
+
+            // Obtém o Stage atual a partir do botão consignadoButton
+            Stage stage = (Stage) consignadoButton.getScene().getWindow();
+            stage.setScene(consignadoScene);
+            stage.setTitle("EmprestAI - Consignado");
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.err.println("Erro ao carregar emprestimos.fxml: " + e.getMessage());
+        }
     }
 
     @FXML

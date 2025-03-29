@@ -9,10 +9,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Hyperlink;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
@@ -30,6 +27,9 @@ public class LoginViewController {
 
     @FXML
     private PasswordField passwordField;
+
+    @FXML
+    private Button loginButton;
 
     @FXML
     private Hyperlink criarConta;
@@ -110,7 +110,7 @@ public class LoginViewController {
                 // Passa o cliente logado para o controlador
                 dashboardController.setClienteLogado(clienteLogado);
 
-                Stage stage = (Stage) cpfField.getScene().getWindow();
+                Stage stage = (Stage) criarConta.getScene().getWindow();
                 stage.setScene(mainScene);
                 stage.setTitle("EmprestAI - Dashboard");
                 stage.show();
@@ -126,12 +126,12 @@ public class LoginViewController {
     @FXML
     private void onCriarContaClick() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/br/com/emprestai/view/CadastroCliente.fxml"));
-            Parent root = loader.load();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("cadastroCliente.fxml"));
+            Scene mainScene = new Scene(loader.load(), 360, 640);
 
-            Stage stage = new Stage();
+            Stage stage = (Stage) loginButton.getScene().getWindow();
             stage.setTitle("Cadastro de Cliente");
-            stage.setScene(new Scene(root));
+            stage.setScene(mainScene);
             stage.show();
 
             // Opcional: fechar a janela de login

@@ -71,12 +71,10 @@ public class EmprestimoController{
         return emprestimo;
     }
 
-    public Emprestimo get(Emprestimo emprestimo) throws ApiException {
+    public Emprestimo get(Emprestimo emprestimo, Cliente cliente) throws ApiException {
         try {
             // Tipo do Emprestimo
             TipoEmpEnum tipoEmp = emprestimo.getTipoEmprestimo();
-
-            Cliente cliente = clienteDAO.buscarPorId(emprestimo.getIdCliente());
 
             int carenciaEmDias = (int) DAYS.between(emprestimo.getDataContratacao(), emprestimo.getDataInicio());
 

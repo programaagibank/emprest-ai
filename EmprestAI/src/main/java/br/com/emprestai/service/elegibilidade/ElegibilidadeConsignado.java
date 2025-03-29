@@ -16,7 +16,7 @@ public class ElegibilidadeConsignado {
         if (rendaLiquida <= 0) throw new ValidationException("Renda líquida deve ser maior que zero.");
         if (parcelasAtivas < 0) throw new ValidationException("Parcelas ativas não podem ser negativas.");
 
-        double margemDisponivel = (rendaLiquida * params.getMargemConsignavel()) - parcelasAtivas;
+        double margemDisponivel = (rendaLiquida * params.getMargemConsignavel()/100) - parcelasAtivas;
         if (valorParcela > margemDisponivel) {
             throw new ValidationException("Valor da parcela excede a margem consignável disponível.");
         }

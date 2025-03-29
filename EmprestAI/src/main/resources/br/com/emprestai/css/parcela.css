@@ -1,0 +1,125 @@
+/* Estilo geral da root */
+.root {
+    -fx-background-color: #f4f4f9;
+}
+
+/* Header styling (top section with greeting and balance) */
+.header {
+    -fx-background-color: linear-gradient(to bottom, #0056D2, #00A3FF); /* Blue gradient */
+    -fx-alignment: center;
+    -fx-padding: 15px;
+}
+
+/* Estilo do texto do cabeçalho */
+.greeting-label {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #ffffff;
+}
+
+/* Estilo do conteúdo central */
+.content {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 0;
+    -fx-border-radius: 0;
+    -fx-border-color: transparent;
+}
+
+/* Estilo do ScrollPane */
+.scroll-pane {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+/* Estilo de cada linha de parcela */
+.parcela-row {
+    -fx-alignment: CENTER_LEFT;
+    -fx-spacing: 10;
+    -fx-padding: 10;
+    -fx-border-color: #e0e0e0 transparent transparent transparent;
+    -fx-border-width: 1 0 0 0;
+}
+
+/* Remove borda da primeira linha */
+.parcela-row:first-child {
+    -fx-border-color: transparent;
+}
+
+/* Estilo do número da parcela */
+.parcela-numero {
+    -fx-font-size: 14px;
+    -fx-text-fill: #666666;
+    -fx-pref-width: 70px; /* Aumentado de 50px para 70px para evitar corte */
+    -fx-min-width: 70px; /* Garante que o espaço mínimo seja respeitado */
+}
+
+/* Estilo do valor da parcela */
+.parcela-valor {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+    -fx-alignment: CENTER;
+}
+
+/* Estilo da data de vencimento */
+.parcela-vencimento {
+    -fx-font-size: 12px;
+    -fx-text-fill: #666666;
+    -fx-alignment: CENTER;
+}
+
+/* Estilo do checkbox */
+.check-box .box {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #666666;
+    -fx-border-width: 2;
+    -fx-border-radius: 50%;
+    -fx-pref-width: 20px;
+    -fx-pref-height: 20px;
+}
+
+.check-box:selected .mark {
+    -fx-background-color: #4caf50;
+    -fx-shape: "M 9 16.2 L 4.8 12 l -1.4 1.4 L 9 19 L 21 7 l -1.4 -1.4 L 9 16.2 Z";
+}
+
+/* Navigation bar (bottom section) */
+.nav-bar {
+    -fx-background-color: linear-gradient(to bottom, #0056D2, #00A3FF); /* Blue gradient */
+    -fx-border-color: #e0e0e0; /* Light gray border on top */
+    -fx-border-width: 1px 0 0 0;
+    -fx-padding: 10px;
+    -fx-alignment: center;
+    -fx-spacing: 30px;
+}
+
+/* Estilo do botão */
+.nav-button {
+    -fx-background-color: #0056D2; /* Azul escuro */
+    -fx-text-fill: #ffffff; /* Texto branco */
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 5;
+    -fx-padding: 8 15 8 15;
+    -fx-cursor: hand;
+}
+
+/* Efeito hover no botão */
+.nav-button:hover {
+    -fx-background-color: #00A3FF; /* Azul mais claro no hover */
+    -fx-text-fill: #ffffff; /* Mantém texto branco no hover */
+}
+
+/* Efeito pressed no botão */
+.nav-button:pressed {
+    -fx-background-color: #003A8C; /* Azul mais escuro ao clicar */
+    -fx-text-fill: #ffffff; /* Mantém texto branco ao clicar */
+}
+
+/* Estilo do label do total */
+.amount-label {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #ffffff; /* Texto branco para contraste com azul escuro */
+    -fx-alignment: CENTER;
+}

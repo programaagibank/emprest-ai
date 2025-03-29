@@ -2,7 +2,6 @@ package br.com.emprestai.view;
 
 import br.com.emprestai.controller.ClienteController;
 import br.com.emprestai.controller.EmprestimoController;
-import br.com.emprestai.controller.LoginController;
 import br.com.emprestai.dao.ClienteDAO;
 import br.com.emprestai.dao.EmprestimoDAO;
 import br.com.emprestai.enums.TipoEmpEnum;
@@ -53,44 +52,62 @@ public class DashboardViewController {
     @FXML
     private Button profileButton;
 
+    @FXML
+    private Label creditMarginConsig;
+
+    @FXML
+    private Label creditMarginPessoal;
+
     private Cliente clienteLogado;
 
     private EmprestimoController emprestimoController = new EmprestimoController(new EmprestimoDAO(), new ClienteDAO());
 
-    // Metodo para definir o cliente logado
+    // Método para definir o cliente logado
     public void setClienteLogado(Cliente cliente) {
         this.clienteLogado = cliente;
+        atualizarMargens(); // Sempre atualiza as margens quando o cliente é setado
     }
 
-    // Set user data
-    public void setUserData(String userName, String cpf, String debt, String creditMargin) {
-        greetingLabel.setText("Olá, " + clienteLogado.getNomecliente() + "!");
-        this.userCpf.setText("CPF: " + clienteLogado.getCpfCliente());
-        this.debtAmount.setText("R$ " + debt);
-        this.creditMargin.setText("R$ " + creditMargin);
+    @FXML
+    public void initialize() {
+        // Atualiza as margens na inicialização, se o cliente já estiver definido
+        atualizarMargens();
+    }
+
+    // Método auxiliar para atualizar as margens
+    private void atualizarMargens() {
+        if (clienteLogado != null) {
+            try {
+                double margemConsig = clienteLogado.getMargemConsignavel();
+                double margemPessoal = clienteLogado.getMargemPessoal();
+                creditMarginConsig.setText(String.format("R$ %.2f", margemConsig));
+                creditMarginPessoal.setText(String.format("R$ %.2f", margemPessoal));
+            } catch (Exception e) {
+                creditMarginConsig.setText("Indisponível");
+                creditMarginPessoal.setText("Indisponível");
+            }
+        } else {
+            creditMarginConsig.setText("R$ 0,00");
+            creditMarginPessoal.setText("R$ 0,00");
+        }
     }
 
     @FXML
     private void onConsignadoClick() {
         try {
-            // Carrega o arquivo FXML da tela Consignado
             FXMLLoader loader = new FXMLLoader(getClass().getResource("emprestimos.fxml"));
             Scene consignadoScene = new Scene(loader.load(), 360, 640);
 
             Emprestimo emprestimo = null;
             try {
                 emprestimo = emprestimoController.get(clienteLogado.getIdCliente(), CONSIGNADO);
-            } catch (Exception e){
+            } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
-            // Obtém o controlador da emprestimo
             EmprestimoViewController emprestimoViewController = loader.getController();
-            // Passa o emprestimo para o controlador
             emprestimoViewController.setEmprestimo(emprestimo);
-
             emprestimoViewController.setClienteLogado(clienteLogado);
 
-            // Obtém o Stage atual a partir do botão consignadoButton
             Stage stage = (Stage) consignadoButton.getScene().getWindow();
             stage.setScene(consignadoScene);
             stage.setTitle("EmprestAI - Consignado");
@@ -104,27 +121,22 @@ public class DashboardViewController {
     @FXML
     private void onPessoalClick() {
         try {
-            // Carrega o arquivo FXML da tela Consignado
             FXMLLoader loader = new FXMLLoader(getClass().getResource("emprestimos.fxml"));
             Scene consignadoScene = new Scene(loader.load(), 360, 640);
             Emprestimo emprestimo = null;
             try {
                 emprestimo = emprestimoController.get(clienteLogado.getIdCliente(), PESSOAL);
-            } catch (Exception e){
+            } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
 
-            // Obtém o controlador da emprestimo
             EmprestimoViewController emprestimoViewController = loader.getController();
-            // Passa o emprestimo para o controlador
             emprestimoViewController.setEmprestimo(emprestimo);
-
             emprestimoViewController.setClienteLogado(clienteLogado);
 
-            // Obtém o Stage atual a partir do botão consignadoButton
             Stage stage = (Stage) consignadoButton.getScene().getWindow();
             stage.setScene(consignadoScene);
-            stage.setTitle("EmprestAI - Consignado");
+            stage.setTitle("EmprestAI - Pessoal");
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -135,7 +147,6 @@ public class DashboardViewController {
     @FXML
     private void onHomeClick() {
         try {
-            // Corrigido o caminho do FXML
             FXMLLoader loader = new FXMLLoader(getClass().getResource("dashboard.fxml"));
             Scene mainScene = new Scene(loader.load(), 360, 640);
 
@@ -152,12 +163,11 @@ public class DashboardViewController {
     @FXML
     private void onExitClick() {
         try {
-            // Corrigido o caminho do FXML
             FXMLLoader loader = new FXMLLoader(getClass().getResource("login.fxml"));
             Scene mainScene = new Scene(loader.load(), 360, 640);
             Stage stage = (Stage) homeButton.getScene().getWindow();
             stage.setScene(mainScene);
-            stage.setTitle("EmprestAI - Dashboard");
+            stage.setTitle("EmprestAI - Login");
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();

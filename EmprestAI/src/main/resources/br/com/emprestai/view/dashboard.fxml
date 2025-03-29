@@ -33,12 +33,12 @@
             </HBox>
 
             <!-- Total Outstanding Debt -->
-            <Label styleClass="section-title" text="Saldo Devedor Total" />
-            <Label fx:id="debtAmount" styleClass="amount-label" text="R$ 5.000,00" />
+            <Label styleClass="section-title" text="Margem Consignado" />
+            <Label fx:id="creditMarginConsig" styleClass="amount-label" text="" />
 
             <!-- Credit Margin -->
-            <Label styleClass="section-title" text="Margem de Crédito" />
-            <Label fx:id="creditMargin" styleClass="amount-label" text="R$ 2.000,00" />
+            <Label styleClass="section-title" text="Margem Pessoal" />
+            <Label fx:id="creditMarginPessoal" styleClass="amount-label" text="" />
 
             <!-- Loan Options with Icons -->
             <Label styleClass="section-title" text="Escolha de Empréstimo" />

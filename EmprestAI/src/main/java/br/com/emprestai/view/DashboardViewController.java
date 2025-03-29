@@ -10,7 +10,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-public class DashboardController {
+public class DashboardViewController {
 
     @FXML
     private Label greetingLabel;

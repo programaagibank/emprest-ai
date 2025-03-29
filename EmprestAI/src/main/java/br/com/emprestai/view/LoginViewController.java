@@ -19,7 +19,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-public class LogarController {
+public class LoginViewController {
 
     @FXML
     private Label greetingLabel;

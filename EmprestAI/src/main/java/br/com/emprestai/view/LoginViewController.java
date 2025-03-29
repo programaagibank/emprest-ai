@@ -7,6 +7,7 @@ import br.com.emprestai.model.Cliente;
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
@@ -29,6 +30,9 @@ public class LoginViewController {
 
     @FXML
     private PasswordField passwordField;
+
+    @FXML
+    private Hyperlink criarConta;
 
     @FXML
     private Hyperlink privacyLink;
@@ -118,6 +122,22 @@ public class LoginViewController {
             errorBox.setManaged(true);
         }
     }
+
+    public void onCriarContaClick() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("CadastroCliente.fxml"));
+                Parent root = loader.load();
+
+                // Cria um novo Stage (janela) para exibir a tela de cadastro
+                Stage stage = new Stage();
+                stage.setTitle("Cadastro de Cliente");
+                stage.setScene(new Scene(root));
+                stage.show();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
 
     @FXML
     private void onPrivacyLinkClick() {

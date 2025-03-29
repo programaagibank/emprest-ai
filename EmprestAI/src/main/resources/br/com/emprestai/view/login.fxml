@@ -37,9 +37,12 @@
 
     <!-- Login Button -->
     <Button fx:id="loginButton" onAction="#onLoginButtonClick" styleClass="primary-button" text="Entrar" />
+    <!-- Cadastro Link -->
+    <Hyperlink fx:id="criarConta" onAction="#onCriarContaClick" styleClass="register-link" text="Cadastre-se agora" />
 
     <!-- Privacy Policy Link -->
     <Hyperlink fx:id="privacyLink" onAction="#onPrivacyLinkClick" styleClass="privacy-link" text="Política de Privacidade" />
+
 
     <VBox fx:id="errorBox" visible="false" managed="false" alignment="CENTER" spacing="10">
         <Label text="Credenciais inválidas"/>

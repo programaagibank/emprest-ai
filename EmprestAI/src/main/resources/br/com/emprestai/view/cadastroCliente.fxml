@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="10" alignment="CENTER" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.com.emprestai.view.CadastroClienteViewController">
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <Label text="Cadastro de Cliente" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+
+    <TextField fx:id="txtNome" promptText="Nome"/>
+    <TextField fx:id="txtCpf" promptText="CPF"/>
+    <TextField fx:id="txtRendaMensal" promptText="Renda Mensal"/>
+    <TextField fx:id="txtRendaFamiliar" promptText="Renda Familiar"/>
+    <TextField fx:id="txtQtdPessoas" promptText="Quantidade de Pessoas na Casa"/>
+    <TextField fx:id="txtDataNascimento" promptText="Data de Nascimento (yyyy-mm-dd)"/>
+    <PasswordField fx:id="txtSenha" promptText="Senha"/>
+
+    <Button text="Cadastrar" onAction="#cadastrarCliente"/>
+</VBox>

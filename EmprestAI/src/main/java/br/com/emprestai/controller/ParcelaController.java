@@ -1,12 +1,21 @@
 package br.com.emprestai.controller;
 
 import br.com.emprestai.dao.ParcelaDAO;
+import br.com.emprestai.enums.StatusEmpParcela;
 import br.com.emprestai.enums.TipoEmpEnum;
 import br.com.emprestai.exception.ApiException;
 import br.com.emprestai.model.Parcela;
 
+import java.io.IOException;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+
+import static br.com.emprestai.enums.StatusEmpParcela.ATRASADA;
+import static br.com.emprestai.enums.StatusEmpParcela.PENDENTE;
 
 public class ParcelaController {
     private final ParcelaDAO parcelaDAO;
@@ -20,15 +29,12 @@ public class ParcelaController {
         return null;
     }
 
-    public List<Parcela> post(List<Parcela> parcelas) throws ApiException {
-        return null;
+    public List<Parcela> post(List<Parcela> parcelas) throws ApiException, SQLException, IOException {
+        return parcelaDAO.pagarParcelas(parcelas);
     }
 
-    public List<Parcela> get() throws ApiException {
-        return parcelaDAO.buscarTodos();
-    }
-
-    public List<Parcela> get(long idEmprestimo, TipoEmpEnum empEnum) throws ApiException, SQLException {
+    public List<Parcela> get(Long idEmprestimo, TipoEmpEnum empEnum) throws ApiException, SQLException {
+        // Busca todas as parcelas do DAO
         return parcelaDAO.buscarParcelasPorEmprestimoETipo(idEmprestimo, empEnum);
     }
 

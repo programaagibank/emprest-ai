@@ -7,7 +7,7 @@
 
 <VBox spacing="20.0" styleClass="root"
       stylesheets="@../css/login.css"
-      xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/17.0.6" fx:controller="br.com.emprestai.view.LogarController">
+      xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/17.0.6" fx:controller="br.com.emprestai.view.LoginViewController">
 <padding>
     <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
 </padding>

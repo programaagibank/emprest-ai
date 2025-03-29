@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<BorderPane styleClass="root" stylesheets="@../css/dashboard.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.com.emprestai.view.DashboardController">
+<BorderPane styleClass="root" stylesheets="@../css/dashboard.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.com.emprestai.view.DashboardViewController">
     <!-- Top Section: Greeting -->
     <top>
         <HBox alignment="CENTER" spacing="10.0" styleClass="header">

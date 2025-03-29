@@ -2,7 +2,6 @@ package br.com.emprestai.dao;
 
 import br.com.emprestai.database.DatabaseConnection;
 import br.com.emprestai.exception.ApiException;
-import br.com.emprestai.enums.MotivosEncerramentosEmpEnum;
 import br.com.emprestai.enums.StatusEmpEnum;
 import br.com.emprestai.enums.TipoEmpEnum;
 import br.com.emprestai.model.Emprestimo;
@@ -16,8 +15,8 @@ public class EmprestimoDAO implements GenericDAO<Emprestimo> {
     @Override
     public Emprestimo criar(Emprestimo emprestimo) {
         String sql = "INSERT INTO emprestimos (id_cliente, valor_total, quantidade_parcelas, juros, data_inicio, id_status_emprestimo, id_tipo_emprestimo,\n" +
-                "valor_seguro, valor_IOF, outros_custos, data_contratacao, id_motivo_encerramento, juros_mora, taxa_multa, valor_parcela)\n" +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+                "valor_seguro, valor_IOF, outros_custos, data_contratacao, juros_mora, taxa_multa, valor_parcela)\n" +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -67,7 +66,7 @@ public class EmprestimoDAO implements GenericDAO<Emprestimo> {
     @Override
     public Emprestimo buscarPorId(Long idEmprestimo) {
         String sql = "select e.id_emprestimo, e.id_cliente , e.valor_total, e.quantidade_parcelas, e.juros, e.data_inicio, e.id_status_emprestimo, e.id_tipo_emprestimo,\n" +
-                "e.valor_seguro, e.valor_IOF, e.outros_custos, e.data_contratacao, e.id_motivo_encerramento, e.juros_mora,\n" +
+                "e.valor_seguro, e.valor_IOF, e.outros_custos, e.data_contratacao, e.juros_mora,\n" +
                 "e.taxa_multa, e.id_emprestimo_origem, c.cpf_cliente, c.nome_cliente\n" +
                 "from emprestimos e\n" +
                 "inner join clientes c on e.id_cliente = c.id_cliente\n" +
@@ -93,7 +92,7 @@ public class EmprestimoDAO implements GenericDAO<Emprestimo> {
     @Override
     public Emprestimo buscarPorCpf(String cpfCliente) {
         String sql = "select e.id_emprestimo, e.id_cliente , e.valor_total, e.quantidade_parcelas, e.juros, e.data_inicio, e.id_status_emprestimo, e.id_tipo_emprestimo,\n" +
-                "e.valor_seguro, e.valor_IOF, e.outros_custos, e.data_contratacao, e.id_motivo_encerramento, e.juros_mora,\n" +
+                "e.valor_seguro, e.valor_IOF, e.outros_custos, e.data_contratacao, e.juros_mora,\n" +
                 "e.taxa_multa, e.id_emprestimo_origem, c.cpf_cliente, c.nome_cliente\n" +
                 "from emprestimos e\n" +
                 "inner join clientes c on e.id_cliente = c.id_cliente\n" +
@@ -116,25 +115,25 @@ public class EmprestimoDAO implements GenericDAO<Emprestimo> {
         }
     }
 
-    public Emprestimo buscarPorCpf(String cpfCliente, TipoEmpEnum empEnum) {
+    public Emprestimo buscarPorIdCliente(Long idCliente, TipoEmpEnum empEnum) {
         String sql = "select e.id_emprestimo, e.id_cliente , e.valor_total, e.quantidade_parcelas, e.juros, e.data_inicio, e.id_status_emprestimo, e.id_tipo_emprestimo,\n" +
-                "e.valor_seguro, e.valor_IOF, e.outros_custos, e.data_contratacao, e.id_motivo_encerramento, e.juros_mora,\n" +
+                "e.valor_seguro, e.valor_IOF, e.outros_custos, e.data_contratacao, e.juros_mora,\n" +
                 "e.taxa_multa, e.id_emprestimo_origem, c.cpf_cliente, c.nome_cliente\n" +
                 "from emprestimos e\n" +
                 "inner join clientes c on e.id_cliente = c.id_cliente\n" +
-                "where e.id_emprestimo = ? and e.id_tipo_emprestimo = ?";
+                "where e.id_cliente = ? and e.id_tipo_emprestimo = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setString(1, cpfCliente);
+            stmt.setLong(1, idCliente);
             stmt.setInt(2, empEnum.getValor());
 
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     return mapearResultSet(rs);
                 } else {
-                    throw new ApiException("Emprestimo não encontrado com CPF: " + cpfCliente, 404);
+                    throw new ApiException("Emprestimo não encontrado para ID cliente: " + idCliente + " e tipo de emprestimo: " + empEnum, 404);
                 }
             }
         } catch (SQLException | IOException e) {
@@ -167,7 +166,6 @@ public class EmprestimoDAO implements GenericDAO<Emprestimo> {
         emprestimo.setValorIOF(rs.getDouble("valor_IOF"));
         emprestimo.setOutrosCustos(rs.getDouble("outros_custos"));
         emprestimo.setDataContratacao(rs.getDate("data_contratacao").toLocalDate());
-        emprestimo.setMotivoEncerramento(MotivosEncerramentosEmpEnum.fromValor(rs.getInt("id_motivo_encerramento")));
         emprestimo.setTaxaJurosMora(rs.getDouble("juros_mora"));
         emprestimo.setTaxaMulta(rs.getDouble("taxa_multa"));
         //TODO Adcionar metodo set para a lista de parcerlas

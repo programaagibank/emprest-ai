@@ -1,5 +1,7 @@
 package br.com.emprestai.view;
 
+import br.com.emprestai.model.Cliente;
+import br.com.emprestai.model.Emprestimo;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -20,35 +22,89 @@ public class EmprestimoViewController {
     private Label loanStatus;
 
     @FXML
+    private Label contractTitle;
+
+    @FXML
+    private Label contractType;
+
+    @FXML
+    private Label totalAmount;
+
+    @FXML
+    private Label currentDebt;
+
+    @FXML
+    private Label installmentAmount;
+
+    @FXML
+    private Label remainingInstallments;
+
+    @FXML
     private Button homeButton;
 
     @FXML
     private Button exitButton;
 
+    private Emprestimo emprestimo;
+
+    public void setEmprestimo(Emprestimo emprestimo) {
+        this.emprestimo = emprestimo;
+        exibirInformacoesEmprestimo();
+    }
+
+    private Cliente clienteLogado;
+
+    public void setClienteLogado(Cliente cliente) {
+        this.clienteLogado = cliente;
+    }
+
     @FXML
     private void initialize() {
-        updateStatus(loanStatus.getText()); // Chama o método com o texto inicial
+        exibirInformacoesEmprestimo();
+    }
+
+    private void exibirInformacoesEmprestimo() {
+        if (emprestimo != null) {
+            // Preenche os campos com base nos dados do empréstimo
+            contractTitle.setText("Contrato");
+            contractType.setText("Consignado"); // Ajuste se houver um campo real para tipo
+            totalAmount.setText(String.format("R$ %.2f", emprestimo.getValorEmprestimo()));
+            currentDebt.setText(String.format("R$ %.2f", emprestimo.getValorEmprestimo())); // Ajuste se houver dívida atual
+            installmentAmount.setText(String.format("R$ %.2f", emprestimo.getValorParcela())); // Supondo getValorParcela()
+            remainingInstallments.setText(String.format("%d de %d", emprestimo.getQuantidadeParcelas(), emprestimo.getQuantidadeParcelas())); // Supondo métodos
+            loanStatus.setText(emprestimo.getStatusEmprestimo().name());
+            updateStatus(emprestimo.getStatusEmprestimo().name());
+        } else {
+            // Valores padrão caso o empréstimo seja nulo
+            contractTitle.setText("Contrato");
+            contractType.setText("Nenhum");
+            totalAmount.setText("R$ 0,00");
+            currentDebt.setText("R$ 0,00");
+            installmentAmount.setText("R$ 0,00");
+            remainingInstallments.setText("0 de 0");
+            loanStatus.setText("Indisponível");
+            updateStatus("indisponível");
+        }
     }
 
     public void updateStatus(String newStatus) {
-        loanStatus.setText(newStatus);
-        // Remove todas as classes de cor anteriores
-        statusCircle.getStyleClass().removeAll("green", "red");
-        // Garante que a classe base esteja presente
+        statusCircle.getStyleClass().removeAll("green", "red", "gray");
         if (!statusCircle.getStyleClass().contains("status-circle")) {
             statusCircle.getStyleClass().add("status-circle");
         }
 
-        // Aplica a cor com base no status
         switch (newStatus.toLowerCase()) {
-            case "ativo":
+            case "aprovado":
                 statusCircle.getStyleClass().add("green");
                 break;
-            case "atrasado":
+            case "negado":
                 statusCircle.getStyleClass().add("red");
                 break;
+            case "encerrado":
+                statusCircle.getStyleClass().add("gray");
+                break;
             default:
-                // Deixa a cor padrão (gray) se não for nenhum dos casos
+                statusCircle.getStyleClass().add("gray");
                 break;
         }
     }
@@ -56,10 +112,10 @@ public class EmprestimoViewController {
     @FXML
     private void onHomeClick() {
         try {
-            // Corrigido o caminho do FXML
             FXMLLoader loader = new FXMLLoader(getClass().getResource("dashboard.fxml"));
             Scene mainScene = new Scene(loader.load(), 360, 640);
-
+            DashboardViewController dashboardController = loader.getController();
+            dashboardController.setClienteLogado(clienteLogado);
             Stage stage = (Stage) homeButton.getScene().getWindow();
             stage.setScene(mainScene);
             stage.setTitle("EmprestAI - Dashboard");
@@ -73,10 +129,8 @@ public class EmprestimoViewController {
     @FXML
     private void onExitClick() {
         try {
-            // Corrigido o caminho do FXML
             FXMLLoader loader = new FXMLLoader(getClass().getResource("login.fxml"));
             Scene mainScene = new Scene(loader.load(), 360, 640);
-
             Stage stage = (Stage) homeButton.getScene().getWindow();
             stage.setScene(mainScene);
             stage.setTitle("EmprestAI - Dashboard");

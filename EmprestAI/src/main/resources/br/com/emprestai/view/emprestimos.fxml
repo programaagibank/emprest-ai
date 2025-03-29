@@ -13,7 +13,7 @@
             <padding>
                 <Insets bottom="10.0" left="15.0" right="15.0" top="15.0" />
             </padding>
-            <Label fx:id="contractTitle" styleClass="greeting-label" text="Contrato Ativo" />
+            <Label fx:id="contractTitle" styleClass="greeting-label" text="Contrato" />
         </HBox>
     </top>
 
@@ -24,31 +24,29 @@
                 <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
             </padding>
 
-
-
             <!-- Key Information -->
             <VBox spacing="10.0" styleClass="info-box">
                 <HBox alignment="CENTER_LEFT" spacing="10.0">
-                    <Label fx:id="contractType" styleClass="section-title" text="Consignado" />
-                    <Label fx:id="totalAmount" styleClass="amount-label" text="R$ 10.000,00" />
+                    <Label fx:id="contractType" styleClass="section-title" text="" />
+                    <Label fx:id="totalAmount" styleClass="amount-label" text="" />
                 </HBox>
                 <HBox alignment="CENTER_LEFT" spacing="10.0">
-                    <Label styleClass="info-label" text="Saldo Devedor:" />
-                    <Label fx:id="currentDebt" styleClass="info-value" text="R$ 7.500,00" />
+                    <Label styleClass="info-label" text="Valor Empréstimo:" />
+                    <Label fx:id="currentDebt" styleClass="info-value" text="" />
                 </HBox>
                 <HBox alignment="CENTER_LEFT" spacing="10.0">
                     <Label styleClass="info-label" text="Valor da Parcela:" />
-                    <Label fx:id="installmentAmount" styleClass="info-value" text="R$ 500,00" />
+                    <Label fx:id="installmentAmount" styleClass="info-value" text="" />
                 </HBox>
                 <HBox alignment="CENTER_LEFT" spacing="10.0">
                     <Label styleClass="info-label" text="Parcelas Restantes:" />
-                    <Label fx:id="remainingInstallments" styleClass="info-value" text="15 de 24" />
+                    <Label fx:id="remainingInstallments" styleClass="info-value" text="" />
                 </HBox>
                 <HBox alignment="CENTER_LEFT" spacing="10.0">
                     <Label styleClass="info-label" text="Status:" />
                     <HBox alignment="CENTER" spacing="5.0">
                         <Circle fx:id="statusCircle" radius="5" styleClass="status-circle" />
-                        <Label fx:id="loanStatus" styleClass="info-value" text="Ativo" />
+                        <Label fx:id="loanStatus" styleClass="info-value" text="" />
                     </HBox>
                 </HBox>
                 <HBox alignment="CENTER" spacing="10.0">
@@ -56,8 +54,6 @@
                     <Button fx:id="detailsButton" styleClass="banner-button" text="Ver Detalhes" onAction="#onClickDetalhes"/>
                 </HBox>
             </VBox>
-
-
         </VBox>
     </center>
 
@@ -71,7 +67,7 @@
                 <graphic>
                     <ImageView fitHeight="24" fitWidth="24" preserveRatio="true">
                         <image>
-                            <Image url="@../images/home.png" /> <!-- Substitua pelo ícone desejado -->
+                            <Image url="@../images/home.png" />
                         </image>
                     </ImageView>
                 </graphic>
@@ -81,7 +77,7 @@
                 <graphic>
                     <ImageView fitHeight="24" fitWidth="24" preserveRatio="true">
                         <image>
-                            <Image url="@../images/user.png" /> <!-- Substitua pelo ícone desejado -->
+                            <Image url="@../images/user.png" />
                         </image>
                     </ImageView>
                 </graphic>
@@ -91,7 +87,7 @@
                 <graphic>
                     <ImageView fitHeight="24" fitWidth="24" preserveRatio="true">
                         <image>
-                            <Image url="@../images/exit.png" /> <!-- Substitua pelo ícone desejado -->
+                            <Image url="@../images/exit.png" />
                         </image>
                     </ImageView>
                 </graphic>

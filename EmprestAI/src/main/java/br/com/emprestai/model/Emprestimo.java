@@ -1,6 +1,5 @@
 package br.com.emprestai.model;
 
-import br.com.emprestai.enums.MotivosEncerramentosEmpEnum;
 import br.com.emprestai.enums.StatusEmpEnum;
 import br.com.emprestai.enums.TipoEmpEnum;
 
@@ -23,7 +22,6 @@ public class Emprestimo {
     private double valorIOF;
     private double outrosCustos;
     private LocalDate dataContratacao;
-    private MotivosEncerramentosEmpEnum motivoEncerramento;
     private double taxaJurosMora;
     private double taxaMulta;
     private long idEmprestimoOrigem;
@@ -118,13 +116,6 @@ public class Emprestimo {
     }
     public void setDataContratacao(LocalDate dataContratacao){
         this.dataContratacao = dataContratacao;
-    }
-
-    public MotivosEncerramentosEmpEnum getIdMotivoEncerramento(){
-        return motivoEncerramento;
-    }
-    public void setMotivoEncerramento(MotivosEncerramentosEmpEnum motivoEncerramento){
-        this.motivoEncerramento = motivoEncerramento;
     }
 
     public double getTaxaJurosMora(){
@@ -228,7 +219,6 @@ public class Emprestimo {
                 ", valorIOF=" + valorIOF +
                 ", outrosCustos=" + outrosCustos +
                 ", dataContratacao=" + dataContratacao +
-                ", motivoEncerramento=" + motivoEncerramento +
                 ", taxaJurosMora=" + taxaJurosMora +
                 ", taxaMulta=" + taxaMulta +
                 ", idEmprestimoOrigem=" + idEmprestimoOrigem +

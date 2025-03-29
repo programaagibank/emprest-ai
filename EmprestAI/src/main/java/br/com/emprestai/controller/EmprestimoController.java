@@ -15,7 +15,6 @@ import br.com.emprestai.util.EmprestimoParams;
 
 import java.util.List;
 
-import static br.com.emprestai.enums.StatusEmpEnum.APROVADO;
 import static br.com.emprestai.enums.StatusEmpEnum.NEGADO;
 import static java.time.temporal.ChronoUnit.DAYS;
 import static java.time.temporal.ChronoUnit.YEARS;
@@ -64,8 +63,12 @@ public class EmprestimoController{
         return null;
     }
 
-    public Emprestimo get(String cpf, TipoEmpEnum EmpEnum) throws ApiException {
-        return emprestimoDAO.buscarPorCpf(cpf, EmpEnum);
+    public Emprestimo get(Long id, TipoEmpEnum EmpEnum) throws ApiException {
+        Emprestimo emprestimo =  emprestimoDAO.buscarPorIdCliente(id, EmpEnum);
+        double valorEmprestimo = emprestimo.getValorTotal() - emprestimo.getValorIOF() - emprestimo.getValorSeguro() - emprestimo.getOutrosCustos();
+        emprestimo.setValorEmprestimo(valorEmprestimo);
+        System.out.println(emprestimo.getStatusEmprestimo().name());
+        return emprestimo;
     }
 
     public Emprestimo get(Emprestimo emprestimo) throws ApiException {
@@ -86,7 +89,7 @@ public class EmprestimoController{
             };
 
             // Definir se o empréstimo é elegível
-            emprestimo.setStatusEmprestimo(elegivel ? APROVADO : NEGADO);
+            emprestimo.setStatusEmprestimo(!elegivel ? NEGADO: null);
 
         } catch (Exception e) {
             throw new RuntimeException("Erro ao processar empréstimo: " + e.getMessage(), e);
@@ -99,10 +102,10 @@ public class EmprestimoController{
         return null;
     }
 
-    public Emprestimo put( Long idEmprestimo, Long idEmprestimoOrigem) throws ApiException {
-        if(idEmprestimo == null || idEmprestimoOrigem ==null){}
-        return emprestimoDAO.atualizarRefin(idEmprestimo,idEmprestimoOrigem);
+    public Emprestimo put(Long idEmprestimo, Long idEmprestimoOrigem) throws ApiException {
+        return emprestimoDAO.atualizarRefin(idEmprestimo, idEmprestimoOrigem);
     }
+
 
     public void delete(Long id) throws ApiException {
 

@@ -206,7 +206,7 @@ public class ParcelaDAO {
     }
 
     // Metodo para pagar uma lista de parcelas
-    public void pagarParcelas(List<Parcela> parcelas) throws SQLException, IOException {
+    public List<Parcela> pagarParcelas(List<Parcela> parcelas) throws SQLException, IOException {
         Connection conn = null;
         PreparedStatement pstmt = null;
 
@@ -242,5 +242,6 @@ public class ParcelaDAO {
                 conn.close();
             }
         }
+        return parcelas;
     }
 }

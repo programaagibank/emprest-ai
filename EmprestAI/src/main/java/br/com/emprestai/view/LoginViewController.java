@@ -97,9 +97,14 @@ public class LoginViewController {
                 errorBox.setVisible(false);
                 errorBox.setManaged(false);
 
-                // Corrigido o caminho do FXML
+                // Carrega o FXML da dashboard
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("dashboard.fxml"));
                 Scene mainScene = new Scene(loader.load(), 360, 640);
+
+                // Obtém o controlador da dashboard
+                DashboardViewController dashboardController = loader.getController();
+                // Passa o cliente logado para o controlador
+                dashboardController.setClienteLogado(clienteLogado);
 
                 Stage stage = (Stage) cpfField.getScene().getWindow();
                 stage.setScene(mainScene);

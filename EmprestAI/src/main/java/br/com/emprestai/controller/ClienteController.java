@@ -5,6 +5,7 @@ import br.com.emprestai.exception.ApiException;
 import br.com.emprestai.model.Cliente;
 import java.util.List;
 
+import javafx.event.ActionEvent;
 import org.mindrot.jbcrypt.BCrypt;
 
 public class ClienteController {

@@ -27,7 +27,7 @@ public class ParcelaDAO {
             stmt.setDate(4, Date.valueOf(parcela.getDataVencimento()));
             stmt.setDouble(5, parcela.getValorPago());
             stmt.setDate(6, Date.valueOf(parcela.getDataPagamento()));
-         //   stmt.setInt(7, parcela.getIdStatus().getValor());
+            stmt.setInt(7, parcela.getStatus().getValor());
             int affectedRows = stmt.executeUpdate();
 
             if (affectedRows == 0) {
@@ -99,7 +99,7 @@ public class ParcelaDAO {
             stmt.setDouble(3, parcela.getNumeroParcela());
             stmt.setDate(4, Date.valueOf(parcela.getDataVencimento()));
             stmt.setDouble(5, parcela.getValorPago());
-          //  stmt.setInt(6, parcela.getIdStatus().getValor());
+            stmt.setInt(6, parcela.getStatus().getValor());
             stmt.setDate(7, Date.valueOf(parcela.getDataPagamento()));
             stmt.setLong(8, id);
             int affectedRows = stmt.executeUpdate();

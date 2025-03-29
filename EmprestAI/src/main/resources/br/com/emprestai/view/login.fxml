@@ -7,7 +7,8 @@
 
 <VBox spacing="20.0" styleClass="root"
       stylesheets="@../css/login.css"
-      xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/17.0.6" fx:controller="br.com.emprestai.view.LoginViewController">
+      xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/17.0.6"
+            fx:controller="br.com.emprestai.view.LoginViewController">
 <padding>
     <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
 </padding>
@@ -38,7 +39,7 @@
     <!-- Login Button -->
     <Button fx:id="loginButton" onAction="#onLoginButtonClick" styleClass="primary-button" text="Entrar" />
     <!-- Cadastro Link -->
-    <Hyperlink fx:id="criarConta" onAction="#onCriarContaClick" styleClass="register-link" text="Cadastre-se agora" />
+    <Hyperlink fx:id="criarConta" onAction="#onCriarContaClick" styleClass="register-link" text="Cadastre-se agora"  alignment="CENTER_RIGHT" />
 
     <!-- Privacy Policy Link -->
     <Hyperlink fx:id="privacyLink" onAction="#onPrivacyLinkClick" styleClass="privacy-link" text="Política de Privacidade" />

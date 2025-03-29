@@ -123,21 +123,24 @@ public class LoginViewController {
         }
     }
 
-    public void onCriarContaClick() {
+    @FXML
+    private void onCriarContaClick() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("CadastroCliente.fxml"));
-                Parent root = loader.load();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/br/com/emprestai/view/CadastroCliente.fxml"));
+            Parent root = loader.load();
 
-                // Cria um novo Stage (janela) para exibir a tela de cadastro
-                Stage stage = new Stage();
-                stage.setTitle("Cadastro de Cliente");
-                stage.setScene(new Scene(root));
-                stage.show();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            Stage stage = new Stage();
+            stage.setTitle("Cadastro de Cliente");
+            stage.setScene(new Scene(root));
+            stage.show();
+
+            // Opcional: fechar a janela de login
+            // ((Stage) criarConta.getScene().getWindow()).close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Você pode adicionar um alerta aqui também
         }
-
+    }
 
     @FXML
     private void onPrivacyLinkClick() {

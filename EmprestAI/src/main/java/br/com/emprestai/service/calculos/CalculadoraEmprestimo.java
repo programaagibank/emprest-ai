@@ -48,6 +48,7 @@ public class CalculadoraEmprestimo {
 
         int calcularDiasCarencia = (int) DAYS.between(dataContratacao,dataInicioPagamento);
         BigDecimal resultadoCarencia = calcularCarencia(valorTotalSemCarencia,taxaJurosMensal,calcularDiasCarencia);
+        emprestimo.setOutrosCustos(resultadoCarencia.doubleValue());
         BigDecimal valorTotalFinanciado = valorTotalSemCarencia.add(resultadoCarencia) ;
 
         emprestimo.setValorSeguro(seguro.doubleValue());

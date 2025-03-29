@@ -6,12 +6,12 @@ public class CalculoPessoal {
 
     private static final EmprestimoParams params = EmprestimoParams.getInstance();
 
-    public static double calculoDeCapacidadeDePagamento(double rendaLiquida) {
+    public static double calculoDeCapacidadeDePagamento(double rendaLiquida, double parcelasAtivas) {
         if (rendaLiquida <= 0) {
             throw new IllegalArgumentException("O Valor da renda líquida não pode ser inferior a zero.");
         }
 
-        double capacidadeMaxima = rendaLiquida * (params.getPercentualRendaPessoal() / 100);
+        double capacidadeMaxima = rendaLiquida * (params.getPercentualRendaPessoal() / 100) - parcelasAtivas;
         return capacidadeMaxima;
     }
 

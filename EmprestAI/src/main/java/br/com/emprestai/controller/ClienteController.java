@@ -6,6 +6,8 @@ import br.com.emprestai.model.Cliente;
 import java.util.List;
 
 import javafx.event.ActionEvent;
+import br.com.emprestai.service.calculos.CalculoConsignado;
+import br.com.emprestai.service.calculos.CalculoPessoal;
 import org.mindrot.jbcrypt.BCrypt;
 
 public class ClienteController {
@@ -38,7 +40,10 @@ public class ClienteController {
         if (cpf == null || cpf.trim().isEmpty()) {
             throw new IllegalArgumentException("CPF não pode ser nulo ou vazio.");
         }
-        return clienteDAO.buscarPorCpf(cpf);
+        Cliente cliente = clienteDAO.buscarPorCpf(cpf);
+        cliente.setMargemConsignavel(CalculoConsignado.calcularMargemEmprestimoConsig(cliente.getRendaMensalLiquida(), cliente.getParcelasAtivas()));
+        cliente.setMargemPessoal(CalculoPessoal.calculoDeCapacidadeDePagamento(cliente.getRendaMensalLiquida(), cliente.getParcelasAtivas()));
+        return cliente;
     }
 
     public Cliente put(Cliente cliente) throws ApiException {

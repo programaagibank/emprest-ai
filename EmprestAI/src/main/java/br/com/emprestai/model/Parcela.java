@@ -161,4 +161,8 @@ public class Parcela {
                 ", jurosMora=" + jurosMora +
                 '}';
     }
+
+    public StatusEmpParcela getIdStatus() {
+        return null;
+    }
 }

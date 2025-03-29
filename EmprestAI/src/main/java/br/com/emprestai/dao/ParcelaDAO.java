@@ -204,4 +204,43 @@ public class ParcelaDAO {
         }
         return parcelas;
     }
+
+    // Metodo para pagar uma lista de parcelas
+    public void pagarParcelas(List<Parcela> parcelas) throws SQLException, IOException {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+
+        try {
+            conn = DatabaseConnection.getConnection();
+            conn.setAutoCommit(false); // Desabilita o autocommit
+
+            String sql = "UPDATE parcelas SET valor_pago = ?, data_pagamento = ?, id_status = ? WHERE id_parcela = ?";
+
+            pstmt = conn.prepareStatement(sql);
+
+            for (Parcela parcela : parcelas) {
+                pstmt.setDouble(1, parcela.getValorPresenteParcela() + parcela.getMulta() + parcela.getJurosMora());
+                pstmt.setDate(2, Date.valueOf(parcela.getDataPagamento()));
+                pstmt.setInt(3, StatusEmpParcela.PAGA.getValor());
+                pstmt.setLong(4, parcela.getIdParcela());
+                pstmt.addBatch();
+            }
+
+            pstmt.executeBatch();
+            conn.commit();
+        } catch (SQLException e) {
+            if (conn != null) {
+                conn.rollback();
+            }
+            throw new ApiException("Erro ao pagar parcelas: " + e.getMessage(), 500);
+        } finally {
+            if (pstmt != null) {
+                pstmt.close();
+            }
+            if (conn != null) {
+                conn.setAutoCommit(true);
+                conn.close();
+            }
+        }
+    }
 }

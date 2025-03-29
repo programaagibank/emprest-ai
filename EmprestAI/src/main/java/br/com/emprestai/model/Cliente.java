@@ -21,6 +21,9 @@ public class Cliente {
     private String cpfCliente; // Usado como identificador de login
     private String senha;
     private List<Emprestimo> emprestimoList;
+    private double parcelasAtivas;
+    private double margemConsignavel;
+    private double margemPessoal;
 
     // Construtor vazio
     public Cliente() {
@@ -115,6 +118,30 @@ public class Cliente {
 
     public void setEmprestimoList(List<Emprestimo> emprestimoList) {
         this.emprestimoList = emprestimoList;
+    }
+
+    public double getParcelasAtivas() {
+        return parcelasAtivas;
+    }
+
+    public void setParcelasAtivas(double parcelasAtivas) {
+        this.parcelasAtivas = parcelasAtivas;
+    }
+
+    public double getMargemConsignavel() {
+        return margemConsignavel;
+    }
+
+    public void setMargemConsignavel(double margemConsignavel) {
+        this.margemConsignavel = margemConsignavel;
+    }
+
+    public double getMargemPessoal() {
+        return margemPessoal;
+    }
+
+    public void setMargemPessoal(double margemPessoal) {
+        this.margemPessoal = margemPessoal;
     }
 
     @Override

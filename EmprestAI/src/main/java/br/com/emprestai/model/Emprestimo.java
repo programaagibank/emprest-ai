@@ -14,6 +14,7 @@ public class Emprestimo {
     private double valorEmprestimo;
     private double valorParcela;
     private int quantidadeParcelas;
+    private int parcelasPagas;
     private double juros;
     private LocalDate dataInicio;
     private StatusEmpEnum statusEmprestimo;
@@ -202,6 +203,15 @@ public class Emprestimo {
     public void setIdCliente(long idCliente) {
         this.idCliente = idCliente;
     }
+
+    public int getParcelasPagas() {
+        return parcelasPagas;
+    }
+
+    public void setParcelasPagas(int parcelasPagas) {
+        this.parcelasPagas = parcelasPagas;
+    }
+
 
     @Override
     public String toString() {

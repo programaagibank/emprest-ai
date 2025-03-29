@@ -116,9 +116,10 @@ public class EmprestimoDAO implements GenericDAO<Emprestimo> {
     }
 
     public Emprestimo buscarPorIdCliente(Long idCliente, TipoEmpEnum empEnum) {
-        String sql = "select e.id_emprestimo, e.id_cliente , e.valor_total, e.quantidade_parcelas, e.juros, e.data_inicio, e.id_status_emprestimo, e.id_tipo_emprestimo,\n" +
+        String sql = "select e.id_emprestimo, e.id_cliente, e.valor_total, e.valor_parcela, e.quantidade_parcelas, e.juros, e.data_inicio, e.id_status_emprestimo, e.id_tipo_emprestimo,\n" +
                 "e.valor_seguro, e.valor_IOF, e.outros_custos, e.data_contratacao, e.juros_mora,\n" +
-                "e.taxa_multa, e.id_emprestimo_origem, c.cpf_cliente, c.nome_cliente\n" +
+                "e.taxa_multa, e.id_emprestimo_origem, c.cpf_cliente, c.nome_cliente,\n" +
+                "(SELECT COUNT(*) FROM parcelas p WHERE p.id_emprestimo = e.id_emprestimo AND p.id_status NOT IN (2, 3)) as parcelas_pagas\n" +
                 "from emprestimos e\n" +
                 "inner join clientes c on e.id_cliente = c.id_cliente\n" +
                 "where e.id_cliente = ? and e.id_tipo_emprestimo = ?";
@@ -158,7 +159,9 @@ public class EmprestimoDAO implements GenericDAO<Emprestimo> {
         emprestimo.setStatusEmprestimo(StatusEmpEnum.fromValor(rs.getInt("id_status_emprestimo")));
         emprestimo.setIdContrato(rs.getLong("id_emprestimo"));
         emprestimo.setValorTotal(rs.getDouble("valor_total"));
+        emprestimo.setValorParcela(rs.getDouble("valor_parcela"));
         emprestimo.setQuantidadeParcelas(rs.getInt("quantidade_parcelas"));
+        emprestimo.setParcelasPagas(rs.getInt("parcelas_pagas"));
         emprestimo.setJuros(rs.getDouble("juros"));
         emprestimo.setDataInicio(rs.getDate("data_inicio").toLocalDate());
         emprestimo.setTipoEmprestimo(TipoEmpEnum.fromValor(rs.getInt("id_tipo_emprestimo")));

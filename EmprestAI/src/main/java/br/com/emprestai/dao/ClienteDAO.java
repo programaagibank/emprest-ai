@@ -232,10 +232,16 @@ public class ClienteDAO implements GenericDAO<Cliente> {
             throw new IllegalArgumentException("CPF não pode ser nulo ou vazio.");
         }
 
-        String sql = "SELECT * FROM clientes WHERE cpf_cliente = ?";
+        String sql = "SELECT c.*, " +
+                "(SELECT COALESCE(SUM(e.valor_parcela), 0) " +
+                "FROM emprestimos e " +
+                "WHERE e.id_cliente = c.id_cliente " +
+                "AND e.id_status_emprestimo = 1) as soma_valor_parcelas " +
+                "FROM clientes c " +
+                "WHERE c.cpf_cliente = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
-                PreparedStatement stmt = conn.prepareStatement(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, cpfCliente);
 
@@ -261,6 +267,7 @@ public class ClienteDAO implements GenericDAO<Cliente> {
         cliente.setDataNascimento(rs.getDate("data_nascimento").toLocalDate());
         cliente.setRendaFamiliarLiquida(rs.getDouble("renda_familiar_liquida"));
         cliente.setQtdePessoasNaCasa(rs.getInt("qtd_pessoas_na_casa"));
+        cliente.setParcelasAtivas(rs.getDouble("soma_valor_parcelas"));
         cliente.setSenha(rs.getString("senha_acesso"));
 
         int tipoClienteValue = rs.getInt("id_tipo_cliente");

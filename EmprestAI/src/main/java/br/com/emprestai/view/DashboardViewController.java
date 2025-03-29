@@ -1,5 +1,6 @@
 package br.com.emprestai.view;
 
+import br.com.emprestai.model.Cliente;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -39,9 +40,15 @@ public class DashboardViewController {
     @FXML
     private Button exitButton;
 
-
     @FXML
     private Button profileButton;
+
+    private Cliente clienteLogado;
+
+    // Metodo para definir o cliente logado
+    public void setClienteLogado(Cliente cliente) {
+        this.clienteLogado = cliente;
+    }
 
     // Set user data
     public void setUserData(String userName, String cpf, String debt, String creditMargin) {

@@ -1,9 +1,8 @@
 package br.com.emprestai.model;
 
-import br.com.emprestai.enums.StatusEmpParcela;
+import br.com.emprestai.enums.StatusParcelaEnum;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 public class Parcela {
 
@@ -16,7 +15,7 @@ public class Parcela {
     private double valorPago; // Valor pago
     private double juros; // Parte dos juros na parcela
     private double amortizacao; // Parte da amortização do principal
-    private StatusEmpParcela status; // Status da parcela (paga ou pendente)
+    private StatusParcelaEnum status; // Status da parcela (paga ou pendente)
     private LocalDate dataPagamento; // Data em que foi paga
     private double multa; // Multa por atraso
     private double jurosMora; // Juros de mora por atraso
@@ -109,11 +108,11 @@ public class Parcela {
         this.amortizacao = amortizacao;
     }
 
-    public StatusEmpParcela getStatus() {
+    public StatusParcelaEnum getStatus() {
         return status;
     }
 
-    public void setStatusParcela(StatusEmpParcela status) {
+    public void setStatusParcela(StatusParcelaEnum status) {
         this.status = status;
     }
 
@@ -162,7 +161,7 @@ public class Parcela {
                 '}';
     }
 
-    public StatusEmpParcela getIdStatus() {
+    public StatusParcelaEnum getIdStatus() {
         return null;
     }
 }

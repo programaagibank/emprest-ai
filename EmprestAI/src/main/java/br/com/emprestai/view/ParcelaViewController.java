@@ -2,8 +2,7 @@ package br.com.emprestai.view;
 
 import br.com.emprestai.controller.ParcelaController;
 import br.com.emprestai.dao.ParcelaDAO;
-import br.com.emprestai.enums.StatusEmpParcela;
-import br.com.emprestai.enums.TipoEmpEnum;
+import br.com.emprestai.enums.TipoEmprestimoEnum;
 import br.com.emprestai.model.Parcela;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
@@ -21,7 +20,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import static br.com.emprestai.enums.StatusEmpParcela.*;
+import static br.com.emprestai.enums.StatusParcelaEnum.*;
 
 public class ParcelaViewController {
 
@@ -62,7 +61,7 @@ public class ParcelaViewController {
     private void carregarDadosFicticios() {
         List<Parcela> parcelasFicticias = List.of();
         try {
-            parcelasFicticias = parcelaController.get(37L, TipoEmpEnum.CONSIGNADO); // Tipo só no backend
+            parcelasFicticias = parcelaController.get(37L, TipoEmprestimoEnum.CONSIGNADO); // Tipo só no backend
             setParcelas(parcelasFicticias);
         } catch (Exception e) {
             System.out.println(e.getMessage());

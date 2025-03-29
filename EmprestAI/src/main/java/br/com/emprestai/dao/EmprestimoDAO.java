@@ -2,8 +2,8 @@ package br.com.emprestai.dao;
 
 import br.com.emprestai.database.DatabaseConnection;
 import br.com.emprestai.exception.ApiException;
-import br.com.emprestai.enums.StatusEmpEnum;
-import br.com.emprestai.enums.TipoEmpEnum;
+import br.com.emprestai.enums.StatusEmprestimoEnum;
+import br.com.emprestai.enums.TipoEmprestimoEnum;
 import br.com.emprestai.model.Emprestimo;
 
 import java.io.IOException;
@@ -115,7 +115,7 @@ public class EmprestimoDAO implements GenericDAO<Emprestimo> {
         }
     }
 
-    public Emprestimo buscarPorIdCliente(Long idCliente, TipoEmpEnum empEnum) {
+    public Emprestimo buscarPorIdCliente(Long idCliente, TipoEmprestimoEnum empEnum) {
         String sql = "select e.id_emprestimo, e.id_cliente, e.valor_total, e.valor_parcela, e.quantidade_parcelas, e.juros, e.data_inicio, e.id_status_emprestimo, e.id_tipo_emprestimo,\n" +
                 "e.valor_seguro, e.valor_IOF, e.outros_custos, e.data_contratacao, e.juros_mora,\n" +
                 "e.taxa_multa, e.id_emprestimo_origem, c.cpf_cliente, c.nome_cliente,\n" +
@@ -156,7 +156,7 @@ public class EmprestimoDAO implements GenericDAO<Emprestimo> {
         Emprestimo emprestimo = new Emprestimo();
         emprestimo.setIdCliente(rs.getLong("id_cliente"));
         emprestimo.setIdEmprestimoOrigem(rs.getLong("id_emprestimo_origem"));
-        emprestimo.setStatusEmprestimo(StatusEmpEnum.fromValor(rs.getInt("id_status_emprestimo")));
+        emprestimo.setStatusEmprestimo(StatusEmprestimoEnum.fromValor(rs.getInt("id_status_emprestimo")));
         emprestimo.setIdContrato(rs.getLong("id_emprestimo"));
         emprestimo.setValorTotal(rs.getDouble("valor_total"));
         emprestimo.setValorParcela(rs.getDouble("valor_parcela"));
@@ -164,7 +164,7 @@ public class EmprestimoDAO implements GenericDAO<Emprestimo> {
         emprestimo.setParcelasPagas(rs.getInt("parcelas_pagas"));
         emprestimo.setJuros(rs.getDouble("juros"));
         emprestimo.setDataInicio(rs.getDate("data_inicio").toLocalDate());
-        emprestimo.setTipoEmprestimo(TipoEmpEnum.fromValor(rs.getInt("id_tipo_emprestimo")));
+        emprestimo.setTipoEmprestimo(TipoEmprestimoEnum.fromValor(rs.getInt("id_tipo_emprestimo")));
         emprestimo.setValorSeguro(rs.getDouble("valor_seguro"));
         emprestimo.setValorIOF(rs.getDouble("valor_IOF"));
         emprestimo.setOutrosCustos(rs.getDouble("outros_custos"));

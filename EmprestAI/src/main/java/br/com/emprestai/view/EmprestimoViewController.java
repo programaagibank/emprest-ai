@@ -1,6 +1,6 @@
 package br.com.emprestai.view;
 
-import br.com.emprestai.enums.StatusEmpEnum;
+import br.com.emprestai.enums.StatusEmprestimoEnum;
 import br.com.emprestai.model.Cliente;
 import br.com.emprestai.model.Emprestimo;
 import javafx.event.ActionEvent;
@@ -107,7 +107,7 @@ public class EmprestimoViewController {
         }
     }
 
-    public void updateStatus(StatusEmpEnum empEnum) {
+    public void updateStatus(StatusEmprestimoEnum empEnum) {
         statusCircle.getStyleClass().removeAll("green", "gray", "yellow");
         if (!statusCircle.getStyleClass().contains("status-circle")) {
             statusCircle.getStyleClass().add("status-circle");

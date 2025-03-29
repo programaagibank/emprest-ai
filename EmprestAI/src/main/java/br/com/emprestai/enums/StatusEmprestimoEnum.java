@@ -1,10 +1,10 @@
 package br.com.emprestai.enums;
 
-public enum StatusEmpEnum{
+public enum StatusEmprestimoEnum {
     ABERTO(1), QUITADO(2), RENEGOCIADO(3), NEGADO(4);
     private final int valor;
 
-    StatusEmpEnum(int valor){
+    StatusEmprestimoEnum(int valor){
         this.valor = valor;
     }
 
@@ -12,8 +12,8 @@ public enum StatusEmpEnum{
         return valor;
     }
 
-    public static StatusEmpEnum fromValor(int valor){
-        for(StatusEmpEnum status: StatusEmpEnum.values()){
+    public static StatusEmprestimoEnum fromValor(int valor){
+        for(StatusEmprestimoEnum status: StatusEmprestimoEnum.values()){
             if (status.getValor() == valor){
                 return status;
             }

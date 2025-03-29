@@ -1,10 +1,10 @@
 package br.com.emprestai.enums;
 
-public enum TipoEmpEnum {
+public enum TipoEmprestimoEnum {
     CONSIGNADO(1), PESSOAL(2);
     private final int valor;
 
-    TipoEmpEnum(int valor){
+    TipoEmprestimoEnum(int valor){
         this.valor = valor;
     }
 
@@ -12,8 +12,8 @@ public enum TipoEmpEnum {
         return valor;
     }
 
-    public static TipoEmpEnum fromValor(int valor){
-        for (TipoEmpEnum tipo: TipoEmpEnum.values()){
+    public static TipoEmprestimoEnum fromValor(int valor){
+        for (TipoEmprestimoEnum tipo: TipoEmprestimoEnum.values()){
             if (tipo.getValor() == valor){
                 return tipo;
             }

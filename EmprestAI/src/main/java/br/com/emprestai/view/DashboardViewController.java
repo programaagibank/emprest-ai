@@ -1,10 +1,8 @@
 package br.com.emprestai.view;
 
-import br.com.emprestai.controller.ClienteController;
 import br.com.emprestai.controller.EmprestimoController;
 import br.com.emprestai.dao.ClienteDAO;
 import br.com.emprestai.dao.EmprestimoDAO;
-import br.com.emprestai.enums.TipoEmpEnum;
 import br.com.emprestai.model.Cliente;
 import br.com.emprestai.model.Emprestimo;
 import javafx.fxml.FXML;
@@ -17,8 +15,8 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-import static br.com.emprestai.enums.TipoEmpEnum.CONSIGNADO;
-import static br.com.emprestai.enums.TipoEmpEnum.PESSOAL;
+import static br.com.emprestai.enums.TipoEmprestimoEnum.CONSIGNADO;
+import static br.com.emprestai.enums.TipoEmprestimoEnum.PESSOAL;
 
 public class DashboardViewController {
 

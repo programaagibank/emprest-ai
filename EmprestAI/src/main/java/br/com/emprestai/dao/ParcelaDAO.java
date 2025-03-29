@@ -1,9 +1,9 @@
 package br.com.emprestai.dao;
 
 import br.com.emprestai.database.DatabaseConnection;
-import br.com.emprestai.enums.TipoEmpEnum;
+import br.com.emprestai.enums.TipoEmprestimoEnum;
 import br.com.emprestai.exception.ApiException;
-import br.com.emprestai.enums.StatusEmpParcela;
+import br.com.emprestai.enums.StatusParcelaEnum;
 import br.com.emprestai.model.Parcela;
 
 import java.io.IOException;
@@ -150,7 +150,7 @@ public class ParcelaDAO {
         java.sql.Date dataPagamento = rs.getDate("data_pagamento");
         parcela.setDataPagamento(dataPagamento != null ? dataPagamento.toLocalDate() : null);
 
-        parcela.setStatusParcela(StatusEmpParcela.fromValor(rs.getInt("id_status")));
+        parcela.setStatusParcela(StatusParcelaEnum.fromValor(rs.getInt("id_status")));
         return parcela;
     }
 
@@ -164,7 +164,7 @@ public class ParcelaDAO {
             // Definir os parâmetros para a consulta
             stmt.setDouble(1, parcela.getValorPresenteParcela() + parcela.getMulta() + parcela.getJurosMora());
             stmt.setDate(2, Date.valueOf(parcela.getDataPagamento()));
-            stmt.setInt(3, StatusEmpParcela.PAGA.getValor()); // Supondo que o status "PAGA" seja o correspondente
+            stmt.setInt(3, StatusParcelaEnum.PAGA.getValor()); // Supondo que o status "PAGA" seja o correspondente
             stmt.setLong(4, parcela.getIdParcela());
 
             int affectedRows = stmt.executeUpdate();
@@ -179,7 +179,7 @@ public class ParcelaDAO {
             throw new ApiException("Erro ao pagar parcela: " + e.getMessage(), 500);
         }
     }
-    public List<Parcela> buscarParcelasPorEmprestimoETipo(Long idEmprestimo, TipoEmpEnum idTipoEmprestimo) throws SQLException {
+    public List<Parcela> buscarParcelasPorEmprestimoETipo(Long idEmprestimo, TipoEmprestimoEnum idTipoEmprestimo) throws SQLException {
         List<Parcela> parcelas = new ArrayList<>();
         String sql = "SELECT p.* FROM parcelas p " +
                 "INNER JOIN emprestimos e ON p.id_emprestimo = e.id_emprestimo " +
@@ -221,7 +221,7 @@ public class ParcelaDAO {
             for (Parcela parcela : parcelas) {
                 pstmt.setDouble(1, parcela.getValorPresenteParcela() + parcela.getMulta() + parcela.getJurosMora());
                 pstmt.setDate(2, Date.valueOf(parcela.getDataPagamento()));
-                pstmt.setInt(3, StatusEmpParcela.PAGA.getValor());
+                pstmt.setInt(3, StatusParcelaEnum.PAGA.getValor());
                 pstmt.setLong(4, parcela.getIdParcela());
                 pstmt.addBatch();
             }

@@ -1,6 +1,6 @@
 package br.com.emprestai.service.calculos;
 
-import br.com.emprestai.enums.StatusEmpParcela;
+import br.com.emprestai.enums.StatusParcelaEnum;
 import br.com.emprestai.model.Emprestimo;
 import br.com.emprestai.model.Parcela;
 import br.com.emprestai.util.EmprestimoParams;
@@ -8,7 +8,6 @@ import br.com.emprestai.util.EmprestimoParams;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -208,7 +207,7 @@ public class CalculadoraEmprestimo {
                 if (dataVencimento.isBefore(hoje)) {
                     valorPresente = valorParcela;
                     parcela.setValorPresenteParcela(valorPresente.doubleValue());
-                    parcela.setStatusParcela(StatusEmpParcela.ATRASADA);
+                    parcela.setStatusParcela(StatusParcelaEnum.ATRASADA);
 
                     BigDecimal multa = multaAtraso(valorParcela, emprestimo.getTaxaMulta());
                     parcela.setMulta(multa.doubleValue());

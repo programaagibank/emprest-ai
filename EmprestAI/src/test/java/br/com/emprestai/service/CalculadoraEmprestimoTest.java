@@ -1,16 +1,12 @@
 package br.com.emprestai.service;
 
-import br.com.emprestai.enums.StatusEmpParcela;
 import br.com.emprestai.model.Emprestimo;
-import br.com.emprestai.model.Parcela;
 import br.com.emprestai.service.calculos.CalculadoraEmprestimo;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 import static java.math.RoundingMode.HALF_UP;
 import static org.junit.jupiter.api.Assertions.*;

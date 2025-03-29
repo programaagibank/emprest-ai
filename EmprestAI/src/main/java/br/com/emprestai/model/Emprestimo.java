@@ -1,12 +1,10 @@
 package br.com.emprestai.model;
 
-import br.com.emprestai.enums.StatusEmpEnum;
-import br.com.emprestai.enums.TipoEmpEnum;
+import br.com.emprestai.enums.StatusEmprestimoEnum;
+import br.com.emprestai.enums.TipoEmprestimoEnum;
 
 import java.time.LocalDate;
 import java.util.List;
-
-import static br.com.emprestai.enums.VinculoEnum.*;
 
 public class Emprestimo {
     private long idContrato;
@@ -17,8 +15,8 @@ public class Emprestimo {
     private int parcelasPagas;
     private double juros;
     private LocalDate dataInicio;
-    private StatusEmpEnum statusEmprestimo;
-    private TipoEmpEnum tipoEmprestimo;
+    private StatusEmprestimoEnum statusEmprestimo;
+    private TipoEmprestimoEnum tipoEmprestimo;
     private double valorSeguro;
     private double valorIOF;
     private double outrosCustos;
@@ -74,19 +72,19 @@ public class Emprestimo {
         this.dataInicio = dataInicio;
     }
 
-    public StatusEmpEnum getStatusEmprestimo(){
+    public StatusEmprestimoEnum getStatusEmprestimo(){
         return statusEmprestimo;
     }
 
-    public void setStatusEmprestimo(StatusEmpEnum idStatusEmprestimo){
+    public void setStatusEmprestimo(StatusEmprestimoEnum idStatusEmprestimo){
         this.statusEmprestimo = idStatusEmprestimo;
     }
 
-    public TipoEmpEnum getTipoEmprestimo(){
+    public TipoEmprestimoEnum getTipoEmprestimo(){
         return tipoEmprestimo;
     }
 
-    public void setTipoEmprestimo(TipoEmpEnum tipoEmprestimo){
+    public void setTipoEmprestimo(TipoEmprestimoEnum tipoEmprestimo){
         this.tipoEmprestimo = tipoEmprestimo;
     }
 

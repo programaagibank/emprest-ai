@@ -1,6 +1,6 @@
 package br.com.emprestai.controller;
 
-import br.com.emprestai.enums.TipoEmpEnum;
+import br.com.emprestai.enums.TipoEmprestimoEnum;
 import br.com.emprestai.dao.ClienteDAO;
 import br.com.emprestai.dao.EmprestimoDAO;
 import br.com.emprestai.exception.ApiException;
@@ -15,7 +15,7 @@ import br.com.emprestai.util.EmprestimoParams;
 
 import java.util.List;
 
-import static br.com.emprestai.enums.StatusEmpEnum.NEGADO;
+import static br.com.emprestai.enums.StatusEmprestimoEnum.NEGADO;
 import static java.time.temporal.ChronoUnit.DAYS;
 import static java.time.temporal.ChronoUnit.YEARS;
 
@@ -63,7 +63,7 @@ public class EmprestimoController{
         return null;
     }
 
-    public Emprestimo get(Long id, TipoEmpEnum EmpEnum) throws ApiException {
+    public Emprestimo get(Long id, TipoEmprestimoEnum EmpEnum) throws ApiException {
         Emprestimo emprestimo =  emprestimoDAO.buscarPorIdCliente(id, EmpEnum);
         double valorEmprestimo = emprestimo.getValorTotal() - emprestimo.getValorIOF() - emprestimo.getValorSeguro() - emprestimo.getOutrosCustos();
         emprestimo.setValorEmprestimo(valorEmprestimo);
@@ -74,7 +74,7 @@ public class EmprestimoController{
     public Emprestimo get(Emprestimo emprestimo, Cliente cliente) throws ApiException {
         try {
             // Tipo do Emprestimo
-            TipoEmpEnum tipoEmp = emprestimo.getTipoEmprestimo();
+            TipoEmprestimoEnum tipoEmp = emprestimo.getTipoEmprestimo();
 
             int carenciaEmDias = (int) DAYS.between(emprestimo.getDataContratacao(), emprestimo.getDataInicio());
 

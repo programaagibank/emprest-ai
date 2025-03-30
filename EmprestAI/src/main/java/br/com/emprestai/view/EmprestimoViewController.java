@@ -63,9 +63,15 @@ public class EmprestimoViewController {
 
     private Emprestimo emprestimo;
 
+    private TipoEmprestimoEnum tipoEmprestimo;
+
     public void setEmprestimo(Emprestimo emprestimo) {
         this.emprestimo = emprestimo;
         exibirInformacoesEmprestimo();
+    }
+
+    public void setTipoEmprestimo(TipoEmprestimoEnum tipoEmprestimo) {
+        this.tipoEmprestimo = tipoEmprestimo;
     }
 
     private Cliente clienteLogado;
@@ -179,34 +185,13 @@ public class EmprestimoViewController {
             SimulacaoViewController simulacaoController = loader.getController();
             simulacaoController.setClienteLogado(clienteLogado);
 
-            // Abre uma janela para escolher o tipo de empréstimo
-            Alert tipoAlert = new Alert(Alert.AlertType.CONFIRMATION);
-            tipoAlert.setTitle("Tipo de Empréstimo");
-            tipoAlert.setHeaderText("Selecione o tipo de empréstimo");
+            simulacaoController.setTipoEmprestimo(tipoEmprestimo);
 
-            ButtonType consignadoButton = new ButtonType("Consignado");
-            ButtonType pessoalButton = new ButtonType("Pessoal");
-            ButtonType cancelButton = new ButtonType("Cancelar", ButtonBar.ButtonData.CANCEL_CLOSE);
-
-            tipoAlert.getButtonTypes().setAll(consignadoButton, pessoalButton, cancelButton);
-
-            Optional<ButtonType> resultado = tipoAlert.showAndWait();
-            if (resultado.isPresent()) {
-                if (resultado.get() == consignadoButton) {
-                    simulacaoController.setTipoEmprestimo(TipoEmprestimoEnum.CONSIGNADO);
-                } else if (resultado.get() == pessoalButton) {
-                    simulacaoController.setTipoEmprestimo(TipoEmprestimoEnum.PESSOAL);
-                } else {
-                    // O usuário cancelou, não faça nada
-                    return;
-                }
-
-                // Definindo a cena na janela atual
-                Stage stage = (Stage) simulateButton.getScene().getWindow();
-                stage.setScene(simulateScene);
-                stage.setTitle("EmprestAI - Simulação de Empréstimo");
-                stage.show();
-            }
+            // Definindo a cena na janela atual
+            Stage stage = (Stage) simulateButton.getScene().getWindow();
+            stage.setScene(simulateScene);
+            stage.setTitle("EmprestAI - Simulação de Empréstimo");
+            stage.show();
         } catch (IOException e) {
             e.printStackTrace();
             System.err.println("Erro ao carregar simulacaoEmprestimo.fxml: " + e.getMessage());

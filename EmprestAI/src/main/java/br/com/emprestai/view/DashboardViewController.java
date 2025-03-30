@@ -105,6 +105,7 @@ public class DashboardViewController {
             EmprestimoViewController emprestimoViewController = loader.getController();
             emprestimoViewController.setEmprestimo(emprestimo);
             emprestimoViewController.setClienteLogado(clienteLogado);
+            emprestimoViewController.setTipoEmprestimo(PESSOAL);
 
             Stage stage = (Stage) consignadoButton.getScene().getWindow();
             stage.setScene(consignadoScene);
@@ -131,6 +132,7 @@ public class DashboardViewController {
             EmprestimoViewController emprestimoViewController = loader.getController();
             emprestimoViewController.setEmprestimo(emprestimo);
             emprestimoViewController.setClienteLogado(clienteLogado);
+            emprestimoViewController.setTipoEmprestimo(PESSOAL);
 
             Stage stage = (Stage) consignadoButton.getScene().getWindow();
             stage.setScene(consignadoScene);

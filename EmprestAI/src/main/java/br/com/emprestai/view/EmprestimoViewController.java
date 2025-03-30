@@ -1,19 +1,20 @@
 package br.com.emprestai.view;
 
 import br.com.emprestai.enums.StatusEmprestimoEnum;
+import br.com.emprestai.enums.TipoEmprestimoEnum;
 import br.com.emprestai.model.Cliente;
 import br.com.emprestai.model.Emprestimo;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.Optional;
 
 public class EmprestimoViewController {
 
@@ -167,18 +168,48 @@ public class EmprestimoViewController {
     }
 
     @FXML
+
     private void onSimulateClick() {
         try {
-            // Assuming you have a simulation view (e.g., "simulate.fxml")
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("simulate.fxml"));
+            // Carregando o arquivo correto simulacaoEmprestimo.fxml
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("simulacaoEmprestimo.fxml"));
             Scene simulateScene = new Scene(loader.load(), 360, 640);
-            Stage stage = (Stage) simulateButton.getScene().getWindow();
-            stage.setScene(simulateScene);
-            stage.setTitle("EmprestAI - Simular Empréstimo");
-            stage.show();
+
+            // Obtendo o controller e configurando o cliente logado
+            SimulacaoViewController simulacaoController = loader.getController();
+            simulacaoController.setClienteLogado(clienteLogado);
+
+            // Abre uma janela para escolher o tipo de empréstimo
+            Alert tipoAlert = new Alert(Alert.AlertType.CONFIRMATION);
+            tipoAlert.setTitle("Tipo de Empréstimo");
+            tipoAlert.setHeaderText("Selecione o tipo de empréstimo");
+
+            ButtonType consignadoButton = new ButtonType("Consignado");
+            ButtonType pessoalButton = new ButtonType("Pessoal");
+            ButtonType cancelButton = new ButtonType("Cancelar", ButtonBar.ButtonData.CANCEL_CLOSE);
+
+            tipoAlert.getButtonTypes().setAll(consignadoButton, pessoalButton, cancelButton);
+
+            Optional<ButtonType> resultado = tipoAlert.showAndWait();
+            if (resultado.isPresent()) {
+                if (resultado.get() == consignadoButton) {
+                    simulacaoController.setTipoEmprestimo(TipoEmprestimoEnum.CONSIGNADO);
+                } else if (resultado.get() == pessoalButton) {
+                    simulacaoController.setTipoEmprestimo(TipoEmprestimoEnum.PESSOAL);
+                } else {
+                    // O usuário cancelou, não faça nada
+                    return;
+                }
+
+                // Definindo a cena na janela atual
+                Stage stage = (Stage) simulateButton.getScene().getWindow();
+                stage.setScene(simulateScene);
+                stage.setTitle("EmprestAI - Simulação de Empréstimo");
+                stage.show();
+            }
         } catch (IOException e) {
             e.printStackTrace();
-            System.err.println("Erro ao carregar simulate.fxml: " + e.getMessage());
+            System.err.println("Erro ao carregar simulacaoEmprestimo.fxml: " + e.getMessage());
         }
     }
 

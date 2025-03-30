@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<BorderPane styleClass="root" stylesheets="@../css/emprestimos.css" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/17.0.12" fx:controller="br.com.emprestai.view.SimulacaoViewController">
+    <!-- Top Section: Header -->
+    <top>
+        <HBox alignment="CENTER" spacing="10.0" styleClass="header">
+            <padding>
+                <Insets bottom="10.0" left="15.0" right="15.0" top="15.0" />
+            </padding>
+            <Label fx:id="simulationTitle" styleClass="greeting-label" text="Simulação de Empréstimo" />
+        </HBox>
+    </top>
+
+    <!-- Center Section: Simulation Form -->
+    <center>
+        <VBox alignment="CENTER" spacing="20.0" styleClass="content">
+            <padding>
+                <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+            </padding>
+
+            <!-- Loan Type Display -->
+            <Label fx:id="loanTypeLabel" styleClass="section-title" text="Tipo: Consignado"/>
+
+            <!-- Customer Information Section -->
+            <VBox spacing="10.0" styleClass="customer-info">
+                <Label text="Informações do Cliente" styleClass="section-title"/>
+                <Separator/>
+                <GridPane hgap="10" vgap="10">
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="180.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="120.0" />
+                    </columnConstraints>
+
+                    <Label text="Renda Mensal:" styleClass="info-label" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                    <Label fx:id="rendaMensalLabel" text="R$ 0,00" styleClass="info-value" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+                    <Label text="Idade:" styleClass="info-label" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                    <Label fx:id="idadeLabel" text="0" styleClass="info-value" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+                    <Label fx:id="scoreOrClienteTypeLabel" text="Score:" styleClass="info-label" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                    <Label fx:id="scoreOrClienteTypeValueLabel" text="0" styleClass="info-value" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+                </GridPane>
+            </VBox>
+
+            <!-- Input Fields -->
+            <VBox spacing="15.0" styleClass="form-container">
+                <!-- Loan Amount -->
+                <VBox spacing="5.0">
+                    <Label text="Valor do Empréstimo (R$)" styleClass="field-label"/>
+                    <TextField fx:id="loanAmountField" promptText="Ex: 5000.00" styleClass="input-field"/>
+                </VBox>
+
+                <!-- Number of Installments -->
+                <VBox spacing="5.0">
+                    <Label text="Quantidade de Parcelas" styleClass="field-label"/>
+                    <HBox spacing="10.0" alignment="CENTER_LEFT">
+                        <Slider fx:id="installmentsSlider" min="6" max="72" value="36" blockIncrement="6" majorTickUnit="12" minorTickCount="1" showTickLabels="true" showTickMarks="true" styleClass="slider" HBox.hgrow="ALWAYS"/>
+                        <Label fx:id="installmentsLabel" text="36" styleClass="value-label"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Contract Insurance -->
+                <VBox spacing="5.0">
+                    <Label text="Contratar Seguro" styleClass="field-label"/>
+                    <CheckBox fx:id="insuranceCheckBox" text="Sim, quero contratar seguro" styleClass="insurance-checkbox"/>
+                </VBox>
+
+                <!-- Grace Period (if applicable) -->
+                <VBox spacing="5.0" fx:id="gracePeriodContainer">
+                    <Label text="Carência" styleClass="field-label"/>
+                    <HBox spacing="10.0" alignment="CENTER_LEFT">
+                        <ComboBox fx:id="gracePeriodComboBox" promptText="Selecione a carência" styleClass="grace-combo" HBox.hgrow="ALWAYS"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Payday Date (for consignado) -->
+                <VBox spacing="5.0" fx:id="paydayDateContainer" visible="false" managed="false">
+                    <Label text="Data do Próximo Pagamento" styleClass="field-label"/>
+                    <DatePicker fx:id="paydayDatePicker" promptText="Selecione a data" styleClass="date-picker"/>
+                </VBox>
+
+                <!-- Results Section -->
+                <VBox spacing="10.0" styleClass="results-container">
+                    <Label text="Resultado da Simulação" styleClass="section-title"/>
+                    <Separator/>
+
+                    <GridPane hgap="10" vgap="10">
+                        <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="180.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="120.0" />
+                        </columnConstraints>
+
+                        <Label text="Valor da Parcela:" styleClass="result-label" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                        <Label fx:id="installmentValueLabel" text="R$ 0,00" styleClass="result-value" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+                        <Label text="Taxa de Juros (mensal):" styleClass="result-label" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                        <Label fx:id="interestRateLabel" text="0,00%" styleClass="result-value" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+                        <Label text="Valor Total:" styleClass="result-label" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                        <Label fx:id="totalAmountLabel" text="R$ 0,00" styleClass="result-value" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+                        <Label text="Valor de IOF:" styleClass="result-label" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+                        <Label fx:id="iofValueLabel" text="R$ 0,00" styleClass="result-value" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+                        <Label text="Valor do Seguro:" styleClass="result-label" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+                        <Label fx:id="insuranceValueLabel" text="R$ 0,00" styleClass="result-value" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+
+                        <Label text="Data de Contratação:" styleClass="result-label" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
+                        <Label fx:id="contractDateLabel" text="" styleClass="result-value" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+
+                        <Label text="Data de Liberação:" styleClass="result-label" GridPane.rowIndex="6" GridPane.columnIndex="0"/>
+                        <Label fx:id="releaseDateLabel" text="" styleClass="result-value" GridPane.rowIndex="6" GridPane.columnIndex="1"/>
+
+                        <Label text="Data do 1º Pagamento:" styleClass="result-label" GridPane.rowIndex="7" GridPane.columnIndex="0"/>
+                        <Label fx:id="firstPaymentDateLabel" text="" styleClass="result-value" GridPane.rowIndex="7" GridPane.columnIndex="1"/>
+
+                        <padding>
+                            <Insets top="10.0" />
+                        </padding>
+                    </GridPane>
+                </VBox>
+
+                <!-- Button Container -->
+                <HBox spacing="10.0" alignment="CENTER">
+                    <Button fx:id="calculateButton" text="Calcular Simulação" styleClass="primary-button" onAction="#onCalculateClick"/>
+                    <Button fx:id="confirmButton" text="Contratar Empréstimo" styleClass="confirm-button" onAction="#onConfirmClick" disable="true"/>
+                </HBox>
+            </VBox>
+        </VBox>
+    </center>
+
+    <!-- Bottom Section: Navigation Bar -->
+    <bottom>
+        <HBox alignment="CENTER" spacing="20.0" styleClass="nav-bar">
+            <padding>
+                <Insets bottom="10.0" left="15.0" right="15.0" top="10.0" />
+            </padding>
+            <Button fx:id="homeButton" onAction="#onHomeClick" styleClass="nav-button">
+                <graphic>
+                    <ImageView fitHeight="24" fitWidth="24" preserveRatio="true">
+                        <!--    <image>
+                               <Image url="@../images/home.png" />
+                           </image>-->
+                    </ImageView>
+                </graphic>
+                <text>Início</text>
+            </Button>
+            <Button fx:id="backButton" onAction="#onBackClick" styleClass="nav-button">
+                <graphic>
+                    <ImageView fitHeight="24" fitWidth="24" preserveRatio="true">
+                        <image>
+                            <!--       <Image url="@../images/back.png" /> -->
+                              </image>
+                          </ImageView>
+                      </graphic>
+                      <text>Voltar</text>
+                  </Button>
+                  <Button fx:id="exitButton" onAction="#onExitClick" styleClass="nav-button">
+                      <graphic>
+                          <ImageView fitHeight="24" fitWidth="24" preserveRatio="true">
+                              <image>
+                                  <Image url="@../images/exit.png" />
+                              </image>
+                          </ImageView>
+                      </graphic>
+                      <text>Sair</text>
+                  </Button>
+              </HBox>
+          </bottom>
+      </BorderPane>

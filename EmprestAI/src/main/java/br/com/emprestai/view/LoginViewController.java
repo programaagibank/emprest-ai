@@ -4,6 +4,7 @@ import br.com.emprestai.controller.ClienteController;
 import br.com.emprestai.controller.LoginController;
 import br.com.emprestai.dao.ClienteDAO;
 import br.com.emprestai.model.Cliente;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -55,21 +56,26 @@ public class LoginViewController {
         // CPF field formatting
         cpfField.setPromptText("Ex: 123.456.789-00");
         cpfField.textProperty().addListener((ChangeListener<String>) (observable, oldValue, newValue) -> {
-            String numbersOnly = newValue.replaceAll("[^0-9]", "");
-            if (numbersOnly.length() > 11) {
-                numbersOnly = numbersOnly.substring(0, 11);
-            }
-            StringBuilder formatted = new StringBuilder();
-            for (int i = 0; i < numbersOnly.length(); i++) {
-                if (i == 3 || i == 6) {
-                    formatted.append(".");
-                } else if (i == 9) {
-                    formatted.append("-");
+            Platform.runLater(() -> {
+                String numbersOnly = newValue.replaceAll("[^0-9]", "");
+                if (numbersOnly.length() > 11) {
+                    numbersOnly = numbersOnly.substring(0, 11);
                 }
-                formatted.append(numbersOnly.charAt(i));
-            }
-            cpfField.setText(formatted.toString());
-            cpfField.positionCaret(formatted.length());
+                StringBuilder formatted = new StringBuilder();
+                for (int i = 0; i < numbersOnly.length(); i++) {
+                    if (i == 3 || i == 6) {
+                        formatted.append(".");
+                    } else if (i == 9) {
+                        formatted.append("-");
+                    }
+                    formatted.append(numbersOnly.charAt(i));
+                }
+
+                if (!formatted.toString().equals(newValue)) { // Evita recursão infinita
+                    cpfField.setText(formatted.toString());
+                    cpfField.positionCaret(formatted.length());
+                }
+            });
         });
 
         // Password field formatting

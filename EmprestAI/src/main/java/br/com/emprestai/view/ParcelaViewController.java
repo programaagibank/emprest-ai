@@ -22,7 +22,6 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -103,7 +102,6 @@ public class ParcelaViewController {
     @FXML
     private void onPagarClick() {
         try {
-            // Coletar apenas as parcelas selecionadas que estão PENDENTE ou ATRASADA
             List<Parcela> parcelasSelecionadas = new ArrayList<>();
             for (ParcelaWrapper wrapper : parcelasList) {
                 Parcela parcela = wrapper.getParcela();
@@ -118,18 +116,21 @@ public class ParcelaViewController {
                 return;
             }
 
-            // Enviar para o controller para salvar
-            parcelaController.putListParcelas(parcelasSelecionadas);
+            // Abrir tela de confirmação
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("confirmacaoPag.fxml"));
+            Scene confirmacaoScene = new Scene(loader.load(), 360, 640);
+            ConfirmacaoPagViewController confirmacaoController = loader.getController();
+            confirmacaoController.setParcelasSelecionadas(parcelasSelecionadas);
+            confirmacaoController.setParcelaViewController(this);
+            confirmacaoController.setClienteLogado(clienteLogado);
 
-            // Atualizar a interface ou redirecionar após o pagamento
-            totalLabel.setText("Pagamento realizado com sucesso!");
-            populateParcelaList(); // Atualiza a lista para refletir o novo status
-            updateTotal();
-            onClickReturn();
-            // Redirecionar de volta à tela de empréstimos
+            Stage stage = (Stage) pagarButton.getScene().getWindow();
+            stage.setScene(confirmacaoScene);
+            stage.setTitle("EmprestAI - Confirmação de Pagamento");
+            stage.show();
         } catch (Exception e) {
             e.printStackTrace();
-            totalLabel.setText("Erro ao realizar pagamento: " + e.getMessage());
+            totalLabel.setText("Erro ao abrir confirmação: " + e.getMessage());
         }
     }
 

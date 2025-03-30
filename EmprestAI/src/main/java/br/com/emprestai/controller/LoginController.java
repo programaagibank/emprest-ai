@@ -41,4 +41,13 @@ public class LoginController {
         }
         return null;
     }
+
+    public boolean validaSenha(String senhaInformada, String senhaHash) {
+        // Verifica se a senha informada corresponde ao hash armazenado
+        if (BCrypt.checkpw(senhaInformada, senhaHash)) {
+            return true;
+        }
+        return false;
+    }
+
 }

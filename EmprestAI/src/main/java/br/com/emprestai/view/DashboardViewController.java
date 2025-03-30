@@ -119,18 +119,6 @@ public class DashboardViewController {
 
     @FXML
     private void onHomeClick() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("dashboard.fxml"));
-            Scene mainScene = new Scene(loader.load(), 360, 640);
-
-            Stage stage = (Stage) homeButton.getScene().getWindow();
-            stage.setScene(mainScene);
-            stage.setTitle("EmprestAI - Dashboard");
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.err.println("Erro ao carregar dashboard.fxml: " + e.getMessage());
-        }
     }
 
     @FXML

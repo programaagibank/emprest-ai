@@ -1,9 +1,8 @@
 package br.com.emprestai.dao;
 
 import br.com.emprestai.database.DatabaseConnection;
-import br.com.emprestai.enums.TipoEmprestimoEnum;
-import br.com.emprestai.exception.ApiException;
 import br.com.emprestai.enums.StatusParcelaEnum;
+import br.com.emprestai.exception.ApiException;
 import br.com.emprestai.model.Parcela;
 
 import java.io.IOException;
@@ -116,7 +115,7 @@ public class ParcelaDAO {
     }
 
     // Excluir parcela
-    public void excluir(Long id) {
+    public boolean excluir(Long id) {
         String sql = "DELETE FROM parcelas WHERE id_parcela = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
@@ -132,6 +131,7 @@ public class ParcelaDAO {
         } catch (SQLException | IOException e) {
             throw new ApiException("Erro ao excluir parcela: " + e.getMessage(), 500);
         }
+        return true;
     }
 
     private Parcela mapearResultSet(ResultSet rs) throws SQLException {
@@ -179,18 +179,17 @@ public class ParcelaDAO {
             throw new ApiException("Erro ao pagar parcela: " + e.getMessage(), 500);
         }
     }
-    public List<Parcela> buscarParcelasPorEmprestimoETipo(Long idEmprestimo, TipoEmprestimoEnum idTipoEmprestimo) throws SQLException {
+    public List<Parcela> buscarParcelasPorEmprestimo(Long idEmprestimo) throws SQLException {
         List<Parcela> parcelas = new ArrayList<>();
         String sql = "SELECT p.* FROM parcelas p " +
                 "INNER JOIN emprestimos e ON p.id_emprestimo = e.id_emprestimo " +
-                "WHERE e.id_emprestimo = ? AND e.id_tipo_emprestimo = ?";
+                "WHERE e.id_emprestimo = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             // Define os parâmetros da consulta
             stmt.setLong(1, idEmprestimo);
-            stmt.setInt(2, idTipoEmprestimo.getValor());
 
             // Executa a consulta
             try (ResultSet rs = stmt.executeQuery()) {

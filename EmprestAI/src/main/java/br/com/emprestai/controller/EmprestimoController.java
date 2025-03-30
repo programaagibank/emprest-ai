@@ -1,8 +1,8 @@
 package br.com.emprestai.controller;
 
-import br.com.emprestai.enums.TipoEmprestimoEnum;
 import br.com.emprestai.dao.ClienteDAO;
 import br.com.emprestai.dao.EmprestimoDAO;
+import br.com.emprestai.enums.TipoEmprestimoEnum;
 import br.com.emprestai.exception.ApiException;
 import br.com.emprestai.model.Cliente;
 import br.com.emprestai.model.Emprestimo;
@@ -19,97 +19,91 @@ import static br.com.emprestai.enums.StatusEmprestimoEnum.NEGADO;
 import static java.time.temporal.ChronoUnit.DAYS;
 import static java.time.temporal.ChronoUnit.YEARS;
 
-public class EmprestimoController{
+public class EmprestimoController {
+
+    // --------------------------------------------------------------------------------
+    // Class Properties
+    // --------------------------------------------------------------------------------
     private final EmprestimoDAO emprestimoDAO;
-    private final ClienteDAO clienteDAO;
+    private final ClienteDAO    clienteDAO;
     private static final EmprestimoParams params = EmprestimoParams.getInstance();
 
-    // Construtor com injeção de dependências
+    // --------------------------------------------------------------------------------
+    // Constructor
+    // --------------------------------------------------------------------------------
     public EmprestimoController(EmprestimoDAO emprestimoDAO, ClienteDAO clienteDAO) {
         this.emprestimoDAO = emprestimoDAO;
         this.clienteDAO = clienteDAO;
     }
 
-    public Emprestimo post(Emprestimo emprestimo) throws ApiException {
-        try {
+    // --------------------------------------------------------------------------------
+    // CRUD Methods
+    // --------------------------------------------------------------------------------
 
+    // POST - Salvar um novo empréstimo
+    public Emprestimo postEmprestimo(Emprestimo emprestimo) throws ApiException {
+        try {
             if (emprestimo.getStatusEmprestimo() == NEGADO) {
-                throw new IllegalStateException("Empréstimo não é elegível para concessão.");
+                throw new ApiException("Empréstimo não é elegível para concessão.", 400); // Bad Request
             }
 
-            // Salvar no banco e obter o ID
+            emprestimo.setTaxaMulta(params.getPercentualMultaAtraso());
+            emprestimo.setTaxaJurosMora(params.getPercentualJurosMora());
+
             Emprestimo idEmprestimo = emprestimoDAO.criar(emprestimo);
-
-            return emprestimo;
-
+            return idEmprestimo;
         } catch (Exception e) {
-            throw new RuntimeException("Erro ao conceder empréstimo: " + e.getMessage(), e);
+            throw new ApiException("Erro ao conceder empréstimo: " + e.getMessage(), 500); // Internal Server Error
         }
     }
 
-    public List<Emprestimo> post(List<Emprestimo> entidade) throws ApiException {
-        return List.of();
-    }
-
-    public List<Emprestimo> get() throws ApiException {
-        return List.of();
-    }
-
-    public Emprestimo get(Long id) throws ApiException {
-        return null;
-    }
-
-    public Emprestimo get(String cpf) throws ApiException {
-        return null;
-    }
-
-    public Emprestimo get(Long id, TipoEmprestimoEnum EmpEnum) throws ApiException {
-        Emprestimo emprestimo =  emprestimoDAO.buscarPorIdCliente(id, EmpEnum);
-        double valorEmprestimo = emprestimo.getValorTotal() - emprestimo.getValorIOF() - emprestimo.getValorSeguro() - emprestimo.getOutrosCustos();
+    // GET - Buscar empréstimo por ID do cliente e tipo
+    public Emprestimo getByCliente(Long id, TipoEmprestimoEnum EmpEnum) throws ApiException {
+        Emprestimo emprestimo = emprestimoDAO.buscarPorIdCliente(id, EmpEnum);
+        double valorEmprestimo = emprestimo.getValorTotal() - emprestimo.getValorIOF() -
+                emprestimo.getValorSeguro() - emprestimo.getOutrosCustos();
         emprestimo.setValorEmprestimo(valorEmprestimo);
         System.out.println(emprestimo.getStatusEmprestimo().name());
         return emprestimo;
     }
 
-    public Emprestimo get(Emprestimo emprestimo, Cliente cliente) throws ApiException {
+    // GET - Buscar todos os empréstimos
+    public List<Emprestimo> getTodos() throws ApiException {
+        return emprestimoDAO.buscarTodos();
+    }
+
+    // GET - Calcular contrato Price e verificar elegibilidade
+    public Emprestimo getPrice(Emprestimo emprestimo, Cliente cliente) throws ApiException {
         try {
-            // Tipo do Emprestimo
             TipoEmprestimoEnum tipoEmp = emprestimo.getTipoEmprestimo();
-
-            int carenciaEmDias = (int) DAYS.between(emprestimo.getDataContratacao(), emprestimo.getDataInicio());
-
-            // Passo 3: Chamar o processamento específico
 
             boolean elegivel = switch (tipoEmp) {
                 case PESSOAL -> processarEmprestimoPessoal(cliente, emprestimo);
-                case CONSIGNADO -> processarEmprestimoConsignado(cliente, emprestimo, carenciaEmDias);
-                default -> throw new IllegalArgumentException("Tipo de empréstimo inválido.");
+                case CONSIGNADO -> processarEmprestimoConsignado(cliente, emprestimo);
+                default -> throw new ApiException("Tipo de empréstimo inválido.", 400); // Bad Request
             };
 
-            // Definir se o empréstimo é elegível
-            emprestimo.setStatusEmprestimo(!elegivel ? NEGADO: null);
+            if (!elegivel) {
+                emprestimo.setStatusEmprestimo(NEGADO);
+                throw new ApiException("Empréstimo não aprovado devido à elegibilidade", 400); // Bad Request
+            }
 
+            return emprestimo;
         } catch (Exception e) {
-            throw new RuntimeException("Erro ao processar empréstimo: " + e.getMessage(), e);
+            throw new ApiException("Erro ao processar empréstimo: " + e.getMessage(), 500); // Internal Server Error
         }
-
-        return emprestimo;
     }
 
-    public Emprestimo put(Long id, Emprestimo entidade) throws ApiException {
-        return null;
-    }
-
+    // PUT - Atualizar empréstimo como refinanciamento
     public Emprestimo put(Long idEmprestimo, Long idEmprestimoOrigem) throws ApiException {
         return emprestimoDAO.atualizarRefin(idEmprestimo, idEmprestimoOrigem);
     }
 
+    // --------------------------------------------------------------------------------
+    // Helper Methods
+    // --------------------------------------------------------------------------------
 
-    public void delete(Long id) throws ApiException {
-
-    }
-
-
+    // Processar cálculos e elegibilidade para empréstimo pessoal
     private boolean processarEmprestimoPessoal(Cliente cliente, Emprestimo emprestimo) {
         double rendaLiquida = cliente.getRendaMensalLiquida();
         int idade = (int) YEARS.between(cliente.getDataNascimento(), emprestimo.getDataContratacao());
@@ -118,7 +112,6 @@ public class EmprestimoController{
         emprestimo.setJuros(taxaJurosMensal);
         emprestimo.setTaxaMulta(params.getPercentualMultaAtraso());
         emprestimo.setTaxaJurosMora(params.getPercentualJurosMora());
-
 
         CalculadoraEmprestimo.contratoPrice(emprestimo, cliente.getDataNascimento());
 
@@ -132,11 +125,12 @@ public class EmprestimoController{
         return true;
     }
 
-    private boolean processarEmprestimoConsignado(Cliente cliente, Emprestimo emprestimo, int carenciaEmDias) {
+    // Processar cálculos e elegibilidade para empréstimo consignado
+    private boolean processarEmprestimoConsignado(Cliente cliente, Emprestimo emprestimo) {
         double rendaLiquida = cliente.getRendaMensalLiquida();
         int idade = (int) YEARS.between(cliente.getDataNascimento(), emprestimo.getDataContratacao());
+        int carenciaEmDias = (int) DAYS.between(emprestimo.getDataContratacao(), emprestimo.getDataInicio());
 
-        // Obter parcelas ativas do cliente
         double parcelasAtivas = 0;
 
         double taxaJurosMensal = CalculoConsignado.calcularTaxaJurosMensal(emprestimo.getQuantidadeParcelas());

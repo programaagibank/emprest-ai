@@ -20,76 +20,47 @@ import static br.com.emprestai.enums.TipoEmprestimoEnum.PESSOAL;
 
 public class DashboardViewController {
 
-    @FXML
-    private Label greetingLabel;
+    // --------------------------------------------------------------------------------
+    // FXML Components
+    // --------------------------------------------------------------------------------
+    @FXML private Label  greetingLabel;
+    @FXML private Label  debtAmount;
+    @FXML private Label  userName;
+    @FXML private Label  userCpf;
+    @FXML private Label  creditMargin;
+    @FXML private Label  creditMarginConsig;
+    @FXML private Label  creditMarginPessoal;
+    @FXML private Button consignadoButton;
+    @FXML private Button pessoalButton;
+    @FXML private Button homeButton;
+    @FXML private Button exitButton;
+    @FXML private Button profileButton;
 
-    @FXML
-    private Label debtAmount;
-
-    @FXML
-    private Label userName;
-
-    @FXML
-    private Label userCpf;
-
-    @FXML
-    private Label creditMargin;
-
-    @FXML
-    private Button consignadoButton;
-
-    @FXML
-    private Button pessoalButton;
-
-    @FXML
-    private Button homeButton;
-
-    @FXML
-    private Button exitButton;
-
-    @FXML
-    private Button profileButton;
-
-    @FXML
-    private Label creditMarginConsig;
-
-    @FXML
-    private Label creditMarginPessoal;
-
-    private Cliente clienteLogado;
-
+    // --------------------------------------------------------------------------------
+    // Class Properties
+    // --------------------------------------------------------------------------------
+    private Cliente              clienteLogado;
     private EmprestimoController emprestimoController = new EmprestimoController(new EmprestimoDAO(), new ClienteDAO());
 
-    // Método para definir o cliente logado
-    public void setClienteLogado(Cliente cliente) {
-        this.clienteLogado = cliente;
-        atualizarMargens(); // Sempre atualiza as margens quando o cliente é setado
-    }
-
+    // --------------------------------------------------------------------------------
+    // Initialization
+    // --------------------------------------------------------------------------------
     @FXML
     public void initialize() {
-        // Atualiza as margens na inicialização, se o cliente já estiver definido
         atualizarMargens();
     }
 
-    // Método auxiliar para atualizar as margens
-    private void atualizarMargens() {
-        if (clienteLogado != null) {
-            try {
-                double margemConsig = clienteLogado.getMargemConsignavel();
-                double margemPessoal = clienteLogado.getMargemPessoal();
-                creditMarginConsig.setText(String.format("R$ %.2f", margemConsig));
-                creditMarginPessoal.setText(String.format("R$ %.2f", margemPessoal));
-            } catch (Exception e) {
-                creditMarginConsig.setText("Indisponível");
-                creditMarginPessoal.setText("Indisponível");
-            }
-        } else {
-            creditMarginConsig.setText("R$ 0,00");
-            creditMarginPessoal.setText("R$ 0,00");
-        }
+    // --------------------------------------------------------------------------------
+    // Setters
+    // --------------------------------------------------------------------------------
+    public void setClienteLogado(Cliente cliente) {
+        this.clienteLogado = cliente;
+        atualizarMargens();
     }
 
+    // --------------------------------------------------------------------------------
+    // Event Handlers
+    // --------------------------------------------------------------------------------
     @FXML
     private void onConsignadoClick() {
         try {
@@ -98,10 +69,11 @@ public class DashboardViewController {
 
             Emprestimo emprestimo = null;
             try {
-                emprestimo = emprestimoController.get(clienteLogado.getIdCliente(), CONSIGNADO);
+                emprestimo = emprestimoController.getByCliente(clienteLogado.getIdCliente(), CONSIGNADO);
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
+
             EmprestimoViewController emprestimoViewController = loader.getController();
             emprestimoViewController.setEmprestimo(emprestimo);
             emprestimoViewController.setClienteLogado(clienteLogado);
@@ -122,9 +94,10 @@ public class DashboardViewController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("emprestimos.fxml"));
             Scene consignadoScene = new Scene(loader.load(), 360, 640);
+
             Emprestimo emprestimo = null;
             try {
-                emprestimo = emprestimoController.get(clienteLogado.getIdCliente(), PESSOAL);
+                emprestimo = emprestimoController.getByCliente(clienteLogado.getIdCliente(), PESSOAL);
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
@@ -165,6 +138,7 @@ public class DashboardViewController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("login.fxml"));
             Scene mainScene = new Scene(loader.load(), 360, 640);
+
             Stage stage = (Stage) homeButton.getScene().getWindow();
             stage.setScene(mainScene);
             stage.setTitle("EmprestAI - Login");
@@ -176,5 +150,25 @@ public class DashboardViewController {
     }
 
     public void onProfileClick(MouseEvent mouseEvent) {
+    }
+
+    // --------------------------------------------------------------------------------
+    // Helper Methods
+    // --------------------------------------------------------------------------------
+    private void atualizarMargens() {
+        if (clienteLogado != null) {
+            try {
+                double margemConsig = clienteLogado.getMargemConsignavel();
+                double margemPessoal = clienteLogado.getMargemPessoal();
+                creditMarginConsig.setText(String.format("R$ %.2f", margemConsig));
+                creditMarginPessoal.setText(String.format("R$ %.2f", margemPessoal));
+            } catch (Exception e) {
+                creditMarginConsig.setText("Indisponível");
+                creditMarginPessoal.setText("Indisponível");
+            }
+        } else {
+            creditMarginConsig.setText("R$ 0,00");
+            creditMarginPessoal.setText("R$ 0,00");
+        }
     }
 }

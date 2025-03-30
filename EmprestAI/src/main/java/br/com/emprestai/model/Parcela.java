@@ -53,10 +53,6 @@ public class Parcela {
     }
 
     public void setNumeroParcela(int numeroParcela) {
-        // if (numeroParcela <= 0) {
-        // throw new IllegalArgumentException("Número da parcela deve ser maior que
-        // zero.");
-        // }
         this.numeroParcela = numeroParcela;
     }
 
@@ -73,10 +69,6 @@ public class Parcela {
     }
 
     public void setValorPresenteParcela(double valorPresenteParcela) {
-        // if (valorPresenteParcela < 0) {
-        // throw new IllegalArgumentException("Valor da parcela não pode ser
-        // negativo.");
-        // }
         this.valorPresenteParcela = valorPresenteParcela;
     }
 
@@ -91,9 +83,6 @@ public class Parcela {
     }
 
     public void setJuros(double juros) {
-        // if (juros < 0) {
-        // throw new IllegalArgumentException("Juros não podem ser negativos.");
-        // }
         this.juros = juros;
     }
 
@@ -102,9 +91,6 @@ public class Parcela {
     }
 
     public void setAmortizacao(double amortizacao) {
-        // if (amortizacao < 0) {
-        // throw new IllegalArgumentException("Amortização não pode ser negativa.");
-        // }
         this.amortizacao = amortizacao;
     }
 
@@ -129,9 +115,6 @@ public class Parcela {
     }
 
     public void setMulta(double multa) {
-        // if (multa < 0) {
-        // throw new IllegalArgumentException("Multa não pode ser negativa.");
-        // }
         this.multa = multa;
     }
 
@@ -143,25 +126,4 @@ public class Parcela {
         this.jurosMora = jurosMora;
     }
 
-    @Override
-    public String toString() {
-        return "Parcela{" +
-                "idParcela=" + idParcela +
-                ", idEmprestimo=" + idEmprestimo +
-                ", numeroParcela=" + numeroParcela +
-                ", dataVencimento=" + dataVencimento +
-                ", valorPresenteParcela=" + valorPresenteParcela +
-                ", valorPago=" + valorPago +
-                ", juros=" + juros +
-                ", amortizacao=" + amortizacao +
-                ", statusParcela=" + status +
-                ", dataPagamento=" + dataPagamento +
-                ", multa=" + multa +
-                ", jurosMora=" + jurosMora +
-                '}';
-    }
-
-    public StatusParcelaEnum getIdStatus() {
-        return null;
-    }
 }

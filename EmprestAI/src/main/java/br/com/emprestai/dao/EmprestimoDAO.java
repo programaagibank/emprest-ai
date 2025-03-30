@@ -1,13 +1,14 @@
 package br.com.emprestai.dao;
 
 import br.com.emprestai.database.DatabaseConnection;
-import br.com.emprestai.exception.ApiException;
 import br.com.emprestai.enums.StatusEmprestimoEnum;
 import br.com.emprestai.enums.TipoEmprestimoEnum;
+import br.com.emprestai.exception.ApiException;
 import br.com.emprestai.model.Emprestimo;
 
 import java.io.IOException;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class EmprestimoDAO implements GenericDAO<Emprestimo> {
@@ -45,7 +46,7 @@ public class EmprestimoDAO implements GenericDAO<Emprestimo> {
 
             try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
-                    emprestimo.setIdContrato(generatedKeys.getLong(1));
+                    emprestimo.setIdEmprestimo(generatedKeys.getLong(1));
                 } else {
                     throw new ApiException("Falha ao criar emprestimo, nenhum ID obtido.", 500);
                 }
@@ -59,9 +60,25 @@ public class EmprestimoDAO implements GenericDAO<Emprestimo> {
     }
 
     @Override
-    public List<Emprestimo> buscarTodos() throws ApiException {
-        return List.of();
+    // Buscar todos os emprestimos
+    public List<Emprestimo> buscarTodos() {
+        List<Emprestimo> emprestimos = new ArrayList<>();
+        String sql = "SELECT * FROM emprestimos";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+                emprestimos.add(mapearResultSet(rs));
+            }
+
+            return emprestimos;
+        } catch (SQLException | IOException e) {
+            throw new ApiException("Erro ao buscar clientes: " + e.getMessage(), 500);
+        }
     }
+
 
     @Override
     public Emprestimo buscarPorId(Long idEmprestimo) {
@@ -148,8 +165,8 @@ public class EmprestimoDAO implements GenericDAO<Emprestimo> {
     }
 
     @Override
-    public void excluir(Long id) throws ApiException {
-
+    public boolean excluir(Long id) throws ApiException {
+        return false;
     }
 
     private Emprestimo mapearResultSet(ResultSet rs) throws SQLException {
@@ -157,7 +174,7 @@ public class EmprestimoDAO implements GenericDAO<Emprestimo> {
         emprestimo.setIdCliente(rs.getLong("id_cliente"));
         emprestimo.setIdEmprestimoOrigem(rs.getLong("id_emprestimo_origem"));
         emprestimo.setStatusEmprestimo(StatusEmprestimoEnum.fromValor(rs.getInt("id_status_emprestimo")));
-        emprestimo.setIdContrato(rs.getLong("id_emprestimo"));
+        emprestimo.setIdEmprestimo(rs.getLong("id_emprestimo"));
         emprestimo.setValorTotal(rs.getDouble("valor_total"));
         emprestimo.setValorParcela(rs.getDouble("valor_parcela"));
         emprestimo.setQuantidadeParcelas(rs.getInt("quantidade_parcelas"));

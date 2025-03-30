@@ -2,45 +2,48 @@ package br.com.emprestai.view;
 
 import br.com.emprestai.controller.ClienteController;
 import br.com.emprestai.dao.ClienteDAO;
+import br.com.emprestai.enums.VinculoEnum;
 import br.com.emprestai.exception.ApiException;
 import br.com.emprestai.model.Cliente;
-import br.com.emprestai.enums.VinculoEnum;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+
 import java.time.LocalDate;
 
 public class CadastroClienteViewController {
 
-    @FXML
-    private TextField cpfField;
-    @FXML
-    private TextField nomeField;
-    @FXML
-    private TextField rendaField;
-    @FXML
-    private DatePicker dataNascimentoField;
-    @FXML
-    private TextField rendaFamiliarField;
-    @FXML
-    private TextField qtdPessoasField;
-    @FXML
-    private ComboBox<String> tipoClienteComboBox;
-    @FXML
-    private TextField scoreField;
-    @FXML
-    private PasswordField senhaField;
+    // --------------------------------------------------------------------------------
+    // FXML Components
+    // --------------------------------------------------------------------------------
+    @FXML private TextField     cpfField;
+    @FXML private TextField     nomeField;
+    @FXML private TextField     rendaField;
+    @FXML private DatePicker    dataNascimentoField;
+    @FXML private TextField     rendaFamiliarField;
+    @FXML private TextField     qtdPessoasField;
+    @FXML private ComboBox<String> tipoClienteComboBox;
+    @FXML private TextField     scoreField;
+    @FXML private PasswordField senhaField;
 
+    // --------------------------------------------------------------------------------
+    // Class Properties
+    // --------------------------------------------------------------------------------
     private final ClienteController clienteController;
 
+    // --------------------------------------------------------------------------------
+    // Constructor
+    // --------------------------------------------------------------------------------
     public CadastroClienteViewController() {
-        // Criando instância do ClienteController com o DAO
         this.clienteController = new ClienteController(new ClienteDAO());
     }
 
+    // --------------------------------------------------------------------------------
+    // Event Handlers
+    // --------------------------------------------------------------------------------
     @FXML
     private void cadastrarCliente() {
         try {
-            // Captura dos dados dos campos
+            // Captura dos dados
             String cpf = cpfField.getText();
             String nome = nomeField.getText();
 
@@ -51,11 +54,11 @@ public class CadastroClienteViewController {
                 return;
             }
 
+            // Conversão e validação de campos numéricos
             double rendaMensal = 0;
             double rendaFamiliar = 0;
             int qtdPessoas = 0;
             int score = 0;
-
             try {
                 rendaMensal = Double.parseDouble(rendaField.getText());
                 rendaFamiliar = Double.parseDouble(rendaFamiliarField.getText());
@@ -74,7 +77,7 @@ public class CadastroClienteViewController {
                 return;
             }
 
-            // Converter a string do ComboBox para o enum VinculoEnum
+            // Conversão para VinculoEnum
             VinculoEnum tipoCliente;
             switch (tipoClienteStr) {
                 case "APOSENTADO":
@@ -108,21 +111,21 @@ public class CadastroClienteViewController {
             cliente.setScore(score);
             cliente.setSenha(senha);
 
-            // Chamando o método para cadastrar no banco através do controller
+            // Cadastro no banco
             clienteController.post(cliente);
 
-            // Exibindo mensagem de sucesso
+            // Feedback e limpeza
             showInfo("Cliente cadastrado com sucesso!");
-
-            // Limpar os campos após cadastro bem-sucedido
             limparCampos();
 
         } catch (ApiException | NumberFormatException e) {
-            // Tratamento de erro
             showError(e.getMessage());
         }
     }
 
+    // --------------------------------------------------------------------------------
+    // Helper Methods
+    // --------------------------------------------------------------------------------
     private void limparCampos() {
         cpfField.clear();
         nomeField.clear();
@@ -135,7 +138,6 @@ public class CadastroClienteViewController {
         senhaField.clear();
     }
 
-    // Método para exibir alertas de erro
     private void showError(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Erro");
@@ -144,7 +146,6 @@ public class CadastroClienteViewController {
         alert.showAndWait();
     }
 
-    // Método para exibir mensagens de sucesso
     private void showInfo(String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Sucesso");

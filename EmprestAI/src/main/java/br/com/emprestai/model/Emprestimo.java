@@ -7,7 +7,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 public class Emprestimo {
-    private long idContrato;
+    private long idEmprestimo;
     private double valorTotal;
     private double valorEmprestimo;
     private double valorParcela;
@@ -36,11 +36,11 @@ public class Emprestimo {
     }
 
 
-    public long getIdContrato(){
-        return idContrato;
+    public long getIdEmprestimo(){
+        return idEmprestimo;
     }
-    public void setIdContrato(long idContrato){
-        this.idContrato = idContrato;
+    public void setIdEmprestimo(long idEmprestimo){
+        this.idEmprestimo = idEmprestimo;
     }
 
     public double getValorTotal(){
@@ -208,34 +208,5 @@ public class Emprestimo {
 
     public void setParcelasPagas(int parcelasPagas) {
         this.parcelasPagas = parcelasPagas;
-    }
-
-
-    @Override
-    public String toString() {
-        return "Emprestimo{" +
-                "idContrato=" + idContrato +
-                ", valorTotal=" + valorTotal +
-                ", valorEmprestimo=" + valorEmprestimo +
-                ", valorParcela=" + valorParcela +
-                ", quantidadeParcelas=" + quantidadeParcelas +
-                ", juros=" + juros +
-                ", dataInicio=" + dataInicio +
-                ", statusEmprestimo=" + statusEmprestimo +
-                ", tipoEmprestimo=" + tipoEmprestimo +
-                ", valorSeguro=" + valorSeguro +
-                ", valorIOF=" + valorIOF +
-                ", outrosCustos=" + outrosCustos +
-                ", dataContratacao=" + dataContratacao +
-                ", taxaJurosMora=" + taxaJurosMora +
-                ", taxaMulta=" + taxaMulta +
-                ", idEmprestimoOrigem=" + idEmprestimoOrigem +
-                ", parcelaList=" + parcelaList +
-                ", saldoDevedorAtualizado=" + saldoDevedorAtualizado +
-                ", dataLiberacaoCred=" + dataLiberacaoCred +
-                ", contratarSeguro=" + contratarSeguro +
-                ", taxaEfetivaMensal=" + taxaEfetivaMensal +
-                ", cliente=" + idCliente +
-                '}';
     }
 }

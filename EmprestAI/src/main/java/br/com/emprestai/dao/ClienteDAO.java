@@ -1,16 +1,12 @@
 package br.com.emprestai.dao;
 
 import br.com.emprestai.database.DatabaseConnection;
-import br.com.emprestai.exception.ApiException;
 import br.com.emprestai.enums.VinculoEnum;
+import br.com.emprestai.exception.ApiException;
 import br.com.emprestai.model.Cliente;
+
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -196,7 +192,7 @@ public class ClienteDAO implements GenericDAO<Cliente> {
     }
 
     // Excluir cliente
-    public void excluir(Long id) {
+    public boolean excluir(Long id) {
         if (id == null) {
             throw new IllegalArgumentException("ID do cliente não pode ser nulo.");
         }
@@ -224,6 +220,7 @@ public class ClienteDAO implements GenericDAO<Cliente> {
         } catch (SQLException | IOException e) {
             throw new ApiException("Erro ao conectar ou executar transação: " + e.getMessage(), 500);
         }
+        return true;
     }
 
     // Buscar cliente por CPF

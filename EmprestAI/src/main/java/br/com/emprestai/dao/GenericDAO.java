@@ -21,5 +21,5 @@ public interface GenericDAO<T> {
     T atualizar(T entidade) throws ApiException;
 
     // Excluir uma entidade por ID
-    void excluir(Long id) throws ApiException;
+    boolean excluir(Long id) throws ApiException;
 }

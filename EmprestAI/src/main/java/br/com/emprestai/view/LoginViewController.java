@@ -7,7 +7,6 @@ import br.com.emprestai.model.Cliente;
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
@@ -19,33 +18,29 @@ import java.io.IOException;
 
 public class LoginViewController {
 
-    @FXML
-    private Label greetingLabel;
+    // --------------------------------------------------------------------------------
+    // FXML Components
+    // --------------------------------------------------------------------------------
+    @FXML private Label       greetingLabel;
+    @FXML private TextField   cpfField;
+    @FXML private PasswordField passwordField;
+    @FXML private Button      loginButton;
+    @FXML private Hyperlink   criarConta;
+    @FXML private Hyperlink   privacyLink;
+    @FXML private VBox        errorBox;
 
-    @FXML
-    private TextField cpfField;
+    // --------------------------------------------------------------------------------
+    // Class Properties
+    // --------------------------------------------------------------------------------
+    private Cliente           clienteLogado;
+    private LoginController   loginController = new LoginController(new ClienteController(new ClienteDAO()));
 
-    @FXML
-    private PasswordField passwordField;
-
-    @FXML
-    private Button loginButton;
-
-    @FXML
-    private Hyperlink criarConta;
-
-    @FXML
-    private Hyperlink privacyLink;
-
-    @FXML
-    private VBox errorBox;
-
-    private Cliente clienteLogado;// Para usar após o login
-
-    private LoginController loginController = new LoginController(new ClienteController(new ClienteDAO()));
-
+    // --------------------------------------------------------------------------------
+    // Initialization
+    // --------------------------------------------------------------------------------
     @FXML
     public void initialize() {
+        // Setup greeting label
         TextFlow textFlow = new TextFlow();
         Text part1 = new Text("Que bom ter você de volta,\n");
         part1.setStyle("-fx-font-size: 20px; -fx-fill: #333333;");
@@ -57,6 +52,7 @@ public class LoginViewController {
         greetingLabel.setGraphic(textFlow);
         greetingLabel.setText("");
 
+        // CPF field formatting
         cpfField.setPromptText("Ex: 123.456.789-00");
         cpfField.textProperty().addListener((ChangeListener<String>) (observable, oldValue, newValue) -> {
             String numbersOnly = newValue.replaceAll("[^0-9]", "");
@@ -76,6 +72,7 @@ public class LoginViewController {
             cpfField.positionCaret(formatted.length());
         });
 
+        // Password field formatting
         passwordField.setPromptText("6 dígitos");
         passwordField.textProperty().addListener((ChangeListener<String>) (observable, oldValue, newValue) -> {
             String numbersOnly = newValue.replaceAll("[^0-9]", "");
@@ -85,9 +82,11 @@ public class LoginViewController {
             passwordField.setText(numbersOnly);
             passwordField.positionCaret(numbersOnly.length());
         });
-        // Ou define uma classe CSS
     }
 
+    // --------------------------------------------------------------------------------
+    // Event Handlers
+    // --------------------------------------------------------------------------------
     @FXML
     private void onLoginButtonClick() {
         String cpf = cpfField.getText().replaceAll("[^0-9]", "");
@@ -101,13 +100,10 @@ public class LoginViewController {
                 errorBox.setVisible(false);
                 errorBox.setManaged(false);
 
-                // Carrega o FXML da dashboard
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("dashboard.fxml"));
                 Scene mainScene = new Scene(loader.load(), 360, 640);
 
-                // Obtém o controlador da dashboard
                 DashboardViewController dashboardController = loader.getController();
-                // Passa o cliente logado para o controlador
                 dashboardController.setClienteLogado(clienteLogado);
 
                 Stage stage = (Stage) criarConta.getScene().getWindow();
@@ -133,12 +129,8 @@ public class LoginViewController {
             stage.setTitle("Cadastro de Cliente");
             stage.setScene(mainScene);
             stage.show();
-
-            // Opcional: fechar a janela de login
-            // ((Stage) criarConta.getScene().getWindow()).close();
         } catch (IOException e) {
             e.printStackTrace();
-            // Você pode adicionar um alerta aqui também
         }
     }
 

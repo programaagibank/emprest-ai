@@ -172,7 +172,7 @@ public class CalculadoraEmprestimo {
         return (resultado1.add(resultado2)).multiply(parcelaMensal);
     }
 
-    public static Emprestimo processarValoresParcela(Emprestimo emprestimo) { // Ok
+    public static List<Parcela> processarValoresParcela(Emprestimo emprestimo) {
         if (emprestimo.getValorParcela() <= 0 || emprestimo.getJuros() <= 0 || emprestimo.getQuantidadeParcelas() <= 1) {
             throw new IllegalArgumentException("Valores inválidos");
         }
@@ -183,7 +183,6 @@ public class CalculadoraEmprestimo {
         BigDecimal taxaDiaria = BigDecimal.valueOf(conversorTaxaDeJurosDiaria(emprestimo.getJuros()) / 100);
         BigDecimal umMaisTaxa = BigDecimal.ONE.add(taxaDiaria);
         BigDecimal valorParcela = BigDecimal.valueOf(emprestimo.getValorParcela());
-        BigDecimal saldoDevedorPresenteAtualizado = BigDecimal.ZERO;
 
         for (int i = 0; i < emprestimo.getQuantidadeParcelas(); i++) {
             Parcela parcela = parcelas.get(i);
@@ -219,13 +218,12 @@ public class CalculadoraEmprestimo {
                     valorPresente = valorParcela.divide(umMaisTaxa.pow(diasHojeVenc, DECIMAL128), DECIMAL128);
                     parcela.setValorPresenteParcela(valorPresente.doubleValue());
                 }
-                saldoDevedorPresenteAtualizado = saldoDevedorPresenteAtualizado.add(
-                        BigDecimal.valueOf(parcela.getValorPresenteParcela()));
+            } else {
+                parcela.setValorPresenteParcela(parcela.getValorPago());
             }
         }
 
-        emprestimo.setSaldoDevedorAtualizado(saldoDevedorPresenteAtualizado.doubleValue());
-        return emprestimo;
+        return parcelas;
     }
 
     //A fazer

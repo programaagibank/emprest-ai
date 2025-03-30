@@ -3,8 +3,6 @@ package br.com.emprestai.model;
 import br.com.emprestai.enums.VinculoEnum;
 
 import java.time.LocalDate;
-
-import java.time.LocalDate;
 import java.util.List;
 
 public class Cliente {

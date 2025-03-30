@@ -59,8 +59,11 @@
                     </HBox>
                 </VBox>
 
+
                 <!-- Simulate Loan Button -->
                 <Button fx:id="simulateButton" text="Simular Empréstimo" styleClass="banner-button" onAction="#onSimulateClick" visible="false" managed="false"/>
+                <!-- Depois (substituindo o botão por um Label) -->
+                <Label fx:id="simulationMessage" text="" visible="false" managed="false" style="-fx-font-size: 14px; -fx-text-fill: #333333;" />
             </StackPane>
         </VBox>
     </center>

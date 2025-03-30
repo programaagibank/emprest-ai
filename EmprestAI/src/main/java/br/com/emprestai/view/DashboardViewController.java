@@ -77,7 +77,7 @@ public class DashboardViewController {
             EmprestimoViewController emprestimoViewController = loader.getController();
             emprestimoViewController.setEmprestimo(emprestimo);
             emprestimoViewController.setClienteLogado(clienteLogado);
-            emprestimoViewController.setTipoEmprestimo(PESSOAL);
+            emprestimoViewController.setTipoEmprestimo(CONSIGNADO);
 
             Stage stage = (Stage) consignadoButton.getScene().getWindow();
             stage.setScene(consignadoScene);

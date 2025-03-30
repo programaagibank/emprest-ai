@@ -22,42 +22,44 @@ import java.sql.SQLException;
 import java.util.Comparator;
 import java.util.List;
 
+import static br.com.emprestai.enums.TipoEmprestimoEnum.CONSIGNADO;
+import static br.com.emprestai.enums.TipoEmprestimoEnum.PESSOAL;
+import static br.com.emprestai.enums.VinculoEnum.*;
+
 public class EmprestimoViewController {
 
     // --------------------------------------------------------------------------------
     // FXML Components
     // --------------------------------------------------------------------------------
-    @FXML private Circle  statusCircle;
-    @FXML private Label   loanStatus;
-    @FXML private Label   contractTitle;
-    @FXML private Label   contractType;
-    @FXML private Label   totalAmount;
-    @FXML private Label   currentDebt;
-    @FXML private Label   installmentAmount;
-    @FXML private Label   remainingInstallments;
-    @FXML private Label   creditMarginConsig;
-    @FXML private Label   creditMarginPessoal;
-    @FXML private Button  homeButton;
-    @FXML private Button  exitButton;
-    @FXML private Button  simulateButton;
-    @FXML private VBox    loanInfoBox;
-    @FXML private Button  ordemVencimentoButton;
-    @FXML private Button  maiorDescontoButton;
+    @FXML private Circle statusCircle;
+    @FXML private Label loanStatus;
+    @FXML private Label contractTitle;
+    @FXML private Label contractType;
+    @FXML private Label totalAmount;
+    @FXML private Label currentDebt;
+    @FXML private Label installmentAmount;
+    @FXML private Label remainingInstallments;
+    @FXML private Label simulationMessage;
+    @FXML private Button homeButton;
+    @FXML private Button exitButton;
+    @FXML private Button simulateButton;
+    @FXML private VBox loanInfoBox;
+    @FXML private Button ordemVencimentoButton;
+    @FXML private Button maiorDescontoButton;
 
     // --------------------------------------------------------------------------------
     // Class Properties
     // --------------------------------------------------------------------------------
-    private Emprestimo          emprestimo;
-    private TipoEmprestimoEnum  tipoEmprestimo;
-    private Cliente             clienteLogado;
-    private ParcelaController   parcelaController = new ParcelaController(new ParcelaDAO());
+    private Emprestimo emprestimo;
+    private TipoEmprestimoEnum tipoEmprestimo;
+    private Cliente clienteLogado;
+    private ParcelaController parcelaController = new ParcelaController(new ParcelaDAO());
 
     // --------------------------------------------------------------------------------
     // Initialization
     // --------------------------------------------------------------------------------
     @FXML
     private void initialize() {
-        exibirInformacoesEmprestimo();
     }
 
     // --------------------------------------------------------------------------------
@@ -70,10 +72,12 @@ public class EmprestimoViewController {
 
     public void setTipoEmprestimo(TipoEmprestimoEnum tipoEmprestimo) {
         this.tipoEmprestimo = tipoEmprestimo;
+        exibirInformacoesEmprestimo();
     }
 
     public void setClienteLogado(Cliente cliente) {
         this.clienteLogado = cliente;
+        exibirInformacoesEmprestimo();
     }
 
     // --------------------------------------------------------------------------------
@@ -116,11 +120,9 @@ public class EmprestimoViewController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("simulacaoEmprestimo.fxml"));
             Scene simulateScene = new Scene(loader.load(), 360, 640);
-
             SimulacaoViewController simulacaoController = loader.getController();
             simulacaoController.setClienteLogado(clienteLogado);
             simulacaoController.setTipoEmprestimo(tipoEmprestimo);
-
             Stage stage = (Stage) simulateButton.getScene().getWindow();
             stage.setScene(simulateScene);
             stage.setTitle("EmprestAI - Simulação de Empréstimo");
@@ -139,15 +141,12 @@ public class EmprestimoViewController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("parcela.fxml"));
             Scene parcelaScene = new Scene(loader.load(), 360, 640);
-
             ParcelaViewController parcelaViewController = loader.getController();
             List<Parcela> parcelas = parcelaController.getParcelasByEmprestimo(emprestimo);
-            // Ordenar por data de vencimento
             parcelas.sort(Comparator.comparing(Parcela::getDataVencimento));
             parcelaViewController.setEmprestimo(emprestimo);
             parcelaViewController.setClienteLogado(clienteLogado);
             parcelaViewController.setParcelas(parcelas);
-
             Stage stage = (Stage) ordemVencimentoButton.getScene().getWindow();
             stage.setScene(parcelaScene);
             stage.setTitle("EmprestAI - Parcelas (Ordem de Vencimento)");
@@ -163,15 +162,12 @@ public class EmprestimoViewController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("parcela.fxml"));
             Scene parcelaScene = new Scene(loader.load(), 360, 640);
-
             ParcelaViewController parcelaViewController = loader.getController();
             List<Parcela> parcelas = parcelaController.getParcelasByEmprestimo(emprestimo);
-            // Ordenar por maior desconto (assumindo que Parcela tem um campo "desconto")
             parcelas.sort(Comparator.comparing(Parcela::getDataVencimento, Comparator.reverseOrder()));
             parcelaViewController.setEmprestimo(emprestimo);
             parcelaViewController.setClienteLogado(clienteLogado);
             parcelaViewController.setParcelas(parcelas);
-
             Stage stage = (Stage) maiorDescontoButton.getScene().getWindow();
             stage.setScene(parcelaScene);
             stage.setTitle("EmprestAI - Parcelas (Maior Desconto)");
@@ -187,52 +183,66 @@ public class EmprestimoViewController {
     // --------------------------------------------------------------------------------
     private void exibirInformacoesEmprestimo() {
         if (emprestimo != null) {
-            loanInfoBox.setVisible(true);
-            loanInfoBox.setManaged(true);
-            simulateButton.setVisible(false);
-            simulateButton.setManaged(false);
-
-            contractTitle.setText("Contrato");
-            contractType.setText("Consignado");
-            totalAmount.setText(String.format("R$ %.2f", emprestimo.getValorEmprestimo()));
-            currentDebt.setText(String.format("R$ %.2f", emprestimo.getValorEmprestimo()));
-            installmentAmount.setText(String.format("R$ %.2f", emprestimo.getValorParcela()));
-            remainingInstallments.setText(String.format("%d de %d", emprestimo.getParcelasPagas(), emprestimo.getQuantidadeParcelas()));
-            loanStatus.setText(emprestimo.getStatusEmprestimo().name());
-            updateStatus(emprestimo.getStatusEmprestimo());
+            showLoanDetails();
         } else {
-            loanInfoBox.setVisible(false);
-            loanInfoBox.setManaged(false);
-            simulateButton.setVisible(true);
-            simulateButton.setManaged(true);
-            contractTitle.setText("Nenhum Empréstimo Ativo");
+            showNoLoanState();
         }
     }
 
-    public void updateStatus(StatusEmprestimoEnum tipoEmprestimo) {
+    private void showLoanDetails() {
+        toggleVisibility(true, false);
+        contractTitle.setText("Contrato");
+        contractType.setText("Consignado");
+        totalAmount.setText(formatCurrency(emprestimo.getValorEmprestimo()));
+        currentDebt.setText(formatCurrency(emprestimo.getValorEmprestimo()));
+        installmentAmount.setText(formatCurrency(emprestimo.getValorParcela()));
+        remainingInstallments.setText(String.format("%d de %d",
+                emprestimo.getParcelasPagas(), emprestimo.getQuantidadeParcelas()));
+        loanStatus.setText(emprestimo.getStatusEmprestimo().name());
+        updateStatus(emprestimo.getStatusEmprestimo());
+    }
+
+    private void showNoLoanState() {
+        contractTitle.setText("Nenhum Empréstimo Ativo");
+        boolean isConsignadoEligible = tipoEmprestimo == CONSIGNADO &&
+                clienteLogado != null &&
+                (clienteLogado.getTipoCliente() == APOSENTADO ||
+                        clienteLogado.getTipoCliente() == PENSIONISTA ||
+                        clienteLogado.getTipoCliente() == SERVIDOR);
+
+        if (tipoEmprestimo == PESSOAL || isConsignadoEligible) {
+            toggleVisibility(false, true);
+        } else {
+            toggleVisibility(false, false);
+            simulationMessage.setText("Produto não disponível");
+            simulationMessage.setVisible(true);
+            simulationMessage.setManaged(true);
+        }
+    }
+
+    private void toggleVisibility(boolean loanVisible, boolean simulateVisible) {
+        loanInfoBox.setVisible(loanVisible);
+        loanInfoBox.setManaged(loanVisible);
+        simulateButton.setVisible(simulateVisible);
+        simulateButton.setManaged(simulateVisible);
+        simulationMessage.setVisible(false);
+        simulationMessage.setManaged(false);
+    }
+
+    private String formatCurrency(double value) {
+        return String.format("R$ %.2f", value);
+    }
+
+    public void updateStatus(StatusEmprestimoEnum status) {
         statusCircle.getStyleClass().removeAll("green", "gray", "yellow");
-        if (!statusCircle.getStyleClass().contains("status-circle")) {
-            statusCircle.getStyleClass().add("status-circle");
-        }
+        statusCircle.getStyleClass().add("status-circle");
 
-        if (tipoEmprestimo == null) {
-            statusCircle.getStyleClass().add("gray");
-            return;
-        }
-
-        switch (tipoEmprestimo) {
-            case ABERTO:
-                statusCircle.getStyleClass().add("green");
-                break;
-            case QUITADO:
-                statusCircle.getStyleClass().add("gray");
-                break;
-            case RENEGOCIADO:
-                statusCircle.getStyleClass().add("yellow");
-                break;
-            default:
-                statusCircle.getStyleClass().add("gray");
-                break;
-        }
+        String style = switch (status) {
+            case ABERTO -> "green";
+            case QUITADO -> "gray";
+            case RENEGOCIADO -> "yellow";
+            default -> "gray";
+        };
+        statusCircle.getStyleClass().add(style);
     }
 }

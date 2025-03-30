@@ -1,12 +1,15 @@
 package br.com.emprestai.controller;
 
 import br.com.emprestai.dao.ClienteDAO;
+import br.com.emprestai.enums.VinculoEnum;
 import br.com.emprestai.exception.ApiException;
 import br.com.emprestai.model.Cliente;
 import br.com.emprestai.service.calculos.CalculoConsignado;
 import br.com.emprestai.service.calculos.CalculoPessoal;
 
 import java.util.List;
+
+import static br.com.emprestai.enums.VinculoEnum.*;
 
 public class ClienteController {
 
@@ -50,8 +53,11 @@ public class ClienteController {
             throw new ApiException("Cliente não encontrado para o CPF informado.", 404); // Not Found
         }
 
-        cliente.setMargemConsignavel(CalculoConsignado.calcularMargemEmprestimoConsig(
-                cliente.getRendaMensalLiquida(), cliente.getParcelasAtivas()));
+        if(cliente.getTipoCliente() == APOSENTADO || cliente.getTipoCliente() ==PENSIONISTA || cliente.getTipoCliente() == SERVIDOR){
+            cliente.setMargemConsignavel(CalculoConsignado.calcularMargemEmprestimoConsig(
+                    cliente.getRendaMensalLiquida(), cliente.getParcelasAtivas()));
+        }
+
         cliente.setMargemPessoal(CalculoPessoal.calculoDeCapacidadeDePagamento(
                 cliente.getRendaMensalLiquida(), cliente.getParcelasAtivas()));
 

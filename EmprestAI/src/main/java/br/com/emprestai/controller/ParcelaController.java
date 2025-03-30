@@ -56,11 +56,6 @@ public class ParcelaController {
         if (parcelas == null || parcelas.isEmpty()) {
             throw new ApiException("Lista de parcelas não pode ser nula ou vazia.", 400); // Bad Request
         }
-
-        for (Parcela p : parcelas){
-            p.setStatusParcela(PAGA);
-            p.setDataPagamento(LocalDate.now());
-        }
         return parcelaDAO.pagarParcelas(parcelas);
     }
 }

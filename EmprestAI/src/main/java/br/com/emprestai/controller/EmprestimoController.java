@@ -63,7 +63,6 @@ public class EmprestimoController {
         double valorEmprestimo = emprestimo.getValorTotal() - emprestimo.getValorIOF() -
                 emprestimo.getValorSeguro() - emprestimo.getOutrosCustos();
         emprestimo.setValorEmprestimo(valorEmprestimo);
-        System.out.println(emprestimo.getStatusEmprestimo().name());
         return emprestimo;
     }
 

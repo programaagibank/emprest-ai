@@ -195,14 +195,12 @@ public class ParcelaDAO {
             conn = DatabaseConnection.getConnection();
             conn.setAutoCommit(false);
 
-            String sql = "UPDATE parcelas SET valor_pago = ?, data_pagamento = ?, id_status = ? WHERE id_parcela = ?";
+            String sql = "UPDATE parcelas SET valor_pago = ?, data_pagamento = NOW(), id_status = 1 WHERE id_parcela = ?";
             pstmt = conn.prepareStatement(sql);
 
             for (Parcela parcela : parcelas) {
                 pstmt.setDouble(1, parcela.getValorPresenteParcela() + parcela.getMulta() + parcela.getJurosMora());
-                pstmt.setDate(2, Date.valueOf(parcela.getDataPagamento()));
-                pstmt.setInt(3, StatusParcelaEnum.PAGA.getValor());
-                pstmt.setLong(4, parcela.getIdParcela());
+                pstmt.setLong(2, parcela.getIdParcela()); // Corrected to index 2
                 pstmt.addBatch();
             }
 

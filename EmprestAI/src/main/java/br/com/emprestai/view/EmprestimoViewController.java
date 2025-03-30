@@ -19,6 +19,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Comparator;
 import java.util.List;
 
 public class EmprestimoViewController {
@@ -40,6 +41,8 @@ public class EmprestimoViewController {
     @FXML private Button  exitButton;
     @FXML private Button  simulateButton;
     @FXML private VBox    loanInfoBox;
+    @FXML private Button  ordemVencimentoButton;
+    @FXML private Button  maiorDescontoButton;
 
     // --------------------------------------------------------------------------------
     // Class Properties
@@ -131,18 +134,47 @@ public class EmprestimoViewController {
     public void onProfileClick(ActionEvent actionEvent) {
     }
 
-    public void onClickDetalhes(ActionEvent actionEvent) {
+    @FXML
+    private void onOrdemVencimentoClick() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("parcela.fxml"));
             Scene parcelaScene = new Scene(loader.load(), 360, 640);
 
             ParcelaViewController parcelaViewController = loader.getController();
             List<Parcela> parcelas = parcelaController.getParcelasByEmprestimo(emprestimo);
+            // Ordenar por data de vencimento
+            parcelas.sort(Comparator.comparing(Parcela::getDataVencimento));
+            parcelaViewController.setEmprestimo(emprestimo);
+            parcelaViewController.setClienteLogado(clienteLogado);
             parcelaViewController.setParcelas(parcelas);
 
-            Stage stage = (Stage) simulateButton.getScene().getWindow();
+            Stage stage = (Stage) ordemVencimentoButton.getScene().getWindow();
             stage.setScene(parcelaScene);
-            stage.setTitle("EmprestAI - Parcelas");
+            stage.setTitle("EmprestAI - Parcelas (Ordem de Vencimento)");
+            stage.show();
+        } catch (IOException | SQLException e) {
+            e.printStackTrace();
+            System.err.println("Erro ao carregar parcela.fxml: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void onMaiorDescontoClick() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("parcela.fxml"));
+            Scene parcelaScene = new Scene(loader.load(), 360, 640);
+
+            ParcelaViewController parcelaViewController = loader.getController();
+            List<Parcela> parcelas = parcelaController.getParcelasByEmprestimo(emprestimo);
+            // Ordenar por maior desconto (assumindo que Parcela tem um campo "desconto")
+            parcelas.sort(Comparator.comparing(Parcela::getDataVencimento, Comparator.reverseOrder()));
+            parcelaViewController.setEmprestimo(emprestimo);
+            parcelaViewController.setClienteLogado(clienteLogado);
+            parcelaViewController.setParcelas(parcelas);
+
+            Stage stage = (Stage) maiorDescontoButton.getScene().getWindow();
+            stage.setScene(parcelaScene);
+            stage.setTitle("EmprestAI - Parcelas (Maior Desconto)");
             stage.show();
         } catch (IOException | SQLException e) {
             e.printStackTrace();

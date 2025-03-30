@@ -1,6 +1,7 @@
 package br.com.emprestai.controller;
 
 import br.com.emprestai.dao.ParcelaDAO;
+import br.com.emprestai.enums.StatusParcelaEnum;
 import br.com.emprestai.exception.ApiException;
 import br.com.emprestai.model.Emprestimo;
 import br.com.emprestai.model.Parcela;
@@ -8,8 +9,11 @@ import br.com.emprestai.service.calculos.CalculadoraEmprestimo;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+
+import static br.com.emprestai.enums.StatusParcelaEnum.PAGA;
 
 public class ParcelaController {
 
@@ -48,16 +52,15 @@ public class ParcelaController {
     }
 
     // PUT - Atualizar uma lista de parcelas (exemplo: pagar várias parcelas)
-    public List<Parcela> putListParcelas(List<Parcela> parcelas) throws ApiException {
+    public List<Parcela> putListParcelas(List<Parcela> parcelas) throws ApiException, SQLException, IOException {
         if (parcelas == null || parcelas.isEmpty()) {
             throw new ApiException("Lista de parcelas não pode ser nula ou vazia.", 400); // Bad Request
         }
 
-        List<Parcela> parcelasAtualizadas = new ArrayList<>();
-        for (Parcela parcela : parcelas) {
-            Parcela parcelaAtualizada = parcelaDAO.pagarParcela(parcela);
-            parcelasAtualizadas.add(parcelaAtualizada);
+        for (Parcela p : parcelas){
+            p.setStatusParcela(PAGA);
+            p.setDataPagamento(LocalDate.now());
         }
-        return parcelasAtualizadas;
+        return parcelaDAO.pagarParcelas(parcelas);
     }
 }

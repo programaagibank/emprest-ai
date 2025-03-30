@@ -2,21 +2,31 @@ package br.com.emprestai.view;
 
 import br.com.emprestai.controller.ParcelaController;
 import br.com.emprestai.dao.ParcelaDAO;
+import br.com.emprestai.enums.TipoEmprestimoEnum;
+import br.com.emprestai.model.Cliente;
+import br.com.emprestai.model.Emprestimo;
 import br.com.emprestai.model.Parcela;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
+import java.io.IOException;
+import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 import static br.com.emprestai.enums.StatusParcelaEnum.ATRASADA;
@@ -29,12 +39,17 @@ public class ParcelaViewController {
     // --------------------------------------------------------------------------------
     @FXML private VBox  parcelaList;
     @FXML private Label totalLabel;
+    @FXML private Button returnButton;
+    @FXML private Button pagarButton; // Novo botão
 
     // --------------------------------------------------------------------------------
     // Class Properties
     // --------------------------------------------------------------------------------
+    private Emprestimo          emprestimo;
+    private TipoEmprestimoEnum  tipoEmprestimo;
+    private Cliente             clienteLogado;
     private ObservableList<ParcelaWrapper> parcelasList;
-    private ParcelaController             parcelaController = new ParcelaController(new ParcelaDAO());
+    private ParcelaController   parcelaController = new ParcelaController(new ParcelaDAO());
 
     // Formatters
     private static final DecimalFormat    df         = new DecimalFormat("R$ #,##0.00");
@@ -50,6 +65,18 @@ public class ParcelaViewController {
     // --------------------------------------------------------------------------------
     // Setters
     // --------------------------------------------------------------------------------
+    public void setEmprestimo(Emprestimo emprestimo) {
+        this.emprestimo = emprestimo;
+    }
+
+    public void setTipoEmprestimo(TipoEmprestimoEnum tipoEmprestimo) {
+        this.tipoEmprestimo = tipoEmprestimo;
+    }
+
+    public void setClienteLogado(Cliente cliente) {
+        this.clienteLogado = cliente;
+    }
+
     public void setParcelas(List<Parcela> parcelas) {
         parcelasList = FXCollections.observableArrayList();
         int totalParcelas = parcelas.size();
@@ -72,17 +99,57 @@ public class ParcelaViewController {
     // --------------------------------------------------------------------------------
     // Event Handlers
     // --------------------------------------------------------------------------------
+
     @FXML
-    private void handleConfirm(ActionEvent event) {
-        for (ParcelaWrapper wrapper : parcelasList) {
-            if (wrapper.isSelected()) {
+    private void onPagarClick() {
+        try {
+            // Coletar apenas as parcelas selecionadas que estão PENDENTE ou ATRASADA
+            List<Parcela> parcelasSelecionadas = new ArrayList<>();
+            for (ParcelaWrapper wrapper : parcelasList) {
                 Parcela parcela = wrapper.getParcela();
-                System.out.println("Parcela selecionada: " + parcela);
+                if (wrapper.isSelected() &&
+                        (parcela.getStatus() == PENDENTE || parcela.getStatus() == ATRASADA)) {
+                    parcelasSelecionadas.add(parcela);
+                }
             }
+
+            if (parcelasSelecionadas.isEmpty()) {
+                totalLabel.setText("Nenhuma parcela válida selecionada para pagamento.");
+                return;
+            }
+
+            // Enviar para o controller para salvar
+            parcelaController.putListParcelas(parcelasSelecionadas);
+
+            // Atualizar a interface ou redirecionar após o pagamento
+            totalLabel.setText("Pagamento realizado com sucesso!");
+            populateParcelaList(); // Atualiza a lista para refletir o novo status
+            updateTotal();
+            onClickReturn();
+            // Redirecionar de volta à tela de empréstimos
+        } catch (Exception e) {
+            e.printStackTrace();
+            totalLabel.setText("Erro ao realizar pagamento: " + e.getMessage());
         }
     }
 
-    public void handleReturn() {
+    public void onClickReturn() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("emprestimos.fxml"));
+            Scene mainScene = new Scene(loader.load(), 360, 640);
+            EmprestimoViewController emprestimoViewController = loader.getController();
+            emprestimoViewController.setClienteLogado(clienteLogado);
+            emprestimoViewController.setTipoEmprestimo(tipoEmprestimo);
+            emprestimoViewController.setEmprestimo(emprestimo);
+
+            Stage stage = (Stage) returnButton.getScene().getWindow();
+            stage.setScene(mainScene);
+            stage.setTitle("EmprestAI - Emprestimos");
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.err.println("Erro ao carregar emprestimos.fxml: " + e.getMessage());
+        }
     }
 
     // --------------------------------------------------------------------------------
@@ -135,6 +202,16 @@ public class ParcelaViewController {
     }
 
     private void updateCheckboxState(ParcelaWrapper changedWrapper) {
+        if (changedWrapper != null && !changedWrapper.isSelected()) {
+            int changedIndex = parcelasList.indexOf(changedWrapper);
+            for (int i = changedIndex + 1; i < parcelasList.size(); i++) {
+                ParcelaWrapper subsequentWrapper = parcelasList.get(i);
+                if (subsequentWrapper.isSelected()) {
+                    subsequentWrapper.setSelected(false);
+                }
+            }
+        }
+
         for (int i = 0; i < parcelasList.size(); i++) {
             ParcelaWrapper wrapper = parcelasList.get(i);
             CheckBox checkBox = (CheckBox) ((HBox) parcelaList.getChildren().get(i)).getChildren().get(0);
@@ -145,7 +222,8 @@ public class ParcelaViewController {
     private void updateTotal() {
         double total = 0.0;
         for (ParcelaWrapper wrapper : parcelasList) {
-            if (wrapper.isSelected()) {
+            if (wrapper.isSelected() &&
+                    (wrapper.getParcela().getStatus() == PENDENTE || wrapper.getParcela().getStatus() == ATRASADA)) {
                 total += wrapper.getValorAPagar();
             }
         }
@@ -185,7 +263,7 @@ public class ParcelaViewController {
         }
 
         public Double getValorAPagar() {
-            return parcela.getValorPresenteParcela();
+            return parcela.getValorPresenteParcela() + parcela.getMulta() + parcela.getJurosMora();
         }
 
         public String getNumeroParcela() {

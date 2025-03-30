@@ -13,11 +13,16 @@ import java.util.List;
 
 public class EmprestimoDAO implements GenericDAO<Emprestimo> {
 
+    // --------------------------------------------------------------------------------
+    // CRUD Methods
+    // --------------------------------------------------------------------------------
+
+    // POST - Criar um novo empréstimo no banco de dados
     @Override
     public Emprestimo criar(Emprestimo emprestimo) {
-        String sql = "INSERT INTO emprestimos (id_cliente, valor_total, quantidade_parcelas, juros, data_inicio, id_status_emprestimo, id_tipo_emprestimo,\n" +
-                "valor_seguro, valor_IOF, outros_custos, data_contratacao, juros_mora, taxa_multa, valor_parcela)\n" +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+        String sql = "INSERT INTO emprestimos (id_cliente, valor_total, quantidade_parcelas, juros, data_inicio, id_status_emprestimo, id_tipo_emprestimo, " +
+                "valor_seguro, valor_IOF, outros_custos, data_contratacao, juros_mora, taxa_multa, valor_parcela) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -39,7 +44,6 @@ public class EmprestimoDAO implements GenericDAO<Emprestimo> {
             stmt.setDouble(15, emprestimo.getValorParcela());
 
             int affectedRows = stmt.executeUpdate();
-
             if (affectedRows == 0) {
                 throw new ApiException("Falha ao criar emprestimo, nenhuma linha afetada.", 500);
             }
@@ -53,14 +57,13 @@ public class EmprestimoDAO implements GenericDAO<Emprestimo> {
             }
 
             return emprestimo;
-            //Adicionei o IOException para parar de reclamar erro
         } catch (SQLException | IOException e) {
             throw new ApiException("Erro ao criar emprestimo: " + e.getMessage(), 500);
         }
     }
 
+    // GET - Buscar todos os empréstimos
     @Override
-    // Buscar todos os emprestimos
     public List<Emprestimo> buscarTodos() {
         List<Emprestimo> emprestimos = new ArrayList<>();
         String sql = "SELECT * FROM emprestimos";
@@ -72,22 +75,21 @@ public class EmprestimoDAO implements GenericDAO<Emprestimo> {
             while (rs.next()) {
                 emprestimos.add(mapearResultSet(rs));
             }
-
             return emprestimos;
         } catch (SQLException | IOException e) {
             throw new ApiException("Erro ao buscar clientes: " + e.getMessage(), 500);
         }
     }
 
-
+    // GET - Buscar empréstimo por ID
     @Override
     public Emprestimo buscarPorId(Long idEmprestimo) {
-        String sql = "select e.id_emprestimo, e.id_cliente , e.valor_total, e.quantidade_parcelas, e.juros, e.data_inicio, e.id_status_emprestimo, e.id_tipo_emprestimo,\n" +
-                "e.valor_seguro, e.valor_IOF, e.outros_custos, e.data_contratacao, e.juros_mora,\n" +
-                "e.taxa_multa, e.id_emprestimo_origem, c.cpf_cliente, c.nome_cliente\n" +
-                "from emprestimos e\n" +
-                "inner join clientes c on e.id_cliente = c.id_cliente\n" +
-                "where c.cpf_cliente = ?";
+        String sql = "SELECT e.id_emprestimo, e.id_cliente, e.valor_total, e.quantidade_parcelas, e.juros, e.data_inicio, e.id_status_emprestimo, e.id_tipo_emprestimo, " +
+                "e.valor_seguro, e.valor_IOF, e.outros_custos, e.data_contratacao, e.juros_mora, " +
+                "e.taxa_multa, e.id_emprestimo_origem, c.cpf_cliente, c.nome_cliente " +
+                "FROM emprestimos e " +
+                "INNER JOIN clientes c ON e.id_cliente = c.id_cliente " +
+                "WHERE e.id_emprestimo = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -106,14 +108,15 @@ public class EmprestimoDAO implements GenericDAO<Emprestimo> {
         }
     }
 
+    // GET - Buscar empréstimo por CPF do cliente
     @Override
     public Emprestimo buscarPorCpf(String cpfCliente) {
-        String sql = "select e.id_emprestimo, e.id_cliente , e.valor_total, e.quantidade_parcelas, e.juros, e.data_inicio, e.id_status_emprestimo, e.id_tipo_emprestimo,\n" +
-                "e.valor_seguro, e.valor_IOF, e.outros_custos, e.data_contratacao, e.juros_mora,\n" +
-                "e.taxa_multa, e.id_emprestimo_origem, c.cpf_cliente, c.nome_cliente\n" +
-                "from emprestimos e\n" +
-                "inner join clientes c on e.id_cliente = c.id_cliente\n" +
-                "where e.id_emprestimo = ?";
+        String sql = "SELECT e.id_emprestimo, e.id_cliente, e.valor_total, e.quantidade_parcelas, e.juros, e.data_inicio, e.id_status_emprestimo, e.id_tipo_emprestimo, " +
+                "e.valor_seguro, e.valor_IOF, e.outros_custos, e.data_contratacao, e.juros_mora, " +
+                "e.taxa_multa, e.id_emprestimo_origem, c.cpf_cliente, c.nome_cliente " +
+                "FROM emprestimos e " +
+                "INNER JOIN clientes c ON e.id_cliente = c.id_cliente " +
+                "WHERE c.cpf_cliente = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -132,14 +135,15 @@ public class EmprestimoDAO implements GenericDAO<Emprestimo> {
         }
     }
 
+    // GET - Buscar empréstimo por ID do cliente e tipo de empréstimo
     public Emprestimo buscarPorIdCliente(Long idCliente, TipoEmprestimoEnum empEnum) {
-        String sql = "select e.id_emprestimo, e.id_cliente, e.valor_total, e.valor_parcela, e.quantidade_parcelas, e.juros, e.data_inicio, e.id_status_emprestimo, e.id_tipo_emprestimo,\n" +
-                "e.valor_seguro, e.valor_IOF, e.outros_custos, e.data_contratacao, e.juros_mora,\n" +
-                "e.taxa_multa, e.id_emprestimo_origem, c.cpf_cliente, c.nome_cliente,\n" +
-                "(SELECT COUNT(*) FROM parcelas p WHERE p.id_emprestimo = e.id_emprestimo AND p.id_status NOT IN (2, 3)) as parcelas_pagas\n" +
-                "from emprestimos e\n" +
-                "inner join clientes c on e.id_cliente = c.id_cliente\n" +
-                "where e.id_cliente = ? and e.id_tipo_emprestimo = ?";
+        String sql = "SELECT e.id_emprestimo, e.id_cliente, e.valor_total, e.valor_parcela, e.quantidade_parcelas, e.juros, e.data_inicio, e.id_status_emprestimo, e.id_tipo_emprestimo, " +
+                "e.valor_seguro, e.valor_IOF, e.outros_custos, e.data_contratacao, e.juros_mora, " +
+                "e.taxa_multa, e.id_emprestimo_origem, c.cpf_cliente, c.nome_cliente, " +
+                "(SELECT COUNT(*) FROM parcelas p WHERE p.id_emprestimo = e.id_emprestimo AND p.id_status NOT IN (2, 3)) AS parcelas_pagas " +
+                "FROM emprestimos e " +
+                "INNER JOIN clientes c ON e.id_cliente = c.id_cliente " +
+                "WHERE e.id_cliente = ? AND e.id_tipo_emprestimo = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -159,16 +163,38 @@ public class EmprestimoDAO implements GenericDAO<Emprestimo> {
         }
     }
 
+    // PUT - Atualizar empréstimo (não implementado)
     @Override
     public Emprestimo atualizar(Emprestimo entidade) throws ApiException {
-        return null;
+        return null; // Método não implementado
     }
 
+    // DELETE - Excluir empréstimo (não implementado)
     @Override
     public boolean excluir(Long id) throws ApiException {
-        return false;
+        return false; // Método não implementado
     }
 
+    // PUT - Atualizar refinanciamento de empréstimo
+    public Emprestimo atualizarRefin(Long idEmprestimo, Long idEmprestimoOrigem) throws ApiException {
+        Emprestimo emprestimo = buscarPorId(idEmprestimo);
+        if (idEmprestimo == null || idEmprestimoOrigem == null) {
+            throw new IllegalArgumentException("Os IDs não podem ser nulos.");
+        }
+
+        Emprestimo emprestimoDeOrigem = buscarPorId(idEmprestimoOrigem);
+        if (emprestimoDeOrigem == null) {
+            // Lógica incompleta no código original; pode ser necessário lançar uma exceção ou tratar de outra forma
+        }
+
+        return emprestimo;
+    }
+
+    // --------------------------------------------------------------------------------
+    // Helper Methods
+    // --------------------------------------------------------------------------------
+
+    // Mapear ResultSet para objeto Emprestimo
     private Emprestimo mapearResultSet(ResultSet rs) throws SQLException {
         Emprestimo emprestimo = new Emprestimo();
         emprestimo.setIdCliente(rs.getLong("id_cliente"));
@@ -188,30 +214,6 @@ public class EmprestimoDAO implements GenericDAO<Emprestimo> {
         emprestimo.setDataContratacao(rs.getDate("data_contratacao").toLocalDate());
         emprestimo.setTaxaJurosMora(rs.getDouble("juros_mora"));
         emprestimo.setTaxaMulta(rs.getDouble("taxa_multa"));
-        //TODO Adcionar metodo set para a lista de parcerlas
-        return emprestimo;
-
-    }
-
-    public Emprestimo atualizarRefin(Long idEmprestimo, Long idEmprestimoOrigem) throws ApiException {
-        Emprestimo emprestimo = buscarPorId(idEmprestimo);
-        if (idEmprestimo == null || idEmprestimoOrigem == null) {
-            throw new IllegalArgumentException("Os IDs não podem ser nulos.");
-
-        }
-
-        Emprestimo emprestimoDeOrigem = buscarPorId(idEmprestimoOrigem);
-        if (emprestimoDeOrigem == null) {
-        }
-
         return emprestimo;
     }
 }
-
-
-
-
-
-
-
-

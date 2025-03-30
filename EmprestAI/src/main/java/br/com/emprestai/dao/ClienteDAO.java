@@ -12,6 +12,11 @@ import java.util.List;
 
 public class ClienteDAO implements GenericDAO<Cliente> {
 
+    // --------------------------------------------------------------------------------
+    // CRUD Methods
+    // --------------------------------------------------------------------------------
+
+    // POST - Criar um novo cliente no banco de dados
     public Cliente criar(Cliente cliente) {
         if (cliente == null) {
             throw new IllegalArgumentException("Cliente não pode ser nulo.");
@@ -67,26 +72,25 @@ public class ClienteDAO implements GenericDAO<Cliente> {
         }
     }
 
-    // Buscar todos os clientes
+    // GET - Buscar todos os clientes
     public List<Cliente> buscarTodos() {
         List<Cliente> clientes = new ArrayList<>();
         String sql = "SELECT * FROM clientes";
 
         try (Connection conn = DatabaseConnection.getConnection();
-                Statement stmt = conn.createStatement();
-                ResultSet rs = stmt.executeQuery(sql)) {
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
                 clientes.add(mapearResultSet(rs));
             }
-
             return clientes;
         } catch (SQLException | IOException e) {
             throw new ApiException("Erro ao buscar clientes: " + e.getMessage(), 500);
         }
     }
 
-    // Buscar cliente por ID
+    // GET - Buscar cliente por ID
     public Cliente buscarPorId(Long id) {
         if (id == null) {
             throw new IllegalArgumentException("ID do cliente não pode ser nulo.");
@@ -95,7 +99,7 @@ public class ClienteDAO implements GenericDAO<Cliente> {
         String sql = "SELECT * FROM clientes WHERE id_cliente = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
-                PreparedStatement stmt = conn.prepareStatement(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setLong(1, id);
 
@@ -111,7 +115,38 @@ public class ClienteDAO implements GenericDAO<Cliente> {
         }
     }
 
-    // Atualizar cliente
+    // GET - Buscar cliente por CPF
+    public Cliente buscarPorCpf(String cpfCliente) {
+        if (cpfCliente == null || cpfCliente.trim().isEmpty()) {
+            throw new IllegalArgumentException("CPF não pode ser nulo ou vazio.");
+        }
+
+        String sql = "SELECT c.*, " +
+                "(SELECT COALESCE(SUM(e.valor_parcela), 0) " +
+                "FROM emprestimos e " +
+                "WHERE e.id_cliente = c.id_cliente " +
+                "AND e.id_status_emprestimo = 1) as soma_valor_parcelas " +
+                "FROM clientes c " +
+                "WHERE c.cpf_cliente = ?";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, cpfCliente);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return mapearResultSet(rs);
+                } else {
+                    throw new ApiException("Cliente não encontrado com CPF: " + cpfCliente, 404);
+                }
+            }
+        } catch (SQLException | IOException e) {
+            throw new ApiException("Erro ao buscar cliente: " + e.getMessage(), 500);
+        }
+    }
+
+    // PUT - Atualizar cliente existente
     public Cliente atualizar(Cliente cliente) {
         if (cliente == null) {
             throw new IllegalArgumentException("ID e cliente não podem ser nulos.");
@@ -122,7 +157,7 @@ public class ClienteDAO implements GenericDAO<Cliente> {
                 "id_tipo_cliente = ?, score = ?, senha = ? WHERE id_cliente = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
-                PreparedStatement stmt = conn.prepareStatement(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, cliente.getCpfCliente());
             stmt.setString(2, cliente.getNomecliente());
             stmt.setDouble(3, cliente.getRendaMensalLiquida());
@@ -152,7 +187,7 @@ public class ClienteDAO implements GenericDAO<Cliente> {
         }
     }
 
-    // Atualização parcial de cliente
+    // PATCH - Atualização parcial de cliente
     public Cliente atualizarParcial(Cliente cliente) {
         if (cliente == null) {
             throw new IllegalArgumentException("ID do cliente não pode ser nulo.");
@@ -191,7 +226,7 @@ public class ClienteDAO implements GenericDAO<Cliente> {
         return atualizar(cliente);
     }
 
-    // Excluir cliente
+    // DELETE - Excluir cliente por ID
     public boolean excluir(Long id) {
         if (id == null) {
             throw new IllegalArgumentException("ID do cliente não pode ser nulo.");
@@ -200,7 +235,7 @@ public class ClienteDAO implements GenericDAO<Cliente> {
         String sqlCliente = "DELETE FROM clientes WHERE id_cliente = ?";
 
         try (Connection conn = DatabaseConnection.getConnection()) {
-            conn.setAutoCommit(false); // Iniciar transação
+            conn.setAutoCommit(false);
 
             try {
                 try (PreparedStatement stmtCliente = conn.prepareStatement(sqlCliente)) {
@@ -212,9 +247,9 @@ public class ClienteDAO implements GenericDAO<Cliente> {
                     }
                 }
 
-                conn.commit(); // Confirmar transação
+                conn.commit();
             } catch (SQLException e) {
-                conn.rollback(); // Reverter em caso de erro
+                conn.rollback();
                 throw new ApiException("Erro ao excluir cliente: " + e.getMessage(), 500);
             }
         } catch (SQLException | IOException e) {
@@ -223,38 +258,11 @@ public class ClienteDAO implements GenericDAO<Cliente> {
         return true;
     }
 
-    // Buscar cliente por CPF
-    public Cliente buscarPorCpf(String cpfCliente) {
-        if (cpfCliente == null || cpfCliente.trim().isEmpty()) {
-            throw new IllegalArgumentException("CPF não pode ser nulo ou vazio.");
-        }
+    // --------------------------------------------------------------------------------
+    // Helper Methods
+    // --------------------------------------------------------------------------------
 
-        String sql = "SELECT c.*, " +
-                "(SELECT COALESCE(SUM(e.valor_parcela), 0) " +
-                "FROM emprestimos e " +
-                "WHERE e.id_cliente = c.id_cliente " +
-                "AND e.id_status_emprestimo = 1) as soma_valor_parcelas " +
-                "FROM clientes c " +
-                "WHERE c.cpf_cliente = ?";
-
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setString(1, cpfCliente);
-
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    return mapearResultSet(rs);
-                } else {
-                    throw new ApiException("Cliente não encontrado com CPF: " + cpfCliente, 404);
-                }
-            }
-        } catch (SQLException | IOException e) {
-            throw new ApiException("Erro ao buscar cliente: " + e.getMessage(), 500);
-        }
-    }
-
-    // Método auxiliar para mapear ResultSet para objeto Cliente
+    // Mapear ResultSet para objeto Cliente
     private Cliente mapearResultSet(ResultSet rs) throws SQLException {
         Cliente cliente = new Cliente();
         cliente.setIdCliente(rs.getLong("id_cliente"));

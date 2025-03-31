@@ -1,21 +1,22 @@
 package br.com.emprestai.dao;
 
 import br.com.emprestai.database.DatabaseConnection;
-import br.com.emprestai.database.exception.ApiException;
 import br.com.emprestai.enums.VinculoEnum;
+import br.com.emprestai.exception.ApiException;
 import br.com.emprestai.model.Cliente;
+
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ClienteDAO {
+public class ClienteDAO implements GenericDAO<Cliente> {
 
+    // --------------------------------------------------------------------------------
+    // CRUD Methods
+    // --------------------------------------------------------------------------------
+
+    // POST - Criar um novo cliente no banco de dados
     public Cliente criar(Cliente cliente) {
         if (cliente == null) {
             throw new IllegalArgumentException("Cliente não pode ser nulo.");
@@ -40,7 +41,6 @@ public class ClienteDAO {
                 stmtCliente.setInt(6, cliente.getQtdePessoasNaCasa());
                 stmtCliente.setInt(7, cliente.getTipoCliente() != null ? cliente.getTipoCliente().getValor() : 0);
                 stmtCliente.setInt(8, cliente.getScore());
-                
                 String senhaCriptografada = org.mindrot.jbcrypt.BCrypt.hashpw(cliente.getSenha(),
                         org.mindrot.jbcrypt.BCrypt.gensalt());
                 stmtCliente.setString(9, senhaCriptografada);
@@ -72,26 +72,25 @@ public class ClienteDAO {
         }
     }
 
-    // Buscar todos os clientes
+    // GET - Buscar todos os clientes
     public List<Cliente> buscarTodos() {
         List<Cliente> clientes = new ArrayList<>();
         String sql = "SELECT * FROM clientes";
 
         try (Connection conn = DatabaseConnection.getConnection();
-                Statement stmt = conn.createStatement();
-                ResultSet rs = stmt.executeQuery(sql)) {
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
                 clientes.add(mapearResultSet(rs));
             }
-
             return clientes;
         } catch (SQLException | IOException e) {
             throw new ApiException("Erro ao buscar clientes: " + e.getMessage(), 500);
         }
     }
 
-    // Buscar cliente por ID
+    // GET - Buscar cliente por ID
     public Cliente buscarPorId(Long id) {
         if (id == null) {
             throw new IllegalArgumentException("ID do cliente não pode ser nulo.");
@@ -100,7 +99,7 @@ public class ClienteDAO {
         String sql = "SELECT * FROM clientes WHERE id_cliente = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
-                PreparedStatement stmt = conn.prepareStatement(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setLong(1, id);
 
@@ -116,9 +115,40 @@ public class ClienteDAO {
         }
     }
 
-    // Atualizar cliente
-    public Cliente atualizar(Long id, Cliente cliente) {
-        if (id == null || cliente == null) {
+    // GET - Buscar cliente por CPF
+    public Cliente buscarPorCpf(String cpfCliente) {
+        if (cpfCliente == null || cpfCliente.trim().isEmpty()) {
+            throw new IllegalArgumentException("CPF não pode ser nulo ou vazio.");
+        }
+
+        String sql = "SELECT c.*, " +
+                "(SELECT COALESCE(SUM(e.valor_parcela), 0) " +
+                "FROM emprestimos e " +
+                "WHERE e.id_cliente = c.id_cliente " +
+                "AND e.id_status_emprestimo = 1) as soma_valor_parcelas " +
+                "FROM clientes c " +
+                "WHERE c.cpf_cliente = ?";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, cpfCliente);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return mapearResultSet(rs);
+                } else {
+                    throw new ApiException("Cliente não encontrado com CPF: " + cpfCliente, 404);
+                }
+            }
+        } catch (SQLException | IOException e) {
+            throw new ApiException("Erro ao buscar cliente: " + e.getMessage(), 500);
+        }
+    }
+
+    // PUT - Atualizar cliente existente
+    public Cliente atualizar(Cliente cliente) {
+        if (cliente == null) {
             throw new IllegalArgumentException("ID e cliente não podem ser nulos.");
         }
 
@@ -127,7 +157,7 @@ public class ClienteDAO {
                 "id_tipo_cliente = ?, score = ?, senha = ? WHERE id_cliente = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
-                PreparedStatement stmt = conn.prepareStatement(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, cliente.getCpfCliente());
             stmt.setString(2, cliente.getNomecliente());
             stmt.setDouble(3, cliente.getRendaMensalLiquida());
@@ -140,14 +170,14 @@ public class ClienteDAO {
                     ? org.mindrot.jbcrypt.BCrypt.hashpw(cliente.getSenha(), org.mindrot.jbcrypt.BCrypt.gensalt())
                     : null;
             stmt.setString(9, senhaCriptografada != null ? senhaCriptografada : null);
-            stmt.setLong(10, id);
+            stmt.setLong(10, cliente.getIdCliente());
 
             int affectedRows = stmt.executeUpdate();
             if (affectedRows == 0) {
-                throw new ApiException("Cliente não encontrado com ID: " + id, 404);
+                throw new ApiException("Cliente não encontrado com ID: " + cliente.getIdCliente(), 404);
             }
 
-            cliente.setIdCliente(id);
+            cliente.setIdCliente(cliente.getIdCliente());
             return cliente;
         } catch (SQLException | IOException e) {
             if (e.getMessage().contains("Duplicate entry") && e.getMessage().contains("cpf_cliente")) {
@@ -157,47 +187,47 @@ public class ClienteDAO {
         }
     }
 
-    // Atualização parcial de cliente
-    public Cliente atualizarParcial(Long id, Cliente clienteAtualizado) {
-        if (id == null) {
+    // PATCH - Atualização parcial de cliente
+    public Cliente atualizarParcial(Cliente cliente) {
+        if (cliente == null) {
             throw new IllegalArgumentException("ID do cliente não pode ser nulo.");
         }
 
-        Cliente clienteExistente = buscarPorId(id);
+        cliente = buscarPorId(cliente.getIdCliente());
 
-        if (clienteAtualizado.getCpfCliente() != null) {
-            clienteExistente.setCpfCliente(clienteAtualizado.getCpfCliente());
+        if (cliente.getCpfCliente() != null) {
+            cliente.setCpfCliente(cliente.getCpfCliente());
         }
-        if (clienteAtualizado.getNomecliente() != null) {
-            clienteExistente.setNomecliente(clienteAtualizado.getNomecliente());
+        if (cliente.getNomecliente() != null) {
+            cliente.setNomecliente(cliente.getNomecliente());
         }
-        if (clienteAtualizado.getRendaMensalLiquida() != 0) {
-            clienteExistente.setRendaMensalLiquida(clienteAtualizado.getRendaMensalLiquida());
+        if (cliente.getRendaMensalLiquida() != 0) {
+            cliente.setRendaMensalLiquida(cliente.getRendaMensalLiquida());
         }
-        if (clienteAtualizado.getDataNascimento() != null) {
-            clienteExistente.setDataNascimento(clienteAtualizado.getDataNascimento());
+        if (cliente.getDataNascimento() != null) {
+            cliente.setDataNascimento(cliente.getDataNascimento());
         }
-        if (clienteAtualizado.getRendaFamiliarLiquida() != 0) {
-            clienteExistente.setRendaFamiliarLiquida(clienteAtualizado.getRendaFamiliarLiquida());
+        if (cliente.getRendaFamiliarLiquida() != 0) {
+            cliente.setRendaFamiliarLiquida(cliente.getRendaFamiliarLiquida());
         }
-        if (clienteAtualizado.getQtdePessoasNaCasa() != 0) {
-            clienteExistente.setQtdePessoasNaCasa(clienteAtualizado.getQtdePessoasNaCasa());
+        if (cliente.getQtdePessoasNaCasa() != 0) {
+            cliente.setQtdePessoasNaCasa(cliente.getQtdePessoasNaCasa());
         }
-        if (clienteAtualizado.getTipoCliente() != null) {
-            clienteExistente.setTipoCliente(clienteAtualizado.getTipoCliente());
+        if (cliente.getTipoCliente() != null) {
+            cliente.setTipoCliente(cliente.getTipoCliente());
         }
-        if (clienteAtualizado.getScore() != 0) {
-            clienteExistente.setScore(clienteAtualizado.getScore());
+        if (cliente.getScore() != 0) {
+            cliente.setScore(cliente.getScore());
         }
-        if (clienteAtualizado.getSenha() != null) {
-            clienteExistente.setSenha(clienteAtualizado.getSenha());
+        if (cliente.getSenha() != null) {
+            cliente.setSenha(cliente.getSenha());
         }
 
-        return atualizar(id, clienteExistente);
+        return atualizar(cliente);
     }
 
-    // Excluir cliente
-    public void excluir(Long id) {
+    // DELETE - Excluir cliente por ID
+    public boolean excluir(Long id) {
         if (id == null) {
             throw new IllegalArgumentException("ID do cliente não pode ser nulo.");
         }
@@ -205,7 +235,7 @@ public class ClienteDAO {
         String sqlCliente = "DELETE FROM clientes WHERE id_cliente = ?";
 
         try (Connection conn = DatabaseConnection.getConnection()) {
-            conn.setAutoCommit(false); // Iniciar transação
+            conn.setAutoCommit(false);
 
             try {
                 try (PreparedStatement stmtCliente = conn.prepareStatement(sqlCliente)) {
@@ -217,42 +247,22 @@ public class ClienteDAO {
                     }
                 }
 
-                conn.commit(); // Confirmar transação
+                conn.commit();
             } catch (SQLException e) {
-                conn.rollback(); // Reverter em caso de erro
+                conn.rollback();
                 throw new ApiException("Erro ao excluir cliente: " + e.getMessage(), 500);
             }
         } catch (SQLException | IOException e) {
             throw new ApiException("Erro ao conectar ou executar transação: " + e.getMessage(), 500);
         }
+        return true;
     }
 
-    // Buscar cliente por CPF
-    public Cliente buscarPorCPF(String cpf_cliente) {
-        if (cpf_cliente == null || cpf_cliente.trim().isEmpty()) {
-            throw new IllegalArgumentException("CPF não pode ser nulo ou vazio.");
-        }
+    // --------------------------------------------------------------------------------
+    // Helper Methods
+    // --------------------------------------------------------------------------------
 
-        String sql = "SELECT * FROM clientes WHERE cpf_cliente = ?";
-
-        try (Connection conn = DatabaseConnection.getConnection();
-                PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setString(1, cpf_cliente);
-
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    return mapearResultSet(rs);
-                } else {
-                    throw new ApiException("Cliente não encontrado com CPF: " + cpf_cliente, 404);
-                }
-            }
-        } catch (SQLException | IOException e) {
-            throw new ApiException("Erro ao buscar cliente: " + e.getMessage(), 500);
-        }
-    }
-
-    // Método auxiliar para mapear ResultSet para objeto Cliente
+    // Mapear ResultSet para objeto Cliente
     private Cliente mapearResultSet(ResultSet rs) throws SQLException {
         Cliente cliente = new Cliente();
         cliente.setIdCliente(rs.getLong("id_cliente"));
@@ -262,6 +272,7 @@ public class ClienteDAO {
         cliente.setDataNascimento(rs.getDate("data_nascimento").toLocalDate());
         cliente.setRendaFamiliarLiquida(rs.getDouble("renda_familiar_liquida"));
         cliente.setQtdePessoasNaCasa(rs.getInt("qtd_pessoas_na_casa"));
+        cliente.setParcelasAtivas(rs.getDouble("soma_valor_parcelas"));
         cliente.setSenha(rs.getString("senha_acesso"));
 
         int tipoClienteValue = rs.getInt("id_tipo_cliente");

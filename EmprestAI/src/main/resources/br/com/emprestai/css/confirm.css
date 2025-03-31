@@ -1,0 +1,116 @@
+/* Estilo geral da root */
+.root {
+    -fx-background-color: #f4f4f9;
+}
+
+/* Estilo do container principal */
+.confirmacao-container {
+    -fx-background-color: #f4f4f9;
+    -fx-alignment: center;
+    -fx-spacing: 0; /* Removido o espaçamento extra */
+    -fx-pref-width: 360px;
+    -fx-pref-height: 640px;
+}
+
+/* Header styling (top section) */
+.header {
+    -fx-background-color: linear-gradient(to bottom, #0056D2, #00A3FF); /* Blue gradient */
+    -fx-alignment: center;
+    -fx-padding: 15px;
+    -fx-pref-width: 360px; /* Garante que o header ocupe toda a largura */
+}
+
+/* Estilo do texto do cabeçalho */
+.greeting-label {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #ffffff;
+}
+
+/* Estilo do conteúdo central */
+.content {
+    -fx-background-color: #ffffff;
+    -fx-padding: 20px;
+    -fx-alignment: center;
+    -fx-spacing: 15;
+    -fx-pref-width: 360px; /* Garante que o conteúdo ocupe toda a largura */
+    -fx-pref-height: 100%; /* Faz o conteúdo ocupar o espaço restante */
+    -fx-background-radius: 0; /* Remove bordas arredondadas para ocupar toda a tela */
+    -fx-border-radius: 0;
+    -fx-effect: none; /* Remove o sombreamento para um visual mais limpo */
+}
+
+/* Estilo do valor */
+.confirmacao-valor {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+    -fx-alignment: center;
+}
+
+/* Estilo da quantidade de parcelas */
+.confirmacao-parcelas {
+    -fx-font-size: 14px;
+    -fx-text-fill: #666666;
+    -fx-alignment: center;
+}
+
+/* Estilo da data */
+.confirmacao-data {
+    -fx-font-size: 12px;
+    -fx-text-fill: #666666;
+    -fx-alignment: center;
+}
+
+/* Estilo do campo de senha */
+.password-field {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 1;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+    -fx-padding: 8;
+    -fx-font-size: 14px;
+    -fx-pref-width: 200px;
+    -fx-text-fill: #333333;
+}
+
+/* Estilo da mensagem */
+.confirmacao-mensagem {
+    -fx-font-size: 12px;
+    -fx-text-fill: #666666;
+    -fx-alignment: center;
+}
+
+/* Navigation bar (bottom section) */
+.nav-bar {
+    -fx-background-color: linear-gradient(to bottom, #0056D2, #00A3FF); /* Blue gradient */
+    -fx-padding: 10px;
+    -fx-alignment: center;
+    -fx-spacing: 20;
+    -fx-pref-width: 360px; /* Garante que o rodapé ocupe toda a largura */
+}
+
+/* Estilo do botão */
+.nav-button {
+    -fx-background-color: #0056D2; /* Azul escuro */
+    -fx-text-fill: #ffffff; /* Texto branco */
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 5;
+    -fx-padding: 8 15 8 15;
+    -fx-cursor: hand;
+    -fx-pref-width: 120px; /* Aumenta a largura dos botões para melhor proporção */
+}
+
+/* Efeito hover no botão */
+.nav-button:hover {
+    -fx-background-color: #00A3FF; /* Azul mais claro no hover */
+    -fx-text-fill: #ffffff;
+}
+
+/* Efeito pressed no botão */
+.nav-button:pressed {
+    -fx-background-color: #003A8C; /* Azul mais escuro ao clicar */
+    -fx-text-fill: #ffffff;
+}

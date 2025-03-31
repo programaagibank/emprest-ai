@@ -1,6 +1,6 @@
 package br.com.emprestai.model;
 
-import br.com.emprestai.enums.StatusEmpParcela;
+import br.com.emprestai.enums.StatusParcelaEnum;
 
 import java.time.LocalDate;
 
@@ -11,20 +11,24 @@ public class Parcela {
     private long idEmprestimo; // Referência ao empréstimo associado
     private int numeroParcela; // Número da parcela (ex.: 1, 2, 3...)
     private LocalDate dataVencimento; // Data de vencimento da parcela
+    private double valorPresenteParcela; // Valor da parcela (fixo no sistema Price)
     private double valorPago; // Valor pago
-    private StatusEmpParcela idStatus; // Status da parcela (paga ou pendente)
+    private double juros; // Parte dos juros na parcela
+    private double amortizacao; // Parte da amortização do principal
+    private StatusParcelaEnum status; // Status da parcela (paga ou pendente)
     private LocalDate dataPagamento; // Data em que foi paga
+    private double multa; // Multa por atraso
+    private double jurosMora; // Juros de mora por atraso
 
     // Construtor vazio
     public Parcela() {
     }
 
-    // Construtor com parâmetros principais
-    public Parcela(Long idEmprestimo, int numeroParcela, LocalDate dataVencimento, double valorPago) {
-        this.idEmprestimo = idEmprestimo;
-        this.numeroParcela = numeroParcela;
+    public Parcela(Double valorPresenteParcela, Double jurosMora, Double multa, LocalDate dataVencimento) {
+        this.valorPresenteParcela = valorPresenteParcela;
+        this.jurosMora = jurosMora;
+        this.multa = multa;
         this.dataVencimento = dataVencimento;
-        this.valorPago = valorPago;
     }
 
     // Getters e Setters
@@ -60,20 +64,42 @@ public class Parcela {
         this.dataVencimento = dataVencimento;
     }
 
-    public double getValorPago() {
-        return valorPago;
+    public double getValorPresenteParcela() {
+        return valorPresenteParcela;
     }
+
+    public void setValorPresenteParcela(double valorPresenteParcela) {
+        this.valorPresenteParcela = valorPresenteParcela;
+    }
+
+    public double getValorPago() { return valorPago; }
 
     public void setValorPago(double valorPago) {
         this.valorPago = valorPago;
     }
 
-    public StatusEmpParcela getIdStatus() {
-        return idStatus;
+    public double getJuros() {
+        return juros;
     }
 
-    public void setStatusParcela(StatusEmpParcela idStatus) {
-        this.idStatus = idStatus;
+    public void setJuros(double juros) {
+        this.juros = juros;
+    }
+
+    public double getAmortizacao() {
+        return amortizacao;
+    }
+
+    public void setAmortizacao(double amortizacao) {
+        this.amortizacao = amortizacao;
+    }
+
+    public StatusParcelaEnum getStatus() {
+        return status;
+    }
+
+    public void setStatusParcela(StatusParcelaEnum status) {
+        this.status = status;
     }
 
     public LocalDate getDataPagamento() {
@@ -84,16 +110,20 @@ public class Parcela {
         this.dataPagamento = dataPagamento;
     }
 
-    @Override
-    public String toString() {
-        return "Parcela{" +
-                "idParcela=" + idParcela +
-                ", idEmprestimo=" + idEmprestimo +
-                ", numeroParcela=" + numeroParcela +
-                ", dataVencimento=" + dataVencimento +
-                ", valorPago=" + valorPago +
-                ", statusParcela=" + idStatus +
-                ", dataPagamento=" + dataPagamento +
-                '}';
+    public double getMulta() {
+        return multa;
     }
+
+    public void setMulta(double multa) {
+        this.multa = multa;
+    }
+
+    public double getJurosMora() {
+        return jurosMora;
+    }
+
+    public void setJurosMora(double jurosMora) {
+        this.jurosMora = jurosMora;
+    }
+
 }

@@ -1,0 +1,158 @@
+/* Base Styles */
+.root {
+    -fx-font-family: "Segoe UI", Arial, sans-serif;
+    -fx-background-color: #f5f5f5;
+}
+
+/* Header Styles */
+.header {
+    -fx-background-color: #1e88e5;
+    -fx-padding: 10px;
+}
+
+.greeting-label {
+    -fx-font-size: 22px;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+/* Content Styles */
+.content {
+    -fx-background-color: white;
+    -fx-padding: 15px;
+    -fx-background-radius: 5px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 5);
+}
+
+/* Form Styles */
+.form-container {
+    -fx-padding: 10px 0;
+}
+
+.section-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1e88e5;
+    -fx-padding: 5px 0;
+}
+
+.field-label {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
+.input-field {
+    -fx-pref-height: 35px;
+    -fx-font-size: 14px;
+    -fx-border-color: #e0e0e0;
+    -fx-border-radius: 4px;
+    -fx-padding: 5px 10px;
+}
+
+.slider {
+    -fx-pref-height: 35px;
+}
+
+.slider .track {
+    -fx-background-color: #e0e0e0;
+}
+
+.slider .thumb {
+    -fx-background-color: #1e88e5;
+}
+
+.value-label {
+    -fx-min-width: 40px;
+    -fx-text-alignment: right;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1e88e5;
+}
+
+.insurance-checkbox {
+    -fx-font-size: 14px;
+}
+
+.grace-combo {
+    -fx-pref-height: 35px;
+    -fx-font-size: 14px;
+}
+
+.date-picker {
+    -fx-pref-height: 35px;
+    -fx-font-size: 14px;
+}
+
+/* Customer Info Styles */
+.customer-info {
+    -fx-background-color: #f9f9f9;
+    -fx-padding: 15px;
+    -fx-background-radius: 5px;
+    -fx-border-color: #e0e0e0;
+    -fx-border-radius: 5px;
+}
+
+.info-label {
+    -fx-font-size: 14px;
+}
+
+.info-value {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
+/* Results Section */
+.results-container {
+    -fx-background-color: #f9f9f9;
+    -fx-padding: 15px;
+    -fx-background-radius: 5px;
+    -fx-border-color: #e0e0e0;
+    -fx-border-radius: 5px;
+    -fx-margin-top: 20px;
+}
+
+.result-label {
+    -fx-font-size: 14px;
+}
+
+.result-value {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1e88e5;
+}
+
+/* Button Styles */
+.primary-button {
+    -fx-background-color: #1e88e5;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-padding: 10px 20px;
+    -fx-background-radius: 5px;
+    -fx-cursor: hand;
+}
+
+.primary-button:hover {
+    -fx-background-color: #1565c0;
+}
+
+.confirm-button {
+    -fx-background-color: #4caf50;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-padding: 10px 20px;
+    -fx-background-radius: 5px;
+    -fx-cursor: hand;
+}
+
+.confirm-button:hover {
+    -fx-background-color: #388e3c;
+}
+
+/* Navigation Bar Styles */
+.nav-bar {
+    -fx-background-color: #f5f5f5;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 1px 0 0 0;
+}
+
+.nav-button {
+    -fx-background-color: transparent;

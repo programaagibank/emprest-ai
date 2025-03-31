@@ -1,380 +1,116 @@
 package br.com.emprestai.service;
 
-import br.com.emprestai.service.calculos.CalculoConsignado;
-import br.com.emprestai.service.calculos.CalculoPessoal;
+import br.com.emprestai.enums.VinculoEnum;
+import br.com.emprestai.exception.ValidationException;
+import br.com.emprestai.service.elegibilidade.ElegibilidadeConsignado;
+import br.com.emprestai.service.elegibilidade.ElegibilidadePessoal;
 import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ElegibilidadeTest {
+class ElegibilidadeTest {
 
-    // Testes para Empréstimo Consignado
+        // Testes para Empréstimo Consignado
 
-    @Test
-    void testCalcularMargemEmprestimoConsigValida() {
-        double rendaLiquida = 2500.0;
-        double parcelasAtivas = 0.0;
-        double margem = CalculoConsignado.calcularMargemEmprestimoConsig(rendaLiquida, parcelasAtivas);
-        assertEquals(875.0, margem, 0.01);
-    }
+        @Test
+        void testMargemConsignavel() {
+            double rendaLiquida = 2500.0;
+            double valorParcela = 1000.00; // Acima de 35% (875.0)
+            double parcelasAtivas = 0.0;
 
-    @Test
-    void testCalcularMargemEmprestimoConsigNegativa() {
-        double rendaLiquida = 1000.0;
-        double parcelasAtivas = 400.0;
-        assertThrows(IllegalStateException.class, () -> {
-            CalculoConsignado.calcularMargemEmprestimoConsig(rendaLiquida, parcelasAtivas);
-        });
-    }
-
-    @Test
-    void testCalcularTaxaJurosMensalConsignadoValida() {
-        double quantidadeParcelas = 36;
-        double taxa = CalculoConsignado.calcularTaxaJurosMensal(quantidadeParcelas);
-        assertEquals(1.86, taxa, 0.01);
-    }
-
-    @Test
-    void testCalcularTaxaJurosMensalConsignadoParcelasInvalidas() {
-        double quantidadeParcelas = 10; // Menor que 24
-        assertThrows(IllegalArgumentException.class, () -> {
-            CalculoConsignado.calcularTaxaJurosMensal(quantidadeParcelas);
-        });
-    }
-
-    // Testes para Empréstimo Pessoal
-
-    @Test
-    void testCalculoDeCapacidadeDePagamentoValida() {
-        double rendaLiquida = 1500.0;
-        double capacidade = CalculoPessoal.calculoDeCapacidadeDePagamento(rendaLiquida);
-        assertEquals(450.0, capacidade, 0.01);
-    }
-
-    @Test
-    void testCalculoDeCapacidadeDePagamentoRendaInvalida() {
-        double rendaLiquida = 0.0;
-        assertThrows(IllegalArgumentException.class, () -> {
-            CalculoPessoal.calculoDeCapacidadeDePagamento(rendaLiquida);
-        });
-    }
-
-    @Test
-    void testCalculoTaxaDeJurosMensalScoreMaximo() {
-        double score = 1000;
-        double taxa = CalculoPessoal.calculoTaxaDeJurosMensal(score);
-        assertEquals(8.49, taxa, 0.01);
-    }
-
-    @Test
-    void testCalculoTaxaDeJurosMensalScoreMinimoAprovavel() {
-        double score = 201;
-        double taxa = CalculoPessoal.calculoTaxaDeJurosMensal(score);
-        assertEquals(9.99, taxa, 0.01);
-    }
-
-    @Test
-    void testCalculoTaxaDeJurosMensalScoreIntermediario() {
-        double score = 700;
-        double taxa = CalculoPessoal.calculoTaxaDeJurosMensal(score);
-        double expected = 9.49 - ((score - 600) / 200.0) * (9.49 - 8.99);
-        assertEquals(expected, taxa, 0.01);
-    }
-
-    @Test
-    void testCalculoTaxaDeJurosMensalScoreNaoElegivel() {
-        double score = 150;
-        assertThrows(IllegalArgumentException.class, () -> {
-            CalculoPessoal.calculoTaxaDeJurosMensal(score);
-        });
-    }
+            assertThrows(ValidationException.class, () ->
+                    ElegibilidadeConsignado.verificarMargemEmprestimoConsig(valorParcela, rendaLiquida, parcelasAtivas)
+            );
+        }
 
 
-    @Test
-    void testVerificarQuantidadeParcelasPessoal() {
-        double score = 300; // Faixa 201-400: até 12 parcelas
-        int parcelas = 12;
-        assertTrue(parcelas <= 12, "Parcelas devem ser <= 12 para score 300");
-    }
-}
+        @Test
+        void testTaxaDeJuros() {
+            double taxaJuros = 1.84; // Dentro de 1.80% a 2.14%
+            assertDoesNotThrow(() -> ElegibilidadeConsignado.verificarTaxaJurosEmprestimoConsig(taxaJuros));
+        }
 
-/*
-//    // 11.1.1 Margem Consignável
-//    @Test
-//    void verificarMargemEmprestimoConsigTrue() {
-//        double valorParcela = 875.00;
-//        double rendaLiquida = 2500.0;
-//        double parcelasAtivas = 0.0;
-//        assertTrue(ElegibilidadeConsignado.verificarMargemEmprestimoConsig(valorParcela, rendaLiquida, parcelasAtivas));
-//    }
-//
-//    @Test
-//    void verificarMargemEmprestimoConsigFalse() {
-//        double valorParcela = 600.0;
-//        double rendaLiquida = 1500.0;
-//        double parcelasAtivas = 0.0;
-//        assertFalse(ElegibilidadeConsignado.verificarMargemEmprestimoConsig(valorParcela, rendaLiquida, parcelasAtivas));
-//    }
-//
-//    // 11.1.2 Idade Máxima
-//    @Test
-//    void verificarIdadeClienteConsigTrue() {
-//        int idade = 18;
-//        int qtdeParcelas = 24;
-//        assertTrue(ElegibilidadeConsignado.verificarIdadeClienteConsig(idade, qtdeParcelas));
-//    }
-//
-//    @Test
-//    void verificarIdadeClienteConsigFalse() {
-//        int idade = 79;
-//        int qtdeParcelas = 24;
-//        assertFalse(ElegibilidadeConsignado.verificarIdadeClienteConsig(idade, qtdeParcelas));
-//    }
-//
-//    // 11.1.3 Quantidade de Parcelas
-//    @Test
-//    void verificarQtdeParcelasConsigTrue() {
-//        int parcelas = 30;
-//        assertTrue(ElegibilidadeConsignado.verificarQtdeParcelasConsig(parcelas));
-//    }
-//
-//    @Test
-//    void verificarQtdeParcelasConsigFalse() {
-//        int parcelas = 93;
-//        assertFalse(ElegibilidadeConsignado.verificarQtdeParcelasConsig(parcelas));
-//    }
-//
-//    // 11.1.4 Taxa de Juros
-//    @Test
-//    void verificarTaxaJurosEmprestimoConsigTrue() {
-//        double juros = 0.0180;
-//        assertTrue(ElegibilidadeConsignado.verificarTaxaJurosEmprestimoConsig(juros));
-//    }
-//
-//    @Test
-//    void verificarTaxaJurosEmprestimoConsigFalse() {
-//        double juros = 0.03;
-//        assertFalse(ElegibilidadeConsignado.verificarTaxaJurosEmprestimoConsig(juros));
-//    }
-//
-//    // 11.1.5 Tipo de Vínculo
-//    @Test
-//    void verificarVinculoEmprestimoConsigTrue() {
-//        VinculoEnum vinculo = VinculoEnum.APOSENTADO;
-//        assertTrue(ElegibilidadeConsignado.verificarVinculoEmprestimoConsig(vinculo));
-//    }
-//
-//    @Test
-//    void verificarVinculoEmprestimoConsigFalse() {
-//        VinculoEnum vinculo = null;
-//        assertFalse(ElegibilidadeConsignado.verificarVinculoEmprestimoConsig(vinculo));
-//    }
-//
-//    // 11.1.6 Carência
-//    @Test
-//    void verificarCarenciaEmprestimoConsigTrue() {
-//        int dias = 60;
-//        assertTrue(ElegibilidadeConsignado.verificarCarenciaEmprestimoConsig(dias));
-//    }
-//
-//    @Test
-//    void verificarCarenciaEmprestimoConsigFalse() {
-//        int dias = 61;
-//        assertFalse(ElegibilidadeConsignado.verificarCarenciaEmprestimoConsig(dias));
-//    }
-//
-//    // Empréstimo Pessoal
-//
-//    // 11.2.1 Idade Máxima
-//    @Test
-//    void verificarIdadePessoalTrue() {
-//        int idade = 35;
-//        int parcelas = 24;
-//        assertTrue(ElegibilidadeConsignado.verificarIdadePessoal(idade, parcelas));
-//    }
-//
-//    @Test
-//    void verificarIdadePessoalFalse() {
-//        int idade = 74;
-//        int parcelas = 24;
-//        assertFalse(ElegibilidadeConsignado.verificarIdadePessoal(idade, parcelas));
-//    }
-//
-//    // 11.2.2 Valor do Empréstimo
-//    @Test
-//    void verificarValorEmprestimoPessoalTrue() {
-//        double valor = 5000.0;
-//        int score = 600;
-//        assertTrue(ElegibilidadeConsignado.verificarValorEmprestimoPessoal(valor, score));
-//    }
-//
-//    @Test
-//    void verificarValorEmprestimoPessoalFalse() {
-//        double valor = 6000.0;
-//        int score = 500;
-//        assertFalse(ElegibilidadeConsignado.verificarValorEmprestimoPessoal(valor, score));
-//    }
-//
-//    // 11.2.3 Quantidade de Parcelas
-//    @Test
-//    void verificarParcelasPessoalTrue() {
-//        int parcelas = 18;
-//        int score = 600;
-//        assertTrue(ElegibilidadeConsignado.verificarParcelasPessoal(parcelas, score));
-//    }
-//
-//    @Test
-//    void verificarParcelasPessoalFalse() {
-//        int parcelas = 19;
-//        int score = 500;
-//        assertFalse(ElegibilidadeConsignado.verificarParcelasPessoal(parcelas, score));
-//    }
-//
-//    // 11.2.4 Taxa de Juros
-//    @Test
-//    void verificarTaxaJurosPessoalTrue() {
-//        double taxa = 0.0949;
-//        int score = 600;
-//        assertTrue(ElegibilidadeConsignado.verificarTaxaJurosPessoal(taxa, score));
-//    }
-//
-//    @Test
-//    void verificarTaxaJurosPessoalFalse() {
-//        double taxa = 0.08;
-//        int score = 600;
-//        assertFalse(ElegibilidadeConsignado.verificarTaxaJurosPessoal(taxa, score));
-//    }
-//
-//    // 11.2.5 Score
-//    @Test
-//    void verificarScorePessoalTrue() {
-//        int score = 350;
-//        assertTrue(ElegibilidadeConsignado.verificarScorePessoal(score));
-//    }
-//
-//    @Test
-//    void verificarScorePessoalFalse() {
-//        int score = 199;
-//        assertFalse(ElegibilidadeConsignado.verificarScorePessoal(score));
-//    }
-//
-//    // 11.2.6 Capacidade de Pagamento
-//    @Test
-//    void verificarComprometimentoPessoalTrue() {
-//        double parcela = 300.0;
-//        double rendaLiquida = 1500.0;
-//        assertTrue(ElegibilidadeConsignado.verificarComprometimentoPessoal(parcela, rendaLiquida));
-//    }
-//
-//    @Test
-//    void verificarComprometimentoPessoalFalse() {
-//        double parcela = 500.0;
-//        double rendaLiquida = 1000.0;
-//        assertFalse(ElegibilidadeConsignado.verificarComprometimentoPessoal(parcela, rendaLiquida));
-//    }
-//
-//    // 11.2.7 Carência
-//    @Test
-//    void verificarCarenciaPessoalTrue() {
-//        int dias = 30;
-//        assertTrue(ElegibilidadeConsignado.verificarCarenciaPessoal(dias));
-//    }
-//
-//    @Test
-//    void verificarCarenciaPessoalFalse() {
-//        int dias = 31;
-//        assertFalse(ElegibilidadeConsignado.verificarCarenciaPessoal(dias));
-//    }
-//
-//    // 11.3.1 Percentual Mínimo Pago (Refinanciamento)
-//    @Test
-//    void verificarPercentualMinimoPagoTrue() {
-//        int parcelasPagas = 6;
-//        int totalParcelas = 24;
-//        assertTrue(ElegibilidadeConsignado.verificarPercentualMinimoPago(parcelasPagas, totalParcelas));
-//    }
-//
-//    @Test
-//    void verificarPercentualMinimoPagoFalse() {
-//        int parcelasPagas = 4;
-//        int totalParcelas = 24;
-//        assertFalse(ElegibilidadeConsignado.verificarPercentualMinimoPago(parcelasPagas, totalParcelas));
-//    }
-//
-//    // 11.4.1 Portabilidade
-//    @Test
-//    void verificarContratoSemAtrasosTrue() {
-//        boolean ativo = true;
-//        boolean temAtrasos = false;
-//        assertTrue(ElegibilidadeConsignado.verificarContratoSemAtrasos(ativo, temAtrasos));
-//    }
-//
-//    @Test
-//    void verificarContratoSemAtrasosFalse() {
-//        boolean ativo = true;
-//        boolean temAtrasos = true;
-//        assertFalse(ElegibilidadeConsignado.verificarContratoSemAtrasos(ativo, temAtrasos));
-//    }
-//
-//    // Calculo de mínimo de renda
-//    @Test
-//    void verificarRendaMinimaPessoalTrue() {
-//        double rendaLiquida = 2000.0;
-//        assertTrue(ElegibilidadeConsignado.verificarRendaMinimaPessoal(rendaLiquida));
-//    }
-//
-//    @Test
-//    void verificarRendaMinimaPessoalFalse() {
-//        double rendaLiquida = 999.0;
-//        assertFalse(ElegibilidadeConsignado.verificarRendaMinimaPessoal(rendaLiquida));
-//    }
-//
-//    // Verificação de Elegibilidade de Empréstimo Consignado
-//    @Test
-//    void verificarElegibilidadeConsignadoTrue() {
-//        double rendaLiquida = 2500.0;
-//        double valorParcela = 875.0;
-//        double parcelasAtivas = 0.0;
-//        int idade = 30;
-//        int parcelas = 24;
-//        double taxaJuros = 0.018;
-//        VinculoEnum vinculo = VinculoEnum.APOSENTADO;
-//        int carencia = 0;
-//        assertTrue(ElegibilidadeConsignado.verificarElegibilidadeConsignado(rendaLiquida, valorParcela, parcelasAtivas, idade, parcelas, taxaJuros, vinculo, carencia));
-//    }
-//
-//    @Test
-//    void verificarElegibilidadeConsignadoFalse() {
-//        double rendaLiquida = 1500.0;
-//        double valorParcela = 600.0;
-//        double parcelasAtivas = 0.0;
-//        int idade = 79;
-//        int parcelas = 24;
-//        double taxaJuros = 0.03;
-//        VinculoEnum vinculo = null;
-//        int carencia = 61;
-//        assertFalse(ElegibilidadeConsignado.verificarElegibilidadeConsignado(rendaLiquida, valorParcela, parcelasAtivas, idade, parcelas, taxaJuros, vinculo, carencia));
-//    }
-//
-//    // Verificação Elegibilidade do Empréstimo Pessoal
-//    @Test
-//    void verificarElegibilidadePessoalTrue() {
-//        double rendaLiquida = 3700.0;
-//        double parcela = 900.0;
-//        int idade = 55;
-//        int parcelas = 12;
-//        int score = 900;
-//        assertTrue(ElegibilidadeConsignado.verificarElegibilidadePessoal(rendaLiquida, parcela, idade, parcelas, score));
-//    }
-//
-//    @Test
-//    void verificarElegibilidadePessoalFalse() {
-//        double rendaLiquida = 1000.0;
-//        double parcela = 400.0;
-//        int idade = 74;
-//        int parcelas = 24;
-//        int score = 150;
-//        assertFalse(ElegibilidadeConsignado.verificarElegibilidadePessoal(rendaLiquida, parcela, idade, parcelas, score));
-//    }
-}
-*/
+
+        @Test
+        void testTipoDeVinculo() {
+            VinculoEnum vinculo = VinculoEnum.APOSENTADO;
+            assertDoesNotThrow(() -> ElegibilidadeConsignado.verificarVinculoEmprestimoConsig(vinculo));
+        }
+
+        @Test
+        void testCarencia() {
+            int carencia = 30; // Menor que 60
+            assertDoesNotThrow(() -> ElegibilidadeConsignado.verificarCarenciaEmprestimoConsig(carencia));
+        }
+
+        @Test
+        void testValorMinimoParaEmprestimoConsignado() {
+            double valorSolicitado = 1500.0; // Acima de R$1000
+            assertDoesNotThrow(() -> ElegibilidadeConsignado.verificarValorMinimoEmprestimo(valorSolicitado));
+        }
+
+        @Test
+        void testVerificacaoDaElegibilidadeParaEmprestimoConsignado() {
+            double rendaLiquida = 2500.0;
+            double valorParcela = 875.0;
+            double parcelasAtivas = 0.0;
+            int idade = 30;
+            int parcelas = 24;
+            double taxaJuros = 1.86;
+            VinculoEnum vinculo = VinculoEnum.APOSENTADO;
+            int carencia = 30;
+            double valorSolicitado = 1500.0;
+            assertDoesNotThrow(() -> ElegibilidadeConsignado.verificarElegibilidadeConsignado(
+                    rendaLiquida, valorParcela, parcelasAtivas, idade, parcelas, taxaJuros, vinculo, carencia, valorSolicitado
+            ));
+        }
+
+         // Testes para Empréstimo Pessoal
+
+             @Test
+          void testVerificarRendaMinimaPessoal() {
+          double rendaLiquida = 2000.0; // Acima de R$1000
+          assertDoesNotThrow(() -> ElegibilidadePessoal.verificarRendaMinimaPessoal(rendaLiquida));
+          }
+
+
+          @Test
+         void testVerificarComprometimentoPessoal() {
+         double rendaLiquida = 2000.0;
+         double valorParcela = 600.0; // 30% de 2000
+        assertDoesNotThrow(() -> ElegibilidadePessoal.verificarComprometimentoPessoal(valorParcela, rendaLiquida));
+          }
+
+
+           @Test
+       void testVerificarIdadePessoal() {
+           int idade = 35;
+        int parcelas = 12; // 1 ano, idade final = 36
+        assertDoesNotThrow(() -> ElegibilidadePessoal.verificarIdadePessoal(idade, parcelas));
+        }
+
+
+      @Test
+      void testVerificarScorePessoal() {
+       int score = 300; // Acima de 201
+      assertDoesNotThrow(() -> ElegibilidadePessoal.verificarScorePessoal(score));
+       }
+
+     @Test
+     void testVerificarParcelasPessoal() {
+       int parcelas = 12;
+       int score = 700; // 601-800 permite até 24
+       assertDoesNotThrow(() -> ElegibilidadePessoal.verificarParcelasPessoal(parcelas, score));
+      }
+
+
+     @Test
+      void testVerificarElegibilidadePessoal() {
+        double rendaLiquida = 2000.0;
+          double valorParcela = 600.0;
+         int idade = 35;
+          int parcelas = 12;
+       int score = 700;
+     assertDoesNotThrow(() -> ElegibilidadePessoal.verificarElegibilidadePessoal(rendaLiquida, valorParcela, idade, parcelas, score
+     ));
+     }
+     }

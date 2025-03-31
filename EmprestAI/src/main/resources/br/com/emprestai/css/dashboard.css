@@ -1,0 +1,133 @@
+/* Root styling for the entire app */
+.root {
+    -fx-background-color: #FFFFFF; /* White background for the main content */
+}
+
+/* Header styling (top section with greeting and balance) */
+.header {
+    -fx-background-color: linear-gradient(to bottom, #0056D2, #00A3FF); /* Blue gradient */
+    -fx-alignment: center;
+    -fx-padding: 15px;
+}
+
+.greeting-label {
+    -fx-font-family: "Roboto", "Arial", sans-serif; /* Modern sans-serif font */
+    -fx-font-size: 18px;
+    -fx-text-fill: #FFFFFF; /* White text */
+    -fx-font-weight: bold;
+}
+
+/* Main content styling */
+.content {
+    -fx-background-color: #FFFFFF; /* White background */
+    -fx-alignment: center;
+    -fx-spacing: 20px;
+    -fx-padding: 15px;
+}
+
+/* Banner styling */
+.banner {
+    -fx-background-color: #F5F5F5; /* Light gray background for the banner */
+    -fx-background-radius: 10px; /* Rounded corners */
+    -fx-padding: 15px;
+    -fx-alignment: center;
+    /* Uncomment and add a background image if available */
+    /* -fx-background-image: url("../images/banner-image.png"); */
+    /* -fx-background-size: cover; */
+    /* -fx-background-position: center; */
+}
+
+.banner-text {
+    -fx-font-family: "Roboto", "Arial", sans-serif;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-fill: #333333; /* Dark gray text */
+    -fx-text-alignment: center;
+}
+
+/* Banner button ("Contratar já!") */
+.banner-button {
+    -fx-background-color: #0056D2; /* Blue background */
+    -fx-background-radius: 20px; /* Rounded corners */
+    -fx-text-fill: #FFFFFF; /* White text */
+    -fx-font-family: "Roboto", "Arial", sans-serif;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-padding: 8px 20px;
+}
+
+.banner-button:hover {
+    -fx-background-color: #003A8C; /* Darker blue on hover */
+}
+
+/* Section titles (e.g., "Saldo Devedor Total", "Margem de Crédito") */
+.section-title {
+    -fx-font-family: "Roboto", "Arial", sans-serif;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333; /* Dark gray text */
+}
+
+/* Amount labels (e.g., "R$ 5.000,00") */
+.amount-label {
+    -fx-font-family: "Roboto", "Arial", sans-serif;
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #0056D2; /* Blue text for amounts */
+}
+
+/* Info labels (e.g., user name, CPF) */
+.info-label {
+    -fx-font-family: "Roboto", "Arial", sans-serif;
+    -fx-font-size: 14px;
+    -fx-text-fill: #666666; /* Medium gray text */
+}
+
+/* Loan buttons (e.g., "Consignado", "Pessoal") */
+.loan-button {
+    -fx-background-color: #FFFFFF; /* White background */
+    -fx-background-radius: 50px; /* Circular buttons */
+    -fx-border-color: #0056D2; /* Blue border */
+    -fx-border-width: 1px;
+    -fx-border-radius: 50px;
+    -fx-padding: 10px 20px;
+    -fx-alignment: center;
+    -fx-font-family: "Roboto", "Arial", sans-serif;
+    -fx-font-size: 14px;
+    -fx-text-fill: #0056D2; /* Blue text */
+}
+
+.loan-button:hover {
+    -fx-background-color: #E6F0FA; /* Light blue on hover */
+}
+
+/* Navigation bar (bottom section) */
+.nav-bar {
+    -fx-background-color: #FFFFFF; /* White background */
+    -fx-border-color: #E0E0E0; /* Light gray border on top */
+    -fx-border-width: 1px 0 0 0;
+    -fx-padding: 10px;
+    -fx-alignment: center;
+    -fx-spacing: 30px;
+}
+
+/* Navigation buttons (e.g., "Início", "Perfil") */
+.nav-button {
+    -fx-background-color: transparent; /* No background */
+    -fx-font-family: "Roboto", "Arial", sans-serif;
+    -fx-font-size: 12px;
+    -fx-text-fill: #666666; /* Gray text */
+    -fx-alignment: center;
+}
+
+.nav-button:hover {
+    -fx-text-fill: #0056D2; /* Blue text on hover */
+}
+
+/* Ensure images in buttons (icons) are properly sized */
+.nav-button .image-view,
+.loan-button .image-view {
+    -fx-fit-width: 24px;
+    -fx-fit-height: 24px;
+    -fx-preserve-ratio: true;
+}

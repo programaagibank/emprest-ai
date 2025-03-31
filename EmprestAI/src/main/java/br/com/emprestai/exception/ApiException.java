@@ -1,4 +1,4 @@
-package br.com.emprestai.database.exception;
+package br.com.emprestai.exception;
 
 public class ApiException extends RuntimeException {
     private final int statusCode;

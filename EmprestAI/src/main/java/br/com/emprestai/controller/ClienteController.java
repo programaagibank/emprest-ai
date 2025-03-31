@@ -1,78 +1,86 @@
 package br.com.emprestai.controller;
 
 import br.com.emprestai.dao.ClienteDAO;
+import br.com.emprestai.enums.VinculoEnum;
+import br.com.emprestai.exception.ApiException;
 import br.com.emprestai.model.Cliente;
+import br.com.emprestai.service.calculos.CalculoConsignado;
+import br.com.emprestai.service.calculos.CalculoPessoal;
+
 import java.util.List;
-import org.mindrot.jbcrypt.BCrypt;
+
+import static br.com.emprestai.enums.VinculoEnum.*;
 
 public class ClienteController {
+
+    // --------------------------------------------------------------------------------
+    // Class Properties
+    // --------------------------------------------------------------------------------
     private final ClienteDAO clienteDAO;
 
-    // Construtor com injeção de dependências
+    // --------------------------------------------------------------------------------
+    // Constructor
+    // --------------------------------------------------------------------------------
     public ClienteController(ClienteDAO clienteDAO) {
         this.clienteDAO = clienteDAO;
     }
 
-    // Metodo para criar um cliente
-    public Cliente criarCliente(Cliente cliente) {
+    // --------------------------------------------------------------------------------
+    // CRUD Methods
+    // --------------------------------------------------------------------------------
+
+    // POST - Criar um novo cliente
+    public Cliente post(Cliente cliente) throws ApiException {
         if (cliente == null) {
-            throw new IllegalArgumentException("Cliente não pode ser nulo.");
+            throw new ApiException("Cliente não pode ser nulo.", 400); // Bad Request
         }
         return clienteDAO.criar(cliente);
     }
 
-    // Metodo para listar todos os clientes
-    public List<Cliente> listarClientes() {
+    // GET - Buscar todos os clientes
+    public List<Cliente> getTodos() throws ApiException {
         return clienteDAO.buscarTodos();
     }
 
-    // Metodo para buscar um cliente por ID
-    public Cliente buscarClientePorId(Long idCliente) {
-        if (idCliente == null) {
-            throw new IllegalArgumentException("ID do cliente não pode ser nulo.");
-        }
-        return clienteDAO.buscarPorId(idCliente);
-    }
-
-    // Metodo para buscar um cliente por CPF
-    public Cliente buscarClientePorCPF(String cpf) {
+    // GET - Buscar cliente por CPF
+    public Cliente getByCpf(String cpf) throws ApiException {
         if (cpf == null || cpf.trim().isEmpty()) {
-            throw new IllegalArgumentException("CPF não pode ser nulo ou vazio.");
+            throw new ApiException("CPF não pode ser nulo ou vazio.", 400); // Bad Request
         }
-        return clienteDAO.buscarPorCPF(cpf);
+
+        Cliente cliente = clienteDAO.buscarPorCpf(cpf);
+        if (cliente == null) {
+            throw new ApiException("Cliente não encontrado para o CPF informado.", 404); // Not Found
+        }
+
+        if(cliente.getTipoCliente() == APOSENTADO || cliente.getTipoCliente() ==PENSIONISTA || cliente.getTipoCliente() == SERVIDOR){
+            cliente.setMargemConsignavel(CalculoConsignado.calcularMargemEmprestimoConsig(
+                    cliente.getRendaMensalLiquida(), cliente.getParcelasAtivas()));
+        }
+
+        cliente.setMargemPessoal(CalculoPessoal.calculoDeCapacidadeDePagamento(
+                cliente.getRendaMensalLiquida(), cliente.getParcelasAtivas()));
+
+        return cliente;
     }
 
-    // Metodo para atualizar um cliente
-    public Cliente atualizarCliente(Long idCliente, Cliente cliente) {
-        if (idCliente == null || cliente == null) {
-            throw new IllegalArgumentException("ID do cliente e cliente não podem ser nulos.");
+    // PUT - Atualizar um cliente existente
+    public Cliente put(Cliente cliente) throws ApiException {
+        if (cliente == null || cliente.getIdCliente() == null) {
+            throw new ApiException("ID do cliente e cliente não podem ser nulos.", 400); // Bad Request
         }
-        return clienteDAO.atualizar(idCliente, cliente);
+        return clienteDAO.atualizar(cliente);
     }
 
-    // Metodo para atualizar parcialmente um cliente
-    public Cliente atualizarClienteParcial(Long idCliente, Cliente cliente) {
-        if (idCliente == null || cliente == null) {
-            throw new IllegalArgumentException("ID do cliente e cliente não podem ser nulos.");
-        }
-        return clienteDAO.atualizarParcial(idCliente, cliente);
-    }
-
-    // Metodo para deletar um cliente por ID
-    public void deletarClientePorId(Long idCliente) {
+    // DELETE - Remover um cliente por ID
+    public void delete(Long idCliente) throws ApiException {
         if (idCliente == null) {
-            throw new IllegalArgumentException("ID do cliente não pode ser nulo.");
+            throw new ApiException("ID do cliente não pode ser nulo.", 400); // Bad Request
         }
-        clienteDAO.excluir(idCliente);
-    }
 
-    // Metodo de login usando Bcrypt
-    public boolean autenticarCliente(String cpf, String senha) {
-        if (cpf == null || cpf.trim().isEmpty() || senha == null || senha.trim().isEmpty()) {
-            throw new IllegalArgumentException("CPF e senha não podem ser nulos ou vazios.");
+        boolean excluido = clienteDAO.excluir(idCliente);
+        if (!excluido) {
+            throw new ApiException("Empréstimo não encontrado para exclusão.", 404); // Not Found
         }
-        Cliente cliente = clienteDAO.buscarPorCPF(cpf);
-        return cliente != null && BCrypt.checkpw(senha, cliente.getSenha());
     }
 }
-

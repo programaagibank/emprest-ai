@@ -1,0 +1,1 @@
+emprest-ai\EmprestAI\src\main\resources

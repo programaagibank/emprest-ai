@@ -40,6 +40,33 @@
 ## 1. OBJETIVO
 O Emprest.AI é um backend projetado para gerenciar de forma eficiente e transparente o ciclo completo de empréstimos, abrangendo as modalidades Empréstimo Pessoal e Empréstimo Consignado, todas utilizando sistema Price de Amortização (Parcela Fixa). Suas funcionalidades incluem concessão de novos contratos, simulação de condições, consulta de dados, pagamento antecipado de parcela, refinanciamento (quando aplicável), portabilidade (para consignado e pessoal), cancelamento e gestão básica de inadimplência via multa e juros de mora, com critérios adaptados a cada modalidade.
 
+Visão Geral do Funcionamento e Interface JavaFX
+
+## Visão Geral do Funcionamento
+
+
+* *Interface Gráfica (JavaFX):*
+    * O sistema inclui uma interface gráfica desenvolvida em JavaFX para facilitar a interação do usuário.
+    * A interface oferece funcionalidades de login, cadastro para os novos usuários e seleção do tipo de empréstimo (consignado e pessoal).
+    * O login e cadastro são protegidos por senha.
+    * A interface direciona o usuário para telas que exibem os resultados da simulação e consulta de dados do empréstimo, bem como o pagamento de parcelas e a portabilidade de contratos.
+* *Backend (Emprest.AI):*
+    * O backend processa as solicitações da interface JavaFX, realizando cálculos, validações e gerenciamento de dados conforme descrito nas seções a seguir.
+
+## Fluxo de Interação do Usuário
+
+1.  *Acesso:* O usuário acessa o sistema através da interface JavaFX, inserindo CPF e senha.
+2.  *Cadastro/Login:*
+    * Se o usuário não possuir cadastro, é direcionado para a tela de cadastro.
+    * Após o cadastro ou login bem-sucedido, o usuário é direcionado à tela de seleção do tipo de empréstimo.
+3.  *Seleção do Tipo de Empréstimo:* O usuário escolhe entre Empréstimo Pessoal ou Consignado.
+4.  *Simulação/Solicitação:*
+    * Com base na seleção, o sistema apresenta os campos necessários para simulação ou solicitação do empréstimo.
+    * O usuário insere os dados solicitados (valor, prazo, etc.).
+5.  *Processamento:* O backend (Emprest.AI) processa a solicitação, realizando os cálculos e validações necessários.
+6.  *Exibição de Resultados:* A interface JavaFX exibe os resultados da simulação ou o status da solicitação.
+7.  *Gerenciamento do Empréstimo:* A interface permite ao usuário consultar dados do empréstimo, efetuar pagamentos e solicitar refinanciamento ou portabilidade.
+
 <br>
 
 ## 2. VARIÁVEIS
@@ -723,6 +750,10 @@ Valor total que o cliente ainda deve em um empréstimo.
 
 #### Score de Crédito
 Pontuação que indica o risco de inadimplência de um cliente, utilizada para avaliar a concessão de crédito.
+
+### Tabela Price
+A Tabela Price é um sistema de amortização em que as parcelas mensais são fixas. Cada parcela inclui uma parte de juros, que diminui ao longo do tempo, e uma parte de amortização do principal, que aumenta gradualmente, mantendo o valor total constante até o fim do contrato.
+
 
 #### Taxa de Juros
 Percentual cobrado sobre o valor emprestado, representando o custo do empréstimo.

@@ -195,7 +195,17 @@ public class ParcelaDAO {
             conn = DatabaseConnection.getConnection();
             conn.setAutoCommit(false);
 
-            String sql = "UPDATE parcelas SET valor_pago = ?, data_pagamento = NOW(), id_status = 1 WHERE id_parcela = ?";
+            String sql = """
+                    UPDATE parcelas
+                    SET\s
+                        valor_pago = ?,\s
+                        data_pagamento = CURDATE(),\s
+                        id_status = CASE\s
+                                      WHEN CURDATE() = data_vencimento THEN 1
+                                      WHEN CURDATE() > data_vencimento THEN 4
+                                      WHEN CURDATE() < data_vencimento THEN 5
+                                    END
+                    WHERE id_parcela = ?""";
             pstmt = conn.prepareStatement(sql);
 
             for (Parcela parcela : parcelas) {

@@ -141,7 +141,6 @@ public class ParcelaViewController {
             EmprestimoViewController emprestimoViewController = loader.getController();
             emprestimoViewController.setClienteLogado(clienteLogado);
             emprestimoViewController.setTipoEmprestimo(tipoEmprestimo);
-            emprestimoViewController.setEmprestimo(emprestimo);
 
             Stage stage = (Stage) returnButton.getScene().getWindow();
             stage.setScene(mainScene);

@@ -111,7 +111,7 @@ public class SimulacaoViewController {
     public void setClienteLogado(Cliente cliente) {
         this.clienteLogado = cliente;
         if (cliente != null) {
-            rendaMensalLabel.setText(currencyFormatter.format(cliente.getRendaMensalLiquida()));
+            rendaMensalLabel.setText(currencyFormatter.format(cliente.getVencimentoLiquidoTotal()));
             int idade = (int) ChronoUnit.YEARS.between(cliente.getDataNascimento(), LocalDate.now());
             idadeLabel.setText(String.valueOf(idade));
         }
@@ -123,8 +123,6 @@ public class SimulacaoViewController {
             loanTypeLabel.setText("Tipo: " + (tipoEmprestimo == TipoEmprestimoEnum.CONSIGNADO ? "Consignado" : "Pessoal"));
 
             if (tipoEmprestimo == TipoEmprestimoEnum.CONSIGNADO) {
-                scoreOrClienteTypeLabel.setText("Tipo de Cliente:");
-                scoreOrClienteTypeValueLabel.setText(clienteLogado.getTipoCliente().toString());
                 installmentsSlider.setMax(48);
                 gracePeriodContainer.setVisible(false);
                 gracePeriodContainer.setManaged(false);
@@ -279,7 +277,7 @@ public class SimulacaoViewController {
     // --------------------------------------------------------------------------------
     private void updateSimulationResults() {
         installmentValueLabel.setText(currencyFormatter.format(emprestimoSimulado.getValorParcela()));
-        interestRateLabel.setText(percentFormatter.format(emprestimoSimulado.getJuros() / 100));
+        interestRateLabel.setText(percentFormatter.format(emprestimoSimulado.getTaxaJuros() / 100));
         totalAmountLabel.setText(currencyFormatter.format(emprestimoSimulado.getValorTotal()));
         iofValueLabel.setText(currencyFormatter.format(emprestimoSimulado.getValorIOF()));
         insuranceValueLabel.setText(currencyFormatter.format(emprestimoSimulado.getValorSeguro()));

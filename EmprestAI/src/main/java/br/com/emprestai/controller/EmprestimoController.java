@@ -11,6 +11,7 @@ import br.com.emprestai.service.calculos.CalculadoraEmprestimo;
 import br.com.emprestai.service.calculos.CalculoConsignado;
 import br.com.emprestai.service.calculos.CalculoPessoal;
 import br.com.emprestai.service.elegibilidade.ElegibilidadeConsignado;
+import br.com.emprestai.service.elegibilidade.ElegibilidadePessoal;
 import br.com.emprestai.util.EmprestimoParams;
 
 import java.util.List;
@@ -127,7 +128,7 @@ public class EmprestimoController {
             double valorParcela = emprestimo.getValorParcela();
 
             // Verificar regras específicas de elegibilidade pessoal
-            ElegibilidadeConsignado.verificarElegibilidadeConsignado(valorParcela, idade, parcelas, taxaJuros, carencia, valorSolicitado);
+            ElegibilidadePessoal.verificarElegibilidadePessoal(valorParcela, idade, parcelas, cliente.getScore(), taxaJuros, carencia, valorSolicitado);
 
             emprestimo.setTaxaMulta(params.getPercentualMultaAtraso());
             emprestimo.setTaxaJurosMora(params.getPercentualJurosMora());

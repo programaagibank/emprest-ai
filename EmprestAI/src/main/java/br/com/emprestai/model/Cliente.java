@@ -1,5 +1,6 @@
 package br.com.emprestai.model;
 
+import br.com.emprestai.exception.ElegibilidadeException;
 import br.com.emprestai.util.EmprestimoParams;
 
 import java.time.LocalDate;
@@ -110,65 +111,80 @@ public class Cliente {
         return Math.max(0, margemPessoal - valorParcelasMensaisTotal);
     }
 
-    // Verifica elegibilidade geral para empréstimo consignado
-    public boolean isElegivelConsignado() {
+    public boolean isElegivelConsignado() throws ElegibilidadeException {
         int idade = getIdade();
 
         // Verificações básicas
-        if (vencimentoConsignavelTotal <= 0 || idade <= 0) {
-            return false;
+        if (vencimentoConsignavelTotal <= 0) {
+            throw new ElegibilidadeException("Vencimento consignável total é zero ou negativo.");
+        }
+        if (idade <= 0) {
+            throw new ElegibilidadeException("Idade inválida (data de nascimento não informada ou inválida).");
         }
 
         // Verifica se há margem consignável disponível
         if (getMargemConsignavelDisponivel() <= 0) {
-            return false;
+            throw new ElegibilidadeException("Margem consignável disponível insuficiente.");
         }
 
         // Verifica idade mínima (18) e máxima inicial (80)
-        if (idade < 18 || idade > 80) {
-            return false;
+        if (idade < 18) {
+            throw new ElegibilidadeException("Idade inferior ao mínimo exigido (18 anos).");
+        }
+        if (idade > 80) {
+            throw new ElegibilidadeException("Idade superior ao máximo permitido (80 anos).");
         }
 
         // Verifica se o prazo máximo atende ao mínimo exigido para consignado
         if (prazoMaximoConsignado < params.getPrazoMinimoConsignado()) {
-            return false;
+            throw new ElegibilidadeException(String.format("Prazo máximo pessoal possivel de contratar inferior ao mínimo exigido, verifique se sua idade maxima com as parcelas não ultrapassa o limite maximo %s.", params.getIdadeMaximaConsignado()));
         }
 
         return true; // Cliente é elegível para consignado
     }
 
-    // Verifica elegibilidade geral para empréstimo pessoal
-    public boolean isElegivelPessoal() {
+    public boolean isElegivelPessoal() throws ElegibilidadeException {
         int idade = getIdade();
 
         // Verificações básicas
-        if (vencimentoLiquidoTotal <= 0 || score <= 0 || idade <= 0) {
-            return false;
+        if (vencimentoLiquidoTotal <= 0) {
+            throw new ElegibilidadeException("Vencimento líquido total é zero ou negativo.");
+        }
+        if (score <= 0) {
+            throw new ElegibilidadeException("Score inválido (zero ou negativo).");
+        }
+        if (idade <= 0) {
+            throw new ElegibilidadeException("Idade inválida (data de nascimento não informada ou inválida).");
         }
 
         // Verifica se há margem pessoal disponível
         if (getMargemPessoalDisponivel() <= 0) {
-            return false;
+            throw new ElegibilidadeException("Margem pessoal disponível insuficiente.");
         }
 
         // Verifica renda mínima
         if (vencimentoLiquidoTotal < params.getRendaMinimaPessoal()) {
-            return false;
+            throw new ElegibilidadeException("Renda líquida inferior ao mínimo exigido.");
         }
 
         // Verifica idade mínima (18) e máxima
-        if (idade < 18 || idade > params.getIdadeMaximaPessoal()) {
-            return false;
+        if (idade < 18) {
+            throw new ElegibilidadeException("Idade inferior ao mínimo exigido (18 anos).");
         }
+        if (idade > params.getIdadeMaximaPessoal()) {
+            throw new ElegibilidadeException("Idade superior ao máximo permitido para empréstimo pessoal.");
+        }
+
+
 
         // Verifica se o prazo máximo atende ao mínimo exigido para pessoal
         if (prazoMaximoPessoal < params.getPrazoMinimoPessoal()) {
-            return false;
+            throw new ElegibilidadeException(String.format("Prazo máximo pessoal possivel de contratar inferior ao mínimo exigido, verifique se sua idade maxima com as parcelas não ultrapassa o limite maximo %s.", params.getIdadeMaximaPessoal()));
         }
 
         // Verifica score mínimo
         if (score < params.getScoreMinimoPessoal()) {
-            return false;
+            throw new ElegibilidadeException("Score inferior ao mínimo exigido.");
         }
 
         return true; // Cliente é elegível para pessoal

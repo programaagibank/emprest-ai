@@ -41,6 +41,12 @@ public class LoginViewController {
     // --------------------------------------------------------------------------------
     @FXML
     public void initialize() {
+
+        //Iniciando a interface em elemento neutro
+        Platform.runLater(() -> {
+            greetingLabel.requestFocus();
+        });
+
         // Setup greeting label
         TextFlow textFlow = new TextFlow();
         Text part1 = new Text("Que bom ter você de volta,\n");

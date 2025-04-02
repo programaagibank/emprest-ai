@@ -57,8 +57,13 @@ public class ConfirmacaoPagViewController {
     @FXML
     private void initialize() {
 
+        // Remover foco automático da senha
+        javafx.application.Platform.runLater(() -> {
+            confirmacaoContainer.requestFocus(); // foca no container "neutro"
+        });
+
         // Password field formatting
-        senhaField.setPromptText("6 dígitos");
+        senhaField.setPromptText("Digite sua senha");
         senhaField.textProperty().addListener((ChangeListener<String>) (observable, oldValue, newValue) -> {
             String numbersOnly = newValue.replaceAll("[^0-9]", "");
             if (numbersOnly.length() > 6) {

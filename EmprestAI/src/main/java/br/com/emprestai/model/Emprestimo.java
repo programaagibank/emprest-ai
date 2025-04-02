@@ -25,6 +25,7 @@ public class Emprestimo {
     private double taxaMulta;
     private long idEmprestimoOrigem;
     private List<Parcela> parcelaList;
+    private double saldoDevedor;
     private double saldoDevedorAtualizado;
     private LocalDate dataLiberacaoCred;
     private Boolean contratarSeguro;
@@ -208,5 +209,13 @@ public class Emprestimo {
 
     public void setParcelasPagas(int parcelasPagas) {
         this.parcelasPagas = parcelasPagas;
+    }
+
+    public double getSaldoDevedor() {
+        return saldoDevedor;
+    }
+
+    public void setSaldoDevedor(double saldoDevedor) {
+        this.saldoDevedor = saldoDevedor;
     }
 }

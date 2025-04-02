@@ -184,6 +184,10 @@ public class CalculadoraEmprestimo {
         BigDecimal umMaisTaxa = BigDecimal.ONE.add(taxaDiaria);
         BigDecimal valorParcela = BigDecimal.valueOf(emprestimo.getValorParcela());
 
+        // Variáveis para somar os saldos
+        BigDecimal somaSaldoDevedorPagas = BigDecimal.ZERO; // Soma do saldo devedor das parcelas pagas
+        BigDecimal somaValorPresentePagas = BigDecimal.ZERO; // Soma do valor presente das parcelas pagas
+
         for (int i = 0; i < emprestimo.getQuantidadeParcelas(); i++) {
             Parcela parcela = parcelas.get(i);
             LocalDate dataVencimento = parcela.getDataVencimento();
@@ -200,8 +204,15 @@ public class CalculadoraEmprestimo {
 
             // Atualiza o saldo devedor
             saldoDevedor = saldoDevedor.subtract(amortizacao, DECIMAL128);
+            parcela.setSaldoDevedor(saldoDevedor.doubleValue());
 
-            if (parcela.getDataPagamento() == null) {
+            // Verifica se a parcela foi paga
+            if (parcela.getDataPagamento() != null) {
+                // Soma o saldo devedor da parcela paga
+                somaSaldoDevedorPagas = somaSaldoDevedorPagas.add(BigDecimal.valueOf(parcela.getSaldoDevedor()), DECIMAL128);
+                // Soma o valor presente da parcela paga
+                somaValorPresentePagas = somaValorPresentePagas.add(BigDecimal.valueOf(parcela.getValorPago()), DECIMAL128);
+            } else {
                 BigDecimal valorPresente;
                 if (dataVencimento.isBefore(hoje)) {
                     valorPresente = valorParcela;
@@ -218,10 +229,12 @@ public class CalculadoraEmprestimo {
                     valorPresente = valorParcela.divide(umMaisTaxa.pow(diasHojeVenc, DECIMAL128), DECIMAL128);
                     parcela.setValorPresenteParcela(valorPresente.doubleValue());
                 }
-            } else {
-                parcela.setValorPresenteParcela(parcela.getValorPago());
             }
         }
+
+        // Define os valores calculados no objeto Emprestimo
+        emprestimo.setSaldoDevedor(somaSaldoDevedorPagas.doubleValue());
+        emprestimo.setSaldoDevedorAtualizado(somaValorPresentePagas.doubleValue());
 
         return parcelas;
     }

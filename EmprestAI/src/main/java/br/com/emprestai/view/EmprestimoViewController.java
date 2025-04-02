@@ -8,7 +8,6 @@ import br.com.emprestai.model.Cliente;
 import br.com.emprestai.model.Emprestimo;
 import br.com.emprestai.model.Parcela;
 import com.itextpdf.html2pdf.HtmlConverter;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -451,6 +450,7 @@ public class EmprestimoViewController {
 
     private String generateHtmlContent(Emprestimo emprestimo) throws SQLException {
         StringBuilder html = new StringBuilder();
+        List<Parcela> parcelas = parcelaController.getParcelasByEmprestimo(emprestimo);
         html.append("<!DOCTYPE html>")
                 .append("<html lang=\"pt-br\">")
                 .append("<head>")
@@ -511,8 +511,6 @@ public class EmprestimoViewController {
                 .append("<tr><td>Taxa de Juros Efetiva (CET)</td><td>").append(String.format("%.2f%% a.m.", emprestimo.getTaxaEfetivaMensal())).append("</td></tr>")
                 .append("<tr><td>Tarifas</td><td>").append(formatCurrency(tarifas)).append("</td></tr>")
                 .append("<tr><td>Tributos</td><td>").append(formatCurrency(tributos)).append("</td></tr>")
-                .append("<tr><td>Registros</td><td>").append(formatCurrency(0.0)).append("</td></tr>")
-                .append("<tr><td>Pagtos Servs. Terceiros</td><td>").append(formatCurrency(0.0)).append("</td></tr>")
                 .append("</table>");
 
         // Separator
@@ -521,12 +519,14 @@ public class EmprestimoViewController {
         // Summary Section
         int prazoTotal = emprestimo.getQuantidadeParcelas();
         int prazoRemanescente = emprestimo.getQuantidadeParcelas() - emprestimo.getParcelasPagas();
-        double saldoDevedorAtual = emprestimo.getSaldoDevedorAtualizado();
+        double saldoDevedorAtual = emprestimo.getSaldoDevedor();
+        double saldoDevedorFinal = emprestimo.getSaldoDevedorAtualizado();
         html.append("<div class=\"section-title\">Resumo</div>")
                 .append("<div class=\"summary\">")
                 .append("<div><strong>Prazo Total da Operação:</strong> ").append(prazoTotal).append(" meses</div>")
                 .append("<div><strong>Prazo Remanescente:</strong> ").append(prazoRemanescente).append(" meses</div>")
                 .append("<div><strong>Saldo Devedor Atual:</strong> ").append(formatCurrency(saldoDevedorAtual)).append("</div>")
+                .append("<div><strong>Saldo Devedor Final:</strong> ").append(formatCurrency(saldoDevedorFinal)).append("</div>")
                 .append("</div>");
 
         // Separator
@@ -545,16 +545,14 @@ public class EmprestimoViewController {
                 .append("<th>Situação da Parcela</th>")
                 .append("</tr>");
 
-        List<Parcela> parcelas = parcelaController.getParcelasByEmprestimo(emprestimo);
         if (parcelas != null && !parcelas.isEmpty()) {
-            double saldoDevedor = emprestimo.getValorEmprestimo();
             for (int i = 0; i < parcelas.size(); i++) {
                 Parcela parcela = parcelas.get(i);
                 double valorParcela = parcela.getValorPresenteParcela();
                 // Calculate principal and interest using SAC method (constant principal amortization)
                 double valorPrincipal = emprestimo.getValorEmprestimo() / emprestimo.getQuantidadeParcelas();
-                double valorJuros = saldoDevedor * (emprestimo.getTaxaJuros() / 100); // Monthly interest on remaining balance
-                saldoDevedor -= valorPrincipal;
+                double valorJuros = parcela.getJuros(); // Monthly interest on remaining balance
+                double saldoDevedor = parcela.getSaldoDevedor();
 
                 html.append("<tr>")
                         .append("<td>").append(i + 1).append("</td>")

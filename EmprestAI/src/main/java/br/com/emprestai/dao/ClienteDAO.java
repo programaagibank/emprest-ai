@@ -25,7 +25,7 @@ public class ClienteDAO implements GenericDAO<Cliente> {
         }
 
         String sqlCliente = "INSERT INTO clientes (cpf_cliente, nome_cliente, data_nascimento, senha_acesso) " +
-                "VALUES (?, ?, ?, ?, ?)";
+                "VALUES (?, ?, ?, ?)";
 
         try (Connection conn = DatabaseConnection.getConnection()) {
             conn.setAutoCommit(false);
@@ -33,10 +33,10 @@ public class ClienteDAO implements GenericDAO<Cliente> {
             try (PreparedStatement stmtCliente = conn.prepareStatement(sqlCliente, Statement.RETURN_GENERATED_KEYS)) {
                 stmtCliente.setString(1, cliente.getCpfCliente());
                 stmtCliente.setString(2, cliente.getNomeCliente());
-                stmtCliente.setDate(4, Date.valueOf(cliente.getDataNascimento()));
+                stmtCliente.setDate(3, Date.valueOf(cliente.getDataNascimento()));
                 String senhaCriptografada = org.mindrot.jbcrypt.BCrypt.hashpw(cliente.getSenha(),
                         org.mindrot.jbcrypt.BCrypt.gensalt());
-                stmtCliente.setString(5, senhaCriptografada);
+                stmtCliente.setString(4, senhaCriptografada);
 
                 int affectedRows = stmtCliente.executeUpdate();
                 if (affectedRows == 0) {

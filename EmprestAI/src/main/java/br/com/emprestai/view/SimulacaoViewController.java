@@ -20,6 +20,8 @@ import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 public class SimulacaoViewController {
@@ -34,8 +36,7 @@ public class SimulacaoViewController {
     @FXML private Label       scoreOrClienteTypeLabel;
     @FXML private Label       scoreOrClienteTypeValueLabel;
     @FXML private TextField   loanAmountField;
-    @FXML private Slider      installmentsSlider;
-    @FXML private Label       installmentsLabel;
+    @FXML private ComboBox<Integer> installmentsComboBox;   // Substituído o slider por ComboBox
     @FXML private CheckBox    insuranceCheckBox;
     @FXML private VBox        gracePeriodContainer;
     @FXML private ComboBox<String> gracePeriodComboBox;
@@ -75,12 +76,8 @@ public class SimulacaoViewController {
     private void initialize() {
         emprestimoController = new EmprestimoController(new EmprestimoDAO(), new ClienteDAO());
 
-        // Slider listener
-        installmentsSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
-            int installments = newValue.intValue();
-            installments = Math.round(installments / 6) * 6;
-            installmentsLabel.setText(String.valueOf(installments));
-        });
+        // Configuração do ComboBox de parcelas
+        configureInstallmentsComboBox(72);
 
         // Loan amount field listener
         loanAmountField.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -105,6 +102,18 @@ public class SimulacaoViewController {
         percentFormatter.setMaximumFractionDigits(2);
     }
 
+    /**
+     * Configura o ComboBox de parcelas com opções de 6 em 6 até o máximo especificado
+     */
+    private void configureInstallmentsComboBox(int maxInstallments) {
+        List<Integer> installmentOptions = new ArrayList<>();
+        for (int i = 6; i <= maxInstallments; i += 6) {
+            installmentOptions.add(i);
+        }
+        installmentsComboBox.setItems(FXCollections.observableArrayList(installmentOptions));
+        installmentsComboBox.getSelectionModel().select(Integer.valueOf(36)); // Valor padrão: 36 parcelas
+    }
+
     // --------------------------------------------------------------------------------
     // Setters
     // --------------------------------------------------------------------------------
@@ -123,12 +132,13 @@ public class SimulacaoViewController {
             loanTypeLabel.setText("Tipo: " + (tipoEmprestimo == TipoEmprestimoEnum.CONSIGNADO ? "Consignado" : "Pessoal"));
 
             if (tipoEmprestimo == TipoEmprestimoEnum.CONSIGNADO) {
-                installmentsSlider.setMax(48);
+                configureInstallmentsComboBox(48); // Máximo de 48 parcelas para consignado
                 gracePeriodContainer.setVisible(false);
                 gracePeriodContainer.setManaged(false);
                 paydayDateContainer.setVisible(true);
                 paydayDateContainer.setManaged(true);
             } else {
+                configureInstallmentsComboBox(72); // Máximo de 72 parcelas para pessoal
                 scoreOrClienteTypeLabel.setText("Score:");
                 scoreOrClienteTypeValueLabel.setText(String.valueOf(clienteLogado.getScore()));
                 gracePeriodContainer.setVisible(true);
@@ -150,8 +160,13 @@ public class SimulacaoViewController {
                 return;
             }
 
+            if (installmentsComboBox.getValue() == null) {
+                showAlert("Parcelas Requeridas", "Por favor, selecione o número de parcelas.");
+                return;
+            }
+
             double loanAmount = Double.parseDouble(loanAmountField.getText());
-            int installments = Integer.parseInt(installmentsLabel.getText());
+            int installments = installmentsComboBox.getValue();
 
             emprestimoSimulado = new Emprestimo();
             emprestimoSimulado.setValorEmprestimo(loanAmount);
@@ -207,18 +222,18 @@ public class SimulacaoViewController {
                 return;
             }
 
-            Emprestimo createdEmprestimo = emprestimoController.postEmprestimo(emprestimoSimulado);
-
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Empréstimo Contratado");
-            alert.setHeaderText("Empréstimo Realizado com Sucesso");
-            alert.setContentText("Seu empréstimo foi aprovado e contratado com sucesso!");
-            alert.showAndWait();
-
-            onHomeClick();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("contratarEmprestimo.fxml"));
+            Scene mainScene = new Scene(loader.load(), 360, 640);
+            ContratarEmprestimoViewController contratarController = loader.getController();
+            contratarController.setClienteLogado(clienteLogado);
+            contratarController.setEmprestimoParaContratar(emprestimoSimulado);
+            Stage stage = (Stage) confirmButton.getScene().getWindow();
+            stage.setScene(mainScene);
+            stage.setTitle("EmprestAI - Contratar Empréstimo");
+            stage.show();
 
         } catch (Exception e) {
-            showAlert("Erro", "Ocorreu um erro ao confirmar o empréstimo: " + e.getMessage());
+            showAlert("Erro", "Ocorreu um erro ao preparar a contratação: " + e.getMessage());
             e.printStackTrace();
         }
     }

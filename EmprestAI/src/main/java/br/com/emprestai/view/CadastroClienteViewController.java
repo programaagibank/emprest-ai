@@ -17,7 +17,6 @@ public class CadastroClienteViewController {
     @FXML private TextField     cpfField;
     @FXML private TextField     nomeField;
     @FXML private DatePicker    dataNascimentoField;
-    @FXML private ComboBox<String> tipoClienteComboBox;
     @FXML private PasswordField senhaField;
 
     // --------------------------------------------------------------------------------
@@ -41,23 +40,15 @@ public class CadastroClienteViewController {
             // Captura dos dados
             String cpf = cpfField.getText();
             String nome = nomeField.getText();
+            LocalDate dataNascimento = dataNascimentoField.getValue();
+            String senha = senhaField.getText();
 
             // Validação de campos obrigatórios
-            if (cpf.isEmpty() || nome.isEmpty() || senhaField.getText().isEmpty() ||
-                    dataNascimentoField.getValue() == null) {
+            if (cpf.isEmpty() || nome.isEmpty() || senha.isEmpty() ||
+                    dataNascimento == null) {
                 showError("Todos os campos são obrigatórios.");
                 return;
             }
-
-            LocalDate dataNascimento = dataNascimentoField.getValue();
-            String tipoClienteStr = tipoClienteComboBox.getValue();
-
-            if (tipoClienteStr == null) {
-                showError("Por favor, selecione um tipo de cliente.");
-                return;
-            }
-
-            String senha = senhaField.getText();
 
             // Criação do objeto Cliente
             Cliente cliente = new Cliente();
@@ -85,7 +76,6 @@ public class CadastroClienteViewController {
         cpfField.clear();
         nomeField.clear();
         dataNascimentoField.setValue(null);
-        tipoClienteComboBox.setValue(null);
         senhaField.clear();
     }
 

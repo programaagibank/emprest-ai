@@ -2,34 +2,51 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.geometry.Insets?>
 
-<?import javafx.collections.FXCollections?>
-<?import java.lang.String?>
 <VBox xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.com.emprestai.view.CadastroClienteViewController"
-      spacing="10" alignment="CENTER">
+      spacing="20" alignment="CENTER" maxWidth="Infinity">
     <padding>
         <Insets top="20" right="20" bottom="20" left="20" />
     </padding>
 
-    <Label text="Cadastro de Cliente" style="-fx-font-size: 20px;"/>
-    <TextField fx:id="cpfField" promptText="CPF" />
-    <TextField fx:id="nomeField" promptText="Nome Completo" />
-    <TextField fx:id="rendaField" promptText="Renda Mensal" />
-    <DatePicker fx:id="dataNascimentoField" promptText="Data de Nascimento"/>
-    <TextField fx:id="rendaFamiliarField" promptText="Renda Familiar" />
-    <TextField fx:id="qtdPessoasField" promptText="Quantidade de Pessoas na Casa" />
-    <ComboBox fx:id="tipoClienteComboBox" promptText="Selecione o tipo de cliente">
-        <items>
-            <FXCollections fx:factory="observableArrayList">
-                <String fx:value="APOSENTADO" />
-                <String fx:value="SERVIDOR" />
-                <String fx:value="PENSIONISTA" />
-                <String fx:value="EMPREGADO" />
-            </FXCollections>
-        </items>
-    </ComboBox>
-    <TextField fx:id="scoreField" promptText="Score" />
-    <PasswordField fx:id="senhaField" promptText="Senha" />
-    <Button text="Cadastrar" onAction="#cadastrarCliente"/>
+    <Label text="Cadastro de Cliente" style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+
+    <GridPane hgap="10" vgap="15" alignment="CENTER" maxWidth="Infinity">
+        <columnConstraints>
+            <!-- Coluna dos labels -->
+            <ColumnConstraints halignment="LEFT" minWidth="100" />
+            <!-- Coluna dos campos, expansível -->
+            <ColumnConstraints hgrow="ALWAYS" fillWidth="true" />
+        </columnConstraints>
+
+        <padding>
+            <Insets top="10" right="0" bottom="10" left="0" />
+        </padding>
+
+        <!-- CPF Cliente -->
+        <Label text="CPF Cliente:" GridPane.rowIndex="0" GridPane.columnIndex="0" />
+        <TextField fx:id="cpfField" GridPane.rowIndex="0" GridPane.columnIndex="1"
+                   GridPane.hgrow="ALWAYS" maxWidth="Infinity" />
+
+        <!-- Nome Cliente -->
+        <Label text="Nome Cliente:" GridPane.rowIndex="1" GridPane.columnIndex="0" />
+        <TextField fx:id="nomeField" GridPane.rowIndex="1" GridPane.columnIndex="1"
+                   GridPane.hgrow="ALWAYS" maxWidth="Infinity" />
+
+        <!-- Data de Nascimento -->
+        <Label text="Data de Nascimento:" GridPane.rowIndex="2" GridPane.columnIndex="0" />
+        <DatePicker fx:id="dataNascimentoField" GridPane.rowIndex="2" GridPane.columnIndex="1"
+                    GridPane.hgrow="ALWAYS" maxWidth="Infinity" />
+
+        <!-- Senha de Acesso -->
+        <Label text="Senha de Acesso:" GridPane.rowIndex="3" GridPane.columnIndex="0" />
+        <PasswordField fx:id="senhaField" GridPane.rowIndex="3" GridPane.columnIndex="1"
+                       GridPane.hgrow="ALWAYS" maxWidth="Infinity" />
+    </GridPane>
+
+    <Button text="Cadastrar" onAction="#cadastrarCliente" style="-fx-font-weight: bold;"
+            prefWidth="150" />
 </VBox>

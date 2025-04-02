@@ -455,33 +455,93 @@ public class EmprestimoViewController {
                 .append("<html lang=\"pt-br\">")
                 .append("<head>")
                 .append("<meta charset=\"UTF-8\">")
-                .append("<title>Resumo do Empréstimo</title>")
+                .append("<title>Documento Descritivo de Crédito</title>")
                 .append("<style>")
                 .append("body { font-family: Arial, sans-serif; font-size: 14px; }")
                 .append("table { border-collapse: collapse; width: 100%; margin-bottom: 20px; }")
                 .append("th, td { border: 1px solid #333; padding: 5px; text-align: left; }")
                 .append("th { background-color: #eee; }")
                 .append(".section-title { font-weight: bold; font-size: 16px; margin-top: 20px; border-bottom: 1px solid #333; padding-bottom: 5px; }")
+                .append(".header { margin-bottom: 20px; }")
+                .append(".header div { margin-bottom: 5px; }")
+                .append(".separator { border-top: 1px solid #333; margin: 20px 0; }")
+                .append(".summary { display: flex; justify-content: space-between; margin-bottom: 20px; }")
+                .append(".summary div { width: 30%; }")
                 .append("</style>")
                 .append("</head>")
                 .append("<body>");
 
-        html.append("<div class=\"section-title\">Empréstimo ID: ").append(emprestimo.getIdEmprestimo()).append("</div>")
+        // Header Section: Client Information and Document Details
+        // Note: Since idCliente is available, you might need to fetch the client name and CPF from a ClienteController
+        html.append("<div class=\"header\">")
+                .append("<h2>Documento Descritivo de Crédito</h2>")
+                .append("<div><strong>Nome:</strong> ").append(clienteLogado != null ? clienteLogado.getNomeCliente() : "Não disponível").append("</div>")
+                .append("<div><strong>CPF:</strong> ").append(clienteLogado != null ? formatCpf(clienteLogado.getCpfCliente()) : "Não disponível").append("</div>")
+                .append("<div><strong>Emissão:</strong> ").append(LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))).append("</div>")
+                .append("</div>");
+
+        // Separator
+        html.append("<div class=\"separator\"></div>");
+
+        // Contract Details Section
+        html.append("<div class=\"section-title\">Característica do Contrato</div>")
                 .append("<table>")
                 .append("<tr><td>Modalidade de Operação</td><td>").append(emprestimo.getTipoEmprestimo().name()).append("</td></tr>")
                 .append("<tr><td>Valor da Operação</td><td>").append(formatCurrency(emprestimo.getValorEmprestimo())).append("</td></tr>")
                 .append("<tr><td>Número do Contrato</td><td>").append(emprestimo.getIdEmprestimo()).append("</td></tr>")
+                .append("<tr><td>Data da Contratação</td><td>").append(emprestimo.getDataContratacao().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))).append("</td></tr>")
+                .append("<tr><td>Data de Liberação do Crédito</td><td>").append(emprestimo.getDataLiberacaoCred().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))).append("</td></tr>")
+                // Calculate the last due date based on the number of parcels and start date
+                .append("<tr><td>Data do Último Vencimento</td><td>")
+                .append(emprestimo.getDataInicio().plusMonths(emprestimo.getQuantidadeParcelas()).format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
+                .append("</td></tr>")
                 .append("</table>");
 
-        html.append("<div class=\"section-title\">Demonstrativo de Parcelas</div>")
+        // Separator
+        html.append("<div class=\"separator\"></div>");
+
+        // Rates Section
+        // Calculate annual nominal rate from monthly rate (taxaJuros is assumed to be monthly)
+        double taxaJurosAnual = emprestimo.getTaxaJuros() * 12;
+        double tributos = emprestimo.getValorIOF(); // IOF is a tax
+        double tarifas = emprestimo.getOutrosCustos() + (emprestimo.getContratarSeguro() != null && emprestimo.getContratarSeguro() ? emprestimo.getValorSeguro() : 0);        html.append("<div class=\"section-title\">Taxa de Juros</div>")
+                .append("<table>")
+                .append("<tr><td>Taxa de Juros Mensal Nominal</td><td>").append(String.format("%.2f%% a.m.", emprestimo.getTaxaJuros())).append("</td></tr>")
+                .append("<tr><td>Taxa de Juros Anual Nominal</td><td>").append(String.format("%.2f%% a.a.", taxaJurosAnual)).append("</td></tr>")
+                .append("<tr><td>Taxa de Juros Efetiva (CET)</td><td>").append(String.format("%.2f%% a.m.", emprestimo.getTaxaEfetivaMensal())).append("</td></tr>")
+                .append("<tr><td>Tarifas</td><td>").append(formatCurrency(tarifas)).append("</td></tr>")
+                .append("<tr><td>Tributos</td><td>").append(formatCurrency(tributos)).append("</td></tr>")
+                .append("<tr><td>Registros</td><td>").append(formatCurrency(0.0)).append("</td></tr>")
+                .append("<tr><td>Pagtos Servs. Terceiros</td><td>").append(formatCurrency(0.0)).append("</td></tr>")
+                .append("</table>");
+
+        // Separator
+        html.append("<div class=\"separator\"></div>");
+
+        // Summary Section
+        int prazoTotal = emprestimo.getQuantidadeParcelas();
+        int prazoRemanescente = emprestimo.getQuantidadeParcelas() - emprestimo.getParcelasPagas();
+        double saldoDevedorAtual = emprestimo.getSaldoDevedorAtualizado();
+        html.append("<div class=\"section-title\">Resumo</div>")
+                .append("<div class=\"summary\">")
+                .append("<div><strong>Prazo Total da Operação:</strong> ").append(prazoTotal).append(" meses</div>")
+                .append("<div><strong>Prazo Remanescente:</strong> ").append(prazoRemanescente).append(" meses</div>")
+                .append("<div><strong>Saldo Devedor Atual:</strong> ").append(formatCurrency(saldoDevedorAtual)).append("</div>")
+                .append("</div>");
+
+        // Separator
+        html.append("<div class=\"separator\"></div>");
+
+        // Installments Breakdown Section
+        html.append("<div class=\"section-title\">Demonstrativo de Evolução do Saldo Devedor/Composição do Valor das Parcelas</div>")
                 .append("<table>")
                 .append("<tr>")
-                .append("<th>No Parcela</th>")
-                .append("<th>Vencimento</th>")
+                .append("<th>Nro Parcela</th>")
+                .append("<th>Vencimento da Parcela</th>")
                 .append("<th>Valor Parcela</th>")
-                .append("<th>Valor Principal</th>")
-                .append("<th>Valor Juros</th>")
-                .append("<th>Saldo Devedor</th>")
+                .append("<th>Valor Principal da Parcela</th>")
+                .append("<th>Valor dos Juros da Parcela</th>")
+                .append("<th>Saldo Devedor/Encargos</th>")
                 .append("<th>Situação da Parcela</th>")
                 .append("</tr>");
 
@@ -491,8 +551,9 @@ public class EmprestimoViewController {
             for (int i = 0; i < parcelas.size(); i++) {
                 Parcela parcela = parcelas.get(i);
                 double valorParcela = parcela.getValorPresenteParcela();
-                double valorPrincipal = valorParcela * 0.7;
-                double valorJuros = valorParcela * 0.3;
+                // Calculate principal and interest using SAC method (constant principal amortization)
+                double valorPrincipal = emprestimo.getValorEmprestimo() / emprestimo.getQuantidadeParcelas();
+                double valorJuros = saldoDevedor * (emprestimo.getTaxaJuros() / 100); // Monthly interest on remaining balance
                 saldoDevedor -= valorPrincipal;
 
                 html.append("<tr>")

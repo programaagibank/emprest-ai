@@ -10,7 +10,6 @@ import br.com.emprestai.service.calculos.CalculadoraEmprestimo;
 import br.com.emprestai.service.calculos.CalculoConsignado;
 import br.com.emprestai.service.calculos.CalculoPessoal;
 import br.com.emprestai.service.elegibilidade.ElegibilidadeConsignado;
-import br.com.emprestai.service.elegibilidade.ElegibilidadePessoal;
 import br.com.emprestai.util.EmprestimoParams;
 
 import java.util.List;
@@ -114,21 +113,23 @@ public class EmprestimoController {
 
             int idade = (int) YEARS.between(cliente.getDataNascimento(), emprestimo.getDataContratacao());
             int carencia = (int) DAYS.between(emprestimo.getDataContratacao(), emprestimo.getDataInicio());
-            double valorParcela = emprestimo.getValorParcela(); // Assumindo que já foi calculado ou será calculado
             int parcelas = emprestimo.getQuantidadeParcelas();
-            double taxaJuros = CalculoPessoal.calculoTaxaDeJurosMensal(parcelas);
+
+            // Calcular taxa de juros e contrato
+            double taxaJuros = CalculoPessoal.calculoTaxaDeJurosMensal(cliente.getScore());
+            emprestimo.setTaxaJuros(taxaJuros);
+
             double valorSolicitado = emprestimo.getValorEmprestimo();
+
+            CalculadoraEmprestimo.contratoPrice(emprestimo, cliente.getDataNascimento());
+
+            double valorParcela = emprestimo.getValorParcela();
 
             // Verificar regras específicas de elegibilidade pessoal
             ElegibilidadeConsignado.verificarElegibilidadeConsignado(valorParcela, idade, parcelas, taxaJuros, carencia, valorSolicitado);
 
-            // Calcular taxa de juros e contrato
-            double taxaJurosMensal = CalculoPessoal.calculoTaxaDeJurosMensal(cliente.getScore());
-            emprestimo.setTaxaJuros(taxaJurosMensal);
             emprestimo.setTaxaMulta(params.getPercentualMultaAtraso());
             emprestimo.setTaxaJurosMora(params.getPercentualJurosMora());
-
-            CalculadoraEmprestimo.contratoPrice(emprestimo, cliente.getDataNascimento());
 
             return true;
         } catch (Exception e) {
@@ -146,20 +147,25 @@ public class EmprestimoController {
 
             int idade = (int) YEARS.between(cliente.getDataNascimento(), emprestimo.getDataContratacao());
             int carencia = (int) DAYS.between(emprestimo.getDataContratacao(), emprestimo.getDataInicio());
-            double valorParcela = emprestimo.getValorParcela(); // Assumindo que já foi calculado ou será calculado
             int parcelas = emprestimo.getQuantidadeParcelas();
+
+            // Calcular taxa de juros e contrato
             double taxaJuros = CalculoConsignado.calcularTaxaJurosMensal(parcelas);
+            emprestimo.setTaxaJuros(taxaJuros);
+
             double valorSolicitado = emprestimo.getValorEmprestimo();
+
+            CalculadoraEmprestimo.contratoPrice(emprestimo, cliente.getDataNascimento());
+
+            double valorParcela = emprestimo.getValorParcela();
 
             // Verificar regras específicas de elegibilidade consignado
             ElegibilidadeConsignado.verificarElegibilidadeConsignado(valorParcela, idade, parcelas, taxaJuros, carencia, valorSolicitado);
 
-            // Calcular taxa de juros e contrato
-            emprestimo.setTaxaJuros(taxaJuros);
+
             emprestimo.setTaxaMulta(params.getPercentualMultaAtraso());
             emprestimo.setTaxaJurosMora(params.getPercentualJurosMora());
 
-            CalculadoraEmprestimo.contratoPrice(emprestimo, cliente.getDataNascimento());
 
             return true;
         } catch (Exception e) {

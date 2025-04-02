@@ -132,13 +132,13 @@ public class SimulacaoViewController {
             loanTypeLabel.setText("Tipo: " + (tipoEmprestimo == TipoEmprestimoEnum.CONSIGNADO ? "Consignado" : "Pessoal"));
 
             if (tipoEmprestimo == TipoEmprestimoEnum.CONSIGNADO) {
-                configureInstallmentsComboBox(48); // Máximo de 48 parcelas para consignado
+                configureInstallmentsComboBox(92); // Máximo de 92 parcelas para consignado
                 gracePeriodContainer.setVisible(false);
                 gracePeriodContainer.setManaged(false);
                 paydayDateContainer.setVisible(true);
                 paydayDateContainer.setManaged(true);
             } else {
-                configureInstallmentsComboBox(72); // Máximo de 72 parcelas para pessoal
+                configureInstallmentsComboBox(30); // Máximo de 30 parcelas para pessoal
                 scoreOrClienteTypeLabel.setText("Score:");
                 scoreOrClienteTypeValueLabel.setText(String.valueOf(clienteLogado.getScore()));
                 gracePeriodContainer.setVisible(true);

@@ -1,159 +1,192 @@
 package br.com.emprestai.model;
 
-import br.com.emprestai.enums.VinculoEnum;
+import br.com.emprestai.exception.ElegibilidadeException;
+import br.com.emprestai.util.EmprestimoParams;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.time.temporal.ChronoUnit;
 
 public class Cliente {
-
-    // Atributos
-    private Long idCliente; // Autoincrementado no banco
-    private String nomecliente;
-    private double rendaMensalLiquida;
-    private LocalDate dataNascimento;
-    private double rendaFamiliarLiquida;
-    private int qtdePessoasNaCasa;
-    private VinculoEnum tipoCliente;
+    private Long idCliente;
+    private String cpfCliente;
+    private String nomeCliente;
     private int score;
-    private String cpfCliente; // Usado como identificador de login
+    private LocalDate dataNascimento;
     private String senha;
-    private List<Emprestimo> emprestimoList;
-    private double parcelasAtivas;
-    private double margemConsignavel;
-    private double margemPessoal;
+    private double vencimentoLiquidoTotal;
+    private double vencimentoConsignavelTotal;
+    private double valorComprometido;
+    private double valorParcelasMensaisConsignado; // Soma das parcelas mensais de consignado
+    private double valorParcelasMensaisTotal;      // Soma das parcelas mensais de todos os empréstimos
+    private int prazoMaximoPessoal;                // Prazo máximo em meses para empréstimo pessoal
+    private int prazoMaximoConsignado;             // Prazo máximo em meses para empréstimo consignado
+    private static final EmprestimoParams params = EmprestimoParams.getInstance();
 
-    // Construtor vazio
-    public Cliente() {
-    }
     // Getters e Setters
-    public Long getIdCliente() {
-        return idCliente;
-    }
+    public Long getIdCliente() { return idCliente; }
+    public void setIdCliente(Long idCliente) { this.idCliente = idCliente; }
 
-    public void setIdCliente(Long idCliente) {
-        this.idCliente = idCliente;
-    }
+    public String getCpfCliente() { return cpfCliente; }
+    public void setCpfCliente(String cpfCliente) { this.cpfCliente = cpfCliente; }
 
-    public String getCpfCliente() {
-        return cpfCliente;
-    }
+    public String getNomeCliente() { return nomeCliente; }
+    public void setNomeCliente(String nomeCliente) { this.nomeCliente = nomeCliente; }
 
-    public void setCpfCliente(String cpfCliente) {
-        this.cpfCliente = cpfCliente;
-    }
+    public int getScore() { return score; }
+    public void setScore(int score) { this.score = score; }
 
-    public String getNomecliente() {
-        return nomecliente;
-    }
-
-    public void setNomecliente(String nomecliente) {
-        this.nomecliente = nomecliente;
-    }
-
-    public double getRendaMensalLiquida() {
-        return rendaMensalLiquida;
-    }
-
-    public void setRendaMensalLiquida(double rendaMensalLiquida) {
-        this.rendaMensalLiquida = rendaMensalLiquida;
-    }
-
-    public LocalDate getDataNascimento() {
-        return dataNascimento;
-    }
-
+    public LocalDate getDataNascimento() { return dataNascimento; }
     public void setDataNascimento(LocalDate dataNascimento) {
         this.dataNascimento = dataNascimento;
+        atualizarPrazosMaximos(); // Atualiza os prazos máximos sempre que a data de nascimento mudar
     }
 
-    public double getRendaFamiliarLiquida() {
-        return rendaFamiliarLiquida;
+    public String getSenha() { return senha; }
+    public void setSenha(String senha) { this.senha = senha; }
+
+    public double getVencimentoLiquidoTotal() { return vencimentoLiquidoTotal; }
+    public void setVencimentoLiquidoTotal(double vencimentoLiquidoTotal) { this.vencimentoLiquidoTotal = vencimentoLiquidoTotal; }
+
+    public double getVencimentoConsignavelTotal() { return vencimentoConsignavelTotal; }
+    public void setVencimentoConsignavelTotal(double vencimentoConsignavelTotal) { this.vencimentoConsignavelTotal = vencimentoConsignavelTotal; }
+
+    public double getValorComprometido() { return valorComprometido; }
+    public void setValorComprometido(double valorComprometido) { this.valorComprometido = valorComprometido; }
+
+    public double getValorParcelasMensaisConsignado() { return valorParcelasMensaisConsignado; }
+    public void setValorParcelasMensaisConsignado(double valorParcelasMensaisConsignado) {
+        this.valorParcelasMensaisConsignado = valorParcelasMensaisConsignado;
     }
 
-    public void setRendaFamiliarLiquida(double rendaFamiliarLiquida) {
-        this.rendaFamiliarLiquida = rendaFamiliarLiquida;
+    public double getValorParcelasMensaisTotal() { return valorParcelasMensaisTotal; }
+    public void setValorParcelasMensaisTotal(double valorParcelasMensaisTotal) {
+        this.valorParcelasMensaisTotal = valorParcelasMensaisTotal;
     }
 
-    public int getQtdePessoasNaCasa() {
-        return qtdePessoasNaCasa;
-    }
+    public int getPrazoMaximoPessoal() { return prazoMaximoPessoal; }
+    public void setPrazoMaximoPessoal(int prazoMaximoPessoal) { this.prazoMaximoPessoal = prazoMaximoPessoal; }
 
-    public void setQtdePessoasNaCasa(int qtdePessoasNaCasa) {
-        this.qtdePessoasNaCasa = qtdePessoasNaCasa;
-    }
+    public int getPrazoMaximoConsignado() { return prazoMaximoConsignado; }
+    public void setPrazoMaximoConsignado(int prazoMaximoConsignado) { this.prazoMaximoConsignado = prazoMaximoConsignado; }
 
-    public VinculoEnum getTipoCliente() {
-        return tipoCliente;
-    }
-
-    public void setTipoCliente(VinculoEnum tipoCliente) {
-        this.tipoCliente = tipoCliente;
-    }
-
-    public int getScore() {
-        return score;
-    }
-
-    public void setScore(int score) {
-        if (score < 0 || score > 1000) {
-            throw new IllegalArgumentException("Score deve estar entre 0 e 1000.");
+    // Método auxiliar para calcular a idade
+    private int getIdade() {
+        if (dataNascimento == null) {
+            return 0;
         }
-        this.score = score;
+        return (int) ChronoUnit.YEARS.between(dataNascimento, LocalDate.now());
     }
 
-    public String getSenha() {
-        return senha;
+    // Método para atualizar os prazos máximos com base na idade e limites de params
+    private void atualizarPrazosMaximos() {
+        int idade = getIdade();
+        if (idade <= 0) {
+            this.prazoMaximoPessoal = 0;
+            this.prazoMaximoConsignado = 0;
+            return;
+        }
+
+        // Prazo máximo pessoal: menor valor entre (idade máxima - idade atual) em meses e o limite de params
+        int anosRestantesPessoal = (int) Math.max(0, params.getIdadeMaximaPessoal() - idade);
+        int prazoCalculadoPessoal = anosRestantesPessoal * 12;
+        this.prazoMaximoPessoal = Math.min(prazoCalculadoPessoal, params.getPrazoMaximoPessoal());
+
+        // Prazo máximo consignado: menor valor entre (idade máxima - idade atual) em meses e o limite de params
+        int anosRestantesConsignado = (int) Math.max(0, params.getIdadeMaximaConsignado() - idade);
+        int prazoCalculadoConsignado = anosRestantesConsignado * 12;
+        this.prazoMaximoConsignado = Math.min(prazoCalculadoConsignado, params.getPrazoMaximoConsignado());
     }
 
-    public void setSenha(String senha) {
-        this.senha = senha;
+    // Métodos para cálculo das margens disponíveis
+    public double getMargemConsignavelDisponivel() {
+        if (vencimentoConsignavelTotal <= 0) {
+            return 0; // Cliente não é elegível para consignado
+        }
+        double margemConsignavel = vencimentoConsignavelTotal * params.getMargemConsignavel() / 100; // 35%
+        return Math.max(0, margemConsignavel - valorParcelasMensaisConsignado);
     }
 
-    public List<Emprestimo> getEmprestimoList() {
-        return emprestimoList;
+    public double getMargemPessoalDisponivel() {
+        double margemPessoal = vencimentoLiquidoTotal * params.getPercentualRendaPessoal() / 100; // 30%
+        return Math.max(0, margemPessoal - valorParcelasMensaisTotal);
     }
 
-    public void setEmprestimoList(List<Emprestimo> emprestimoList) {
-        this.emprestimoList = emprestimoList;
+    public boolean isElegivelConsignado() throws ElegibilidadeException {
+        int idade = getIdade();
+
+        // Verificações básicas
+        if (vencimentoConsignavelTotal <= 0) {
+            throw new ElegibilidadeException("Vencimento consignável total é zero ou negativo.");
+        }
+        if (idade <= 0) {
+            throw new ElegibilidadeException("Idade inválida (data de nascimento não informada ou inválida).");
+        }
+
+        // Verifica se há margem consignável disponível
+        if (getMargemConsignavelDisponivel() <= 0) {
+            throw new ElegibilidadeException("Margem consignável disponível insuficiente.");
+        }
+
+        // Verifica idade mínima (18) e máxima inicial (80)
+        if (idade < 18) {
+            throw new ElegibilidadeException("Idade inferior ao mínimo exigido (18 anos).");
+        }
+        if (idade > 80) {
+            throw new ElegibilidadeException("Idade superior ao máximo permitido (80 anos).");
+        }
+
+        // Verifica se o prazo máximo atende ao mínimo exigido para consignado
+        if (prazoMaximoConsignado < params.getPrazoMinimoConsignado()) {
+            throw new ElegibilidadeException(String.format("Prazo máximo pessoal possivel de contratar inferior ao mínimo exigido, verifique se sua idade maxima com as parcelas não ultrapassa o limite maximo %s.", params.getIdadeMaximaConsignado()));
+        }
+
+        return true; // Cliente é elegível para consignado
     }
 
-    public double getParcelasAtivas() {
-        return parcelasAtivas;
-    }
+    public boolean isElegivelPessoal() throws ElegibilidadeException {
+        int idade = getIdade();
 
-    public void setParcelasAtivas(double parcelasAtivas) {
-        this.parcelasAtivas = parcelasAtivas;
-    }
+        // Verificações básicas
+        if (vencimentoLiquidoTotal <= 0) {
+            throw new ElegibilidadeException("Vencimento líquido total é zero ou negativo.");
+        }
+        if (score <= 0) {
+            throw new ElegibilidadeException("Score inválido (zero ou negativo).");
+        }
+        if (idade <= 0) {
+            throw new ElegibilidadeException("Idade inválida (data de nascimento não informada ou inválida).");
+        }
 
-    public double getMargemConsignavel() {
-        return margemConsignavel;
-    }
+        // Verifica se há margem pessoal disponível
+        if (getMargemPessoalDisponivel() <= 0) {
+            throw new ElegibilidadeException("Margem pessoal disponível insuficiente.");
+        }
 
-    public void setMargemConsignavel(double margemConsignavel) {
-        this.margemConsignavel = margemConsignavel;
-    }
+        // Verifica renda mínima
+        if (vencimentoLiquidoTotal < params.getRendaMinimaPessoal()) {
+            throw new ElegibilidadeException("Renda líquida inferior ao mínimo exigido.");
+        }
 
-    public double getMargemPessoal() {
-        return margemPessoal;
-    }
+        // Verifica idade mínima (18) e máxima
+        if (idade < 18) {
+            throw new ElegibilidadeException("Idade inferior ao mínimo exigido (18 anos).");
+        }
+        if (idade > params.getIdadeMaximaPessoal()) {
+            throw new ElegibilidadeException("Idade superior ao máximo permitido para empréstimo pessoal.");
+        }
 
-    public void setMargemPessoal(double margemPessoal) {
-        this.margemPessoal = margemPessoal;
-    }
 
-    @Override
-    public String toString() {
-        return "Cliente{" +
-                "idCliente=" + idCliente +
-                ", cpfCliente='" + cpfCliente + '\'' +
-                ", nomecliente='" + nomecliente + '\'' +
-                ", rendaMensalLiquida=" + rendaMensalLiquida +
-                ", dataNascimento=" + dataNascimento +
-                ", rendaFamiliarLiquida=" + rendaFamiliarLiquida +
-                ", qtdePessoasNaCasa=" + qtdePessoasNaCasa +
-                ", tipoCliente=" + tipoCliente +
-                ", score=" + score +
-                '}';
+
+        // Verifica se o prazo máximo atende ao mínimo exigido para pessoal
+        if (prazoMaximoPessoal < params.getPrazoMinimoPessoal()) {
+            throw new ElegibilidadeException(String.format("Prazo máximo pessoal possivel de contratar inferior ao mínimo exigido, verifique se sua idade maxima com as parcelas não ultrapassa o limite maximo %s.", params.getIdadeMaximaPessoal()));
+        }
+
+        // Verifica score mínimo
+        if (score < params.getScoreMinimoPessoal()) {
+            throw new ElegibilidadeException("Score inferior ao mínimo exigido.");
+        }
+
+        return true; // Cliente é elegível para pessoal
     }
 }

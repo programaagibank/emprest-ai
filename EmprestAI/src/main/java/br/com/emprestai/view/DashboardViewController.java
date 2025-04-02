@@ -14,6 +14,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.List;
 
 import static br.com.emprestai.enums.TipoEmprestimoEnum.CONSIGNADO;
 import static br.com.emprestai.enums.TipoEmprestimoEnum.PESSOAL;
@@ -67,15 +68,15 @@ public class DashboardViewController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("emprestimos.fxml"));
             Scene consignadoScene = new Scene(loader.load(), 360, 640);
 
-            Emprestimo emprestimo = null;
+            List<Emprestimo> emprestimos = null;
             try {
-                emprestimo = emprestimoController.getByCliente(clienteLogado.getIdCliente(), CONSIGNADO);
+                emprestimos = emprestimoController.getByCliente(clienteLogado.getIdCliente(), CONSIGNADO);
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
 
             EmprestimoViewController emprestimoViewController = loader.getController();
-            emprestimoViewController.setEmprestimo(emprestimo);
+            emprestimoViewController.setEmprestimos(emprestimos);
             emprestimoViewController.setClienteLogado(clienteLogado);
             emprestimoViewController.setTipoEmprestimo(CONSIGNADO);
 
@@ -95,15 +96,15 @@ public class DashboardViewController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("emprestimos.fxml"));
             Scene consignadoScene = new Scene(loader.load(), 360, 640);
 
-            Emprestimo emprestimo = null;
+            List<Emprestimo> emprestimos = null;
             try {
-                emprestimo = emprestimoController.getByCliente(clienteLogado.getIdCliente(), PESSOAL);
+                emprestimos = emprestimoController.getByCliente(clienteLogado.getIdCliente(), PESSOAL);
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
 
             EmprestimoViewController emprestimoViewController = loader.getController();
-            emprestimoViewController.setEmprestimo(emprestimo);
+            emprestimoViewController.setEmprestimos(emprestimos);
             emprestimoViewController.setClienteLogado(clienteLogado);
             emprestimoViewController.setTipoEmprestimo(PESSOAL);
 
@@ -146,8 +147,8 @@ public class DashboardViewController {
     private void atualizarMargens() {
         if (clienteLogado != null) {
             try {
-                double margemConsig = clienteLogado.getMargemConsignavel();
-                double margemPessoal = clienteLogado.getMargemPessoal();
+                double margemConsig = clienteLogado.getMargemConsignavelDisponivel();
+                double margemPessoal = clienteLogado.getMargemPessoalDisponivel();
                 creditMarginConsig.setText(String.format("R$ %.2f", margemConsig));
                 creditMarginPessoal.setText(String.format("R$ %.2f", margemPessoal));
             } catch (Exception e) {

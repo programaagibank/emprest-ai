@@ -30,7 +30,7 @@ public class CalculadoraEmprestimo {
         //Valores para calculo
         BigDecimal valorEmprestimo = new BigDecimal(String.valueOf(emprestimo.getValorEmprestimo()));
         int qtdeParcelas = emprestimo.getQuantidadeParcelas();
-        double taxaJurosMensal = emprestimo.getJuros();
+        double taxaJurosMensal = emprestimo.getTaxaJuros();
 
         //Datas
         LocalDate dataContratacao = emprestimo.getDataContratacao();
@@ -173,14 +173,14 @@ public class CalculadoraEmprestimo {
     }
 
     public static List<Parcela> processarValoresParcela(Emprestimo emprestimo) {
-        if (emprestimo.getValorParcela() <= 0 || emprestimo.getJuros() <= 0 || emprestimo.getQuantidadeParcelas() <= 1) {
+        if (emprestimo.getValorParcela() <= 0 || emprestimo.getTaxaJuros() <= 0 || emprestimo.getQuantidadeParcelas() <= 1) {
             throw new IllegalArgumentException("Valores inválidos");
         }
 
         List<Parcela> parcelas = emprestimo.getParcelaList();
         BigDecimal saldoDevedor = BigDecimal.valueOf(emprestimo.getValorTotal());
-        BigDecimal taxa = BigDecimal.valueOf(emprestimo.getJuros() / 100);
-        BigDecimal taxaDiaria = BigDecimal.valueOf(conversorTaxaDeJurosDiaria(emprestimo.getJuros()) / 100);
+        BigDecimal taxa = BigDecimal.valueOf(emprestimo.getTaxaJuros() / 100);
+        BigDecimal taxaDiaria = BigDecimal.valueOf(conversorTaxaDeJurosDiaria(emprestimo.getTaxaJuros()) / 100);
         BigDecimal umMaisTaxa = BigDecimal.ONE.add(taxaDiaria);
         BigDecimal valorParcela = BigDecimal.valueOf(emprestimo.getValorParcela());
 

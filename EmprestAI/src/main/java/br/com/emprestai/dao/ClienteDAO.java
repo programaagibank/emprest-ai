@@ -1,7 +1,6 @@
 package br.com.emprestai.dao;
 
 import br.com.emprestai.database.DatabaseConnection;
-import br.com.emprestai.enums.VinculoEnum;
 import br.com.emprestai.exception.ApiException;
 import br.com.emprestai.model.Cliente;
 
@@ -25,25 +24,19 @@ public class ClienteDAO implements GenericDAO<Cliente> {
             throw new IllegalArgumentException("Senha não pode ser nula ou vazia.");
         }
 
-        String sqlCliente = "INSERT INTO clientes (cpf_cliente, nome_cliente, renda_mensal_liquida, data_nascimento, " +
-                "renda_familiar_liquida, qtd_pessoas_na_casa, id_tipo_cliente, score, senha_acesso) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sqlCliente = "INSERT INTO clientes (cpf_cliente, nome_cliente, data_nascimento, senha_acesso) " +
+                "VALUES (?, ?, ?, ?, ?)";
 
         try (Connection conn = DatabaseConnection.getConnection()) {
             conn.setAutoCommit(false);
 
             try (PreparedStatement stmtCliente = conn.prepareStatement(sqlCliente, Statement.RETURN_GENERATED_KEYS)) {
                 stmtCliente.setString(1, cliente.getCpfCliente());
-                stmtCliente.setString(2, cliente.getNomecliente());
-                stmtCliente.setDouble(3, cliente.getRendaMensalLiquida());
+                stmtCliente.setString(2, cliente.getNomeCliente());
                 stmtCliente.setDate(4, Date.valueOf(cliente.getDataNascimento()));
-                stmtCliente.setDouble(5, cliente.getRendaFamiliarLiquida());
-                stmtCliente.setInt(6, cliente.getQtdePessoasNaCasa());
-                stmtCliente.setInt(7, cliente.getTipoCliente() != null ? cliente.getTipoCliente().getValor() : 0);
-                stmtCliente.setInt(8, cliente.getScore());
                 String senhaCriptografada = org.mindrot.jbcrypt.BCrypt.hashpw(cliente.getSenha(),
                         org.mindrot.jbcrypt.BCrypt.gensalt());
-                stmtCliente.setString(9, senhaCriptografada);
+                stmtCliente.setString(5, senhaCriptografada);
 
                 int affectedRows = stmtCliente.executeUpdate();
                 if (affectedRows == 0) {
@@ -75,7 +68,27 @@ public class ClienteDAO implements GenericDAO<Cliente> {
     // GET - Buscar todos os clientes
     public List<Cliente> buscarTodos() {
         List<Cliente> clientes = new ArrayList<>();
-        String sql = "SELECT * FROM clientes";
+        String sql = "SELECT c.*, " +
+                "COALESCE(SUM(s.vencimento_liquido), 0) AS vencimento_liquido_total, " +
+                "COALESCE(SUM(CASE WHEN s.id_vinculo IN (1, 2, 3) THEN s.vencimento_liquido ELSE 0 END), 0) AS vencimento_consignavel_total, " +
+                "(SELECT COALESCE(SUM(e.valor_parcela * (e.quantidade_parcelas - " +
+                "COALESCE((SELECT COUNT(*) FROM parcelas p " +
+                "WHERE p.id_emprestimo = e.id_emprestimo AND p.id_status IN (1, 4, 5)), 0))), 0) " +
+                "FROM emprestimos e " +
+                "WHERE e.id_cliente = c.id_cliente " +
+                "AND e.id_status_emprestimo = 1) AS valor_comprometido, " +
+                "(SELECT COALESCE(SUM(e.valor_parcela), 0) " +
+                "FROM emprestimos e " +
+                "WHERE e.id_cliente = c.id_cliente " +
+                "AND e.id_status_emprestimo = 1 " +
+                "AND e.id_tipo_emprestimo = 1) AS valor_parcelas_mensais_consignado, " +
+                "(SELECT COALESCE(SUM(e.valor_parcela), 0) " +
+                "FROM emprestimos e " +
+                "WHERE e.id_cliente = c.id_cliente " +
+                "AND e.id_status_emprestimo = 1) AS valor_parcelas_mensais_total " +
+                "FROM clientes c " +
+                "LEFT JOIN salarios s ON c.id_cliente = s.id_pessoa " +
+                "GROUP BY c.id_cliente";
 
         try (Connection conn = DatabaseConnection.getConnection();
              Statement stmt = conn.createStatement();
@@ -90,13 +103,34 @@ public class ClienteDAO implements GenericDAO<Cliente> {
         }
     }
 
-    // GET - Buscar cliente por ID
+    // GET - Buscar cliente por ID com margem disponível
     public Cliente buscarPorId(Long id) {
         if (id == null) {
             throw new IllegalArgumentException("ID do cliente não pode ser nulo.");
         }
 
-        String sql = "SELECT * FROM clientes WHERE id_cliente = ?";
+        String sql = "SELECT c.*, " +
+                "COALESCE(SUM(s.vencimento_liquido), 0) AS vencimento_liquido_total, " +
+                "COALESCE(SUM(CASE WHEN s.id_vinculo IN (1, 2, 3) THEN s.vencimento_liquido ELSE 0 END), 0) AS vencimento_consignavel_total, " +
+                "(SELECT COALESCE(SUM(e.valor_parcela * (e.quantidade_parcelas - " +
+                "COALESCE((SELECT COUNT(*) FROM parcelas p " +
+                "WHERE p.id_emprestimo = e.id_emprestimo AND p.id_status IN (1, 4, 5)), 0))), 0) " +
+                "FROM emprestimos e " +
+                "WHERE e.id_cliente = c.id_cliente " +
+                "AND e.id_status_emprestimo = 1) AS valor_comprometido, " +
+                "(SELECT COALESCE(SUM(e.valor_parcela), 0) " +
+                "FROM emprestimos e " +
+                "WHERE e.id_cliente = c.id_cliente " +
+                "AND e.id_status_emprestimo = 1 " +
+                "AND e.id_tipo_emprestimo = 1) AS valor_parcelas_mensais_consignado, " +
+                "(SELECT COALESCE(SUM(e.valor_parcela), 0) " +
+                "FROM emprestimos e " +
+                "WHERE e.id_cliente = c.id_cliente " +
+                "AND e.id_status_emprestimo = 1) AS valor_parcelas_mensais_total " +
+                "FROM clientes c " +
+                "LEFT JOIN salarios s ON c.id_cliente = s.id_pessoa " +
+                "WHERE c.id_cliente = ? " +
+                "GROUP BY c.id_cliente";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -115,19 +149,34 @@ public class ClienteDAO implements GenericDAO<Cliente> {
         }
     }
 
-    // GET - Buscar cliente por CPF
+    // GET - Buscar cliente por CPF com margem disponível
     public Cliente buscarPorCpf(String cpfCliente) {
         if (cpfCliente == null || cpfCliente.trim().isEmpty()) {
             throw new IllegalArgumentException("CPF não pode ser nulo ou vazio.");
         }
 
         String sql = "SELECT c.*, " +
+                "COALESCE(SUM(s.vencimento_liquido), 0) AS vencimento_liquido_total, " +
+                "COALESCE(SUM(CASE WHEN s.id_vinculo IN (1, 2, 3) THEN s.vencimento_liquido ELSE 0 END), 0) AS vencimento_consignavel_total, " +
+                "(SELECT COALESCE(SUM(e.valor_parcela * (e.quantidade_parcelas - " +
+                "COALESCE((SELECT COUNT(*) FROM parcelas p " +
+                "WHERE p.id_emprestimo = e.id_emprestimo AND p.id_status IN (1, 4, 5)), 0))), 0) " +
+                "FROM emprestimos e " +
+                "WHERE e.id_cliente = c.id_cliente " +
+                "AND e.id_status_emprestimo = 1) AS valor_comprometido, " +
                 "(SELECT COALESCE(SUM(e.valor_parcela), 0) " +
                 "FROM emprestimos e " +
                 "WHERE e.id_cliente = c.id_cliente " +
-                "AND e.id_status_emprestimo = 1) as soma_valor_parcelas " +
+                "AND e.id_status_emprestimo = 1 " +
+                "AND e.id_tipo_emprestimo = 1) AS valor_parcelas_mensais_consignado, " +
+                "(SELECT COALESCE(SUM(e.valor_parcela), 0) " +
+                "FROM emprestimos e " +
+                "WHERE e.id_cliente = c.id_cliente " +
+                "AND e.id_status_emprestimo = 1) AS valor_parcelas_mensais_total " +
                 "FROM clientes c " +
-                "WHERE c.cpf_cliente = ?";
+                "LEFT JOIN salarios s ON c.id_cliente = s.id_pessoa " +
+                "WHERE c.cpf_cliente = ? " +
+                "GROUP BY c.id_cliente";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -148,36 +197,29 @@ public class ClienteDAO implements GenericDAO<Cliente> {
 
     // PUT - Atualizar cliente existente
     public Cliente atualizar(Cliente cliente) {
-        if (cliente == null) {
+        if (cliente == null || cliente.getIdCliente() == null) {
             throw new IllegalArgumentException("ID e cliente não podem ser nulos.");
         }
 
-        String sql = "UPDATE clientes SET cpf_cliente = ?, nome_cliente = ?, renda_mensal_liquida = ?, " +
-                "data_nascimento = ?, renda_familiar_liquida = ?, qtd_pessoas_na_casa = ?, " +
-                "id_tipo_cliente = ?, score = ?, senha = ? WHERE id_cliente = ?";
+        String sql = "UPDATE clientes SET cpf_cliente = ?, nome_cliente = ?, " +
+                "data_nascimento = ?, senha_acesso = ? WHERE id_cliente = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, cliente.getCpfCliente());
-            stmt.setString(2, cliente.getNomecliente());
-            stmt.setDouble(3, cliente.getRendaMensalLiquida());
+            stmt.setString(2, cliente.getNomeCliente());
             stmt.setDate(4, Date.valueOf(cliente.getDataNascimento()));
-            stmt.setDouble(5, cliente.getRendaFamiliarLiquida());
-            stmt.setInt(6, cliente.getQtdePessoasNaCasa());
-            stmt.setInt(7, cliente.getTipoCliente() != null ? cliente.getTipoCliente().getValor() : 0);
-            stmt.setInt(8, cliente.getScore());
             String senhaCriptografada = cliente.getSenha() != null
                     ? org.mindrot.jbcrypt.BCrypt.hashpw(cliente.getSenha(), org.mindrot.jbcrypt.BCrypt.gensalt())
                     : null;
-            stmt.setString(9, senhaCriptografada != null ? senhaCriptografada : null);
-            stmt.setLong(10, cliente.getIdCliente());
+            stmt.setString(5, senhaCriptografada != null ? senhaCriptografada : null);
+            stmt.setLong(6, cliente.getIdCliente());
 
             int affectedRows = stmt.executeUpdate();
             if (affectedRows == 0) {
                 throw new ApiException("Cliente não encontrado com ID: " + cliente.getIdCliente(), 404);
             }
 
-            cliente.setIdCliente(cliente.getIdCliente());
             return cliente;
         } catch (SQLException | IOException e) {
             if (e.getMessage().contains("Duplicate entry") && e.getMessage().contains("cpf_cliente")) {
@@ -189,41 +231,26 @@ public class ClienteDAO implements GenericDAO<Cliente> {
 
     // PATCH - Atualização parcial de cliente
     public Cliente atualizarParcial(Cliente cliente) {
-        if (cliente == null) {
+        if (cliente == null || cliente.getIdCliente() == null) {
             throw new IllegalArgumentException("ID do cliente não pode ser nulo.");
         }
 
-        cliente = buscarPorId(cliente.getIdCliente());
+        Cliente clienteExistente = buscarPorId(cliente.getIdCliente());
 
         if (cliente.getCpfCliente() != null) {
-            cliente.setCpfCliente(cliente.getCpfCliente());
+            clienteExistente.setCpfCliente(cliente.getCpfCliente());
         }
-        if (cliente.getNomecliente() != null) {
-            cliente.setNomecliente(cliente.getNomecliente());
-        }
-        if (cliente.getRendaMensalLiquida() != 0) {
-            cliente.setRendaMensalLiquida(cliente.getRendaMensalLiquida());
+        if (cliente.getNomeCliente() != null) {
+            clienteExistente.setNomeCliente(cliente.getNomeCliente());
         }
         if (cliente.getDataNascimento() != null) {
-            cliente.setDataNascimento(cliente.getDataNascimento());
-        }
-        if (cliente.getRendaFamiliarLiquida() != 0) {
-            cliente.setRendaFamiliarLiquida(cliente.getRendaFamiliarLiquida());
-        }
-        if (cliente.getQtdePessoasNaCasa() != 0) {
-            cliente.setQtdePessoasNaCasa(cliente.getQtdePessoasNaCasa());
-        }
-        if (cliente.getTipoCliente() != null) {
-            cliente.setTipoCliente(cliente.getTipoCliente());
-        }
-        if (cliente.getScore() != 0) {
-            cliente.setScore(cliente.getScore());
+            clienteExistente.setDataNascimento(cliente.getDataNascimento());
         }
         if (cliente.getSenha() != null) {
-            cliente.setSenha(cliente.getSenha());
+            clienteExistente.setSenha(cliente.getSenha());
         }
 
-        return atualizar(cliente);
+        return atualizar(clienteExistente);
     }
 
     // DELETE - Excluir cliente por ID
@@ -267,17 +294,14 @@ public class ClienteDAO implements GenericDAO<Cliente> {
         Cliente cliente = new Cliente();
         cliente.setIdCliente(rs.getLong("id_cliente"));
         cliente.setCpfCliente(rs.getString("cpf_cliente"));
-        cliente.setNomecliente(rs.getString("nome_cliente"));
-        cliente.setRendaMensalLiquida(rs.getDouble("renda_mensal_liquida"));
+        cliente.setNomeCliente(rs.getString("nome_cliente"));
         cliente.setDataNascimento(rs.getDate("data_nascimento").toLocalDate());
-        cliente.setRendaFamiliarLiquida(rs.getDouble("renda_familiar_liquida"));
-        cliente.setQtdePessoasNaCasa(rs.getInt("qtd_pessoas_na_casa"));
-        cliente.setParcelasAtivas(rs.getDouble("soma_valor_parcelas"));
         cliente.setSenha(rs.getString("senha_acesso"));
-
-        int tipoClienteValue = rs.getInt("id_tipo_cliente");
-        cliente.setTipoCliente(VinculoEnum.fromValor(tipoClienteValue));
-
+        cliente.setVencimentoLiquidoTotal(rs.getDouble("vencimento_liquido_total")); // Adicionado
+        cliente.setVencimentoConsignavelTotal(rs.getDouble("vencimento_consignavel_total"));
+        cliente.setValorComprometido(rs.getDouble("valor_comprometido"));
+        cliente.setValorParcelasMensaisConsignado(rs.getDouble("valor_parcelas_mensais_consignado"));
+        cliente.setValorParcelasMensaisTotal(rs.getDouble("valor_parcelas_mensais_total"));
         cliente.setScore(rs.getInt("score"));
         return cliente;
     }

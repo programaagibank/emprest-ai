@@ -13,7 +13,7 @@ public class Emprestimo {
     private double valorParcela;
     private int quantidadeParcelas;
     private int parcelasPagas;
-    private double juros;
+    private double taxaJuros;
     private LocalDate dataInicio;
     private StatusEmprestimoEnum statusEmprestimo;
     private TipoEmprestimoEnum tipoEmprestimo;
@@ -58,11 +58,11 @@ public class Emprestimo {
         this.quantidadeParcelas = quantidadeParcelas;
     }
 
-    public double getJuros(){
-        return juros;
+    public double getTaxaJuros(){
+        return taxaJuros;
     }
-    public void setJuros(double juros){
-        this.juros = juros;
+    public void setTaxaJuros(double taxaJuros){
+        this.taxaJuros = taxaJuros;
     }
 
     public LocalDate getDataInicio(){

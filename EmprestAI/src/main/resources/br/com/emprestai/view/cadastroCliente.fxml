@@ -3,50 +3,101 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.image.*?>
 
 <VBox xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.com.emprestai.view.CadastroClienteViewController"
-      spacing="20" alignment="CENTER" maxWidth="Infinity">
+      spacing="20" alignment="CENTER" maxWidth="Infinity" styleClass="root" stylesheets="@../css/dashboard.css">
     <padding>
         <Insets top="20" right="20" bottom="20" left="20" />
     </padding>
 
-    <Label text="Cadastro de Cliente" style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
-
-    <GridPane hgap="10" vgap="15" alignment="CENTER" maxWidth="Infinity">
-        <columnConstraints>
-            <!-- Coluna dos labels -->
-            <ColumnConstraints halignment="LEFT" minWidth="100" />
-            <!-- Coluna dos campos, expansível -->
-            <ColumnConstraints hgrow="ALWAYS" fillWidth="true" />
-        </columnConstraints>
-
+    <!-- Header -->
+    <HBox alignment="CENTER" spacing="10.0" styleClass="header">
         <padding>
-            <Insets top="10" right="0" bottom="10" left="0" />
+            <Insets bottom="10.0" left="15.0" right="15.0" top="15.0" />
         </padding>
+        <Label text="Cadastro de Cliente" styleClass="greeting-label"/>
+    </HBox>
 
-        <!-- CPF Cliente -->
-        <Label text="CPF Cliente:" GridPane.rowIndex="0" GridPane.columnIndex="0" />
-        <TextField fx:id="cpfField" GridPane.rowIndex="0" GridPane.columnIndex="1"
-                   GridPane.hgrow="ALWAYS" maxWidth="Infinity" />
+    <!-- Conteúdo -->
+    <VBox styleClass="content" spacing="15" VBox.vgrow="ALWAYS">
+        <GridPane hgap="10" vgap="15" alignment="CENTER" maxWidth="Infinity" styleClass="info-box">
+            <columnConstraints>
+                <!-- Coluna dos labels -->
+                <ColumnConstraints halignment="LEFT" minWidth="100" />
+                <!-- Coluna dos campos, expansível -->
+                <ColumnConstraints hgrow="ALWAYS" fillWidth="true" />
+            </columnConstraints>
 
-        <!-- Nome Cliente -->
-        <Label text="Nome Cliente:" GridPane.rowIndex="1" GridPane.columnIndex="0" />
-        <TextField fx:id="nomeField" GridPane.rowIndex="1" GridPane.columnIndex="1"
-                   GridPane.hgrow="ALWAYS" maxWidth="Infinity" />
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10" />
+            </padding>
 
-        <!-- Data de Nascimento -->
-        <Label text="Data de Nascimento:" GridPane.rowIndex="2" GridPane.columnIndex="0" />
-        <DatePicker fx:id="dataNascimentoField" GridPane.rowIndex="2" GridPane.columnIndex="1"
-                    GridPane.hgrow="ALWAYS" maxWidth="Infinity" />
+            <!-- CPF Cliente -->
+            <Label text="CPF Cliente:" GridPane.rowIndex="0" GridPane.columnIndex="0" styleClass="info-label" />
+            <TextField fx:id="cpfField" GridPane.rowIndex="0" GridPane.columnIndex="1"
+                       GridPane.hgrow="ALWAYS" maxWidth="Infinity" styleClass="input-field" />
 
-        <!-- Senha de Acesso -->
-        <Label text="Senha de Acesso:" GridPane.rowIndex="3" GridPane.columnIndex="0" />
-        <PasswordField fx:id="senhaField" GridPane.rowIndex="3" GridPane.columnIndex="1"
-                       GridPane.hgrow="ALWAYS" maxWidth="Infinity" />
-    </GridPane>
+            <!-- Nome Cliente -->
+            <Label text="Nome Cliente:" GridPane.rowIndex="1" GridPane.columnIndex="0" styleClass="info-label" />
+            <TextField fx:id="nomeField" GridPane.rowIndex="1" GridPane.columnIndex="1"
+                       GridPane.hgrow="ALWAYS" maxWidth="Infinity" styleClass="input-field" />
 
-    <Button text="Cadastrar" onAction="#cadastrarCliente" style="-fx-font-weight: bold;"
-            prefWidth="150" />
+            <!-- Data de Nascimento -->
+            <Label text="Data de Nascimento:" GridPane.rowIndex="2" GridPane.columnIndex="0" styleClass="info-label" />
+            <DatePicker fx:id="dataNascimentoField" GridPane.rowIndex="2" GridPane.columnIndex="1"
+                        GridPane.hgrow="ALWAYS" maxWidth="Infinity" styleClass="date-picker" />
+
+            <!-- Senha de Acesso -->
+            <Label text="Senha de Acesso:" GridPane.rowIndex="3" GridPane.columnIndex="0" styleClass="info-label" />
+            <PasswordField fx:id="senhaField" GridPane.rowIndex="3" GridPane.columnIndex="1"
+                           GridPane.hgrow="ALWAYS" maxWidth="Infinity" styleClass="input-field" />
+        </GridPane>
+
+        <!-- Botões -->
+        <HBox spacing="10.0" alignment="CENTER">
+            <Button text="Cadastrar" onAction="#cadastrarCliente" styleClass="confirm-button" prefWidth="150" />
+
+        </HBox>
+    </VBox>
+
+    <!-- Barra de navegação -->
+    <HBox alignment="CENTER" spacing="20.0" styleClass="nav-bar">
+        <padding>
+            <Insets bottom="10.0" left="15.0" right="15.0" top="10.0" />
+        </padding>
+        <Button fx:id="homeButton" onAction="#onHomeClick" styleClass="nav-button">
+            <graphic>
+                <ImageView fitHeight="24" fitWidth="24" preserveRatio="true">
+                    <image>
+                        <Image url="@../images/home.png" />
+                    </image>
+                </ImageView>
+            </graphic>
+            <text>Início</text>
+        </Button>
+        <Button fx:id="voltarNavButton" onAction="#onVoltarClick" styleClass="nav-button">
+            <graphic>
+                <ImageView fitHeight="24" fitWidth="24" preserveRatio="true">
+                    <image>
+                      <!--  <Image url="@../images/back.png" />  -->
+                    </image>
+                </ImageView>
+            </graphic>
+            <text>Voltar</text>
+        </Button>
+        <Button fx:id="exitButton" onAction="#onExitClick" styleClass="nav-button">
+            <graphic>
+                <ImageView fitHeight="24" fitWidth="24" preserveRatio="true">
+                    <image>
+                        <Image url="@../images/exit.png" />
+                    </image>
+                </ImageView>
+            </graphic>
+            <text>Sair</text>
+        </Button>
+    </HBox>
 </VBox>

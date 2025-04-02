@@ -2,6 +2,7 @@ package br.com.emprestai.controller;
 
 import br.com.emprestai.dao.ClienteDAO;
 import br.com.emprestai.dao.EmprestimoDAO;
+import br.com.emprestai.enums.StatusEmprestimoEnum;
 import br.com.emprestai.enums.TipoEmprestimoEnum;
 import br.com.emprestai.exception.ApiException;
 import br.com.emprestai.model.Cliente;
@@ -45,7 +46,7 @@ public class EmprestimoController {
             if (emprestimo.getStatusEmprestimo() == NEGADO) {
                 throw new ApiException("Empréstimo não é elegível para concessão.", 400); // Bad Request
             }
-
+            emprestimo.setStatusEmprestimo(StatusEmprestimoEnum.ABERTO);
             emprestimo.setTaxaMulta(params.getPercentualMultaAtraso());
             emprestimo.setTaxaJurosMora(params.getPercentualJurosMora());
 

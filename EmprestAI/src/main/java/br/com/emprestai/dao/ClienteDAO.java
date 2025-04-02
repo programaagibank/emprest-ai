@@ -302,7 +302,7 @@ public class ClienteDAO implements GenericDAO<Cliente> {
         cliente.setValorComprometido(rs.getDouble("valor_comprometido"));
         cliente.setValorParcelasMensaisConsignado(rs.getDouble("valor_parcelas_mensais_consignado"));
         cliente.setValorParcelasMensaisTotal(rs.getDouble("valor_parcelas_mensais_total"));
-
+        cliente.setScore(rs.getInt("score"));
         return cliente;
     }
 }

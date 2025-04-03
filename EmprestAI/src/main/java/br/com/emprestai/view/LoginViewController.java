@@ -4,6 +4,7 @@ import br.com.emprestai.controller.ClienteController;
 import br.com.emprestai.controller.LoginController;
 import br.com.emprestai.dao.ClienteDAO;
 import br.com.emprestai.model.Cliente;
+import br.com.emprestai.util.SessionManager;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
@@ -19,9 +20,6 @@ import java.io.IOException;
 
 public class LoginViewController {
 
-    // --------------------------------------------------------------------------------
-    // FXML Components
-    // --------------------------------------------------------------------------------
     @FXML private Label       greetingLabel;
     @FXML private TextField   cpfField;
     @FXML private PasswordField passwordField;
@@ -30,93 +28,64 @@ public class LoginViewController {
     @FXML private Hyperlink   privacyLink;
     @FXML private VBox        errorBox;
 
-    // --------------------------------------------------------------------------------
-    // Class Properties
-    // --------------------------------------------------------------------------------
-    private Cliente           clienteLogado;
     private LoginController   loginController = new LoginController(new ClienteController(new ClienteDAO()));
 
-    // --------------------------------------------------------------------------------
-    // Initialization
-    // --------------------------------------------------------------------------------
     @FXML
     public void initialize() {
+        // (Mantém o mesmo código de inicialização que você já tem)
+        Platform.runLater(() -> greetingLabel.requestFocus());
 
-        //Iniciando a interface em elemento neutro
-        Platform.runLater(() -> {
-            greetingLabel.requestFocus();
-        });
-
-        // Setup greeting label
         TextFlow textFlow = new TextFlow();
         Text part1 = new Text("Que bom ter você de volta,\n");
         part1.setStyle("-fx-font-size: 20px; -fx-fill: #333333;");
-
         Text name = new Text();
         name.setStyle("-fx-font-size: 20px; -fx-fill: #333333; -fx-font-weight: bold;");
-
         textFlow.getChildren().addAll(part1, name);
         greetingLabel.setGraphic(textFlow);
         greetingLabel.setText("");
 
-        // CPF field formatting
         cpfField.setPromptText("Ex: 123.456.789-00");
         cpfField.textProperty().addListener((ChangeListener<String>) (observable, oldValue, newValue) -> {
             Platform.runLater(() -> {
                 String numbersOnly = newValue.replaceAll("[^0-9]", "");
-                if (numbersOnly.length() > 11) {
-                    numbersOnly = numbersOnly.substring(0, 11);
-                }
+                if (numbersOnly.length() > 11) numbersOnly = numbersOnly.substring(0, 11);
                 StringBuilder formatted = new StringBuilder();
                 for (int i = 0; i < numbersOnly.length(); i++) {
-                    if (i == 3 || i == 6) {
-                        formatted.append(".");
-                    } else if (i == 9) {
-                        formatted.append("-");
-                    }
+                    if (i == 3 || i == 6) formatted.append(".");
+                    else if (i == 9) formatted.append("-");
                     formatted.append(numbersOnly.charAt(i));
                 }
-
-                if (!formatted.toString().equals(newValue)) { // Evita recursão infinita
+                if (!formatted.toString().equals(newValue)) {
                     cpfField.setText(formatted.toString());
                     cpfField.positionCaret(formatted.length());
                 }
             });
         });
 
-        // Password field formatting
         passwordField.setPromptText("6 dígitos");
         passwordField.textProperty().addListener((ChangeListener<String>) (observable, oldValue, newValue) -> {
             String numbersOnly = newValue.replaceAll("[^0-9]", "");
-            if (numbersOnly.length() > 6) {
-                numbersOnly = numbersOnly.substring(0, 6);
-            }
+            if (numbersOnly.length() > 6) numbersOnly = numbersOnly.substring(0, 6);
             passwordField.setText(numbersOnly);
             passwordField.positionCaret(numbersOnly.length());
         });
     }
 
-    // --------------------------------------------------------------------------------
-    // Event Handlers
-    // --------------------------------------------------------------------------------
     @FXML
     private void onLoginButtonClick() {
         String cpf = cpfField.getText().replaceAll("[^0-9]", "");
         String password = passwordField.getText();
 
-        ClienteController clienteController = new ClienteController(new ClienteDAO());
-        clienteLogado = loginController.autenticaLogin(cpf, password);
+        Cliente clienteLogado = loginController.autenticaLogin(cpf, password);
 
         if (clienteLogado != null) {
             try {
+                SessionManager.getInstance().setClienteLogado(clienteLogado);
                 errorBox.setVisible(false);
                 errorBox.setManaged(false);
 
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("dashboard.fxml"));
                 Scene mainScene = new Scene(loader.load(), 360, 640);
-
-                DashboardViewController dashboardController = loader.getController();
-                dashboardController.setClienteLogado(clienteLogado);
 
                 Stage stage = (Stage) criarConta.getScene().getWindow();
                 stage.setScene(mainScene);

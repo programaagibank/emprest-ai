@@ -1,14 +1,12 @@
 package br.com.emprestai.view;
 
 import br.com.emprestai.controller.ClienteController;
-import br.com.emprestai.controller.EmprestimoController;
 import br.com.emprestai.controller.LoginController;
 import br.com.emprestai.controller.ParcelaController;
 import br.com.emprestai.dao.ClienteDAO;
-import br.com.emprestai.dao.EmprestimoDAO;
 import br.com.emprestai.dao.ParcelaDAO;
-import br.com.emprestai.model.Cliente;
 import br.com.emprestai.model.Parcela;
+import br.com.emprestai.util.SessionManager;
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -19,6 +17,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -45,7 +44,6 @@ public class ConfirmacaoPagViewController {
     private ParcelaController parcelaController = new ParcelaController(new ParcelaDAO());
     private ParcelaViewController parcelaViewController;
     private LoginController loginController = new LoginController(new ClienteController(new ClienteDAO()));
-    private Cliente             clienteLogado;
 
     // Formatters
     private static final DecimalFormat df = new DecimalFormat("R$ #,##0.00");
@@ -56,6 +54,13 @@ public class ConfirmacaoPagViewController {
     // --------------------------------------------------------------------------------
     @FXML
     private void initialize() {
+        SessionManager.getInstance().refreshClienteLogado();
+        // Verifica se há cliente logado
+        if (SessionManager.getInstance().getClienteLogado() == null) {
+            System.err.println("Nenhum cliente logado encontrado no SessionManager!");
+            voltarParaLogin(); // Redireciona para o login se não houver cliente
+            return;
+        }
 
         // Remover foco automático da senha
         javafx.application.Platform.runLater(() -> {
@@ -86,15 +91,17 @@ public class ConfirmacaoPagViewController {
         this.parcelaViewController = controller;
     }
 
-    public void setClienteLogado(Cliente cliente) {
-        this.clienteLogado = cliente;
-    }
-
     // --------------------------------------------------------------------------------
     // Event Handlers
     // --------------------------------------------------------------------------------
     @FXML
     private void onConfirmarClick() {
+        if (SessionManager.getInstance().getClienteLogado() == null) {
+            mensagemLabel.setText("Sessão expirada. Redirecionando para login...");
+            voltarParaLogin();
+            return;
+        }
+
         String senha = senhaField.getText();
         if (senha.isEmpty()) {
             mensagemLabel.setText("Digite a senha para confirmar o pagamento.");
@@ -102,8 +109,8 @@ public class ConfirmacaoPagViewController {
         }
 
         try {
-            // Aqui você pode chamar o método do controller que valida a senha
-            boolean senhaValida = loginController.validaSenha(senha, clienteLogado.getSenha()); // Supondo que existe esse método
+            // Valida a senha usando o cliente do SessionManager
+            boolean senhaValida = loginController.validaSenha(senha, SessionManager.getInstance().getClienteLogado().getSenha());
             if (senhaValida) {
                 parcelaController.putListParcelas(parcelasSelecionadas);
                 mensagemLabel.setText("Pagamento confirmado com sucesso!");
@@ -136,21 +143,37 @@ public class ConfirmacaoPagViewController {
 
     private void voltarParaParcelas() {
         try {
-            // Abrir tela de confirmação
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("dashboard.fxml"));
-            Scene dashboardScene = new Scene(loader.load(), 360, 640);
-            DashboardViewController dashboardViewController = loader.getController();
-            dashboardViewController.setClienteLogado(clienteLogado);
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("parcela.fxml"));
+            Scene parcelaScene = new Scene(loader.load(), 360, 640);
+            ParcelaViewController controller = loader.getController();
+            controller.setParcelas(parcelasSelecionadas); // Reutiliza as parcelas selecionadas
+            if (parcelaViewController != null && parcelaViewController.getEmprestimo() != null) {
+                controller.setEmprestimo(parcelaViewController.getEmprestimo());
+                controller.setTipoEmprestimo(parcelaViewController.getTipoEmprestimo());
+            }
 
             Stage stage = (Stage) cancelarButton.getScene().getWindow();
-            stage.setScene(dashboardScene);
-            stage.setTitle("EmprestAI - Confirmação de Pagamento");
+            stage.setScene(parcelaScene);
+            stage.setTitle("EmprestAI - Parcelas");
             stage.show();
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
-            mensagemLabel.setText("Erro ao abrir confirmação: " + e.getMessage());
+            mensagemLabel.setText("Erro ao voltar para parcelas: " + e.getMessage());
         }
     }
 
-    // --------------------------------------------------------------------------------
+    private void voltarParaLogin() {
+        try {
+            SessionManager.getInstance().clearSession(); // Limpa a sessão
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("login.fxml"));
+            Scene loginScene = new Scene(loader.load(), 360, 640);
+            Stage stage = (Stage) cancelarButton.getScene().getWindow();
+            stage.setScene(loginScene);
+            stage.setTitle("EmprestAI - Login");
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            mensagemLabel.setText("Erro ao redirecionar para login: " + e.getMessage());
+        }
+    }
 }

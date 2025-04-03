@@ -1,12 +1,16 @@
 package br.com.emprestai.view;
 
+import br.com.emprestai.controller.EmprestimoController;
 import br.com.emprestai.controller.ParcelaController;
+import br.com.emprestai.dao.EmprestimoDAO;
 import br.com.emprestai.dao.ParcelaDAO;
 import br.com.emprestai.enums.StatusEmprestimoEnum;
 import br.com.emprestai.enums.TipoEmprestimoEnum;
 import br.com.emprestai.model.Cliente;
 import br.com.emprestai.model.Emprestimo;
 import br.com.emprestai.model.Parcela;
+import br.com.emprestai.service.calculos.CalculadoraSaldos;
+import br.com.emprestai.util.SessionManager;
 import com.itextpdf.html2pdf.HtmlConverter;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -58,36 +62,36 @@ public class EmprestimoViewController {
     // --------------------------------------------------------------------------------
     private List<Emprestimo> emprestimos;
     private TipoEmprestimoEnum tipoEmprestimo;
-    private Cliente clienteLogado;
     private ParcelaController parcelaController = new ParcelaController(new ParcelaDAO());
+    private EmprestimoController emprestimoController = new EmprestimoController(new EmprestimoDAO(), null); // Ajuste conforme necessário
 
     // --------------------------------------------------------------------------------
     // Initialization
     // --------------------------------------------------------------------------------
     @FXML
     private void initialize() {
+        SessionManager.getInstance().refreshClienteLogado();
+        Cliente clienteLogado = SessionManager.getInstance().getClienteLogado();
+        if (clienteLogado == null) {
+            System.err.println("Nenhum cliente logado encontrado no SessionManager!");
+            onExitClick();
+            return;
+        }
+        // Carrega os empréstimos apenas se o tipoEmprestimo já estiver definido
+        if (tipoEmprestimo != null) {
+            carregarEmprestimos(clienteLogado);
+        }
     }
 
     // --------------------------------------------------------------------------------
     // Setters
     // --------------------------------------------------------------------------------
-    public void setEmprestimos(List<Emprestimo> emprestimos) {
-        this.emprestimos = emprestimos;
-        System.out.println("Total de empréstimos recebidos: " + (emprestimos != null ? emprestimos.size() : 0));
-        if (emprestimos != null) {
-            emprestimos.forEach(e -> System.out.println("Empréstimo ID: " + e.getIdEmprestimo() + ", Tipo: " + e.getTipoEmprestimo() + ", Parcelas Pagas: " + e.getParcelasPagas() + ", Total Parcelas: " + e.getQuantidadeParcelas()));
-        }
-        exibirInformacoesEmprestimo();
-    }
-
     public void setTipoEmprestimo(TipoEmprestimoEnum tipoEmprestimo) {
         this.tipoEmprestimo = tipoEmprestimo;
-        exibirInformacoesEmprestimo();
-    }
-
-    public void setClienteLogado(Cliente cliente) {
-        this.clienteLogado = cliente;
-        exibirInformacoesEmprestimo();
+        Cliente clienteLogado = SessionManager.getInstance().getClienteLogado();
+        if (clienteLogado != null) {
+            carregarEmprestimos(clienteLogado);
+        }
     }
 
     // --------------------------------------------------------------------------------
@@ -98,8 +102,6 @@ public class EmprestimoViewController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("dashboard.fxml"));
             Scene mainScene = new Scene(loader.load(), 360, 640);
-            DashboardViewController dashboardController = loader.getController();
-            dashboardController.setClienteLogado(clienteLogado);
             Stage stage = (Stage) homeButton.getScene().getWindow();
             stage.setScene(mainScene);
             stage.setTitle("EmprestAI - Dashboard");
@@ -116,6 +118,7 @@ public class EmprestimoViewController {
     @FXML
     private void onExitClick() {
         try {
+            SessionManager.getInstance().clearSession(); // Limpa a sessão ao sair
             FXMLLoader loader = new FXMLLoader(getClass().getResource("login.fxml"));
             Scene mainScene = new Scene(loader.load(), 360, 640);
             Stage stage = (Stage) homeButton.getScene().getWindow();
@@ -134,7 +137,6 @@ public class EmprestimoViewController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("simulacaoEmprestimo.fxml"));
             Scene simulateScene = new Scene(loader.load(), 360, 640);
             SimulacaoViewController simulacaoController = loader.getController();
-            simulacaoController.setClienteLogado(clienteLogado);
             simulacaoController.setTipoEmprestimo(tipoEmprestimo);
             Stage stage = (Stage) simulateButton.getScene().getWindow();
             stage.setScene(simulateScene);
@@ -163,7 +165,7 @@ public class EmprestimoViewController {
             todasParcelas.sort(Comparator.comparing(Parcela::getDataVencimento));
 
             parcelaViewController.setEmprestimo(null);
-            parcelaViewController.setClienteLogado(clienteLogado);
+            parcelaViewController.setTipoEmprestimo(tipoEmprestimo); // Passa o tipo para manter o contexto
             parcelaViewController.setParcelas(todasParcelas);
 
             Stage stage = (Stage) ordemVencimentoButton.getScene().getWindow();
@@ -193,7 +195,7 @@ public class EmprestimoViewController {
             todasParcelas.sort(Comparator.comparing(Parcela::getDataVencimento, Comparator.reverseOrder()));
 
             parcelaViewController.setEmprestimo(null);
-            parcelaViewController.setClienteLogado(clienteLogado);
+            parcelaViewController.setTipoEmprestimo(tipoEmprestimo); // Passa o tipo para manter o contexto
             parcelaViewController.setParcelas(todasParcelas);
 
             Stage stage = (Stage) maiorDescontoButton.getScene().getWindow();
@@ -209,7 +211,25 @@ public class EmprestimoViewController {
     // --------------------------------------------------------------------------------
     // Helper Methods
     // --------------------------------------------------------------------------------
+    private void carregarEmprestimos(Cliente cliente) {
+        try {
+            // Busca os empréstimos do cliente filtrados pelo tipoEmprestimo
+            emprestimos = emprestimoController.getByCliente(cliente.getIdCliente(), tipoEmprestimo);
+            System.out.println("Total de empréstimos buscados: " + (emprestimos != null ? emprestimos.size() : 0));
+            if (emprestimos != null) {
+                emprestimos.forEach(e -> System.out.println("Empréstimo ID: " + e.getIdEmprestimo() + ", Tipo: " + e.getTipoEmprestimo() + ", Parcelas Pagas: " + e.getParcelasPagas() + ", Total Parcelas: " + e.getQuantidadeParcelas()));
+            }
+            exibirInformacoesEmprestimo();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println("Erro ao buscar empréstimos: " + e.getMessage());
+            emprestimos = null; // Limpa a lista em caso de erro
+            exibirInformacoesEmprestimo();
+        }
+    }
+
     private void exibirInformacoesEmprestimo() {
+        Cliente clienteLogado = SessionManager.getInstance().getClienteLogado();
         if (clienteLogado == null || tipoEmprestimo == null) {
             showNoLoanState();
             return;
@@ -226,7 +246,6 @@ public class EmprestimoViewController {
 
             if (!emprestimosFiltrados.isEmpty()) {
                 showLoanDetails(emprestimosFiltrados);
-                // Habilita o botão se houver margem para mais um empréstimo
                 simulateButton.setVisible(hasMargin);
                 simulateButton.setManaged(hasMargin);
                 simulationMessage.setVisible(!hasMargin);
@@ -245,10 +264,8 @@ public class EmprestimoViewController {
         contractTitle.setText("Contratos Ativos");
         contractType.setText(tipoEmprestimo.name());
 
-        // Limpar o loanInfoBox antes de adicionar novos quadros
         loanInfoBox.getChildren().clear();
 
-        // Criar um quadro para cada empréstimo
         for (Emprestimo emprestimo : emprestimosFiltrados) {
             VBox loanCard = createLoanCard(emprestimo);
             loanInfoBox.getChildren().add(loanCard);
@@ -256,27 +273,21 @@ public class EmprestimoViewController {
     }
 
     private VBox createLoanCard(Emprestimo emprestimo) {
-        // Criar o quadro principal para o empréstimo
         VBox card = new VBox(10);
         card.setStyle("-fx-background-color: #f0f0f0; -fx-padding: 10; -fx-border-color: #d3d3d3; -fx-border-width: 1; -fx-border-radius: 5;");
 
-        // Título do empréstimo
         HBox titleBox = new HBox(10);
         Label titleLabel = new Label(emprestimo.getTipoEmprestimo().name() + " R$ " + formatCurrency(emprestimo.getValorEmprestimo()));
         titleLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 16;");
         titleBox.getChildren().add(titleLabel);
         card.getChildren().add(titleBox);
 
-        // Informações do empréstimo
         Label valorLabel = new Label("Valor Empréstimo: " + formatCurrency(emprestimo.getValorEmprestimo()));
         Label parcelaLabel = new Label("Valor da Parcela: " + formatCurrency(emprestimo.getValorParcela()));
-        // Corrigido: Exibir o número de parcelas pagas diretamente
         Label parcelasLabel = new Label("Parcelas Pagas: " + emprestimo.getParcelasPagas() + " de " + emprestimo.getQuantidadeParcelas());
 
-        // Log para depuração
         System.out.println("Empréstimo ID: " + emprestimo.getIdEmprestimo() + " - Parcelas Pagas: " + emprestimo.getParcelasPagas() + ", Total Parcelas: " + emprestimo.getQuantidadeParcelas());
 
-        // Status com círculo
         HBox statusBox = new HBox(5);
         Circle statusCircle = new Circle(5);
         updateStatusCircle(statusCircle, emprestimo.getStatusEmprestimo());
@@ -285,7 +296,6 @@ public class EmprestimoViewController {
 
         card.getChildren().addAll(valorLabel, parcelaLabel, parcelasLabel, statusBox);
 
-        // Botões de ação
         Button ordemVencimentoBtn = new Button("Ordem de Vencimento");
         ordemVencimentoBtn.setStyle("-fx-background-color: #0078d7; -fx-text-fill: white; -fx-font-size: 14;");
         ordemVencimentoBtn.setOnAction(e -> handleOrdemVencimento(emprestimo));
@@ -326,7 +336,7 @@ public class EmprestimoViewController {
             }
 
             parcelaViewController.setEmprestimo(emprestimo);
-            parcelaViewController.setClienteLogado(clienteLogado);
+            parcelaViewController.setTipoEmprestimo(tipoEmprestimo); // Mantém o contexto
             parcelaViewController.setParcelas(parcelas);
 
             Stage stage = (Stage) loanInfoBox.getScene().getWindow();
@@ -351,7 +361,7 @@ public class EmprestimoViewController {
             }
 
             parcelaViewController.setEmprestimo(emprestimo);
-            parcelaViewController.setClienteLogado(clienteLogado);
+            parcelaViewController.setTipoEmprestimo(tipoEmprestimo); // Mantém o contexto
             parcelaViewController.setParcelas(parcelas);
 
             Stage stage = (Stage) loanInfoBox.getScene().getWindow();
@@ -365,6 +375,7 @@ public class EmprestimoViewController {
     }
 
     private void handleGeneratePdf(Emprestimo emprestimo) {
+        Cliente clienteLogado = SessionManager.getInstance().getClienteLogado();
         if (emprestimo == null || clienteLogado == null) {
             System.out.println("Nenhum empréstimo ou cliente encontrado para gerar o contrato.");
             return;
@@ -392,12 +403,12 @@ public class EmprestimoViewController {
         boolean canSimulate = checkMarginAvailability();
 
         if (canSimulate) {
-            toggleVisibility(false, true); // Mostra o botão de simulação
+            toggleVisibility(false, true);
             simulationMessage.setText("Simule seu primeiro empréstimo!");
             simulationMessage.setVisible(true);
             simulationMessage.setManaged(true);
         } else {
-            toggleVisibility(false, false); // Esconde tudo
+            toggleVisibility(false, false);
             simulationMessage.setText("Produto não disponível ou sem margem");
             simulationMessage.setVisible(true);
             simulationMessage.setManaged(true);
@@ -405,11 +416,10 @@ public class EmprestimoViewController {
     }
 
     private boolean checkMarginAvailability() {
+        Cliente clienteLogado = SessionManager.getInstance().getClienteLogado();
         if (tipoEmprestimo == PESSOAL) {
-            // Empréstimo pessoal sempre permite simulação, independentemente de margem
             return true;
         } else if (tipoEmprestimo == CONSIGNADO) {
-            // Consignado depende da margem disponível
             return clienteLogado.getMargemConsignavelDisponivel() > 0;
         }
         return false;
@@ -449,6 +459,7 @@ public class EmprestimoViewController {
     }
 
     private String generateHtmlContent(Emprestimo emprestimo) throws SQLException {
+        Cliente clienteLogado = SessionManager.getInstance().getClienteLogado();
         StringBuilder html = new StringBuilder();
         List<Parcela> parcelas = parcelaController.getParcelasByEmprestimo(emprestimo);
         html.append("<!DOCTYPE html>")
@@ -471,8 +482,6 @@ public class EmprestimoViewController {
                 .append("</head>")
                 .append("<body>");
 
-        // Header Section: Client Information and Document Details
-        // Note: Since idCliente is available, you might need to fetch the client name and CPF from a ClienteController
         html.append("<div class=\"header\">")
                 .append("<h2>Documento Descritivo de Crédito</h2>")
                 .append("<div><strong>Nome:</strong> ").append(clienteLogado != null ? clienteLogado.getNomeCliente() : "Não disponível").append("</div>")
@@ -480,10 +489,8 @@ public class EmprestimoViewController {
                 .append("<div><strong>Emissão:</strong> ").append(LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))).append("</div>")
                 .append("</div>");
 
-        // Separator
         html.append("<div class=\"separator\"></div>");
 
-        // Contract Details Section
         html.append("<div class=\"section-title\">Característica do Contrato</div>")
                 .append("<table>")
                 .append("<tr><td>Modalidade de Operação</td><td>").append(emprestimo.getTipoEmprestimo().name()).append("</td></tr>")
@@ -491,20 +498,17 @@ public class EmprestimoViewController {
                 .append("<tr><td>Número do Contrato</td><td>").append(emprestimo.getIdEmprestimo()).append("</td></tr>")
                 .append("<tr><td>Data da Contratação</td><td>").append(emprestimo.getDataContratacao().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))).append("</td></tr>")
                 .append("<tr><td>Data de Liberação do Crédito</td><td>").append(emprestimo.getDataLiberacaoCred().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))).append("</td></tr>")
-                // Calculate the last due date based on the number of parcels and start date
                 .append("<tr><td>Data do Último Vencimento</td><td>")
                 .append(emprestimo.getDataInicio().plusMonths(emprestimo.getQuantidadeParcelas()).format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
                 .append("</td></tr>")
                 .append("</table>");
 
-        // Separator
         html.append("<div class=\"separator\"></div>");
 
-        // Rates Section
-        // Calculate annual nominal rate from monthly rate (taxaJuros is assumed to be monthly)
         double taxaJurosAnual = emprestimo.getTaxaJuros() * 12;
-        double tributos = emprestimo.getValorIOF(); // IOF is a tax
-        double tarifas = emprestimo.getOutrosCustos() + (emprestimo.getContratarSeguro() != null && emprestimo.getContratarSeguro() ? emprestimo.getValorSeguro() : 0);        html.append("<div class=\"section-title\">Taxa de Juros</div>")
+        double tributos = emprestimo.getValorIOF();
+        double tarifas = emprestimo.getOutrosCustos() + (emprestimo.getContratarSeguro() != null && emprestimo.getContratarSeguro() ? emprestimo.getValorSeguro() : 0);
+        html.append("<div class=\"section-title\">Taxa de Juros</div>")
                 .append("<table>")
                 .append("<tr><td>Taxa de Juros Mensal Nominal</td><td>").append(String.format("%.2f%% a.m.", emprestimo.getTaxaJuros())).append("</td></tr>")
                 .append("<tr><td>Taxa de Juros Anual Nominal</td><td>").append(String.format("%.2f%% a.a.", taxaJurosAnual)).append("</td></tr>")
@@ -513,26 +517,20 @@ public class EmprestimoViewController {
                 .append("<tr><td>Tributos</td><td>").append(formatCurrency(tributos)).append("</td></tr>")
                 .append("</table>");
 
-        // Separator
         html.append("<div class=\"separator\"></div>");
 
-        // Summary Section
         int prazoTotal = emprestimo.getQuantidadeParcelas();
         int prazoRemanescente = emprestimo.getQuantidadeParcelas() - emprestimo.getParcelasPagas();
-        double saldoDevedorAtual = emprestimo.getSaldoDevedor();
-        double saldoDevedorFinal = emprestimo.getSaldoDevedorAtualizado();
+        double saldoDevedorAtualizado = CalculadoraSaldos.calcularSaldoDevedorAtualizado(parcelas);
         html.append("<div class=\"section-title\">Resumo</div>")
                 .append("<div class=\"summary\">")
                 .append("<div><strong>Prazo Total da Operação:</strong> ").append(prazoTotal).append(" meses</div>")
                 .append("<div><strong>Prazo Remanescente:</strong> ").append(prazoRemanescente).append(" meses</div>")
-                .append("<div><strong>Saldo Devedor Atual:</strong> ").append(formatCurrency(saldoDevedorAtual)).append("</div>")
-                .append("<div><strong>Saldo Devedor Final:</strong> ").append(formatCurrency(saldoDevedorFinal)).append("</div>")
+                .append("<div><strong>Saldo Devedor Atual:</strong> ").append(formatCurrency(saldoDevedorAtualizado)).append("</div>")
                 .append("</div>");
 
-        // Separator
         html.append("<div class=\"separator\"></div>");
 
-        // Installments Breakdown Section
         html.append("<div class=\"section-title\">Demonstrativo de Evolução do Saldo Devedor/Composição do Valor das Parcelas</div>")
                 .append("<table>")
                 .append("<tr>")
@@ -548,11 +546,10 @@ public class EmprestimoViewController {
         if (parcelas != null && !parcelas.isEmpty()) {
             for (int i = 0; i < parcelas.size(); i++) {
                 Parcela parcela = parcelas.get(i);
-                double valorParcela = parcela.getValorPresenteParcela();
-                // Calculate principal and interest using SAC method (constant principal amortization)
-                double valorPrincipal = emprestimo.getValorEmprestimo() / emprestimo.getQuantidadeParcelas();
-                double valorJuros = parcela.getJuros(); // Monthly interest on remaining balance
-                double saldoDevedor = parcela.getSaldoDevedor();
+                double valorParcela = emprestimo.getValorParcela();
+                double valorPrincipal = parcela.getAmortizacao();
+                double valorJuros = parcela.getJuros();
+                double valorPresenteParcela = parcela.getValorPresenteParcela();
 
                 html.append("<tr>")
                         .append("<td>").append(i + 1).append("</td>")
@@ -560,7 +557,7 @@ public class EmprestimoViewController {
                         .append("<td>").append(formatCurrency(valorParcela)).append("</td>")
                         .append("<td>").append(formatCurrency(valorPrincipal)).append("</td>")
                         .append("<td>").append(formatCurrency(valorJuros)).append("</td>")
-                        .append("<td>").append(formatCurrency(saldoDevedor)).append("</td>")
+                        .append("<td>").append(formatCurrency(valorPresenteParcela)).append("</td>")
                         .append("<td>").append(parcela.getStatus() != null ? parcela.getStatus().toString() : "PARCELA PAGA").append("</td>")
                         .append("</tr>");
             }

@@ -5,6 +5,7 @@ import br.com.emprestai.dao.ClienteDAO;
 import br.com.emprestai.dao.EmprestimoDAO;
 import br.com.emprestai.model.Cliente;
 import br.com.emprestai.model.Emprestimo;
+import br.com.emprestai.util.SessionManager;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -40,7 +41,6 @@ public class DashboardViewController {
     // --------------------------------------------------------------------------------
     // Class Properties
     // --------------------------------------------------------------------------------
-    private Cliente              clienteLogado;
     private EmprestimoController emprestimoController = new EmprestimoController(new EmprestimoDAO(), new ClienteDAO());
 
     // --------------------------------------------------------------------------------
@@ -48,14 +48,14 @@ public class DashboardViewController {
     // --------------------------------------------------------------------------------
     @FXML
     public void initialize() {
-        atualizarMargens();
-    }
+        SessionManager.getInstance().refreshClienteLogado();
+        Cliente clienteLogado = SessionManager.getInstance().getClienteLogado();
 
-    // --------------------------------------------------------------------------------
-    // Setters
-    // --------------------------------------------------------------------------------
-    public void setClienteLogado(Cliente cliente) {
-        this.clienteLogado = cliente;
+        if (clienteLogado == null) {
+            System.err.println("Nenhum cliente logado encontrado no SessionManager!");
+            onExitClick(); // Redireciona para o login se não houver cliente
+            return;
+        }
         atualizarMargens();
     }
 
@@ -64,20 +64,17 @@ public class DashboardViewController {
     // --------------------------------------------------------------------------------
     @FXML
     private void onConsignadoClick() {
+        Cliente clienteLogado = SessionManager.getInstance().getClienteLogado();
+        if (clienteLogado == null) {
+            onExitClick();
+            return;
+        }
+
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("emprestimos.fxml"));
             Scene consignadoScene = new Scene(loader.load(), 360, 640);
 
-            List<Emprestimo> emprestimos = null;
-            try {
-                emprestimos = emprestimoController.getByCliente(clienteLogado.getIdCliente(), CONSIGNADO);
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-            }
-
             EmprestimoViewController emprestimoViewController = loader.getController();
-            emprestimoViewController.setEmprestimos(emprestimos);
-            emprestimoViewController.setClienteLogado(clienteLogado);
             emprestimoViewController.setTipoEmprestimo(CONSIGNADO);
 
             Stage stage = (Stage) consignadoButton.getScene().getWindow();
@@ -92,20 +89,17 @@ public class DashboardViewController {
 
     @FXML
     private void onPessoalClick() {
+        Cliente clienteLogado = SessionManager.getInstance().getClienteLogado();
+        if (clienteLogado == null) {
+            onExitClick();
+            return;
+        }
+
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("emprestimos.fxml"));
             Scene consignadoScene = new Scene(loader.load(), 360, 640);
 
-            List<Emprestimo> emprestimos = null;
-            try {
-                emprestimos = emprestimoController.getByCliente(clienteLogado.getIdCliente(), PESSOAL);
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-            }
-
             EmprestimoViewController emprestimoViewController = loader.getController();
-            emprestimoViewController.setEmprestimos(emprestimos);
-            emprestimoViewController.setClienteLogado(clienteLogado);
             emprestimoViewController.setTipoEmprestimo(PESSOAL);
 
             Stage stage = (Stage) consignadoButton.getScene().getWindow();
@@ -120,11 +114,13 @@ public class DashboardViewController {
 
     @FXML
     private void onHomeClick() {
+        // Já estamos no dashboard, então não faz nada ou recarrega a tela, se desejado
     }
 
     @FXML
     private void onExitClick() {
         try {
+            SessionManager.getInstance().clearSession(); // Limpa a sessão ao sair
             FXMLLoader loader = new FXMLLoader(getClass().getResource("login.fxml"));
             Scene mainScene = new Scene(loader.load(), 360, 640);
 
@@ -138,13 +134,16 @@ public class DashboardViewController {
         }
     }
 
+    @FXML
     public void onProfileClick(MouseEvent mouseEvent) {
+        // Implementar navegação para perfil, se necessário
     }
 
     // --------------------------------------------------------------------------------
     // Helper Methods
     // --------------------------------------------------------------------------------
     private void atualizarMargens() {
+        Cliente clienteLogado = SessionManager.getInstance().getClienteLogado();
         if (clienteLogado != null) {
             try {
                 double margemConsig = clienteLogado.getMargemConsignavelDisponivel();
@@ -159,5 +158,12 @@ public class DashboardViewController {
             creditMarginConsig.setText("R$ 0,00");
             creditMarginPessoal.setText("R$ 0,00");
         }
+    }
+
+    private String formatCpf(String cpf) {
+        if (cpf != null && cpf.length() == 11) {
+            return cpf.substring(0, 3) + "." + cpf.substring(3, 6) + "." + cpf.substring(6, 9) + "-" + cpf.substring(9);
+        }
+        return cpf != null ? cpf : "";
     }
 }

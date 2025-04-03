@@ -4,6 +4,7 @@ import br.com.emprestai.controller.ClienteController;
 import br.com.emprestai.dao.ClienteDAO;
 import br.com.emprestai.exception.ApiException;
 import br.com.emprestai.model.Cliente;
+import br.com.emprestai.util.SessionManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -52,8 +53,7 @@ public class CadastroClienteViewController {
             String senha = senhaField.getText();
 
             // Validação de campos obrigatórios
-            if (cpf.isEmpty() || nome.isEmpty() || senha.isEmpty() ||
-                    dataNascimento == null) {
+            if (cpf.isEmpty() || nome.isEmpty() || senha.isEmpty() || dataNascimento == null) {
                 showError("Todos os campos são obrigatórios.");
                 return;
             }
@@ -66,16 +66,60 @@ public class CadastroClienteViewController {
             cliente.setSenha(senha);
 
             // Cadastro no banco
-            clienteController.post(cliente);
+            Cliente clienteCadastrado = clienteController.post(cliente);
 
-            // Feedback e limpeza
-            showInfo("Cliente cadastrado com sucesso!");
+            // Armazena o cliente no SessionManager
+            SessionManager.getInstance().setClienteLogado(clienteCadastrado);
+
+            // Feedback e redirecionamento
+            showInfo("Cliente cadastrado com sucesso! Redirecionando para o dashboard...");
             limparCampos();
+            irParaDashboard();
 
         } catch (ApiException e) {
             showError(e.getMessage());
         }
     }
+
+    @FXML
+    private void onVoltarClick(ActionEvent event) {
+        try {
+            SessionManager.getInstance().clearSession(); // Limpa qualquer sessão residual
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("login.fxml"));
+            Scene loginScene = new Scene(loader.load(), 360, 640);
+            Stage stage = (Stage) cpfField.getScene().getWindow();
+            stage.setScene(loginScene);
+            stage.setTitle("EmprestAI - Login");
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showError("Erro ao voltar para o login: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void onHomeClick(ActionEvent event) {
+        // Como é uma tela de cadastro, não faz sentido ir para o dashboard antes de cadastrar
+        // Redireciona para o login por consistência
+        onVoltarClick(event);
+    }
+
+    @FXML
+    private void onExitClick(ActionEvent event) {
+        try {
+            SessionManager.getInstance().clearSession(); // Limpa qualquer sessão residual
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("login.fxml"));
+            Scene loginScene = new Scene(loader.load(), 360, 640);
+            Stage stage = (Stage) cpfField.getScene().getWindow();
+            stage.setScene(loginScene);
+            stage.setTitle("EmprestAI - Login");
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showError("Erro ao sair para o login: " + e.getMessage());
+        }
+    }
+
     // --------------------------------------------------------------------------------
     // Helper Methods
     // --------------------------------------------------------------------------------
@@ -85,6 +129,7 @@ public class CadastroClienteViewController {
         dataNascimentoField.setValue(null);
         senhaField.clear();
     }
+
     private void showError(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Erro");
@@ -101,37 +146,17 @@ public class CadastroClienteViewController {
         alert.showAndWait();
     }
 
-    @FXML
-    private void onVoltarClick(ActionEvent event) {
+    private void irParaDashboard() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("login.fxml"));
-            Scene loginScene = new Scene(loader.load(), 360, 640);
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("dashboard.fxml"));
+            Scene dashboardScene = new Scene(loader.load(), 360, 640);
             Stage stage = (Stage) cpfField.getScene().getWindow();
-            stage.setScene(loginScene);
-            stage.setTitle("EmprestAI - Login");
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @FXML
-    private void onHomeClick(ActionEvent event) {
-        // Navegar para a tela inicial/dashboard
-    }
-
-    @FXML
-    private void onExitClick(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("login.fxml"));
-            Scene mainScene = new Scene(loader.load(), 360, 640);
-            DashboardViewController dashboardController = loader.getController();
-            Stage stage = (Stage) cpfField.getScene().getWindow();
-            stage.setScene(mainScene);
+            stage.setScene(dashboardScene);
             stage.setTitle("EmprestAI - Dashboard");
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
+            showError("Erro ao redirecionar para o dashboard: " + e.getMessage());
         }
     }
 }

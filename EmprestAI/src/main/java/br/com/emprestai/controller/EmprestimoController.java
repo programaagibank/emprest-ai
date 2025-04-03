@@ -5,11 +5,12 @@ import br.com.emprestai.dao.EmprestimoDAO;
 import br.com.emprestai.enums.StatusEmprestimoEnum;
 import br.com.emprestai.enums.TipoEmprestimoEnum;
 import br.com.emprestai.exception.ApiException;
+import br.com.emprestai.exception.ElegibilidadeException;
 import br.com.emprestai.model.Cliente;
 import br.com.emprestai.model.Emprestimo;
-import br.com.emprestai.service.calculos.CalculadoraEmprestimo;
-import br.com.emprestai.service.calculos.CalculoConsignado;
-import br.com.emprestai.service.calculos.CalculoPessoal;
+import br.com.emprestai.service.calculos.CalculadoraContrato;
+import br.com.emprestai.service.calculos.CalculoTaxaJuros;
+import br.com.emprestai.service.elegibilidade.ElegibilidadeCliente;
 import br.com.emprestai.service.elegibilidade.ElegibilidadeConsignado;
 import br.com.emprestai.service.elegibilidade.ElegibilidadePessoal;
 import br.com.emprestai.util.EmprestimoParams;
@@ -75,24 +76,16 @@ public class EmprestimoController {
     }
 
     // GET - Calcular contrato Price e verificar elegibilidade
-    public Emprestimo getPrice(Emprestimo emprestimo, Cliente cliente) throws ApiException {
+    public Emprestimo getPrice(Emprestimo emprestimo, Cliente cliente) throws ApiException, ElegibilidadeException {
         try {
-            TipoEmprestimoEnum tipoEmp = emprestimo.getTipoEmprestimo();
-
-            boolean elegivel = switch (tipoEmp) {
-                case PESSOAL -> processarEmprestimoPessoal(cliente, emprestimo);
-                case CONSIGNADO -> processarEmprestimoConsignado(cliente, emprestimo);
-                default -> throw new ApiException("Tipo de empréstimo inválido.", 400); // Bad Request
-            };
-
-            if (!elegivel) {
-                emprestimo.setStatusEmprestimo(NEGADO);
-                throw new ApiException("Empréstimo não aprovado devido à elegibilidade", 400); // Bad Request
-            }
-
+            processarEmprestimo(emprestimo, cliente);
+            verificarElegibilidade(emprestimo, cliente);
             return emprestimo;
+        } catch (ApiException | ElegibilidadeException e) {
+            emprestimo.setStatusEmprestimo(NEGADO);
+            throw e;
         } catch (Exception e) {
-            throw new ApiException("Erro ao processar empréstimo: " + e.getMessage(), 500); // Internal Server Error
+            throw new ApiException("Erro ao processar empréstimo: " + e.getMessage(), 500);
         }
     }
 
@@ -106,72 +99,40 @@ public class EmprestimoController {
     // --------------------------------------------------------------------------------
 
     // Processar cálculos e elegibilidade para empréstimo pessoal
-    private boolean processarEmprestimoPessoal(Cliente cliente, Emprestimo emprestimo) throws ApiException {
-        try {
-            // Verificar elegibilidade geral do cliente
-            if (!cliente.isElegivelPessoal()) {
-                return false;
-            }
+    private void processarEmprestimo(Emprestimo emprestimo, Cliente cliente) throws ApiException {
+        double taxaJuros = emprestimo.getTipoEmprestimo() == TipoEmprestimoEnum.PESSOAL
+                ? CalculoTaxaJuros.calculoTaxaDeJurosMensal(cliente.getScore())
+                : CalculoTaxaJuros.calcularTaxaJurosMensal(emprestimo.getQuantidadeParcelas());
 
-            int idade = (int) YEARS.between(cliente.getDataNascimento(), emprestimo.getDataContratacao());
-            int carencia = (int) DAYS.between(emprestimo.getDataContratacao(), emprestimo.getDataInicio());
-            int parcelas = emprestimo.getQuantidadeParcelas();
-
-            // Calcular taxa de juros e contrato
-            double taxaJuros = CalculoPessoal.calculoTaxaDeJurosMensal(cliente.getScore());
-            emprestimo.setTaxaJuros(taxaJuros);
-
-            double valorSolicitado = emprestimo.getValorEmprestimo();
-
-            CalculadoraEmprestimo.contratoPrice(emprestimo, cliente.getDataNascimento());
-
-            double valorParcela = emprestimo.getValorParcela();
-
-            // Verificar regras específicas de elegibilidade pessoal
-            ElegibilidadePessoal.verificarElegibilidadePessoal(valorParcela, idade, parcelas, cliente.getScore(), taxaJuros, carencia, valorSolicitado);
-
-            emprestimo.setTaxaMulta(params.getPercentualMultaAtraso());
-            emprestimo.setTaxaJurosMora(params.getPercentualJurosMora());
-
-            return true;
-        } catch (Exception e) {
-            throw new ApiException("Erro ao processar empréstimo pessoal: " + e.getMessage(), 400);
-        }
+        emprestimo.setTaxaJuros(taxaJuros);
+        CalculadoraContrato.contratoPrice(emprestimo, cliente.getDataNascimento());
+        emprestimo.setTaxaMulta(params.getPercentualMultaAtraso());
+        emprestimo.setTaxaJurosMora(params.getPercentualJurosMora());
     }
 
-    // Processar cálculos e elegibilidade para empréstimo consignado
-    private boolean processarEmprestimoConsignado(Cliente cliente, Emprestimo emprestimo) throws ApiException {
-        try {
-            // Verificar elegibilidade geral do cliente
-            if (!cliente.isElegivelConsignado()) {
-                return false;
-            }
+    private void verificarElegibilidade(Emprestimo emprestimo, Cliente cliente) throws ApiException, ElegibilidadeException {
+        ElegibilidadeCliente elegibilidadeCliente = new ElegibilidadeCliente(cliente);
+        int idade = (int) YEARS.between(cliente.getDataNascimento(), emprestimo.getDataContratacao());
+        int carencia = (int) DAYS.between(emprestimo.getDataContratacao(), emprestimo.getDataInicio());
 
-            int idade = (int) YEARS.between(cliente.getDataNascimento(), emprestimo.getDataContratacao());
-            int carencia = (int) DAYS.between(emprestimo.getDataContratacao(), emprestimo.getDataInicio());
-            int parcelas = emprestimo.getQuantidadeParcelas();
+        boolean elegivelGeral = emprestimo.getTipoEmprestimo() == TipoEmprestimoEnum.PESSOAL
+                ? elegibilidadeCliente.isElegivelPessoal()
+                : elegibilidadeCliente.isElegivelConsignado();
 
-            // Calcular taxa de juros e contrato
-            double taxaJuros = CalculoConsignado.calcularTaxaJurosMensal(parcelas);
-            emprestimo.setTaxaJuros(taxaJuros);
+        if (!elegivelGeral) {
+            throw new ApiException("Cliente não elegível para o tipo de empréstimo", 400);
+        }
 
-            double valorSolicitado = emprestimo.getValorEmprestimo();
-
-            CalculadoraEmprestimo.contratoPrice(emprestimo, cliente.getDataNascimento());
-
-            double valorParcela = emprestimo.getValorParcela();
-
-            // Verificar regras específicas de elegibilidade consignado
-            ElegibilidadeConsignado.verificarElegibilidadeConsignado(valorParcela, idade, parcelas, taxaJuros, carencia, valorSolicitado);
-
-
-            emprestimo.setTaxaMulta(params.getPercentualMultaAtraso());
-            emprestimo.setTaxaJurosMora(params.getPercentualJurosMora());
-
-
-            return true;
-        } catch (Exception e) {
-            throw new ApiException("Erro ao processar empréstimo consignado: " + e.getMessage(), 400);
+        if (emprestimo.getTipoEmprestimo() == TipoEmprestimoEnum.PESSOAL) {
+            ElegibilidadePessoal.verificarElegibilidadePessoal(
+                    emprestimo.getValorParcela(), idade, emprestimo.getQuantidadeParcelas(),
+                    cliente.getScore(), emprestimo.getTaxaJuros(), carencia, emprestimo.getValorEmprestimo()
+            );
+        } else {
+            ElegibilidadeConsignado.verificarElegibilidadeConsignado(
+                    emprestimo.getValorParcela(), idade, emprestimo.getQuantidadeParcelas(),
+                    emprestimo.getTaxaJuros(), carencia, emprestimo.getValorEmprestimo()
+            );
         }
     }
 }

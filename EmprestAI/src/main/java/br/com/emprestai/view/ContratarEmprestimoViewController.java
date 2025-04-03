@@ -4,8 +4,8 @@ import br.com.emprestai.controller.EmprestimoController;
 import br.com.emprestai.dao.ClienteDAO;
 import br.com.emprestai.dao.EmprestimoDAO;
 import br.com.emprestai.enums.TipoEmprestimoEnum;
-import br.com.emprestai.model.Cliente;
 import br.com.emprestai.model.Emprestimo;
+import br.com.emprestai.util.SessionManager;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -45,7 +45,6 @@ public class ContratarEmprestimoViewController {
     // --------------------------------------------------------------------------------
     // Class Properties
     // --------------------------------------------------------------------------------
-    private Cliente clienteLogado;
     private Emprestimo emprestimoParaContratar;
     private EmprestimoController emprestimoController;
 
@@ -59,6 +58,7 @@ public class ContratarEmprestimoViewController {
     // --------------------------------------------------------------------------------
     @FXML
     private void initialize() {
+        SessionManager.getInstance().refreshClienteLogado();
         emprestimoController = new EmprestimoController(new EmprestimoDAO(), new ClienteDAO());
 
         // Setup checkboxes to enable confirm button only when both are checked
@@ -71,15 +71,17 @@ public class ContratarEmprestimoViewController {
         // Percent formatter setup
         percentFormatter.setMinimumFractionDigits(2);
         percentFormatter.setMaximumFractionDigits(2);
+
+        // Verifica se há cliente logado
+        if (SessionManager.getInstance().getClienteLogado() == null) {
+            System.err.println("Nenhum cliente logado encontrado no SessionManager!");
+            onExitClick(); // Redireciona para o login se não houver cliente
+        }
     }
 
     // --------------------------------------------------------------------------------
     // Setters
     // --------------------------------------------------------------------------------
-    public void setClienteLogado(Cliente cliente) {
-        this.clienteLogado = cliente;
-    }
-
     public void setEmprestimoParaContratar(Emprestimo emprestimo) {
         this.emprestimoParaContratar = emprestimo;
         if (emprestimo != null) {
@@ -93,6 +95,12 @@ public class ContratarEmprestimoViewController {
     @FXML
     private void onConfirmClick() {
         try {
+            if (SessionManager.getInstance().getClienteLogado() == null) {
+                showAlert("Sessão Expirada", "Sessão expirada. Redirecionando para login...");
+                onExitClick();
+                return;
+            }
+
             if (emprestimoParaContratar == null) {
                 showAlert("Erro", "Dados do empréstimo não encontrados.");
                 return;
@@ -124,8 +132,6 @@ public class ContratarEmprestimoViewController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("dashboard.fxml"));
             Scene mainScene = new Scene(loader.load(), 360, 640);
-            DashboardViewController dashboardController = loader.getController();
-            dashboardController.setClienteLogado(clienteLogado);
             Stage stage = (Stage) homeButton.getScene().getWindow();
             stage.setScene(mainScene);
             stage.setTitle("EmprestAI - Dashboard");
@@ -142,7 +148,6 @@ public class ContratarEmprestimoViewController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("simulacaoEmprestimo.fxml"));
             Scene mainScene = new Scene(loader.load(), 360, 640);
             SimulacaoViewController simulacaoController = loader.getController();
-            simulacaoController.setClienteLogado(clienteLogado);
             simulacaoController.setTipoEmprestimo(emprestimoParaContratar.getTipoEmprestimo());
             Stage stage = (Stage) backButton.getScene().getWindow();
             stage.setScene(mainScene);
@@ -157,6 +162,7 @@ public class ContratarEmprestimoViewController {
     @FXML
     private void onExitClick() {
         try {
+            SessionManager.getInstance().clearSession(); // Limpa a sessão ao sair
             FXMLLoader loader = new FXMLLoader(getClass().getResource("login.fxml"));
             Scene mainScene = new Scene(loader.load(), 360, 640);
             Stage stage = (Stage) exitButton.getScene().getWindow();

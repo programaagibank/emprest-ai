@@ -5,7 +5,7 @@ import br.com.emprestai.enums.StatusParcelaEnum;
 import br.com.emprestai.exception.ApiException;
 import br.com.emprestai.model.Emprestimo;
 import br.com.emprestai.model.Parcela;
-import br.com.emprestai.service.calculos.CalculadoraEmprestimo;
+import br.com.emprestai.service.calculos.CalculadoraParcela;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -48,7 +48,7 @@ public class ParcelaController {
         }
 
         emprestimo.setParcelaList(parcelaDAO.buscarParcelasPorEmprestimo(emprestimo.getIdEmprestimo()));
-        return CalculadoraEmprestimo.processarValoresParcela(emprestimo);
+        return CalculadoraParcela.processarValoresParcela(emprestimo);
     }
 
     // PUT - Atualizar uma lista de parcelas (exemplo: pagar várias parcelas)

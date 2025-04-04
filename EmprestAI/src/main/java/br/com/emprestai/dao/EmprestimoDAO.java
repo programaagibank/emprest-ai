@@ -139,7 +139,7 @@ public class EmprestimoDAO implements GenericDAO<Emprestimo> {
     }
 
     // GET - Buscar todos os empréstimos por ID do cliente e tipo de empréstimo
-    public List<Emprestimo> buscarPorIdCliente(Long idCliente, TipoEmprestimoEnum empEnum) {
+    public List<Emprestimo> buscarPorIdClienteEmprestimo(Long idCliente, TipoEmprestimoEnum empEnum) {
         String sql = "SELECT e.id_emprestimo, e.id_cliente, e.valor_total, e.quantidade_parcelas, e.juros, e.data_inicio, e.id_status_emprestimo, e.id_tipo_emprestimo, " +
                 "e.valor_seguro, e.valor_IOF, e.outros_custos, e.data_contratacao, e.juros_mora, " +
                 "e.taxa_multa, e.id_emprestimo_origem, e.data_liberacao_cred, e.taxa_efetiva_mensal, e.valor_parcela, " +

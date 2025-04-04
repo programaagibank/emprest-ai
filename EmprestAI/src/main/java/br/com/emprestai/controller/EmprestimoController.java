@@ -12,8 +12,8 @@ import br.com.emprestai.service.ClienteService;
 import br.com.emprestai.service.calculos.CalculadoraContrato;
 import br.com.emprestai.service.calculos.CalculoTaxaJuros;
 import br.com.emprestai.service.elegibilidade.ElegibilidadeCliente;
-import br.com.emprestai.service.elegibilidade.ValidatorConsignado;
-import br.com.emprestai.service.elegibilidade.ValidatorPessoal;
+import br.com.emprestai.service.validator.ValidatorConsignado;
+import br.com.emprestai.service.validator.ValidatorPessoal;
 import br.com.emprestai.util.EmprestimoParams;
 
 import java.time.LocalDate;
@@ -43,9 +43,9 @@ public class EmprestimoController {
         return emprestimoDAO.criar(emprestimo);
     }
 
-    public List<Emprestimo> getByCliente(Long id, TipoEmprestimoEnum empEnum) throws ApiException {
+    public List<Emprestimo> getByClienteTipoEmprestimo(Long id, TipoEmprestimoEnum empEnum) throws ApiException {
         try {
-            List<Emprestimo> emprestimos = emprestimoDAO.buscarPorIdCliente(id, empEnum);
+            List<Emprestimo> emprestimos = emprestimoDAO.buscarPorIdClienteEmprestimo(id, empEnum);
             return emprestimos;
         } catch (Exception e) {
             throw new ApiException("Erro ao buscar empréstimos: " + e.getMessage(), 500);

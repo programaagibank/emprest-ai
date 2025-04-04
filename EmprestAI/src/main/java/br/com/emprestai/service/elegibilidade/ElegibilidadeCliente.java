@@ -13,81 +13,124 @@ public class ElegibilidadeCliente {
     }
 
     public boolean isElegivelConsignado() throws ElegibilidadeException {
-        int idade = cliente.getIdade();
-
-        // Verificações básicas
-        if (cliente.getVencimentoConsignavelTotal() <= 0) {
-            throw new ElegibilidadeException("Vencimento consignável total é zero ou negativo.");
+        // Verificação inicial de dados básicos
+        if (cliente == null) {
+            throw new ElegibilidadeException("Cliente não informado.");
         }
+
+        int idade = cliente.getIdade();
         if (idade <= 0) {
             throw new ElegibilidadeException("Idade inválida (data de nascimento não informada ou inválida).");
         }
 
-        // Verifica margem consignável
-        if (cliente.getMargemConsignavelDisponivel() <= 0) {
+        // Verifica idade mínima e máxima
+        if (idade < params.getIdadeMinimaConsignado()) {
+            throw new ElegibilidadeException(String.format(
+                    "Idade inferior ao mínimo exigido para consignado (%s anos).", params.getIdadeMinimaConsignado()));
+        }
+        if (idade > params.getIdadeMaximaConsignado()) {
+            throw new ElegibilidadeException(String.format(
+                    "Idade superior ao máximo permitido para consignado (%s anos).", params.getIdadeMaximaConsignado()));
+        }
+
+        // Verifica renda consignável
+        if (cliente.getVencimentoConsignavelTotal() <= 0) {
+            throw new ElegibilidadeException("Vencimento consignável total é zero ou negativo.");
+        }
+
+        // Verifica margem consignável disponível
+        double margemConsignavel = cliente.getMargemConsignavelDisponivel();
+        if (margemConsignavel <= 0) {
             throw new ElegibilidadeException("Margem consignável disponível insuficiente.");
         }
 
-        // Verifica idade mínima e máxima
-        if (idade < 18) {
-            throw new ElegibilidadeException("Idade inferior ao mínimo exigido (18 anos).");
+        // Verifica limite de crédito consignado
+        double limiteCreditoConsignado = cliente.getLimiteCreditoConsignado();
+        if (limiteCreditoConsignado < params.getValorMinimoConsignado()) {
+            throw new ElegibilidadeException(String.format(
+                    "Limite de crédito consignado (%s) inferior ao valor mínimo exigido (%s).",
+                    limiteCreditoConsignado, params.getValorMinimoConsignado()));
         }
-        if (idade > 80) {
-            throw new ElegibilidadeException("Idade superior ao máximo permitido (80 anos).");
+
+        // Verifica score mínimo
+        if (cliente.getScore() < params.getScoreMinimoConsignado()) {
+            throw new ElegibilidadeException(String.format(
+                    "Score (%s) inferior ao mínimo exigido para consignado (%s).",
+                    cliente.getScore(), params.getScoreMinimoConsignado()));
         }
 
         // Verifica prazo máximo
-        if (cliente.getPrazoMaximoConsignado() < params.getPrazoMinimoConsignado()) {
+        int prazoMaximoConsignado = cliente.getPrazoMaximoConsignado();
+        if (prazoMaximoConsignado < params.getPrazoMinimoConsignado()) {
             throw new ElegibilidadeException(String.format(
-                    "Prazo máximo consignado possível de contratar inferior ao mínimo exigido, verifique se sua idade máxima com as parcelas não ultrapassa o limite máximo %s.",
-                    params.getIdadeMaximaConsignado()));
+                    "Prazo máximo consignado (%s meses) inferior ao mínimo exigido (%s meses).",
+                    prazoMaximoConsignado, params.getPrazoMinimoConsignado()));
         }
 
         return true;
     }
 
     public boolean isElegivelPessoal() throws ElegibilidadeException {
-        int idade = cliente.getIdade();
+        // Verificação inicial de dados básicos
+        if (cliente == null) {
+            throw new ElegibilidadeException("Cliente não informado.");
+        }
 
-        // Verificações básicas
-        if (cliente.getVencimentoLiquidoTotal() <= 0) {
-            throw new ElegibilidadeException("Vencimento líquido total é zero ou negativo.");
-        }
-        if (cliente.getScore() <= 0) {
-            throw new ElegibilidadeException("Score inválido (zero ou negativo).");
-        }
+        int idade = cliente.getIdade();
         if (idade <= 0) {
             throw new ElegibilidadeException("Idade inválida (data de nascimento não informada ou inválida).");
         }
 
-        // Verifica margem pessoal
-        if (cliente.getMargemPessoalDisponivel() <= 0) {
+        // Verifica idade mínima e máxima
+        if (idade < params.getIdadeMinimaPessoal()) {
+            throw new ElegibilidadeException(String.format(
+                    "Idade inferior ao mínimo exigido para pessoal (%s anos).", params.getIdadeMinimaPessoal()));
+        }
+        if (idade > params.getIdadeMaximaPessoal()) {
+            throw new ElegibilidadeException(String.format(
+                    "Idade superior ao máximo permitido para pessoal (%s anos).", params.getIdadeMaximaPessoal()));
+        }
+
+        // Verifica renda líquida
+        if (cliente.getVencimentoLiquidoTotal() <= 0) {
+            throw new ElegibilidadeException("Vencimento líquido total é zero ou negativo.");
+        }
+        if (cliente.getVencimentoLiquidoTotal() < params.getRendaMinimaPessoal()) {
+            throw new ElegibilidadeException(String.format(
+                    "Renda líquida (%s) inferior ao mínimo exigido (%s).",
+                    cliente.getVencimentoLiquidoTotal(), params.getRendaMinimaPessoal()));
+        }
+
+        // Verifica margem pessoal disponível
+        double margemPessoal = cliente.getMargemPessoalDisponivel();
+        if (margemPessoal <= 0) {
             throw new ElegibilidadeException("Margem pessoal disponível insuficiente.");
         }
 
-        // Verifica renda mínima
-        if (cliente.getVencimentoLiquidoTotal() < params.getRendaMinimaPessoal()) {
-            throw new ElegibilidadeException("Renda líquida inferior ao mínimo exigido.");
-        }
-
-        // Verifica idade mínima e máxima
-        if (idade < 18) {
-            throw new ElegibilidadeException("Idade inferior ao mínimo exigido (18 anos).");
-        }
-        if (idade > params.getIdadeMaximaPessoal()) {
-            throw new ElegibilidadeException("Idade superior ao máximo permitido para empréstimo pessoal.");
-        }
-
-        // Verifica prazo máximo
-        if (cliente.getPrazoMaximoPessoal() < params.getPrazoMinimoPessoal()) {
+        // Verifica limite de crédito pessoal
+        double limiteCreditoPessoal = cliente.getLimiteCreditoPessoal();
+        if (limiteCreditoPessoal < params.getValorMinimoPessoal()) {
             throw new ElegibilidadeException(String.format(
-                    "Prazo máximo pessoal possível de contratar inferior ao mínimo exigido, verifique se sua idade máxima com as parcelas não ultrapassa o limite máximo %s.",
-                    params.getIdadeMaximaPessoal()));
+                    "Limite de crédito pessoal (%s) inferior ao valor mínimo exigido (%s).",
+                    limiteCreditoPessoal, params.getValorMinimoPessoal()));
         }
 
         // Verifica score mínimo
+        if (cliente.getScore() <= 0) {
+            throw new ElegibilidadeException("Score inválido (zero ou negativo).");
+        }
         if (cliente.getScore() < params.getScoreMinimoPessoal()) {
-            throw new ElegibilidadeException("Score inferior ao mínimo exigido.");
+            throw new ElegibilidadeException(String.format(
+                    "Score (%s) inferior ao mínimo exigido para pessoal (%s).",
+                    cliente.getScore(), params.getScoreMinimoPessoal()));
+        }
+
+        // Verifica prazo máximo
+        int prazoMaximoPessoal = cliente.getPrazoMaximoPessoal();
+        if (prazoMaximoPessoal < params.getPrazoMinimoPessoal()) {
+            throw new ElegibilidadeException(String.format(
+                    "Prazo máximo pessoal (%s meses) inferior ao mínimo exigido (%s meses).",
+                    prazoMaximoPessoal, params.getPrazoMinimoPessoal()));
         }
 
         return true;

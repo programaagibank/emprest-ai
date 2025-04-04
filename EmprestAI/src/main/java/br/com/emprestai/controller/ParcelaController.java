@@ -2,6 +2,7 @@ package br.com.emprestai.controller;
 
 import br.com.emprestai.dao.ParcelaDAO;
 import br.com.emprestai.enums.StatusParcelaEnum;
+import br.com.emprestai.enums.TipoEmprestimoEnum;
 import br.com.emprestai.exception.ApiException;
 import br.com.emprestai.model.Emprestimo;
 import br.com.emprestai.model.Parcela;
@@ -57,5 +58,9 @@ public class ParcelaController {
             throw new ApiException("Lista de parcelas não pode ser nula ou vazia.", 400); // Bad Request
         }
         return parcelaDAO.pagarParcelas(parcelas);
+    }
+
+    public List<Parcela> getUltimasNaoPagas(Long clientId, TipoEmprestimoEnum TipoEmprestimo) throws SQLException {
+        return parcelaDAO.BuscarUltimasNaoPagas(clientId, TipoEmprestimo);
     }
 }

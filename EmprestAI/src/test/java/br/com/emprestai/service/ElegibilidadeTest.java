@@ -2,8 +2,8 @@ package br.com.emprestai.service;
 
 import br.com.emprestai.enums.VinculoEnum;
 import br.com.emprestai.exception.ValidationException;
-import br.com.emprestai.service.elegibilidade.ElegibilidadeConsignado;
-import br.com.emprestai.service.elegibilidade.ElegibilidadePessoal;
+import br.com.emprestai.service.elegibilidade.ValidatorConsignado;
+import br.com.emprestai.service.elegibilidade.ValidatorPessoal;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -18,7 +18,7 @@ class ElegibilidadeTest {
             double parcelasAtivas = 0.0;
 
             assertThrows(ValidationException.class, () ->
-                    ElegibilidadeConsignado.verificarMargemEmprestimoConsig(valorParcela, rendaLiquida, parcelasAtivas)
+                    ValidatorConsignado.verificarMargemEmprestimoConsig(valorParcela, rendaLiquida, parcelasAtivas)
             );
         }
 
@@ -26,26 +26,26 @@ class ElegibilidadeTest {
         @Test
         void testTaxaDeJuros() {
             double taxaJuros = 1.84; // Dentro de 1.80% a 2.14%
-            assertDoesNotThrow(() -> ElegibilidadeConsignado.verificarTaxaJurosEmprestimoConsig(taxaJuros));
+            assertDoesNotThrow(() -> ValidatorConsignado.verificarTaxaJurosEmprestimoConsig(taxaJuros));
         }
 
 
         @Test
         void testTipoDeVinculo() {
             VinculoEnum vinculo = VinculoEnum.APOSENTADO;
-            assertDoesNotThrow(() -> ElegibilidadeConsignado.verificarVinculoEmprestimoConsig(vinculo));
+            assertDoesNotThrow(() -> ValidatorConsignado.verificarVinculoEmprestimoConsig(vinculo));
         }
 
         @Test
         void testCarencia() {
             int carencia = 30; // Menor que 60
-            assertDoesNotThrow(() -> ElegibilidadeConsignado.verificarCarenciaEmprestimoConsig(carencia));
+            assertDoesNotThrow(() -> ValidatorConsignado.verificarCarenciaEmprestimoConsig(carencia));
         }
 
         @Test
         void testValorMinimoParaEmprestimoConsignado() {
             double valorSolicitado = 1500.0; // Acima de R$1000
-            assertDoesNotThrow(() -> ElegibilidadeConsignado.verificarValorMinimoEmprestimo(valorSolicitado));
+            assertDoesNotThrow(() -> ValidatorConsignado.verificarValorMinimoEmprestimo(valorSolicitado));
         }
 
         @Test
@@ -59,7 +59,7 @@ class ElegibilidadeTest {
             VinculoEnum vinculo = VinculoEnum.APOSENTADO;
             int carencia = 30;
             double valorSolicitado = 1500.0;
-            assertDoesNotThrow(() -> ElegibilidadeConsignado.verificarElegibilidadeConsignado(
+            assertDoesNotThrow(() -> ValidatorConsignado.verificarElegibilidadeConsignado(
                     rendaLiquida, valorParcela, parcelasAtivas, idade, parcelas, taxaJuros, vinculo, carencia, valorSolicitado
             ));
         }
@@ -69,7 +69,7 @@ class ElegibilidadeTest {
              @Test
           void testVerificarRendaMinimaPessoal() {
           double rendaLiquida = 2000.0; // Acima de R$1000
-          assertDoesNotThrow(() -> ElegibilidadePessoal.verificarRendaMinimaPessoal(rendaLiquida));
+          assertDoesNotThrow(() -> ValidatorPessoal.verificarRendaMinimaPessoal(rendaLiquida));
           }
 
 
@@ -77,7 +77,7 @@ class ElegibilidadeTest {
          void testVerificarComprometimentoPessoal() {
          double rendaLiquida = 2000.0;
          double valorParcela = 600.0; // 30% de 2000
-        assertDoesNotThrow(() -> ElegibilidadePessoal.verificarComprometimentoPessoal(valorParcela, rendaLiquida));
+        assertDoesNotThrow(() -> ValidatorPessoal.verificarComprometimentoPessoal(valorParcela, rendaLiquida));
           }
 
 
@@ -85,21 +85,21 @@ class ElegibilidadeTest {
        void testVerificarIdadePessoal() {
            int idade = 35;
         int parcelas = 12; // 1 ano, idade final = 36
-        assertDoesNotThrow(() -> ElegibilidadePessoal.verificarIdadePessoal(idade, parcelas));
+        assertDoesNotThrow(() -> ValidatorPessoal.verificarIdadePessoal(idade, parcelas));
         }
 
 
       @Test
       void testVerificarScorePessoal() {
        int score = 300; // Acima de 201
-      assertDoesNotThrow(() -> ElegibilidadePessoal.verificarScorePessoal(score));
+      assertDoesNotThrow(() -> ValidatorPessoal.verificarScorePessoal(score));
        }
 
      @Test
      void testVerificarParcelasPessoal() {
        int parcelas = 12;
        int score = 700; // 601-800 permite até 24
-       assertDoesNotThrow(() -> ElegibilidadePessoal.verificarParcelasPessoal(parcelas, score));
+       assertDoesNotThrow(() -> ValidatorPessoal.verificarParcelasPessoal(parcelas, score));
       }
 
 
@@ -110,7 +110,7 @@ class ElegibilidadeTest {
          int idade = 35;
           int parcelas = 12;
        int score = 700;
-     assertDoesNotThrow(() -> ElegibilidadePessoal.verificarElegibilidadePessoal(rendaLiquida, valorParcela, idade, parcelas, score
+     assertDoesNotThrow(() -> ValidatorPessoal.verificarElegibilidadePessoal(rendaLiquida, valorParcela, idade, parcelas, score
      ));
      }
      }

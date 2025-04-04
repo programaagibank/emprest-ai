@@ -10,6 +10,7 @@ import br.com.emprestai.model.Cliente;
 import br.com.emprestai.model.Emprestimo;
 import br.com.emprestai.model.Parcela;
 import br.com.emprestai.service.calculos.CalculadoraSaldos;
+import br.com.emprestai.util.GeneratePDF;
 import br.com.emprestai.util.SessionManager;
 import com.itextpdf.html2pdf.HtmlConverter;
 import javafx.fxml.FXML;
@@ -35,6 +36,7 @@ import java.util.List;
 
 import static br.com.emprestai.enums.TipoEmprestimoEnum.CONSIGNADO;
 import static br.com.emprestai.enums.TipoEmprestimoEnum.PESSOAL;
+import static br.com.emprestai.util.Formatos.formatCurrency;
 
 public class EmprestimoViewController {
 
@@ -49,10 +51,10 @@ public class EmprestimoViewController {
     @FXML private Label currentDebt;
     @FXML private Label installmentAmount;
     @FXML private Label remainingInstallments;
-    @FXML private Label simulationMessage;
+    @FXML private Label solicitacaoMensagem;
     @FXML private Button homeButton;
     @FXML private Button exitButton;
-    @FXML private Button simulateButton;
+    @FXML private Button solicitacaoButton;
     @FXML private VBox loanInfoBox;
     @FXML private Button ordemVencimentoButton;
     @FXML private Button maiorDescontoButton;
@@ -63,7 +65,7 @@ public class EmprestimoViewController {
     private List<Emprestimo> emprestimos;
     private TipoEmprestimoEnum tipoEmprestimo;
     private ParcelaController parcelaController = new ParcelaController(new ParcelaDAO());
-    private EmprestimoController emprestimoController = new EmprestimoController(new EmprestimoDAO(), null); // Ajuste conforme necessário
+    private EmprestimoController emprestimoController = new EmprestimoController(new EmprestimoDAO(), null);
 
     // --------------------------------------------------------------------------------
     // Initialization
@@ -77,7 +79,6 @@ public class EmprestimoViewController {
             onExitClick();
             return;
         }
-        // Carrega os empréstimos apenas se o tipoEmprestimo já estiver definido
         if (tipoEmprestimo != null) {
             carregarEmprestimos(clienteLogado);
         }
@@ -118,7 +119,7 @@ public class EmprestimoViewController {
     @FXML
     private void onExitClick() {
         try {
-            SessionManager.getInstance().clearSession(); // Limpa a sessão ao sair
+            SessionManager.getInstance().clearSession();
             FXMLLoader loader = new FXMLLoader(getClass().getResource("login.fxml"));
             Scene mainScene = new Scene(loader.load(), 360, 640);
             Stage stage = (Stage) homeButton.getScene().getWindow();
@@ -132,19 +133,19 @@ public class EmprestimoViewController {
     }
 
     @FXML
-    private void onSimulateClick() {
+    private void onSolicitacaoClick() {  // Alterado de onSimulateClick para onOffersClick
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("simulacaoEmprestimo.fxml"));
-            Scene simulateScene = new Scene(loader.load(), 360, 640);
-            SimulacaoViewController simulacaoController = loader.getController();
-            simulacaoController.setTipoEmprestimo(tipoEmprestimo);
-            Stage stage = (Stage) simulateButton.getScene().getWindow();
-            stage.setScene(simulateScene);
-            stage.setTitle("EmprestAI - Simulação de Empréstimo");
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("ofertas.fxml"));
+            Scene SolicitacaoScene = new Scene(loader.load(), 360, 640);
+            SolicitacaoEmprestimoViewController solicitacaoEmprestimoViewController = loader.getController();
+            solicitacaoEmprestimoViewController.setTipoEmprestimo(tipoEmprestimo);
+            Stage stage = (Stage) solicitacaoButton.getScene().getWindow();
+            stage.setScene(SolicitacaoScene);
+            stage.setTitle("EmprestAI - Ofertas de Empréstimo");
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
-            System.err.println("Erro ao carregar simulacaoEmprestimo.fxml: " + e.getMessage());
+            System.err.println("Erro ao carregar ofertas.fxml: " + e.getMessage());
         }
     }
 
@@ -213,7 +214,6 @@ public class EmprestimoViewController {
     // --------------------------------------------------------------------------------
     private void carregarEmprestimos(Cliente cliente) {
         try {
-            // Busca os empréstimos do cliente filtrados pelo tipoEmprestimo
             emprestimos = emprestimoController.getByCliente(cliente.getIdCliente(), tipoEmprestimo);
             System.out.println("Total de empréstimos buscados: " + (emprestimos != null ? emprestimos.size() : 0));
             if (emprestimos != null) {
@@ -223,7 +223,7 @@ public class EmprestimoViewController {
         } catch (Exception e) {
             e.printStackTrace();
             System.err.println("Erro ao buscar empréstimos: " + e.getMessage());
-            emprestimos = null; // Limpa a lista em caso de erro
+            emprestimos = null;
             exibirInformacoesEmprestimo();
         }
     }
@@ -246,11 +246,11 @@ public class EmprestimoViewController {
 
             if (!emprestimosFiltrados.isEmpty()) {
                 showLoanDetails(emprestimosFiltrados);
-                simulateButton.setVisible(hasMargin);
-                simulateButton.setManaged(hasMargin);
-                simulationMessage.setVisible(!hasMargin);
-                simulationMessage.setManaged(!hasMargin);
-                simulationMessage.setText(hasMargin ? "" : "Sem margem disponível");
+                solicitacaoButton.setVisible(hasMargin);  // Alterado de simulateButton para solicitacaoButton
+                solicitacaoButton.setManaged(hasMargin);  // Alterado de simulateButton para soliitacaoButton
+                solicitacaoMensagem.setVisible(!hasMargin);
+                solicitacaoMensagem.setManaged(!hasMargin);
+                solicitacaoMensagem.setText(hasMargin ? "" : "Sem margem disponível");
             } else {
                 showNoLoanState();
             }
@@ -271,41 +271,43 @@ public class EmprestimoViewController {
             loanInfoBox.getChildren().add(loanCard);
         }
     }
-
     private VBox createLoanCard(Emprestimo emprestimo) {
-        VBox card = new VBox(10);
-        card.setStyle("-fx-background-color: #f0f0f0; -fx-padding: 10; -fx-border-color: #d3d3d3; -fx-border-width: 1; -fx-border-radius: 5;");
+        VBox card = new VBox(8);
+        card.getStyleClass().add("payment-card"); // Usar classe do CSS
 
         HBox titleBox = new HBox(10);
-        Label titleLabel = new Label(emprestimo.getTipoEmprestimo().name() + " R$ " + formatCurrency(emprestimo.getValorEmprestimo()));
-        titleLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 16;");
+        Label titleLabel = new Label(emprestimo.getTipoEmprestimo().name() + " R$ " + formatCurrency(emprestimo.getValorTotal() - emprestimo.getValorSeguro() - emprestimo.getOutrosCustos() - emprestimo.getValorIOF()));
+        titleLabel.getStyleClass().add("payment-date"); // Título como data
         titleBox.getChildren().add(titleLabel);
         card.getChildren().add(titleBox);
 
-        Label valorLabel = new Label("Valor Empréstimo: " + formatCurrency(emprestimo.getValorEmprestimo()));
+        Label valorLabel = new Label("Valor Empréstimo: " + formatCurrency(emprestimo.getValorTotal()));
+        valorLabel.getStyleClass().add("payment-type");
         Label parcelaLabel = new Label("Valor da Parcela: " + formatCurrency(emprestimo.getValorParcela()));
+        parcelaLabel.getStyleClass().add("payment-type");
         Label parcelasLabel = new Label("Parcelas Pagas: " + emprestimo.getParcelasPagas() + " de " + emprestimo.getQuantidadeParcelas());
-
-        System.out.println("Empréstimo ID: " + emprestimo.getIdEmprestimo() + " - Parcelas Pagas: " + emprestimo.getParcelasPagas() + ", Total Parcelas: " + emprestimo.getQuantidadeParcelas());
+        parcelasLabel.getStyleClass().add("payment-type");
 
         HBox statusBox = new HBox(5);
         Circle statusCircle = new Circle(5);
+        statusCircle.getStyleClass().add("status-circle");
         updateStatusCircle(statusCircle, emprestimo.getStatusEmprestimo());
         Label statusLabel = new Label("Status: " + emprestimo.getStatusEmprestimo().name());
+        statusLabel.getStyleClass().add("payment-type");
         statusBox.getChildren().addAll(statusCircle, statusLabel);
 
         card.getChildren().addAll(valorLabel, parcelaLabel, parcelasLabel, statusBox);
 
         Button ordemVencimentoBtn = new Button("Ordem de Vencimento");
-        ordemVencimentoBtn.setStyle("-fx-background-color: #0078d7; -fx-text-fill: white; -fx-font-size: 14;");
+        ordemVencimentoBtn.getStyleClass().add("banner-button"); // Novo estilo para botões
         ordemVencimentoBtn.setOnAction(e -> handleOrdemVencimento(emprestimo));
 
         Button maiorDescontoBtn = new Button("Maior Desconto");
-        maiorDescontoBtn.setStyle("-fx-background-color: #0078d7; -fx-text-fill: white; -fx-font-size: 14;");
+        maiorDescontoBtn.getStyleClass().add("banner-button");
         maiorDescontoBtn.setOnAction(e -> handleMaiorDesconto(emprestimo));
 
         Button gerarPdfBtn = new Button("Gerar Contrato em PDF");
-        gerarPdfBtn.setStyle("-fx-background-color: #0078d7; -fx-text-fill: white; -fx-font-size: 14;");
+        gerarPdfBtn.getStyleClass().add("banner-button");
         gerarPdfBtn.setOnAction(e -> handleGeneratePdf(emprestimo));
 
         card.getChildren().addAll(ordemVencimentoBtn, maiorDescontoBtn, gerarPdfBtn);
@@ -400,18 +402,18 @@ public class EmprestimoViewController {
 
     private void showNoLoanState() {
         contractTitle.setText("Nenhum Empréstimo Ativo");
-        boolean canSimulate = checkMarginAvailability();
+        boolean canOffer = checkMarginAvailability();  // Alterado de canSimulate para canOffer
 
-        if (canSimulate) {
+        if (canOffer) {
             toggleVisibility(false, true);
-            simulationMessage.setText("Simule seu primeiro empréstimo!");
-            simulationMessage.setVisible(true);
-            simulationMessage.setManaged(true);
+            solicitacaoMensagem.setText("Confira nossas ofertas!");  // Mensagem ajustada
+            solicitacaoMensagem.setVisible(true);
+            solicitacaoMensagem.setManaged(true);
         } else {
             toggleVisibility(false, false);
-            simulationMessage.setText("Produto não disponível ou sem margem");
-            simulationMessage.setVisible(true);
-            simulationMessage.setManaged(true);
+            solicitacaoMensagem.setText("Produto não disponível ou sem margem");
+            solicitacaoMensagem.setVisible(true);
+            solicitacaoMensagem.setManaged(true);
         }
     }
 
@@ -425,17 +427,13 @@ public class EmprestimoViewController {
         return false;
     }
 
-    private void toggleVisibility(boolean loanVisible, boolean simulateVisible) {
+    private void toggleVisibility(boolean loanVisible, boolean solicitacaoVisible) {  // Alterado de simulateVisible para solicitacaoVisible
         loanInfoBox.setVisible(loanVisible);
         loanInfoBox.setManaged(loanVisible);
-        simulateButton.setVisible(simulateVisible);
-        simulateButton.setManaged(simulateVisible);
-        simulationMessage.setVisible(false);
-        simulationMessage.setManaged(false);
-    }
-
-    private String formatCurrency(double value) {
-        return String.format("R$ %.2f", value);
+        solicitacaoButton.setVisible(solicitacaoVisible);  // Alterado de simulateButton para solicitacaoButton
+        solicitacaoButton.setManaged(solicitacaoVisible);  // Alterado de simulateButton para solicitacaoButton
+        solicitacaoMensagem.setVisible(false);
+        solicitacaoMensagem.setManaged(false);
     }
 
     public void updateStatus(StatusEmprestimoEnum status) {
@@ -452,128 +450,9 @@ public class EmprestimoViewController {
     }
 
     private void generateContractPDF(File file, Emprestimo emprestimo) throws Exception {
-        String htmlContent = generateHtmlContent(emprestimo);
+        String htmlContent = GeneratePDF.generateHtmlContent(emprestimo, parcelaController);
         try (FileOutputStream fos = new FileOutputStream(file)) {
             HtmlConverter.convertToPdf(htmlContent, fos);
         }
-    }
-
-    private String generateHtmlContent(Emprestimo emprestimo) throws SQLException {
-        Cliente clienteLogado = SessionManager.getInstance().getClienteLogado();
-        StringBuilder html = new StringBuilder();
-        List<Parcela> parcelas = parcelaController.getParcelasByEmprestimo(emprestimo);
-        html.append("<!DOCTYPE html>")
-                .append("<html lang=\"pt-br\">")
-                .append("<head>")
-                .append("<meta charset=\"UTF-8\">")
-                .append("<title>Documento Descritivo de Crédito</title>")
-                .append("<style>")
-                .append("body { font-family: Arial, sans-serif; font-size: 14px; }")
-                .append("table { border-collapse: collapse; width: 100%; margin-bottom: 20px; }")
-                .append("th, td { border: 1px solid #333; padding: 5px; text-align: left; }")
-                .append("th { background-color: #eee; }")
-                .append(".section-title { font-weight: bold; font-size: 16px; margin-top: 20px; border-bottom: 1px solid #333; padding-bottom: 5px; }")
-                .append(".header { margin-bottom: 20px; }")
-                .append(".header div { margin-bottom: 5px; }")
-                .append(".separator { border-top: 1px solid #333; margin: 20px 0; }")
-                .append(".summary { display: flex; justify-content: space-between; margin-bottom: 20px; }")
-                .append(".summary div { width: 30%; }")
-                .append("</style>")
-                .append("</head>")
-                .append("<body>");
-
-        html.append("<div class=\"header\">")
-                .append("<h2>Documento Descritivo de Crédito</h2>")
-                .append("<div><strong>Nome:</strong> ").append(clienteLogado != null ? clienteLogado.getNomeCliente() : "Não disponível").append("</div>")
-                .append("<div><strong>CPF:</strong> ").append(clienteLogado != null ? formatCpf(clienteLogado.getCpfCliente()) : "Não disponível").append("</div>")
-                .append("<div><strong>Emissão:</strong> ").append(LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))).append("</div>")
-                .append("</div>");
-
-        html.append("<div class=\"separator\"></div>");
-
-        html.append("<div class=\"section-title\">Característica do Contrato</div>")
-                .append("<table>")
-                .append("<tr><td>Modalidade de Operação</td><td>").append(emprestimo.getTipoEmprestimo().name()).append("</td></tr>")
-                .append("<tr><td>Valor da Operação</td><td>").append(formatCurrency(emprestimo.getValorEmprestimo())).append("</td></tr>")
-                .append("<tr><td>Número do Contrato</td><td>").append(emprestimo.getIdEmprestimo()).append("</td></tr>")
-                .append("<tr><td>Data da Contratação</td><td>").append(emprestimo.getDataContratacao().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))).append("</td></tr>")
-                .append("<tr><td>Data de Liberação do Crédito</td><td>").append(emprestimo.getDataLiberacaoCred().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))).append("</td></tr>")
-                .append("<tr><td>Data do Último Vencimento</td><td>")
-                .append(emprestimo.getDataInicio().plusMonths(emprestimo.getQuantidadeParcelas()).format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
-                .append("</td></tr>")
-                .append("</table>");
-
-        html.append("<div class=\"separator\"></div>");
-
-        double taxaJurosAnual = emprestimo.getTaxaJuros() * 12;
-        double tributos = emprestimo.getValorIOF();
-        double tarifas = emprestimo.getOutrosCustos() + (emprestimo.getContratarSeguro() != null && emprestimo.getContratarSeguro() ? emprestimo.getValorSeguro() : 0);
-        html.append("<div class=\"section-title\">Taxa de Juros</div>")
-                .append("<table>")
-                .append("<tr><td>Taxa de Juros Mensal Nominal</td><td>").append(String.format("%.2f%% a.m.", emprestimo.getTaxaJuros())).append("</td></tr>")
-                .append("<tr><td>Taxa de Juros Anual Nominal</td><td>").append(String.format("%.2f%% a.a.", taxaJurosAnual)).append("</td></tr>")
-                .append("<tr><td>Taxa de Juros Efetiva (CET)</td><td>").append(String.format("%.2f%% a.m.", emprestimo.getTaxaEfetivaMensal())).append("</td></tr>")
-                .append("<tr><td>Tarifas</td><td>").append(formatCurrency(tarifas)).append("</td></tr>")
-                .append("<tr><td>Tributos</td><td>").append(formatCurrency(tributos)).append("</td></tr>")
-                .append("</table>");
-
-        html.append("<div class=\"separator\"></div>");
-
-        int prazoTotal = emprestimo.getQuantidadeParcelas();
-        int prazoRemanescente = emprestimo.getQuantidadeParcelas() - emprestimo.getParcelasPagas();
-        double saldoDevedorAtualizado = CalculadoraSaldos.calcularSaldoDevedorAtualizado(parcelas);
-        html.append("<div class=\"section-title\">Resumo</div>")
-                .append("<div class=\"summary\">")
-                .append("<div><strong>Prazo Total da Operação:</strong> ").append(prazoTotal).append(" meses</div>")
-                .append("<div><strong>Prazo Remanescente:</strong> ").append(prazoRemanescente).append(" meses</div>")
-                .append("<div><strong>Saldo Devedor Atual:</strong> ").append(formatCurrency(saldoDevedorAtualizado)).append("</div>")
-                .append("</div>");
-
-        html.append("<div class=\"separator\"></div>");
-
-        html.append("<div class=\"section-title\">Demonstrativo de Evolução do Saldo Devedor/Composição do Valor das Parcelas</div>")
-                .append("<table>")
-                .append("<tr>")
-                .append("<th>Nro Parcela</th>")
-                .append("<th>Vencimento da Parcela</th>")
-                .append("<th>Valor Parcela</th>")
-                .append("<th>Valor Principal da Parcela</th>")
-                .append("<th>Valor dos Juros da Parcela</th>")
-                .append("<th>Saldo Devedor/Encargos</th>")
-                .append("<th>Situação da Parcela</th>")
-                .append("</tr>");
-
-        if (parcelas != null && !parcelas.isEmpty()) {
-            for (int i = 0; i < parcelas.size(); i++) {
-                Parcela parcela = parcelas.get(i);
-                double valorParcela = emprestimo.getValorParcela();
-                double valorPrincipal = parcela.getAmortizacao();
-                double valorJuros = parcela.getJuros();
-                double valorPresenteParcela = parcela.getValorPresenteParcela();
-
-                html.append("<tr>")
-                        .append("<td>").append(i + 1).append("</td>")
-                        .append("<td>").append(parcela.getDataVencimento().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))).append("</td>")
-                        .append("<td>").append(formatCurrency(valorParcela)).append("</td>")
-                        .append("<td>").append(formatCurrency(valorPrincipal)).append("</td>")
-                        .append("<td>").append(formatCurrency(valorJuros)).append("</td>")
-                        .append("<td>").append(formatCurrency(valorPresenteParcela)).append("</td>")
-                        .append("<td>").append(parcela.getStatus() != null ? parcela.getStatus().toString() : "PARCELA PAGA").append("</td>")
-                        .append("</tr>");
-            }
-        }
-        html.append("</table>");
-
-        html.append("</body>")
-                .append("</html>");
-
-        return html.toString();
-    }
-
-    private String formatCpf(String cpf) {
-        if (cpf != null && cpf.length() == 11) {
-            return cpf.substring(0, 3) + "." + cpf.substring(3, 6) + "." + cpf.substring(6, 9) + "-" + cpf.substring(9);
-        }
-        return cpf != null ? cpf : "";
     }
 }

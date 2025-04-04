@@ -4,6 +4,7 @@ import br.com.emprestai.enums.StatusEmprestimoEnum;
 import br.com.emprestai.enums.TipoEmprestimoEnum;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 public class Emprestimo {
@@ -199,5 +200,12 @@ public class Emprestimo {
 
     public void setParcelasPagas(int parcelasPagas) {
         this.parcelasPagas = parcelasPagas;
+    }
+
+    public int getCarencia() {
+        if (dataContratacao == null || dataInicio == null) {
+            return 0;
+        }
+        return (int) ChronoUnit.DAYS.between(dataContratacao, dataInicio);
     }
 }

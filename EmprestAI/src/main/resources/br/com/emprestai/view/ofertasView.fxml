@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.geometry.Insets?>
+<VBox alignment="CENTER" spacing="20" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="br.com.emprestai.view.OfertasViewController">
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <Label fx:id="loanTypeLabel" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+    <Label fx:id="requestedAmountLabel" style="-fx-font-size: 14px;"/>
+
+    <TableView fx:id="offersTable" prefHeight="400">
+        <columns>
+            <TableColumn fx:id="installmentsColumn" text="Parcelas" prefWidth="100"/>
+            <TableColumn fx:id="installmentValueColumn" text="Valor Parcela" prefWidth="120"/>
+            <TableColumn fx:id="interestRateColumn" text="Taxa Juros" prefWidth="100"/>
+            <TableColumn fx:id="totalAmountColumn" text="Total" prefWidth="120"/>
+        </columns>
+    </TableView>
+
+    <HBox spacing="10" alignment="CENTER">
+        <Button fx:id="selectOfferButton" text="Selecionar Oferta" onAction="#onSelectOfferClick" disable="true"/>
+        <Button fx:id="backButton" text="Voltar" onAction="#onBackClick"/>
+        <Button fx:id="exitButton" text="Sair" onAction="#onExitClick"/>
+    </HBox>
+</VBox>

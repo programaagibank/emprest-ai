@@ -32,40 +32,17 @@ public class EmprestimoParams {
     private double carenciaMaximaPessoal = 30;
     private double carenciaMaximaConsignado = 60;
 
-    //Score
-
-    public int getScoreMinimoPessoal() {
-        return scoreMinimoPessoal;
-    }
-
-    public void setScoreMinimoPessoal(int scoreMinimoPessoal) {
-        this.scoreMinimoPessoal = scoreMinimoPessoal;
-    }
-
+    // Idades score minimo
     private  int  scoreMinimoPessoal = 201;
 
+    private  int  scoreMinimoConsignado = 201;
+
     // Idades máximas
+
+    private double idadeMinimaConsignado = 18;
     private double idadeMaximaConsignado = 80;
     private double idadeMaximaPessoal = 75;
     private double idadeMinimaPessoal = 18;
-
-    public double getIdadeMinimaPessoal() {
-        return idadeMinimaPessoal;
-    }
-
-    public void setIdadeMinimaPessoal(double idadeMinimaPessoal) {
-        this.idadeMinimaPessoal = idadeMinimaPessoal;
-    }
-
-    public double getIdadeMinimaConsignado() {
-        return idadeMinimaConsignado;
-    }
-
-    public void setIdadeMinimaConsignado(double idadeMinimaConsignado) {
-        this.idadeMinimaConsignado = idadeMinimaConsignado;
-    }
-
-    private double idadeMinimaConsignado = 18;
 
     // Percentuais
     private double margemConsignavel = 35;
@@ -78,22 +55,13 @@ public class EmprestimoParams {
     private double percentualJurosMora = 0.033;
     private double percentualMultaAtraso = 2;
 
-    public double getIncrementoTaxaConsig() {
-        return incrementoTaxaConsig;
-    }
-
-    public void setIncrementoTaxaConsig(double incrementoTaxaConsig) {
-        this.incrementoTaxaConsig = incrementoTaxaConsig;
-    }
 
     private double incrementoTaxaConsig = 0.005;
 
     //Renda minima
     private  double rendaMinimaPessoal = 1000;
 
-
-
-    // Getters e Setters
+    //Getters e Setters
     public double getJurosMinimoPessoal() {
         return jurosMinimoPessoal;
     }
@@ -198,6 +166,30 @@ public class EmprestimoParams {
         this.carenciaMaximaConsignado = carenciaMaximaConsignado;
     }
 
+    public int getScoreMinimoPessoal() {
+        return scoreMinimoPessoal;
+    }
+
+    public void setScoreMinimoPessoal(int scoreMinimoPessoal) {
+        this.scoreMinimoPessoal = scoreMinimoPessoal;
+    }
+
+    public int getScoreMinimoConsignado() {
+        return scoreMinimoConsignado;
+    }
+
+    public void setScoreMinimoConsignado(int scoreMinimoConsignado) {
+        this.scoreMinimoConsignado = scoreMinimoConsignado;
+    }
+
+    public double getIdadeMinimaConsignado() {
+        return idadeMinimaConsignado;
+    }
+
+    public void setIdadeMinimaConsignado(double idadeMinimaConsignado) {
+        this.idadeMinimaConsignado = idadeMinimaConsignado;
+    }
+
     public double getIdadeMaximaConsignado() {
         return idadeMaximaConsignado;
     }
@@ -212,6 +204,14 @@ public class EmprestimoParams {
 
     public void setIdadeMaximaPessoal(double idadeMaximaPessoal) {
         this.idadeMaximaPessoal = idadeMaximaPessoal;
+    }
+
+    public double getIdadeMinimaPessoal() {
+        return idadeMinimaPessoal;
+    }
+
+    public void setIdadeMinimaPessoal(double idadeMinimaPessoal) {
+        this.idadeMinimaPessoal = idadeMinimaPessoal;
     }
 
     public double getMargemConsignavel() {
@@ -284,8 +284,16 @@ public class EmprestimoParams {
 
     public void setPercentualMultaAtraso(double percentualMultaAtraso) {
         this.percentualMultaAtraso = percentualMultaAtraso;
-
     }
+
+    public double getIncrementoTaxaConsig() {
+        return incrementoTaxaConsig;
+    }
+
+    public void setIncrementoTaxaConsig(double incrementoTaxaConsig) {
+        this.incrementoTaxaConsig = incrementoTaxaConsig;
+    }
+
     public double getRendaMinimaPessoal() {
         return rendaMinimaPessoal;
     }

@@ -1,5 +1,6 @@
 package br.com.emprestai.service.calculos;
 
+import br.com.emprestai.enums.TipoEmprestimoEnum;
 import br.com.emprestai.util.EmprestimoParams;
 
 import java.math.BigDecimal;
@@ -13,38 +14,58 @@ public class CalculoTaxaJuros {
     private static final EmprestimoParams params = EmprestimoParams.getInstance();
 
     // 12.3 Taxa de Juros Mensal
-    public static double calcularTaxaJurosMensal(double quantidadeParcelas) {
-        if (quantidadeParcelas <= 0) {
-            throw new IllegalArgumentException("A quantidade de parcelas deve ser maior que zero");
-        }
-        if (quantidadeParcelas < params.getPrazoMinimoConsignado()) {
-            throw new IllegalArgumentException("A quantidade de parcelas não pode ser inferior ao prazo mínimo de " + params.getPrazoMinimoConsignado());
-        }
-        // Ajusta a taxa para atingir 0.0186 com 36 parcelas
-        double taxaJurosMensal = params.getJurosMinimoConsignado() + params.getIncrementoTaxaConsig() * (quantidadeParcelas - params.getPrazoMinimoConsignado());
-        double jurosMaximoDecimal = params.getJurosMaximoConsignado();
-        if (taxaJurosMensal > jurosMaximoDecimal) {
-            return jurosMaximoDecimal;
-        }
-        return taxaJurosMensal;
-    }
+    public static double calcularTaxaJurosMensal(double score, int quantidadeParcelas, TipoEmprestimoEnum TipoEmprestimo) {
+        EmprestimoParams params = EmprestimoParams.getInstance();
 
-    public static double calculoTaxaDeJurosMensal(double score) {
         if (score <= 0 || score > 1000) {
             throw new IllegalArgumentException("Score fora da tolerância");
         }
-        double taxaMaxima = 9.99;
-        double taxaMinima = 8.49;
-        if (score == 1000) {
-            return taxaMinima;
-        } else if (score >= 801 && score < 1000) {
-            return interpoLinear(score, 801, 1000, 8.49, 8.99);
-        } else if (score >= 601 && score <= 800) {
-            return interpoLinear(score, 601, 800, 8.99, 9.49);
-        } else if (score >= 401 && score <= 600) {
-            return interpoLinear(score, 401, 600, 9.49, 9.99);
+
+        // Adicionado a validação para score abaixo de 200
+        if (score < 200) {
+            throw new IllegalArgumentException("Score abaixo do limite mínimo permitido");
         }
-        return taxaMaxima;
+
+        double jurosMinimo = 0, jurosMaximo = 0, prazoMinimo = 0, incrementoTaxa = 0;
+
+        switch (TipoEmprestimo) {
+            case CONSIGNADO -> {
+                jurosMinimo = params.getJurosMinimoConsignado();
+                jurosMaximo = params.getJurosMaximoConsignado();
+                prazoMinimo = params.getPrazoMinimoConsignado();
+                incrementoTaxa = params.getIncrementoTaxaConsig();
+            }
+            case PESSOAL -> {
+                jurosMinimo = params.getJurosMinimoPessoal();
+                jurosMaximo = params.getJurosMaximoPessoal();
+                prazoMinimo = params.getPrazoMinimoPessoal();
+                incrementoTaxa = 0.05; // Exemplo de incremento para pessoal
+            }
+        }
+
+        if (quantidadeParcelas < prazoMinimo) {
+            throw new IllegalArgumentException("A quantidade de parcelas não pode ser inferior ao prazo mínimo de " + prazoMinimo);
+        }
+
+        double taxaBase;
+        if (score == 1000) {
+            taxaBase = jurosMinimo;
+        } else if (score >= 801 && score < 1000) {
+            taxaBase = interpoLinear(score, 801, 1000, jurosMinimo, jurosMinimo + (jurosMaximo - jurosMinimo) * 0.25);
+        } else if (score >= 601 && score <= 800) {
+            taxaBase = interpoLinear(score, 601, 800, jurosMinimo + (jurosMaximo - jurosMinimo) * 0.25, jurosMinimo + (jurosMaximo - jurosMinimo) * 0.5);
+        } else if (score >= 401 && score <= 600) {
+            taxaBase = interpoLinear(score, 401, 600, jurosMinimo + (jurosMaximo - jurosMinimo) * 0.5, jurosMinimo + (jurosMaximo - jurosMinimo) * 0.75);
+        } else {
+            taxaBase = jurosMaximo;
+        }
+
+        double taxaJurosMensal = taxaBase + incrementoTaxa * (quantidadeParcelas - prazoMinimo);
+
+        if (taxaJurosMensal > jurosMaximo) {
+            return jurosMaximo;
+        }
+        return taxaJurosMensal;
     }
 
     private static double interpoLinear(double score, double scoreMin, double scoreMax, double taxaMin, double taxaMax) {

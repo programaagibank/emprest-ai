@@ -27,8 +27,7 @@ public class CalculadoraContrato {
         BigDecimal iof = CalculadoraCustosAdicionais.calcIOF(valorTotalComSeguro, dataLiberacaoCred, dataFimContrato);
         BigDecimal valorTotalSemCarencia = valorEmprestimo.add(iof).add(seguro);
 
-        int diasCarencia = (int) DAYS.between(dataContratacao, dataInicioPagamento);
-        BigDecimal resultadoCarencia = CalculadoraCustosAdicionais.calcularCarencia(valorTotalSemCarencia, taxaJurosMensal, diasCarencia);
+        BigDecimal resultadoCarencia = CalculadoraCustosAdicionais.calcularCarencia(valorTotalSemCarencia, taxaJurosMensal, emprestimo.getCarencia());
         BigDecimal valorTotalFinanciado = valorTotalSemCarencia.add(resultadoCarencia);
 
         emprestimo.setOutrosCustos(resultadoCarencia.doubleValue());

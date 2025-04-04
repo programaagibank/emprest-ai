@@ -39,7 +39,7 @@ public class OfertasViewController {
     // --------------------------------------------------------------------------------
     private double              valorSolicitado;
     private TipoEmprestimoEnum  tipoEmprestimo;
-    private Cliente             cliente;
+    private Cliente             clienteLogado;
     private EmprestimoController emprestimoController;
     private Emprestimo          selectedOffer;
 
@@ -55,9 +55,9 @@ public class OfertasViewController {
     private void initialize() {
         System.out.println("CSS carregado: " + getClass().getResource("../css/ofertas.css"));
         emprestimoController = new EmprestimoController(new EmprestimoDAO(), new ClienteDAO());
-        cliente = SessionManager.getInstance().getClienteLogado();
+        clienteLogado = SessionManager.getInstance().getClienteLogado();
 
-        if (cliente == null) {
+        if (clienteLogado == null) {
             System.err.println("Nenhum cliente logado encontrado no SessionManager!");
             onExitClick();
             return;
@@ -90,6 +90,7 @@ public class OfertasViewController {
             showAlert("Seleção Requerida", "Por favor, selecione uma oferta.");
             return;
         }
+        selectedOffer.setIdCliente(clienteLogado.getIdCliente());
 
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("contratarEmprestimo.fxml"));
@@ -149,7 +150,7 @@ public class OfertasViewController {
     // --------------------------------------------------------------------------------
     private void loadOffers() {
         try {
-            List<Emprestimo> ofertas = emprestimoController.gerarOfertasEmprestimo(valorSolicitado, tipoEmprestimo, cliente);
+            List<Emprestimo> ofertas = emprestimoController.gerarOfertasEmprestimo(valorSolicitado, tipoEmprestimo, clienteLogado);
             offersContainer.getChildren().clear();
 
             if (ofertas.isEmpty()) {

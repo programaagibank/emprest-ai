@@ -4,6 +4,7 @@ import br.com.emprestai.controller.EmprestimoController;
 import br.com.emprestai.dao.ClienteDAO;
 import br.com.emprestai.dao.EmprestimoDAO;
 import br.com.emprestai.enums.TipoEmprestimoEnum;
+import br.com.emprestai.model.Cliente;
 import br.com.emprestai.model.Emprestimo;
 import br.com.emprestai.util.SessionManager;
 import javafx.fxml.FXML;
@@ -72,9 +73,10 @@ public class ContratarEmprestimoViewController {
         // Percent formatter setup
         percentFormatter.setMinimumFractionDigits(2);
         percentFormatter.setMaximumFractionDigits(2);
+        Cliente clienteLogado = SessionManager.getInstance().getClienteLogado();
 
         // Verifica se há cliente logado
-        if (SessionManager.getInstance().getClienteLogado() == null) {
+        if (clienteLogado == null) {
             System.err.println("Nenhum cliente logado encontrado no SessionManager!");
             onExitClick();
         }

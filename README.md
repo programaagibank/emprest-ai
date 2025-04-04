@@ -40,6 +40,31 @@
 ## 1. OBJETIVO
 O Emprest.AI é um backend projetado para gerenciar de forma eficiente e transparente o ciclo completo de empréstimos, abrangendo as modalidades Empréstimo Pessoal e Empréstimo Consignado, todas utilizando sistema Price de Amortização (Parcela Fixa). Suas funcionalidades incluem concessão de novos contratos, simulação de condições, consulta de dados, pagamento antecipado de parcela, refinanciamento (quando aplicável), portabilidade (para consignado e pessoal), cancelamento e gestão básica de inadimplência via multa e juros de mora, com critérios adaptados a cada modalidade.
 
+
+
+## Visão Geral do Funcionamento
+
+
+* *Interface Gráfica (JavaFX):*
+    * O sistema inclui uma interface gráfica desenvolvida em JavaFX para facilitar a interação do usuário.
+    * A interface oferece funcionalidades de login, cadastro (para novos usuários) e seleção do tipo de empréstimo (pessoal ou consignado).
+    * O login e cadastro são protegidos por senha.
+    * A interface direciona o usuário para telas que exibem os resultados da simulação e consulta de dados do empréstimo, bem como o pagamento de parcelas e a refinanciamento de contratos.
+    * O EmprestAI processa as solicitações da interface JavaFX, realizando cálculos, validações e gerenciamento de dados conforme descrito nas seções a seguir.
+
+## Fluxo de Interação do Usuário
+
+1.  *Acesso:* O usuário acessa o sistema através da interface JavaFX, inserindo CPF e senha.
+2.  *Cadastro/Login:*
+    * Se o usuário não possuir cadastro, é direcionado para a tela de cadastro.
+    * Após o cadastro ou login bem-sucedido, o usuário é direcionado à tela de seleção do tipo de empréstimo.
+3.  *Seleção do Tipo de Empréstimo:* O usuário escolhe entre Empréstimo Pessoal ou Consignado.
+4.  *Simulação/Solicitação:*
+    * Com base na seleção, o sistema apresenta os campos necessários para simulação ou solicitação do empréstimo.
+    * O usuário insere os dados solicitados (valor, prazo, etc.).
+5.  *Processamento:* O Emprest.AI processa a solicitação, realizando os cálculos e validações necessários.
+6.  *Exibição de Resultados:* A interface JavaFX exibe os resultados da simulação ou o status da solicitação.
+7.  *Gerenciamento do Empréstimo:* A interface permite ao usuário consultar dados do empréstimo, efetuar pagamentos e solicitar refinanciamento ou portabilidade
 <br>
 
 ## 2. VARIÁVEIS
@@ -182,15 +207,15 @@ Com base no `valorTotalFinanciado`, `quantidadeParcelas`, `taxaJurosMensal` e `d
   "valorTotalFinanciado": "[valor em reais]",
   "parcelaMensal": "[valor em reais]",
   "cetMensal": "[valor decimal]",
-  "saldoDevedorAtualizado": "[valor em reais]"
+  "saldoDevedorAtualizado": "[valor em reais]",
   "tabelaParcelas": [
     {
       "numeroParcela": "[número]",
       "dataVencimento": "[data no formato DD/MM/AAAA]",
       "valorPresenteParcela": "[valor em reais]",
       "juros": "[valor em reais]",
-      "amortizacao": "[valor em reais]",
-    }
+      "amortizacao": "[valor em reais]"
+    },
     "... Demais parcelas"
   ],
   "mensagem": "Simulação realizada com sucesso."
@@ -285,7 +310,7 @@ O cliente / setores do banco consulta os dados do empréstimo diretamente no sis
   "totalParcelasPagas": "[número]",
   "totalParcelasRestantes": "[número]",
   "saldoDevedorAtualizado": "[valor em reais]",
-  "dataContratacao": "[data no formato DD/MM/AAAA]"
+  "dataContratacao": "[data no formato DD/MM/AAAA]",
   "tabelaParcelas": [
     {
       "numeroParcela": "[número]",
@@ -349,7 +374,7 @@ O cliente / setores do banco informa o pagamento das parcelas para registro no s
   "totalParcelasPagas": "[número]",
   "totalParcelasRestantes": "[número]",
   "saldoDevedorAtualizado": "[valor em reais]",
-  "dataContratacao": "[data no formato DD/MM/AAAA]"
+  "dataContratacao": "[data no formato DD/MM/AAAA]",
   "tabelaParcelas": [
     {
       "numeroParcela": "[número]",
@@ -414,7 +439,7 @@ O cliente / setores do banco solicita o refinanciamento do contrato existente ao
 {
   "idCliente": "[cpf ou autoincremente]",
   "idEmprestimo": "[identificador único]",
-  "idEmprestimoOriginal": "[identificador único]", "(Autoreferenciamento)"
+  "idEmprestimoOriginal": "[identificador único ,Autoreferenciamento]", 
   "valorEmprestimo": "[valor em reais]",
   "quantidadeParcelas": "[número]",
   "taxaJurosMensal": "[valor decimal]",
@@ -425,7 +450,7 @@ O cliente / setores do banco solicita o refinanciamento do contrato existente ao
   "totalParcelasPagas": "[número]",
   "totalParcelasRestantes": "[número]",
   "saldoDevedorAtualizado": "[valor em reais]",
-  "dataContratacao": "[data no formato DD/MM/AAAA]"
+  "dataContratacao": "[data no formato DD/MM/AAAA]",
   "tabelaParcelas": [
     {
       "numeroParcela": "[número]",

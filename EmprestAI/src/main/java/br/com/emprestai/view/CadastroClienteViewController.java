@@ -2,28 +2,31 @@ package br.com.emprestai.view;
 
 import br.com.emprestai.controller.ClienteController;
 import br.com.emprestai.dao.ClienteDAO;
-import br.com.emprestai.enums.VinculoEnum;
 import br.com.emprestai.exception.ApiException;
 import br.com.emprestai.model.Cliente;
+import br.com.emprestai.util.SessionManager;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.time.LocalDate;
 
 public class CadastroClienteViewController {
-
-    // --------------------------------------------------------------------------------
-    // FXML Components
-    // --------------------------------------------------------------------------------
-    @FXML private TextField     cpfField;
-    @FXML private TextField     nomeField;
-    @FXML private TextField     rendaField;
-    @FXML private DatePicker    dataNascimentoField;
-    @FXML private TextField     rendaFamiliarField;
-    @FXML private TextField     qtdPessoasField;
-    @FXML private ComboBox<String> tipoClienteComboBox;
-    @FXML private TextField     scoreField;
-    @FXML private PasswordField senhaField;
+    @FXML
+    private TextField cpfField;
+    @FXML
+    private TextField nomeField;
+    @FXML
+    private DatePicker dataNascimentoField;
+    @FXML
+    private PasswordField senhaField;
 
     // --------------------------------------------------------------------------------
     // Class Properties
@@ -46,80 +49,74 @@ public class CadastroClienteViewController {
             // Captura dos dados
             String cpf = cpfField.getText();
             String nome = nomeField.getText();
+            LocalDate dataNascimento = dataNascimentoField.getValue();
+            String senha = senhaField.getText();
 
             // Validação de campos obrigatórios
-            if (cpf.isEmpty() || nome.isEmpty() || senhaField.getText().isEmpty() ||
-                    dataNascimentoField.getValue() == null) {
+            if (cpf.isEmpty() || nome.isEmpty() || senha.isEmpty() || dataNascimento == null) {
                 showError("Todos os campos são obrigatórios.");
                 return;
             }
 
-            // Conversão e validação de campos numéricos
-            double rendaMensal = 0;
-            double rendaFamiliar = 0;
-            int qtdPessoas = 0;
-            int score = 0;
-            try {
-                rendaMensal = Double.parseDouble(rendaField.getText());
-                rendaFamiliar = Double.parseDouble(rendaFamiliarField.getText());
-                qtdPessoas = Integer.parseInt(qtdPessoasField.getText());
-                score = Integer.parseInt(scoreField.getText());
-            } catch (NumberFormatException e) {
-                showError("Os campos numéricos devem conter apenas números válidos.");
-                return;
-            }
-
-            LocalDate dataNascimento = dataNascimentoField.getValue();
-            String tipoClienteStr = tipoClienteComboBox.getValue();
-
-            if (tipoClienteStr == null) {
-                showError("Por favor, selecione um tipo de cliente.");
-                return;
-            }
-
-            // Conversão para VinculoEnum
-            VinculoEnum tipoCliente;
-            switch (tipoClienteStr) {
-                case "APOSENTADO":
-                    tipoCliente = VinculoEnum.APOSENTADO;
-                    break;
-                case "SERVIDOR":
-                    tipoCliente = VinculoEnum.SERVIDOR;
-                    break;
-                case "PENSIONISTA":
-                    tipoCliente = VinculoEnum.PENSIONISTA;
-                    break;
-                case "EMPREGADO":
-                    tipoCliente = VinculoEnum.EMPREGADO;
-                    break;
-                default:
-                    showError("Tipo de cliente inválido.");
-                    return;
-            }
-
-            String senha = senhaField.getText();
-
             // Criação do objeto Cliente
             Cliente cliente = new Cliente();
             cliente.setCpfCliente(cpf);
-            cliente.setNomecliente(nome);
-            cliente.setRendaMensalLiquida(rendaMensal);
+            cliente.setNomeCliente(nome);
             cliente.setDataNascimento(dataNascimento);
-            cliente.setRendaFamiliarLiquida(rendaFamiliar);
-            cliente.setQtdePessoasNaCasa(qtdPessoas);
-            cliente.setTipoCliente(tipoCliente);
-            cliente.setScore(score);
             cliente.setSenha(senha);
 
             // Cadastro no banco
-            clienteController.post(cliente);
+            Cliente clienteCadastrado = clienteController.post(cliente);
 
-            // Feedback e limpeza
-            showInfo("Cliente cadastrado com sucesso!");
+            // Armazena o cliente no SessionManager
+            SessionManager.getInstance().setClienteLogado(clienteCadastrado);
+
+            // Feedback e redirecionamento
+            showInfo("Cliente cadastrado com sucesso! Redirecionando para o dashboard...");
             limparCampos();
+            irParaDashboard();
 
-        } catch (ApiException | NumberFormatException e) {
+        } catch (ApiException e) {
             showError(e.getMessage());
+        }
+    }
+
+    @FXML
+    private void onVoltarClick(ActionEvent event) {
+        try {
+            SessionManager.getInstance().clearSession(); // Limpa qualquer sessão residual
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("login.fxml"));
+            Scene loginScene = new Scene(loader.load(), 360, 640);
+            Stage stage = (Stage) cpfField.getScene().getWindow();
+            stage.setScene(loginScene);
+            stage.setTitle("EmprestAI - Login");
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showError("Erro ao voltar para o login: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void onHomeClick(ActionEvent event) {
+        // Como é uma tela de cadastro, não faz sentido ir para o dashboard antes de cadastrar
+        // Redireciona para o login por consistência
+        onVoltarClick(event);
+    }
+
+    @FXML
+    private void onExitClick(ActionEvent event) {
+        try {
+            SessionManager.getInstance().clearSession(); // Limpa qualquer sessão residual
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("login.fxml"));
+            Scene loginScene = new Scene(loader.load(), 360, 640);
+            Stage stage = (Stage) cpfField.getScene().getWindow();
+            stage.setScene(loginScene);
+            stage.setTitle("EmprestAI - Login");
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showError("Erro ao sair para o login: " + e.getMessage());
         }
     }
 
@@ -129,12 +126,7 @@ public class CadastroClienteViewController {
     private void limparCampos() {
         cpfField.clear();
         nomeField.clear();
-        rendaField.clear();
         dataNascimentoField.setValue(null);
-        rendaFamiliarField.clear();
-        qtdPessoasField.clear();
-        tipoClienteComboBox.setValue(null);
-        scoreField.clear();
         senhaField.clear();
     }
 
@@ -152,5 +144,19 @@ public class CadastroClienteViewController {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    private void irParaDashboard() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("dashboard.fxml"));
+            Scene dashboardScene = new Scene(loader.load(), 360, 640);
+            Stage stage = (Stage) cpfField.getScene().getWindow();
+            stage.setScene(dashboardScene);
+            stage.setTitle("EmprestAI - Dashboard");
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showError("Erro ao redirecionar para o dashboard: " + e.getMessage());
+        }
     }
 }

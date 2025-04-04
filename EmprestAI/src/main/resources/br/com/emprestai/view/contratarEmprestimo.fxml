@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane styleClass="root" stylesheets="@../css/contratar.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.com.emprestai.view.ContratarEmprestimoViewController">
+    <!-- Top Section: Header -->
+    <top>
+        <HBox alignment="CENTER" spacing="10.0" styleClass="header">
+            <padding>
+                <Insets bottom="10.0" left="15.0" right="15.0" top="15.0" />
+            </padding>
+            <Label fx:id="confirmationTitle" styleClass="greeting-label" text="Confirmar Contratação do Empréstimo" />
+        </HBox>
+    </top>
+
+    <!-- Center Section: Confirmation Details -->
+    <center>
+        <ScrollPane fitToWidth="true" styleClass="content-scroll">
+            <content>
+                <VBox alignment="CENTER" spacing="20.0" styleClass="content">
+                    <padding>
+                        <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                    </padding>
+
+                    <!-- Loan Type Display -->
+                    <Label fx:id="loanTypeLabel" styleClass="section-title" text="Tipo: Consignado" />
+
+                    <!-- Loan Information Section -->
+                    <VBox spacing="10.0" styleClass="loan-info">
+                        <Label styleClass="section-title" text="Detalhes do Empréstimo" />
+                        <Separator />
+                        <GridPane hgap="10" vgap="10">
+                            <columnConstraints>
+                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="180.0" />
+                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="110.0" />
+                            </columnConstraints>
+
+                            <Label styleClass="info-label" text="Valor do Empréstimo:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                            <Label fx:id="loanAmountLabel" styleClass="info-value" text="R$ 0,00" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+
+                            <Label styleClass="info-label" text="Quantidade de Parcelas:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                            <Label fx:id="installmentsLabel" styleClass="info-value" text="0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+                            <Label styleClass="info-label" text="Valor da Parcela:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                            <Label fx:id="installmentValueLabel" styleClass="info-value" text="R$ 0,00" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+
+                            <Label styleClass="info-label" text="Taxa de Juros (mensal):" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+                            <Label fx:id="interestRateLabel" styleClass="info-value" text="0,00%" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+
+                            <Label styleClass="info-label" text="Valor Total:" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+                            <Label fx:id="totalAmountLabel" styleClass="info-value" text="R$ 0,00" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+
+                            <Label styleClass="info-label" text="Valor de IOF:" GridPane.columnIndex="0" GridPane.rowIndex="5" />
+                            <Label fx:id="iofValueLabel" styleClass="info-value" text="R$ 0,00" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+
+                            <Label styleClass="info-label" text="Valor do Seguro:" GridPane.columnIndex="0" GridPane.rowIndex="6" />
+                            <Label fx:id="insuranceValueLabel" styleClass="info-value" text="R$ 0,00" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+
+                            <Label styleClass="info-label" text="Data de Contratação:" GridPane.columnIndex="0" GridPane.rowIndex="7" />
+                            <Label fx:id="contractDateLabel" styleClass="info-value" text="" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+
+                            <Label styleClass="info-label" text="Data de Liberação:" GridPane.columnIndex="0" GridPane.rowIndex="8" />
+                            <Label fx:id="releaseDateLabel" styleClass="info-value" text="" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+
+                            <Label styleClass="info-label" text="Data do 1º Pagamento:" GridPane.columnIndex="0" GridPane.rowIndex="9" />
+                            <Label fx:id="firstPaymentDateLabel" styleClass="info-value" text="" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+                     <rowConstraints>
+                        <RowConstraints />
+                        <RowConstraints />
+                        <RowConstraints />
+                        <RowConstraints />
+                        <RowConstraints />
+                        <RowConstraints />
+                        <RowConstraints />
+                        <RowConstraints />
+                        <RowConstraints />
+                        <RowConstraints />
+                     </rowConstraints>
+                        </GridPane>
+                    </VBox>
+
+                    <!-- Terms Agreement Section -->
+                    <VBox spacing="10.0" styleClass="terms-container">
+                        <Label styleClass="section-title" text="Termos e Condições" />
+                        <Separator />
+                        <CheckBox fx:id="termsCheckBox" styleClass="terms-checkbox" text="Li e concordo com os termos e condições deste empréstimo" />
+                        <CheckBox fx:id="dataCheckBox" styleClass="terms-checkbox" text="Confirmo que os dados estão corretos" />
+                    </VBox>
+
+                    <!-- Button Container -->
+                    <HBox alignment="CENTER" spacing="10.0">
+                        <Button fx:id="confirmButton" disable="true" onAction="#onConfirmClick" prefHeight="60.0" prefWidth="150.0" styleClass="confirm-button" text="Confirmar Contratação" wrapText="true" />
+                        <Button fx:id="cancelButton" onAction="#onCancelClick" prefHeight="44.0" prefWidth="153.0" styleClass="secondary-button" text="Cancelar" />
+                    </HBox>
+                </VBox>
+            </content>
+        </ScrollPane>
+    </center>
+
+    <!-- Bottom Section: Navigation Bar -->
+    <bottom>
+        <HBox alignment="CENTER" spacing="0.0" styleClass="nav-bar">
+            <padding>
+                <Insets bottom="10.0" left="0.0" right="0.0" top="10.0" />
+            </padding>
+            <Button fx:id="homeButton" onAction="#onHomeClick" styleClass="nav-button">
+                <graphic>
+                    <ImageView fitHeight="26" fitWidth="26" preserveRatio="true">
+                        <image>
+                            <Image url="@../images/home.png" />
+                        </image>
+                    </ImageView>
+                </graphic>
+                <text>Início</text>
+            </Button>
+            <Button fx:id="backButton" onAction="#onBackClick" styleClass="nav-button">
+                <graphic>
+                    <ImageView fitHeight="26" fitWidth="26" preserveRatio="true">
+                        <image>
+                            <Image url="@../images/back.png" />
+                        </image>
+                    </ImageView>
+                </graphic>
+                <text>Voltar</text>
+            </Button>
+            <Button fx:id="exitButton" onAction="#onExitClick" styleClass="nav-button">
+                <graphic>
+                    <ImageView fitHeight="26" fitWidth="26" preserveRatio="true">
+                        <image>
+                            <Image url="@../images/exit.png" />
+                        </image>
+                    </ImageView>
+                </graphic>
+                <text>Sair</text>
+            </Button>
+        </HBox>
+    </bottom>
+</BorderPane>

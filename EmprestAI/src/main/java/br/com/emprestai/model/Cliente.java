@@ -1,31 +1,23 @@
 package br.com.emprestai.model;
 
-import br.com.emprestai.enums.VinculoEnum;
-
 import java.time.LocalDate;
-import java.util.List;
+import java.time.temporal.ChronoUnit;
+
+import br.com.emprestai.service.ClienteService;
 
 public class Cliente {
-
-    // Atributos
-    private Long idCliente; // Autoincrementado no banco
-    private String nomecliente;
-    private double rendaMensalLiquida;
-    private LocalDate dataNascimento;
-    private double rendaFamiliarLiquida;
-    private int qtdePessoasNaCasa;
-    private VinculoEnum tipoCliente;
+    private Long idCliente;
+    private String cpfCliente;
+    private String nomeCliente;
     private int score;
-    private String cpfCliente; // Usado como identificador de login
+    private LocalDate dataNascimento;
     private String senha;
-    private List<Emprestimo> emprestimoList;
-    private double parcelasAtivas;
-    private double margemConsignavel;
-    private double margemPessoal;
+    private double vencimentoLiquidoTotal;
+    private double vencimentoConsignavelTotal;
+    private double valorComprometido;
+    private double valorParcelasMensaisConsignado;
+    private double valorParcelasMensaisTotal;
 
-    // Construtor vazio
-    public Cliente() {
-    }
     // Getters e Setters
     public Long getIdCliente() {
         return idCliente;
@@ -43,20 +35,20 @@ public class Cliente {
         this.cpfCliente = cpfCliente;
     }
 
-    public String getNomecliente() {
-        return nomecliente;
+    public String getNomeCliente() {
+        return nomeCliente;
     }
 
-    public void setNomecliente(String nomecliente) {
-        this.nomecliente = nomecliente;
+    public void setNomeCliente(String nomeCliente) {
+        this.nomeCliente = nomeCliente;
     }
 
-    public double getRendaMensalLiquida() {
-        return rendaMensalLiquida;
+    public int getScore() {
+        return score;
     }
 
-    public void setRendaMensalLiquida(double rendaMensalLiquida) {
-        this.rendaMensalLiquida = rendaMensalLiquida;
+    public void setScore(int score) {
+        this.score = score;
     }
 
     public LocalDate getDataNascimento() {
@@ -67,41 +59,6 @@ public class Cliente {
         this.dataNascimento = dataNascimento;
     }
 
-    public double getRendaFamiliarLiquida() {
-        return rendaFamiliarLiquida;
-    }
-
-    public void setRendaFamiliarLiquida(double rendaFamiliarLiquida) {
-        this.rendaFamiliarLiquida = rendaFamiliarLiquida;
-    }
-
-    public int getQtdePessoasNaCasa() {
-        return qtdePessoasNaCasa;
-    }
-
-    public void setQtdePessoasNaCasa(int qtdePessoasNaCasa) {
-        this.qtdePessoasNaCasa = qtdePessoasNaCasa;
-    }
-
-    public VinculoEnum getTipoCliente() {
-        return tipoCliente;
-    }
-
-    public void setTipoCliente(VinculoEnum tipoCliente) {
-        this.tipoCliente = tipoCliente;
-    }
-
-    public int getScore() {
-        return score;
-    }
-
-    public void setScore(int score) {
-        if (score < 0 || score > 1000) {
-            throw new IllegalArgumentException("Score deve estar entre 0 e 1000.");
-        }
-        this.score = score;
-    }
-
     public String getSenha() {
         return senha;
     }
@@ -110,50 +67,76 @@ public class Cliente {
         this.senha = senha;
     }
 
-    public List<Emprestimo> getEmprestimoList() {
-        return emprestimoList;
+    public double getVencimentoLiquidoTotal() {
+        return vencimentoLiquidoTotal;
     }
 
-    public void setEmprestimoList(List<Emprestimo> emprestimoList) {
-        this.emprestimoList = emprestimoList;
+    public void setVencimentoLiquidoTotal(double vencimentoLiquidoTotal) {
+        this.vencimentoLiquidoTotal = vencimentoLiquidoTotal;
     }
 
-    public double getParcelasAtivas() {
-        return parcelasAtivas;
+    public double getVencimentoConsignavelTotal() {
+        return vencimentoConsignavelTotal;
     }
 
-    public void setParcelasAtivas(double parcelasAtivas) {
-        this.parcelasAtivas = parcelasAtivas;
+    public void setVencimentoConsignavelTotal(double vencimentoConsignavelTotal) {
+        this.vencimentoConsignavelTotal = vencimentoConsignavelTotal;
     }
 
-    public double getMargemConsignavel() {
-        return margemConsignavel;
+    public double getValorComprometido() {
+        return valorComprometido;
     }
 
-    public void setMargemConsignavel(double margemConsignavel) {
-        this.margemConsignavel = margemConsignavel;
+    public void setValorComprometido(double valorComprometido) {
+        this.valorComprometido = valorComprometido;
     }
 
-    public double getMargemPessoal() {
-        return margemPessoal;
+    public double getValorParcelasMensaisConsignado() {
+        return valorParcelasMensaisConsignado;
     }
 
-    public void setMargemPessoal(double margemPessoal) {
-        this.margemPessoal = margemPessoal;
+    public void setValorParcelasMensaisConsignado(double valorParcelasMensaisConsignado) {
+        this.valorParcelasMensaisConsignado = valorParcelasMensaisConsignado;
     }
 
-    @Override
-    public String toString() {
-        return "Cliente{" +
-                "idCliente=" + idCliente +
-                ", cpfCliente='" + cpfCliente + '\'' +
-                ", nomecliente='" + nomecliente + '\'' +
-                ", rendaMensalLiquida=" + rendaMensalLiquida +
-                ", dataNascimento=" + dataNascimento +
-                ", rendaFamiliarLiquida=" + rendaFamiliarLiquida +
-                ", qtdePessoasNaCasa=" + qtdePessoasNaCasa +
-                ", tipoCliente=" + tipoCliente +
-                ", score=" + score +
-                '}';
+    public double getValorParcelasMensaisTotal() {
+        return valorParcelasMensaisTotal;
+    }
+
+    public void setValorParcelasMensaisTotal(double valorParcelasMensaisTotal) {
+        this.valorParcelasMensaisTotal = valorParcelasMensaisTotal;
+    }
+
+    // Método para calcular a idade
+    public int getIdade() {
+        if (dataNascimento == null) {
+            return 0;
+        }
+        return (int) ChronoUnit.YEARS.between(dataNascimento, LocalDate.now());
+    }
+
+    // Métodos que delegam os cálculos para o EmprestimoService
+    public int getPrazoMaximoPessoal() {
+        return ClienteService.calcularPrazoMaximoPessoal(this);
+    }
+
+    public int getPrazoMaximoConsignado() {
+        return ClienteService.calcularPrazoMaximoConsignado(this);
+    }
+
+    public double getMargemConsignavelDisponivel() {
+        return ClienteService.calcularMargemConsignavelDisponivel(this);
+    }
+
+    public double getMargemPessoalDisponivel() {
+        return ClienteService.calcularMargemPessoalDisponivel(this);
+    }
+
+    public double getLimiteCreditoPessoal() {
+        return ClienteService.calcularLimiteCreditoPessoal(this);
+    }
+
+    public double getLimiteCreditoConsignado() {
+        return ClienteService.calcularLimiteCreditoConsignado(this);
     }
 }

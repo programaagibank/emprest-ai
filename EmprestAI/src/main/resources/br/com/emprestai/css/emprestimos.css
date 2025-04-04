@@ -1,15 +1,15 @@
-/* Reutilizando estilos existentes do dashboard.css e adicionando novos conforme necessário */
+/* Reutilizando estilos do dashboard.css */
 
 /* Root styling */
 .root {
-    -fx-background-color: #FFFFFF;
+    -fx-background-color: #F5F5F5; /* Igual ao dashboard */
 }
 
 /* Header styling */
 .header {
-    -fx-background-color: linear-gradient(to bottom, #0056D2, #00A3FF);
-    -fx-alignment: center;
-    -fx-padding: 15px;
+    -fx-background-color: linear-gradient(to bottom, #0056D2 0%, #00A3FF 70%, rgba(0, 163, 255, 0) 100%);
+    -fx-alignment: center-left;
+    -fx-padding: 40px 15px 20px 15px; /* Igual ao dashboard */
 }
 
 .greeting-label {
@@ -17,97 +17,146 @@
     -fx-font-size: 18px;
     -fx-text-fill: #FFFFFF;
     -fx-font-weight: bold;
+    -fx-padding: 0 0 6px 0; /* Igual ao dashboard */
+}
+
+.credit-label {
+    -fx-font-family: "Roboto", "Arial", sans-serif;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #FFFFFF; /* Igual ao dashboard */
+}
+
+/* ScrollPane styling */
+.scroll-pane {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+}
+
+.scroll-pane .viewport {
+    -fx-background-color: transparent;
 }
 
 /* Main content styling */
 .content {
     -fx-background-color: #FFFFFF;
-    -fx-alignment: center;
-    -fx-spacing: 20px;
-    -fx-padding: 15px;
+    -fx-background-radius: 15px 15px 0 0; /* Igual ao dashboard */
+    -fx-alignment: top-center;
+    -fx-spacing: 15px;
+    -fx-padding: 10px 15px 10px 15px; /* Igual ao dashboard */
 }
 
-/* Section titles (e.g., "Consignado") */
-.section-title {
-    -fx-font-family: "Roboto", "Arial", sans-serif;
-    -fx-font-size: 16px;
-    -fx-font-weight: bold;
-    -fx-text-fill: #333333;
+/* Action button (Solicitação) */
+.action-button {
+    -fx-background-color: #FFFFFF;
+    -fx-background-radius: 50%;
+    -fx-pref-width: 60px;
+    -fx-pref-height: 60px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 8, 0, 0, 4);
 }
 
-/* Amount labels (e.g., "R$ 10.000,00") */
-.amount-label {
-    -fx-font-family: "Roboto", "Arial", sans-serif;
-    -fx-font-size: 24px;
-    -fx-font-weight: bold;
-    -fx-text-fill: #0056D2;
-}
-
-/* Info box styling */
-.info-box {
+.action-button:hover {
     -fx-background-color: #F5F5F5;
-    -fx-background-radius: 10px;
-    -fx-padding: 15px;
-    -fx-alignment: center-left;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 8, 0, 0, 4);
 }
 
-/* Info labels (e.g., "Saldo Devedor:") */
+/* Info label (Mensagem de solicitação) */
 .info-label {
     -fx-font-family: "Roboto", "Arial", sans-serif;
     -fx-font-size: 14px;
-    -fx-text-fill: #666666;
+    -fx-text-fill: #666666; /* Igual ao dashboard */
 }
 
-/* Info values (e.g., "R$ 7.500,00") */
-.info-value {
+/* Upcoming payments section (Loan Info) */
+.upcoming-payments-section {
+    -fx-alignment: top-left;
+    -fx-spacing: 8px; /* Igual ao dashboard */
+}
+
+/* Estilo dos cards de empréstimo (definido dinamicamente no controlador) */
+.payment-card {
+    -fx-background-color: #F5F5F5;
+    -fx-background-radius: 8px;
+    -fx-padding: 10px;
+    -fx-alignment: center-left;
+    -fx-spacing: 10px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 8, 0, 0, 4); /* Igual ao dashboard */
+}
+
+.payment-date {
     -fx-font-family: "Roboto", "Arial", sans-serif;
     -fx-font-size: 14px;
-    -fx-text-fill: #333333;
     -fx-font-weight: bold;
+    -fx-text-fill: #333333; /* Igual ao dashboard */
 }
 
-/* Details button ("Ver Detalhes") */
-.banner-button {
-    -fx-background-color: #0056D2;
-    -fx-background-radius: 20px;
-    -fx-text-fill: #FFFFFF;
+.payment-amount {
     -fx-font-family: "Roboto", "Arial", sans-serif;
     -fx-font-size: 14px;
     -fx-font-weight: bold;
-    -fx-padding: 8px 20px;
+    -fx-text-fill: #0056D2; /* Igual ao dashboard */
 }
 
-.banner-button:hover {
-    -fx-background-color: #003A8C;
+.payment-type {
+    -fx-font-family: "Roboto", "Arial", sans-serif;
+    -fx-font-size: 12px;
+    -fx-text-fill: #666666; /* Igual ao dashboard */
 }
 
 /* Navigation bar */
 .nav-bar {
     -fx-background-color: #FFFFFF;
     -fx-border-color: #E0E0E0;
-    -fx-border-width: 1px 0 0 0;
-    -fx-padding: 10px;
+    -fx-border-width: 0.5px 0 0 0;
+    -fx-padding: 10px 0 10px 0;
     -fx-alignment: center;
-    -fx-spacing: 30px;
+    -fx-spacing: 0; /* Igual ao dashboard */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 8, 0, 0, -4); /* Igual ao dashboard */
 }
 
 /* Navigation buttons */
 .nav-button {
     -fx-background-color: transparent;
     -fx-font-family: "Roboto", "Arial", sans-serif;
-    -fx-font-size: 12px;
+    -fx-font-size: 10px;
     -fx-text-fill: #666666;
     -fx-alignment: center;
+    -fx-pref-width: 120px;
+    -fx-max-width: 120px; /* Igual ao dashboard */
 }
 
-.nav-button:hover {
-    -fx-text-fill: #0056D2;
+.nav-button:hover,
+.nav-button:selected {
+    -fx-text-fill: #0056D2; /* Igual ao dashboard */
+}
+
+/* Status circle */
+.status-circle {
+    -fx-radius: 5;
 }
 
 .status-circle.green {
-    -fx-fill: green;
+    -fx-fill: #00CC00; /* Verde mais vibrante para consistência */
 }
 
-.status-circle.red {
-    -fx-fill: red;
+.status-circle.gray {
+    -fx-fill: #999999;
+}
+
+.status-circle.yellow {
+    -fx-fill: #FFC107;
+}
+
+/* Banner button style for dynamic buttons */
+.banner-button {
+    -fx-background-color: #0056D2;
+    -fx-background-radius: 8px;
+    -fx-text-fill: #FFFFFF;
+    -fx-font-family: "Roboto", "Arial", sans-serif;
+    -fx-font-size: 12px;
+    -fx-padding: 6px 12px;
+}
+
+.banner-button:hover {
+    -fx-background-color: #003A8C;
 }

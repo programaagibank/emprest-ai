@@ -4,6 +4,7 @@ import br.com.emprestai.enums.StatusEmprestimoEnum;
 import br.com.emprestai.enums.TipoEmprestimoEnum;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 public class Emprestimo {
@@ -13,7 +14,7 @@ public class Emprestimo {
     private double valorParcela;
     private int quantidadeParcelas;
     private int parcelasPagas;
-    private double juros;
+    private double taxaJuros;
     private LocalDate dataInicio;
     private StatusEmprestimoEnum statusEmprestimo;
     private TipoEmprestimoEnum tipoEmprestimo;
@@ -25,7 +26,6 @@ public class Emprestimo {
     private double taxaMulta;
     private long idEmprestimoOrigem;
     private List<Parcela> parcelaList;
-    private double saldoDevedorAtualizado;
     private LocalDate dataLiberacaoCred;
     private Boolean contratarSeguro;
     private double taxaEfetivaMensal;
@@ -58,11 +58,11 @@ public class Emprestimo {
         this.quantidadeParcelas = quantidadeParcelas;
     }
 
-    public double getJuros(){
-        return juros;
+    public double getTaxaJuros(){
+        return taxaJuros;
     }
-    public void setJuros(double juros){
-        this.juros = juros;
+    public void setTaxaJuros(double taxaJuros){
+        this.taxaJuros = taxaJuros;
     }
 
     public LocalDate getDataInicio(){
@@ -146,14 +146,6 @@ public class Emprestimo {
         this.parcelaList = parcelaList;
     }
 
-    public double getSaldoDevedorAtualizado() {
-        return saldoDevedorAtualizado;
-    }
-
-    public void setSaldoDevedorAtualizado(double saldoDevedorAtualizado) {
-        this.saldoDevedorAtualizado = saldoDevedorAtualizado;
-    }
-
     public LocalDate getDataLiberacaoCred() {
         return dataLiberacaoCred;
     }
@@ -208,5 +200,12 @@ public class Emprestimo {
 
     public void setParcelasPagas(int parcelasPagas) {
         this.parcelasPagas = parcelasPagas;
+    }
+
+    public int getCarencia() {
+        if (dataContratacao == null || dataInicio == null) {
+            return 0;
+        }
+        return (int) ChronoUnit.DAYS.between(dataContratacao, dataInicio);
     }
 }

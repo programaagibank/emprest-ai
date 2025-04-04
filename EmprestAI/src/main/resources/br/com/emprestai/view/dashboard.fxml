@@ -4,90 +4,122 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
 
 <BorderPane styleClass="root" stylesheets="@../css/dashboard.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.com.emprestai.view.DashboardViewController">
-    <!-- Top Section: Greeting -->
+    <!-- Top Section: Gradient Header with Greeting and Available Credit -->
     <top>
-        <HBox alignment="CENTER" spacing="10.0" styleClass="header">
+        <VBox prefWidth="380.0" styleClass="header">
             <padding>
-                <Insets bottom="10.0" left="15.0" right="15.0" top="15.0" />
+                <Insets bottom="20.0" left="15.0" right="15.0" top="40.0" />
             </padding>
-            <Label fx:id="greetingLabel" styleClass="greeting-label" text="Empréstimos" />
-        </HBox>
+            <Label fx:id="greetingLabel" styleClass="greeting-label" text="Olá, [Nome]!" />
+            <HBox alignment="CENTER" spacing="20.0" styleClass="credit-breakdown">
+                <padding>
+                    <Insets bottom="10.0" left="0.0" right="0.0" top="10.0" />
+                </padding>
+                <VBox alignment="TOP_LEFT" spacing="4.0" prefWidth="150.0">
+                    <Label styleClass="credit-label" text="Consignado" />
+                    <Label fx:id="consignadoCredit" styleClass="credit-subamount" text="R$ 0,00" />
+                    <Label styleClass="credit-subtitle" text="Aposentados, pensionista e servidores" wrapText="true" />
+                </VBox>
+                <VBox alignment="TOP_LEFT" spacing="4.0" prefWidth="150.0">
+                    <Label styleClass="credit-label" text="Pessoal" />
+                    <Label fx:id="pessoalCredit" styleClass="credit-subamount" text="R$ 0,00" />
+                    <Label styleClass="credit-subtitle" text="Para todos os públicos" wrapText="true" />
+                </VBox>
+            </HBox>
+        </VBox>
     </top>
 
     <!-- Center Section: Main Content -->
     <center>
-        <VBox alignment="CENTER" spacing="20.0" styleClass="content">
-            <padding>
-                <Insets bottom="15.0" left="15.0" right="15.0" top="0.0" />
-            </padding>
+        <ScrollPane fitToHeight="true" fitToWidth="true" styleClass="scroll-pane">
+            <content>
+                <VBox alignment="CENTER" spacing="15.0" styleClass="content">
+                    <padding>
+                        <Insets bottom="10.0" left="15.0" right="15.0" top="10.0" />
+                    </padding>
 
-            <!-- Banner Section -->
-            <HBox styleClass="banner">
-                <VBox alignment="CENTER" spacing="10.0">
-                    <Text styleClass="banner-text" text="Crédito Consignado Dinheiro na conta em até 24h!" wrappingWidth="200" />
-                    <Button fx:id="hireNowButton" styleClass="banner-button" text="Contratar já!" />
+                    <!-- Action Buttons (Consignado and Pessoal) -->
+                    <HBox alignment="CENTER" spacing="30.0">
+                        <VBox alignment="CENTER" spacing="5.0">
+                            <Button fx:id="consignadoButton" onAction="#onConsignadoClick" styleClass="action-button">
+                                <graphic>
+                                    <ImageView fitHeight="30" fitWidth="30" preserveRatio="true">
+                                        <image>
+                                            <Image url="@../images/consignado.png" />
+                                        </image>
+                                    </ImageView>
+                                </graphic>
+                            </Button>
+                            <Label styleClass="action-label" text="Consignado" />
+                        </VBox>
+                        <VBox alignment="CENTER" spacing="5.0">
+                            <Button fx:id="pessoalButton" onAction="#onPessoalClick" styleClass="action-button">
+                                <graphic>
+                                    <ImageView fitHeight="30" fitWidth="30" preserveRatio="true">
+                                        <image>
+                                            <Image url="@../images/pessoal.png" />
+                                        </image>
+                                    </ImageView>
+                                </graphic>
+                            </Button>
+                            <Label styleClass="action-label" text="Pessoal" />
+                        </VBox>
+                    </HBox>
+
+                    <!-- Promotional Section (Placeholder) -->
+                    <VBox spacing="8.0" styleClass="promo-section">
+                        <Label styleClass="section-title" text="Ofertas para Você" />
+                        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="promo-scroll">
+                            <content>
+                                <HBox spacing="10.0" styleClass="promo-container">
+                                    <VBox styleClass="promo-card">
+                                        <Label styleClass="promo-title" text="Empréstimo com Juros Baixos" wrapText="true" />
+                                        <Label styleClass="promo-subtitle" text="Aproveite taxas a partir de 1,5%!" wrapText="true" />
+                                    </VBox>
+                                    <VBox styleClass="promo-card">
+                                        <Label styleClass="promo-title" text="Simule Agora" wrapText="true" />
+                                        <Label styleClass="promo-subtitle" text="Descubra o melhor plano para você." wrapText="true" />
+                                    </VBox>
+                                </HBox>
+                            </content>
+                        </ScrollPane>
+                    </VBox>
+
+                    <!-- Upcoming Payments Section -->
+                    <VBox spacing="8.0" styleClass="upcoming-payments-section">
+                        <Label styleClass="section-title" text="Próximos Pagamentos" />
+                        <VBox fx:id="upcomingPaymentsBox" spacing="8.0">
+                            <!-- Payment cards will be dynamically added here -->
+                        </VBox>
+                    </VBox>
                 </VBox>
-            </HBox>
-
-            <!-- Total Outstanding Debt -->
-            <Label styleClass="section-title" text="Margem Consignado" />
-            <Label fx:id="creditMarginConsig" styleClass="amount-label" text="" />
-
-            <!-- Credit Margin -->
-            <Label styleClass="section-title" text="Margem Pessoal" />
-            <Label fx:id="creditMarginPessoal" styleClass="amount-label" text="" />
-
-            <!-- Loan Options with Icons -->
-            <Label styleClass="section-title" text="Escolha de Empréstimo" />
-            <HBox alignment="CENTER" spacing="15.0">
-                <Button fx:id="consignadoButton" onAction="#onConsignadoClick" styleClass="loan-button">
-                    <graphic>
-                        <ImageView fitHeight="24" fitWidth="24" preserveRatio="true">
-                            <image>
-                                <Image url="@../images/consignado.png" /> <!-- Substitua pelo ícone desejado -->
-                            </image>
-                        </ImageView>
-                    </graphic>
-                    <text>Consignado</text>
-                </Button>
-                <Button fx:id="pessoalButton" onAction="#onPessoalClick" styleClass="loan-button">
-                    <graphic>
-                        <ImageView fitHeight="24" fitWidth="24" preserveRatio="true">
-                            <image>
-                                <Image url="@../images/pessoal.png" /> <!-- Substitua pelo ícone desejado -->
-                            </image>
-                        </ImageView>
-                    </graphic>
-                    <text>Pessoal</text>
-                </Button>
-            </HBox>
-        </VBox>
+            </content>
+        </ScrollPane>
     </center>
 
     <!-- Bottom Section: Navigation Bar -->
     <bottom>
-        <HBox alignment="CENTER" spacing="20.0" styleClass="nav-bar">
+        <HBox alignment="CENTER" spacing="0.0" styleClass="nav-bar">
             <padding>
-                <Insets bottom="10.0" left="15.0" right="15.0" top="10.0" />
+                <Insets bottom="10.0" left="0.0" right="0.0" top="10.0" />
             </padding>
             <Button fx:id="homeButton" onAction="#onHomeClick" styleClass="nav-button">
                 <graphic>
-                    <ImageView fitHeight="24" fitWidth="24" preserveRatio="true">
+                    <ImageView fitHeight="26" fitWidth="26" preserveRatio="true">
                         <image>
-                            <Image url="@../images/home.png" /> <!-- Substitua pelo ícone desejado -->
+                            <Image url="@../images/home.png" />
                         </image>
                     </ImageView>
                 </graphic>
                 <text>Início</text>
             </Button>
-            <Button fx:id="profileButton" onAction="#onHomeClick" styleClass="nav-button">
+            <Button fx:id="profileButton" onAction="#onProfileClick" styleClass="nav-button">
                 <graphic>
-                    <ImageView fitHeight="24" fitWidth="24" onDragDetected="#onProfileClick" preserveRatio="true">
+                    <ImageView fitHeight="26" fitWidth="26" preserveRatio="true">
                         <image>
-                            <Image url="@../images/user.png" /> <!-- Substitua pelo ícone desejado -->
+                            <Image url="@../images/user.png" />
                         </image>
                     </ImageView>
                 </graphic>
@@ -95,9 +127,9 @@
             </Button>
             <Button fx:id="exitButton" onAction="#onExitClick" styleClass="nav-button">
                 <graphic>
-                    <ImageView fitHeight="24" fitWidth="24" preserveRatio="true">
+                    <ImageView fitHeight="26" fitWidth="26" preserveRatio="true">
                         <image>
-                            <Image url="@../images/exit.png" /> <!-- Substitua pelo ícone desejado -->
+                            <Image url="@../images/exit.png" />
                         </image>
                     </ImageView>
                 </graphic>

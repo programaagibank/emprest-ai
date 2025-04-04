@@ -2,152 +2,187 @@ package br.com.emprestai.controller;
 
 import br.com.emprestai.dao.ClienteDAO;
 import br.com.emprestai.dao.EmprestimoDAO;
+import br.com.emprestai.enums.StatusEmprestimoEnum;
 import br.com.emprestai.enums.TipoEmprestimoEnum;
 import br.com.emprestai.exception.ApiException;
+import br.com.emprestai.exception.ElegibilidadeException;
 import br.com.emprestai.model.Cliente;
 import br.com.emprestai.model.Emprestimo;
-import br.com.emprestai.service.calculos.CalculadoraEmprestimo;
-import br.com.emprestai.service.calculos.CalculoConsignado;
-import br.com.emprestai.service.calculos.CalculoPessoal;
-import br.com.emprestai.service.elegibilidade.ElegibilidadeConsignado;
-import br.com.emprestai.service.elegibilidade.ElegibilidadePessoal;
+import br.com.emprestai.service.ClienteService;
+import br.com.emprestai.service.calculos.CalculadoraContrato;
+import br.com.emprestai.service.calculos.CalculoTaxaJuros;
+import br.com.emprestai.service.elegibilidade.ElegibilidadeCliente;
+import br.com.emprestai.service.elegibilidade.ValidatorConsignado;
+import br.com.emprestai.service.elegibilidade.ValidatorPessoal;
 import br.com.emprestai.util.EmprestimoParams;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import static br.com.emprestai.enums.StatusEmprestimoEnum.NEGADO;
-import static java.time.temporal.ChronoUnit.DAYS;
-import static java.time.temporal.ChronoUnit.YEARS;
 
 public class EmprestimoController {
 
-    // --------------------------------------------------------------------------------
-    // Class Properties
-    // --------------------------------------------------------------------------------
     private final EmprestimoDAO emprestimoDAO;
-    private final ClienteDAO    clienteDAO;
+    private final ClienteDAO clienteDAO;
     private static final EmprestimoParams params = EmprestimoParams.getInstance();
 
-    // --------------------------------------------------------------------------------
-    // Constructor
-    // --------------------------------------------------------------------------------
     public EmprestimoController(EmprestimoDAO emprestimoDAO, ClienteDAO clienteDAO) {
         this.emprestimoDAO = emprestimoDAO;
         this.clienteDAO = clienteDAO;
     }
 
-    // --------------------------------------------------------------------------------
-    // CRUD Methods
-    // --------------------------------------------------------------------------------
-
-    // POST - Salvar um novo empréstimo
     public Emprestimo postEmprestimo(Emprestimo emprestimo) throws ApiException {
+        if (emprestimo.getStatusEmprestimo() == NEGADO) {
+            throw new ApiException("Empréstimo não é elegível para concessão.", 400);
+        }
+        emprestimo.setStatusEmprestimo(StatusEmprestimoEnum.ABERTO);
+        emprestimo.setTaxaMulta(params.getPercentualMultaAtraso());
+        emprestimo.setTaxaJurosMora(params.getPercentualJurosMora());
+        return emprestimoDAO.criar(emprestimo);
+    }
+
+    public List<Emprestimo> getByCliente(Long id, TipoEmprestimoEnum empEnum) throws ApiException {
         try {
-            if (emprestimo.getStatusEmprestimo() == NEGADO) {
-                throw new ApiException("Empréstimo não é elegível para concessão.", 400); // Bad Request
-            }
-
-            emprestimo.setTaxaMulta(params.getPercentualMultaAtraso());
-            emprestimo.setTaxaJurosMora(params.getPercentualJurosMora());
-
-            Emprestimo idEmprestimo = emprestimoDAO.criar(emprestimo);
-            return idEmprestimo;
+            List<Emprestimo> emprestimos = emprestimoDAO.buscarPorIdCliente(id, empEnum);
+            return emprestimos;
         } catch (Exception e) {
-            throw new ApiException("Erro ao conceder empréstimo: " + e.getMessage(), 500); // Internal Server Error
+            throw new ApiException("Erro ao buscar empréstimos: " + e.getMessage(), 500);
         }
     }
 
-    // GET - Buscar empréstimo por ID do cliente e tipo
-    public Emprestimo getByCliente(Long id, TipoEmprestimoEnum EmpEnum) throws ApiException {
-        Emprestimo emprestimo = emprestimoDAO.buscarPorIdCliente(id, EmpEnum);
-        double valorEmprestimo = emprestimo.getValorTotal() - emprestimo.getValorIOF() -
-                emprestimo.getValorSeguro() - emprestimo.getOutrosCustos();
-        emprestimo.setValorEmprestimo(valorEmprestimo);
+    public List<Emprestimo> getTodos() throws ApiException {
+        try {
+            return emprestimoDAO.buscarTodos();
+        } catch (Exception e) {
+            throw new ApiException("Erro ao buscar todos os empréstimos: " + e.getMessage(), 500);
+        }
+    }
+
+    public Emprestimo getPrice(Emprestimo emprestimo, Cliente cliente) throws ApiException, ElegibilidadeException {
+        processarEmprestimo(emprestimo, cliente);
+        verificarElegibilidade(emprestimo, cliente);
         return emprestimo;
     }
 
-    // GET - Buscar todos os empréstimos
-    public List<Emprestimo> getTodos() throws ApiException {
-        return emprestimoDAO.buscarTodos();
-    }
-
-    // GET - Calcular contrato Price e verificar elegibilidade
-    public Emprestimo getPrice(Emprestimo emprestimo, Cliente cliente) throws ApiException {
+    public Emprestimo put(Long idEmprestimo, Long idEmprestimoOrigem) throws ApiException {
         try {
-            TipoEmprestimoEnum tipoEmp = emprestimo.getTipoEmprestimo();
-
-            boolean elegivel = switch (tipoEmp) {
-                case PESSOAL -> processarEmprestimoPessoal(cliente, emprestimo);
-                case CONSIGNADO -> processarEmprestimoConsignado(cliente, emprestimo);
-                default -> throw new ApiException("Tipo de empréstimo inválido.", 400); // Bad Request
-            };
-
-            if (!elegivel) {
-                emprestimo.setStatusEmprestimo(NEGADO);
-                throw new ApiException("Empréstimo não aprovado devido à elegibilidade", 400); // Bad Request
-            }
-
-            return emprestimo;
+            return emprestimoDAO.atualizarRefin(idEmprestimo, idEmprestimoOrigem);
         } catch (Exception e) {
-            throw new ApiException("Erro ao processar empréstimo: " + e.getMessage(), 500); // Internal Server Error
+            throw new ApiException("Erro ao atualizar refinanciamento: " + e.getMessage(), 500);
         }
     }
 
-    // PUT - Atualizar empréstimo como refinanciamento
-    public Emprestimo put(Long idEmprestimo, Long idEmprestimoOrigem) throws ApiException {
-        return emprestimoDAO.atualizarRefin(idEmprestimo, idEmprestimoOrigem);
+    private void processarEmprestimo(Emprestimo emprestimo, Cliente cliente) throws ApiException {
+        try {
+            double taxaJuros = CalculoTaxaJuros.calcularTaxaJurosMensal(cliente.getScore(),
+                    emprestimo.getQuantidadeParcelas(), emprestimo.getTipoEmprestimo());
+            emprestimo.setTaxaJuros(taxaJuros);
+            CalculadoraContrato.contratoPrice(emprestimo, cliente.getDataNascimento());
+            emprestimo.setTaxaMulta(params.getPercentualMultaAtraso());
+            emprestimo.setTaxaJurosMora(params.getPercentualJurosMora());
+        } catch (Exception e) {
+            throw new ApiException("Erro ao processar cálculos do empréstimo: " + e.getMessage(), 500);
+        }
     }
 
-    // --------------------------------------------------------------------------------
-    // Helper Methods
-    // --------------------------------------------------------------------------------
+    private void verificarElegibilidade(Emprestimo emprestimo, Cliente cliente) throws ApiException, ElegibilidadeException {
+        ElegibilidadeCliente elegibilidadeCliente = new ElegibilidadeCliente(cliente);
+        boolean elegivelGeral = emprestimo.getTipoEmprestimo() == TipoEmprestimoEnum.PESSOAL
+                ? elegibilidadeCliente.isElegivelPessoal()
+                : elegibilidadeCliente.isElegivelConsignado();
 
-    // Processar cálculos e elegibilidade para empréstimo pessoal
-    private boolean processarEmprestimoPessoal(Cliente cliente, Emprestimo emprestimo) {
-        double rendaLiquida = cliente.getRendaMensalLiquida();
-        int idade = (int) YEARS.between(cliente.getDataNascimento(), emprestimo.getDataContratacao());
+        if (!elegivelGeral) {
+            emprestimo.setStatusEmprestimo(NEGADO);
+            throw new ApiException("Cliente não elegível para o tipo de empréstimo", 400);
+        }
 
-        double taxaJurosMensal = CalculoPessoal.calculoTaxaDeJurosMensal(cliente.getScore());
-        emprestimo.setJuros(taxaJurosMensal);
-        emprestimo.setTaxaMulta(params.getPercentualMultaAtraso());
-        emprestimo.setTaxaJurosMora(params.getPercentualJurosMora());
-
-        CalculadoraEmprestimo.contratoPrice(emprestimo, cliente.getDataNascimento());
-
-        ElegibilidadePessoal.verificarElegibilidadePessoal(
-                rendaLiquida,
-                emprestimo.getValorParcela(),
-                idade,
-                emprestimo.getQuantidadeParcelas(),
-                cliente.getScore()
-        );
-        return true;
+        if (emprestimo.getTipoEmprestimo() == TipoEmprestimoEnum.PESSOAL) {
+            ValidatorPessoal.verificarElegibilidadePessoal(cliente, emprestimo);
+        } else {
+            ValidatorConsignado.verificarElegibilidadeConsignado(cliente, emprestimo);
+        }
     }
 
-    // Processar cálculos e elegibilidade para empréstimo consignado
-    private boolean processarEmprestimoConsignado(Cliente cliente, Emprestimo emprestimo) {
-        double rendaLiquida = cliente.getRendaMensalLiquida();
-        int idade = (int) YEARS.between(cliente.getDataNascimento(), emprestimo.getDataContratacao());
-        int carenciaEmDias = (int) DAYS.between(emprestimo.getDataContratacao(), emprestimo.getDataInicio());
+    public List<Emprestimo> gerarOfertasEmprestimo(double valorSolicitado, TipoEmprestimoEnum tipoEmprestimo, Cliente cliente)
+            throws ApiException, ElegibilidadeException {
+        List<Emprestimo> ofertasValidas = new ArrayList<>();
 
-        double parcelasAtivas = 0;
+        // Verificar elegibilidade geral
+        ElegibilidadeCliente elegibilidade = new ElegibilidadeCliente(cliente);
+        boolean elegivel = tipoEmprestimo == TipoEmprestimoEnum.CONSIGNADO
+                ? elegibilidade.isElegivelConsignado()
+                : elegibilidade.isElegivelPessoal();
+        if (!elegivel) {
+            throw new ElegibilidadeException("Cliente não elegível para o tipo de empréstimo solicitado.");
+        }
 
-        double taxaJurosMensal = CalculoConsignado.calcularTaxaJurosMensal(emprestimo.getQuantidadeParcelas());
-        emprestimo.setJuros(taxaJurosMensal);
+        // Calcular limite de crédito e margem disponível
+        double limiteCredito = tipoEmprestimo == TipoEmprestimoEnum.CONSIGNADO
+                ? ClienteService.calcularLimiteCreditoConsignado(cliente)
+                : ClienteService.calcularLimiteCreditoPessoal(cliente);
+        if (valorSolicitado > limiteCredito) {
+            throw new ApiException("Valor solicitado (R$" + valorSolicitado + ") excede o limite de crédito (R$" + limiteCredito + ").", 400);
+        }
 
-        CalculadoraEmprestimo.contratoPrice(emprestimo, cliente.getDataNascimento());
+        // Definir prazos possíveis com base no cliente
+        int prazoMaximo = tipoEmprestimo == TipoEmprestimoEnum.CONSIGNADO
+                ? ClienteService.calcularPrazoMaximoConsignado(cliente)
+                : ClienteService.calcularPrazoMaximoPessoal(cliente);
+        int prazoMinimo = tipoEmprestimo == TipoEmprestimoEnum.CONSIGNADO
+                ? params.getPrazoMinimoConsignado()
+                : params.getPrazoMinimoPessoal();
+        int[] prazosPossiveis = gerarPrazosViaveis(prazoMinimo, prazoMaximo);
 
-        ElegibilidadeConsignado.verificarElegibilidadeConsignado(
-                rendaLiquida,
-                emprestimo.getValorParcela(),
-                parcelasAtivas,
-                idade,
-                emprestimo.getQuantidadeParcelas(),
-                taxaJurosMensal,
-                cliente.getTipoCliente(),
-                carenciaEmDias,
-                emprestimo.getValorEmprestimo()
-        );
-        return true;
+        // Gerar ofertas para cada prazo
+        for (int parcelas : prazosPossiveis) {
+            Emprestimo emprestimo = new Emprestimo();
+            emprestimo.setValorEmprestimo(valorSolicitado);
+            emprestimo.setQuantidadeParcelas(parcelas);
+            emprestimo.setTipoEmprestimo(tipoEmprestimo);
+            emprestimo.setDataContratacao(LocalDate.now());
+            emprestimo.setDataInicio(LocalDate.now().plusDays(30)); // Padrão, pode ser ajustado
+            emprestimo.setContratarSeguro(true); // Padrão, pode ser ajustado
+
+            try {
+                // Calcular taxa de juros e contrato
+                double taxaJuros = CalculoTaxaJuros.calcularTaxaJurosMensal(cliente.getScore(), parcelas, tipoEmprestimo);
+                emprestimo.setTaxaJuros(Math.min(taxaJuros, tipoEmprestimo == TipoEmprestimoEnum.CONSIGNADO
+                        ? params.getJurosMaximoConsignado() : params.getJurosMaximoPessoal()));
+                CalculadoraContrato.contratoPrice(emprestimo, cliente.getDataNascimento());
+                emprestimo.setTaxaMulta(params.getPercentualMultaAtraso());
+                emprestimo.setTaxaJurosMora(params.getPercentualJurosMora());
+
+                // Validar oferta
+                if (tipoEmprestimo == TipoEmprestimoEnum.CONSIGNADO) {
+                    ValidatorConsignado.verificarElegibilidadeConsignado(cliente, emprestimo);
+                } else {
+                    ValidatorPessoal.verificarElegibilidadePessoal(cliente, emprestimo);
+                }
+
+                ofertasValidas.add(emprestimo);
+            } catch (Exception e) {
+                // Ignorar prazos inválidos (ex.: margem excedida, idade final inválida)
+                continue;
+            }
+        }
+
+        if (ofertasValidas.isEmpty()) {
+            throw new ApiException("Nenhuma oferta válida encontrada para os parâmetros fornecidos.", 400);
+        }
+
+        return ofertasValidas;
+    }
+
+    private int[] gerarPrazosViaveis(int prazoMinimo, int prazoMaximo) {
+        List<Integer> prazos = new ArrayList<>();
+        for (int i = prazoMinimo; i <= prazoMaximo; i += 12) { // Incremento de 12 meses
+            prazos.add(i);
+        }
+        if (!prazos.contains(prazoMaximo) && prazoMaximo >= prazoMinimo) {
+            prazos.add(prazoMaximo);
+        }
+        return prazos.stream().mapToInt(Integer::intValue).toArray();
     }
 }

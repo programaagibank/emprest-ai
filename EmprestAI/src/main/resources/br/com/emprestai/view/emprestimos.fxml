@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
@@ -7,79 +6,58 @@
 <?import javafx.scene.shape.*?>
 
 <BorderPane styleClass="root" stylesheets="@../css/emprestimos.css" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/17.0.12" fx:controller="br.com.emprestai.view.EmprestimoViewController">
-    <!-- Top Section: Header -->
+    <!-- Top Section: Gradient Header -->
     <top>
-        <HBox alignment="CENTER" spacing="10.0" styleClass="header">
+        <VBox prefWidth="380.0" styleClass="header">
             <padding>
-                <Insets bottom="10.0" left="15.0" right="15.0" top="15.0" />
+                <Insets bottom="20.0" left="15.0" right="15.0" top="40.0" />
             </padding>
             <Label fx:id="contractTitle" styleClass="greeting-label" text="Contrato" />
-        </HBox>
+            <Label fx:id="contractType" styleClass="credit-label" text="" />
+        </VBox>
     </top>
 
-    <!-- Center Section: Contract Info or Simulate Button -->
+    <!-- Center Section: Main Content -->
     <center>
-        <VBox alignment="CENTER" spacing="20.0" styleClass="content">
-            <padding>
-                <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
-            </padding>
+        <ScrollPane fitToWidth="true" fitToHeight="true" styleClass="scroll-pane">
+            <content>
+                <VBox alignment="CENTER" spacing="15.0" styleClass="content">
+                    <padding>
+                        <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                    </padding>
 
-            <!-- StackPane to toggle between info and button -->
-            <StackPane alignment="CENTER">
-                <!-- Loan Information -->
-                <VBox fx:id="loanInfoBox" spacing="10.0" styleClass="info-box" visible="true" managed="true">
-                    <HBox alignment="CENTER_LEFT" spacing="10.0">
-                        <Label fx:id="contractType" styleClass="section-title" text="" />
-                        <Label fx:id="totalAmount" styleClass="amount-label" text="" />
-                    </HBox>
-                    <HBox alignment="CENTER_LEFT" spacing="10.0">
-                        <Label styleClass="info-label" text="Valor Empréstimo:" />
-                        <Label fx:id="currentDebt" styleClass="info-value" text="" />
-                    </HBox>
-                    <HBox alignment="CENTER_LEFT" spacing="10.0">
-                        <Label styleClass="info-label" text="Valor da Parcela:" />
-                        <Label fx:id="installmentAmount" styleClass="info-value" text="" />
-                    </HBox>
-                    <HBox alignment="CENTER_LEFT" spacing="10.0">
-                        <Label styleClass="info-label" text="Parcelas Pagas:" />
-                        <Label fx:id="remainingInstallments" styleClass="info-value" text="" />
-                    </HBox>
-                    <HBox alignment="CENTER_LEFT" spacing="10.0">
-                        <Label styleClass="info-label" text="Status:" />
-                        <HBox alignment="CENTER" spacing="5.0">
-                            <Circle fx:id="statusCircle" radius="5" styleClass="status-circle" />
-                            <Label fx:id="loanStatus" styleClass="info-value" text="" />
-                        </HBox>
-                    </HBox>
-                    <HBox alignment="CENTER" spacing="10.0">
-                        <Button fx:id="ordemVencimentoButton" styleClass="banner-button" text="Ordem de Vencimento" onAction="#onOrdemVencimentoClick"/>
-                    </HBox>
-                    <HBox alignment="CENTER" spacing="10.0">
-                        <Button fx:id="maiorDescontoButton" styleClass="banner-button" text="Maior Desconto" onAction="#onMaiorDescontoClick"/>
-                    </HBox>
-                    <HBox alignment="CENTER" spacing="10.0">
-                        <Button fx:id="generatePdfButton" styleClass="banner-button" text="Gerar Contrato em PDF" onAction="#onGeneratePdfClick"/>
-                    </HBox>
+                    <!-- Solicitação Button and Message -->
+                    <VBox alignment="CENTER" spacing="10.0">
+                        <Button fx:id="solicitacaoButton" styleClass="action-button" onAction="#onSolicitacaoClick" visible="false" managed="false">
+                            <graphic>
+                                <ImageView fitHeight="30" fitWidth="30" preserveRatio="true">
+                                    <image>
+                                        <Image url="@../images/offers.png" />
+                                    </image>
+                                </ImageView>
+                            </graphic>
+                        </Button>
+                        <Label fx:id="solicitacaoMensagem" text="" styleClass="info-label" visible="false" managed="false" />
+                    </VBox>
+
+                    <!-- Loan Information -->
+                    <VBox fx:id="loanInfoBox" spacing="10.0" styleClass="upcoming-payments-section" visible="true" managed="true">
+                        <!-- Cards de empréstimo serão adicionados dinamicamente pelo controlador -->
+                    </VBox>
                 </VBox>
-
-
-                <!-- Simulate Loan Button -->
-                <Button fx:id="simulateButton" text="Simular Empréstimo" styleClass="banner-button" onAction="#onSimulateClick" visible="false" managed="false"/>
-                <!-- Depois (substituindo o botão por um Label) -->
-                <Label fx:id="simulationMessage" text="" visible="false" managed="false" style="-fx-font-size: 14px; -fx-text-fill: #333333;" />
-            </StackPane>
-        </VBox>
+            </content>
+        </ScrollPane>
     </center>
 
     <!-- Bottom Section: Navigation Bar -->
     <bottom>
-        <HBox alignment="CENTER" spacing="20.0" styleClass="nav-bar">
+        <HBox alignment="CENTER" spacing="0.0" styleClass="nav-bar">
             <padding>
-                <Insets bottom="10.0" left="15.0" right="15.0" top="10.0" />
+                <Insets bottom="10.0" left="0.0" right="0.0" top="10.0" />
             </padding>
             <Button fx:id="homeButton" onAction="#onHomeClick" styleClass="nav-button">
                 <graphic>
-                    <ImageView fitHeight="24" fitWidth="24" preserveRatio="true">
+                    <ImageView fitHeight="26" fitWidth="26" preserveRatio="true">
                         <image>
                             <Image url="@../images/home.png" />
                         </image>
@@ -89,7 +67,7 @@
             </Button>
             <Button fx:id="profileButton" onAction="#onProfileClick" styleClass="nav-button">
                 <graphic>
-                    <ImageView fitHeight="24" fitWidth="24" preserveRatio="true">
+                    <ImageView fitHeight="26" fitWidth="26" preserveRatio="true">
                         <image>
                             <Image url="@../images/user.png" />
                         </image>
@@ -99,7 +77,7 @@
             </Button>
             <Button fx:id="exitButton" onAction="#onExitClick" styleClass="nav-button">
                 <graphic>
-                    <ImageView fitHeight="24" fitWidth="24" preserveRatio="true">
+                    <ImageView fitHeight="26" fitWidth="26" preserveRatio="true">
                         <image>
                             <Image url="@../images/exit.png" />
                         </image>

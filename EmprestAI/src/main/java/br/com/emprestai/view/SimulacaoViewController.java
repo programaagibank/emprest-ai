@@ -7,6 +7,7 @@ import br.com.emprestai.enums.StatusEmprestimoEnum;
 import br.com.emprestai.enums.TipoEmprestimoEnum;
 import br.com.emprestai.model.Cliente;
 import br.com.emprestai.model.Emprestimo;
+import br.com.emprestai.util.SessionManager;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -20,6 +21,8 @@ import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 public class SimulacaoViewController {
@@ -34,8 +37,7 @@ public class SimulacaoViewController {
     @FXML private Label       scoreOrClienteTypeLabel;
     @FXML private Label       scoreOrClienteTypeValueLabel;
     @FXML private TextField   loanAmountField;
-    @FXML private Slider      installmentsSlider;
-    @FXML private Label       installmentsLabel;
+    @FXML private ComboBox<Integer> installmentsComboBox;
     @FXML private CheckBox    insuranceCheckBox;
     @FXML private VBox        gracePeriodContainer;
     @FXML private ComboBox<String> gracePeriodComboBox;
@@ -58,7 +60,6 @@ public class SimulacaoViewController {
     // --------------------------------------------------------------------------------
     // Class Properties
     // --------------------------------------------------------------------------------
-    private Cliente              clienteLogado;
     private TipoEmprestimoEnum   tipoEmprestimo;
     private Emprestimo           emprestimoSimulado;
     private EmprestimoController emprestimoController;
@@ -73,14 +74,23 @@ public class SimulacaoViewController {
     // --------------------------------------------------------------------------------
     @FXML
     private void initialize() {
+        SessionManager.getInstance().refreshClienteLogado();
         emprestimoController = new EmprestimoController(new EmprestimoDAO(), new ClienteDAO());
 
-        // Slider listener
-        installmentsSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
-            int installments = newValue.intValue();
-            installments = Math.round(installments / 6) * 6;
-            installmentsLabel.setText(String.valueOf(installments));
-        });
+        Cliente clienteLogado = SessionManager.getInstance().getClienteLogado();
+        if (clienteLogado == null) {
+            System.err.println("Nenhum cliente logado encontrado no SessionManager!");
+            onExitClick(); // Redireciona para o login se não houver cliente
+            return;
+        }
+
+        // Atualiza a UI com informações do cliente
+        rendaMensalLabel.setText(currencyFormatter.format(clienteLogado.getVencimentoLiquidoTotal()));
+        int idade = (int) ChronoUnit.YEARS.between(clienteLogado.getDataNascimento(), LocalDate.now());
+        idadeLabel.setText(String.valueOf(idade));
+
+        // Configuração do ComboBox de parcelas
+        configureInstallmentsComboBox(72);
 
         // Loan amount field listener
         loanAmountField.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -105,32 +115,35 @@ public class SimulacaoViewController {
         percentFormatter.setMaximumFractionDigits(2);
     }
 
+    /**
+     * Configura o ComboBox de parcelas com opções de 6 em 6 até o máximo especificado
+     */
+    private void configureInstallmentsComboBox(int maxInstallments) {
+        List<Integer> installmentOptions = new ArrayList<>();
+        for (int i = 6; i <= maxInstallments; i += 6) {
+            installmentOptions.add(i);
+        }
+        installmentsComboBox.setItems(FXCollections.observableArrayList(installmentOptions));
+        installmentsComboBox.getSelectionModel().select(Integer.valueOf(36)); // Valor padrão: 36 parcelas
+    }
+
     // --------------------------------------------------------------------------------
     // Setters
     // --------------------------------------------------------------------------------
-    public void setClienteLogado(Cliente cliente) {
-        this.clienteLogado = cliente;
-        if (cliente != null) {
-            rendaMensalLabel.setText(currencyFormatter.format(cliente.getRendaMensalLiquida()));
-            int idade = (int) ChronoUnit.YEARS.between(cliente.getDataNascimento(), LocalDate.now());
-            idadeLabel.setText(String.valueOf(idade));
-        }
-    }
-
     public void setTipoEmprestimo(TipoEmprestimoEnum tipoEmprestimo) {
         this.tipoEmprestimo = tipoEmprestimo;
         if (tipoEmprestimo != null) {
             loanTypeLabel.setText("Tipo: " + (tipoEmprestimo == TipoEmprestimoEnum.CONSIGNADO ? "Consignado" : "Pessoal"));
 
+            Cliente clienteLogado = SessionManager.getInstance().getClienteLogado();
             if (tipoEmprestimo == TipoEmprestimoEnum.CONSIGNADO) {
-                scoreOrClienteTypeLabel.setText("Tipo de Cliente:");
-                scoreOrClienteTypeValueLabel.setText(clienteLogado.getTipoCliente().toString());
-                installmentsSlider.setMax(48);
+                configureInstallmentsComboBox(92); // Máximo de 92 parcelas para consignado
                 gracePeriodContainer.setVisible(false);
                 gracePeriodContainer.setManaged(false);
                 paydayDateContainer.setVisible(true);
                 paydayDateContainer.setManaged(true);
             } else {
+                configureInstallmentsComboBox(30); // Máximo de 30 parcelas para pessoal
                 scoreOrClienteTypeLabel.setText("Score:");
                 scoreOrClienteTypeValueLabel.setText(String.valueOf(clienteLogado.getScore()));
                 gracePeriodContainer.setVisible(true);
@@ -146,14 +159,25 @@ public class SimulacaoViewController {
     // --------------------------------------------------------------------------------
     @FXML
     private void onCalculateClick() {
+        Cliente clienteLogado = SessionManager.getInstance().getClienteLogado();
+        if (clienteLogado == null) {
+            onExitClick();
+            return;
+        }
+
         try {
             if (loanAmountField.getText().isEmpty()) {
                 showAlert("Valor Requerido", "Por favor, informe o valor do empréstimo.");
                 return;
             }
 
+            if (installmentsComboBox.getValue() == null) {
+                showAlert("Parcelas Requeridas", "Por favor, selecione o número de parcelas.");
+                return;
+            }
+
             double loanAmount = Double.parseDouble(loanAmountField.getText());
-            int installments = Integer.parseInt(installmentsLabel.getText());
+            int installments = installmentsComboBox.getValue();
 
             emprestimoSimulado = new Emprestimo();
             emprestimoSimulado.setValorEmprestimo(loanAmount);
@@ -203,24 +227,23 @@ public class SimulacaoViewController {
 
     @FXML
     private void onConfirmClick() {
+        if (emprestimoSimulado == null) {
+            showAlert("Erro", "É necessário calcular a simulação primeiro.");
+            return;
+        }
+
         try {
-            if (emprestimoSimulado == null) {
-                showAlert("Erro", "É necessário calcular a simulação primeiro.");
-                return;
-            }
-
-            Emprestimo createdEmprestimo = emprestimoController.postEmprestimo(emprestimoSimulado);
-
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Empréstimo Contratado");
-            alert.setHeaderText("Empréstimo Realizado com Sucesso");
-            alert.setContentText("Seu empréstimo foi aprovado e contratado com sucesso!");
-            alert.showAndWait();
-
-            onHomeClick();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("contratarEmprestimo.fxml"));
+            Scene mainScene = new Scene(loader.load(), 360, 640);
+            ContratarEmprestimoViewController contratarController = loader.getController();
+            contratarController.setEmprestimoParaContratar(emprestimoSimulado);
+            Stage stage = (Stage) confirmButton.getScene().getWindow();
+            stage.setScene(mainScene);
+            stage.setTitle("EmprestAI - Contratar Empréstimo");
+            stage.show();
 
         } catch (Exception e) {
-            showAlert("Erro", "Ocorreu um erro ao confirmar o empréstimo: " + e.getMessage());
+            showAlert("Erro", "Ocorreu um erro ao preparar a contratação: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -230,8 +253,6 @@ public class SimulacaoViewController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("dashboard.fxml"));
             Scene mainScene = new Scene(loader.load(), 360, 640);
-            DashboardViewController dashboardController = loader.getController();
-            dashboardController.setClienteLogado(clienteLogado);
             Stage stage = (Stage) homeButton.getScene().getWindow();
             stage.setScene(mainScene);
             stage.setTitle("EmprestAI - Dashboard");
@@ -248,7 +269,7 @@ public class SimulacaoViewController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("emprestimos.fxml"));
             Scene mainScene = new Scene(loader.load(), 360, 640);
             EmprestimoViewController emprestimoController = loader.getController();
-            emprestimoController.setClienteLogado(clienteLogado);
+            emprestimoController.setTipoEmprestimo(tipoEmprestimo); // Mantém o tipo de empréstimo
             Stage stage = (Stage) backButton.getScene().getWindow();
             stage.setScene(mainScene);
             stage.setTitle("EmprestAI - Empréstimos");
@@ -262,6 +283,7 @@ public class SimulacaoViewController {
     @FXML
     private void onExitClick() {
         try {
+            SessionManager.getInstance().clearSession(); // Limpa a sessão ao sair
             FXMLLoader loader = new FXMLLoader(getClass().getResource("login.fxml"));
             Scene mainScene = new Scene(loader.load(), 360, 640);
             Stage stage = (Stage) exitButton.getScene().getWindow();
@@ -279,7 +301,7 @@ public class SimulacaoViewController {
     // --------------------------------------------------------------------------------
     private void updateSimulationResults() {
         installmentValueLabel.setText(currencyFormatter.format(emprestimoSimulado.getValorParcela()));
-        interestRateLabel.setText(percentFormatter.format(emprestimoSimulado.getJuros() / 100));
+        interestRateLabel.setText(percentFormatter.format(emprestimoSimulado.getTaxaJuros() / 100));
         totalAmountLabel.setText(currencyFormatter.format(emprestimoSimulado.getValorTotal()));
         iofValueLabel.setText(currencyFormatter.format(emprestimoSimulado.getValorIOF()));
         insuranceValueLabel.setText(currencyFormatter.format(emprestimoSimulado.getValorSeguro()));

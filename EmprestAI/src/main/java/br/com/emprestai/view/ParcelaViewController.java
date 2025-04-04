@@ -3,13 +3,12 @@ package br.com.emprestai.view;
 import br.com.emprestai.controller.ParcelaController;
 import br.com.emprestai.dao.ParcelaDAO;
 import br.com.emprestai.enums.TipoEmprestimoEnum;
-import br.com.emprestai.model.Cliente;
 import br.com.emprestai.model.Emprestimo;
 import br.com.emprestai.model.Parcela;
+import br.com.emprestai.util.SessionManager;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -39,14 +38,13 @@ public class ParcelaViewController {
     @FXML private VBox  parcelaList;
     @FXML private Label totalLabel;
     @FXML private Button returnButton;
-    @FXML private Button pagarButton; // Novo botão
+    @FXML private Button pagarButton;
 
     // --------------------------------------------------------------------------------
     // Class Properties
     // --------------------------------------------------------------------------------
     private Emprestimo          emprestimo;
     private TipoEmprestimoEnum  tipoEmprestimo;
-    private Cliente             clienteLogado;
     private ObservableList<ParcelaWrapper> parcelasList;
     private ParcelaController   parcelaController = new ParcelaController(new ParcelaDAO());
 
@@ -59,6 +57,12 @@ public class ParcelaViewController {
     // --------------------------------------------------------------------------------
     @FXML
     private void initialize() {
+        System.out.println("CSS carregado: " + getClass().getResource("../css/parcela.css"));
+        // Verifica se há cliente logado
+        if (SessionManager.getInstance().getClienteLogado() == null) {
+            totalLabel.setText("Sessão expirada. Redirecionando para login...");
+            onClickReturnToLogin();
+        }
     }
 
     // --------------------------------------------------------------------------------
@@ -70,10 +74,6 @@ public class ParcelaViewController {
 
     public void setTipoEmprestimo(TipoEmprestimoEnum tipoEmprestimo) {
         this.tipoEmprestimo = tipoEmprestimo;
-    }
-
-    public void setClienteLogado(Cliente cliente) {
-        this.clienteLogado = cliente;
     }
 
     public void setParcelas(List<Parcela> parcelas) {
@@ -96,12 +96,28 @@ public class ParcelaViewController {
     }
 
     // --------------------------------------------------------------------------------
+    // Getters
+    // --------------------------------------------------------------------------------
+    public Emprestimo getEmprestimo() {
+        return emprestimo;
+    }
+
+    public TipoEmprestimoEnum getTipoEmprestimo() {
+        return tipoEmprestimo;
+    }
+
+    // --------------------------------------------------------------------------------
     // Event Handlers
     // --------------------------------------------------------------------------------
-
     @FXML
     private void onPagarClick() {
         try {
+            if (SessionManager.getInstance().getClienteLogado() == null) {
+                totalLabel.setText("Sessão expirada. Redirecionando para login...");
+                onClickReturnToLogin();
+                return;
+            }
+
             List<Parcela> parcelasSelecionadas = new ArrayList<>();
             for (ParcelaWrapper wrapper : parcelasList) {
                 Parcela parcela = wrapper.getParcela();
@@ -122,7 +138,6 @@ public class ParcelaViewController {
             ConfirmacaoPagViewController confirmacaoController = loader.getController();
             confirmacaoController.setParcelasSelecionadas(parcelasSelecionadas);
             confirmacaoController.setParcelaViewController(this);
-            confirmacaoController.setClienteLogado(clienteLogado);
 
             Stage stage = (Stage) pagarButton.getScene().getWindow();
             stage.setScene(confirmacaoScene);
@@ -134,14 +149,13 @@ public class ParcelaViewController {
         }
     }
 
+    @FXML
     public void onClickReturn() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("emprestimos.fxml"));
             Scene mainScene = new Scene(loader.load(), 360, 640);
             EmprestimoViewController emprestimoViewController = loader.getController();
-            emprestimoViewController.setClienteLogado(clienteLogado);
             emprestimoViewController.setTipoEmprestimo(tipoEmprestimo);
-            emprestimoViewController.setEmprestimo(emprestimo);
 
             Stage stage = (Stage) returnButton.getScene().getWindow();
             stage.setScene(mainScene);
@@ -150,6 +164,21 @@ public class ParcelaViewController {
         } catch (IOException e) {
             e.printStackTrace();
             System.err.println("Erro ao carregar emprestimos.fxml: " + e.getMessage());
+        }
+    }
+
+    private void onClickReturnToLogin() {
+        try {
+            SessionManager.getInstance().clearSession();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("login.fxml"));
+            Scene mainScene = new Scene(loader.load(), 360, 640);
+            Stage stage = (Stage) returnButton.getScene().getWindow();
+            stage.setScene(mainScene);
+            stage.setTitle("EmprestAI - Login");
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.err.println("Erro ao carregar login.fxml: " + e.getMessage());
         }
     }
 
@@ -173,7 +202,6 @@ public class ParcelaViewController {
             VBox valorDataBox = new VBox(2);
             valorDataBox.setPrefWidth(Region.USE_COMPUTED_SIZE);
             valorDataBox.getStyleClass().add("valor-data-box");
-            valorDataBox.setTranslateX(30);
 
             Label valorLabel = new Label(df.format(wrapper.getValorAPagar()));
             valorLabel.getStyleClass().add("parcela-valor");

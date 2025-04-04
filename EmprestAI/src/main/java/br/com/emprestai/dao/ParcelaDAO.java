@@ -2,6 +2,7 @@ package br.com.emprestai.dao;
 
 import br.com.emprestai.database.DatabaseConnection;
 import br.com.emprestai.enums.StatusParcelaEnum;
+import br.com.emprestai.enums.TipoEmprestimoEnum;
 import br.com.emprestai.exception.ApiException;
 import br.com.emprestai.model.Parcela;
 
@@ -233,6 +234,42 @@ public class ParcelaDAO {
         return parcelas;
     }
 
+    // Adicionar no ParcelaDAO.java
+    public List<Parcela> BuscarUltimasNaoPagas(Long clientId, TipoEmprestimoEnum tipoEmprestimo) throws SQLException {
+        List<Parcela> parcelas = new ArrayList<>();
+        String sql = """
+        SELECT p.*, e.valor_parcela
+        FROM parcelas p
+        INNER JOIN emprestimos e ON p.id_emprestimo = e.id_emprestimo
+        WHERE e.id_cliente = ?
+        AND e.id_tipo_emprestimo = ?
+        AND p.data_pagamento IS NULL
+        AND p.numero_parcela = (
+            SELECT MIN(p2.numero_parcela)
+            FROM parcelas p2
+            WHERE p2.id_emprestimo = p.id_emprestimo
+            AND p2.data_pagamento IS NULL
+        )
+    """;
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setLong(1, clientId);
+            stmt.setInt(2, tipoEmprestimo.getValor()); // Assumindo que TipoEmprestimoEnum tem um método getValor()
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Parcela parcela = mapearResultSet(rs);
+                    parcelas.add(parcela);
+                }
+            }
+        } catch (SQLException | IOException e) {
+            throw new ApiException("Erro ao buscar parcelas não pagas: " + e.getMessage(), 500);
+        }
+        return parcelas;
+    }
+
     // --------------------------------------------------------------------------------
     // Helper Methods
     // --------------------------------------------------------------------------------
@@ -246,6 +283,14 @@ public class ParcelaDAO {
 
         java.sql.Date dataVencimento = rs.getDate("data_vencimento");
         parcela.setDataVencimento(dataVencimento != null ? dataVencimento.toLocalDate() : null);
+
+        // Verifica se a coluna "valor_parcela" existe no ResultSet
+        try {
+            parcela.setValorPresenteParcela(rs.getDouble("valor_parcela"));
+        } catch (SQLException e) {
+            // Caso a coluna não exista, define um valor padrão ou busca de outra forma
+            parcela.setValorPresenteParcela(0.0); // Ou buscar via EmprestimoDAO, se necessário
+        }
 
         parcela.setValorPago(rs.getDouble("valor_pago"));
 

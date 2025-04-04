@@ -15,6 +15,7 @@ public class Parcela {
     private double valorPago; // Valor pago
     private double juros; // Parte dos juros na parcela
     private double amortizacao; // Parte da amortização do principal
+    private double saldoDevedor; // Parte da amortização do principal
     private StatusParcelaEnum status; // Status da parcela (paga ou pendente)
     private LocalDate dataPagamento; // Data em que foi paga
     private double multa; // Multa por atraso
@@ -126,4 +127,23 @@ public class Parcela {
         this.jurosMora = jurosMora;
     }
 
+    public void setIdParcela(long idParcela) {
+        this.idParcela = idParcela;
+    }
+
+    public void setIdEmprestimo(long idEmprestimo) {
+        this.idEmprestimo = idEmprestimo;
+    }
+
+    public double getSaldoDevedor() {
+        return saldoDevedor;
+    }
+
+    public void setSaldoDevedor(double saldoDevedor) {
+        this.saldoDevedor = saldoDevedor;
+    }
+
+    public void setStatus(StatusParcelaEnum status) {
+        this.status = status;
+    }
 }

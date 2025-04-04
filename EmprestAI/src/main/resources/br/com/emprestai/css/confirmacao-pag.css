@@ -19,112 +19,70 @@
     -fx-max-width: 330px;
 }
 
-/* ScrollPane styling */
-.scroll-pane {
-    -fx-background-color: transparent;
-    -fx-background: transparent;
-    -fx-border-color: transparent;
-}
-
-.scroll-pane .viewport {
-    -fx-background-color: transparent;
-}
-
 /* Main content styling */
 .content {
     -fx-background-color: #FFFFFF;
     -fx-background-radius: 15px 15px 0 0;
     -fx-alignment: center;
-    -fx-spacing: 10px;
+    -fx-spacing: 15px;
     -fx-padding: 15px;
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 10, 0, 0, 4);
 }
 
-/* Parcela row styling */
-.parcela-row {
-    -fx-alignment: center-left;
-    -fx-spacing: 10px;
-    -fx-padding: 10px;
-    -fx-background-color: #FFFFFF;
-    -fx-background-radius: 8px;
-    -fx-border-radius: 8px;
-    -fx-border-color: #E0E0E0;
-    -fx-border-width: 1px;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 8, 0, 0, 4);
-}
-
-/* Parcela numero styling */
-.parcela-numero {
+/* Confirmation labels */
+.confirmacao-valor,
+.confirmacao-parcelas,
+.confirmacao-data,
+.confirmacao-label {
     -fx-font-family: "Roboto", "Arial", sans-serif;
     -fx-font-size: 14px;
-    -fx-text-fill: #666666;
-    -fx-pref-width: 80px; /* Aumentado para evitar corte */
-    -fx-min-width: 80px;
-    -fx-alignment: center-left;
-}
-
-/* Valor-data box styling */
-.valor-data-box {
-    -fx-alignment: center-left;
-    -fx-spacing: 2px;
-    -fx-pref-width: 200px; /* Ajustado para caber na largura */
-}
-
-/* Parcela valor styling */
-.parcela-valor {
-    -fx-font-family: "Roboto", "Arial", sans-serif;
-    -fx-font-size: 14px;
-    -fx-font-weight: bold;
     -fx-text-fill: #333333;
-    -fx-alignment: center-left;
+    -fx-wrap-text: true;
+    -fx-max-width: 330px;
+    -fx-alignment: center;
 }
 
-/* Parcela vencimento styling */
-.parcela-vencimento {
+.confirmacao-label {
+    -fx-font-weight: bold;
+}
+
+.confirmacao-valor {
+    -fx-font-weight: bold;
+}
+
+.confirmacao-mensagem {
     -fx-font-family: "Roboto", "Arial", sans-serif;
     -fx-font-size: 12px;
-    -fx-text-fill: #666666;
-    -fx-alignment: center-left;
+    -fx-text-fill: #FF0000; /* Vermelho para mensagens de erro */
+    -fx-wrap-text: true;
+    -fx-max-width: 330px;
+    -fx-alignment: center;
 }
 
-/* Checkbox styling */
-.check-box .box {
-    -fx-background-color: #FFFFFF;
-    -fx-border-color: #666666;
-    -fx-border-width: 1px;
-    -fx-border-radius: 3px;
-    -fx-pref-width: 20px;
-    -fx-pref-height: 20px;
-}
-
-.check-box:selected .box {
-    -fx-background-color: #0056D2;
-    -fx-border-color: #0056D2;
-}
-
-.check-box:selected .mark {
-    -fx-background-color: #FFFFFF;
-    -fx-shape: "M 9 16.2 L 4.8 12 l -1.4 1.4 L 9 19 L 21 7 l -1.4 -1.4 L 9 16.2 Z";
-}
-
-/* Navigation bar styling */
-.nav-bar {
+/* Password field */
+.password-field {
+    -fx-font-family: "Roboto", "Arial", sans-serif;
+    -fx-font-size: 14px;
     -fx-background-color: #FFFFFF;
     -fx-border-color: #E0E0E0;
-    -fx-border-width: 0.5px 0 0 0;
-    -fx-padding: 10px;
-    -fx-alignment: center;
-    -fx-spacing: 10px;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 8, 0, 0, -4);
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-padding: 8px;
+    -fx-pref-width: 200px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 0, 0, 2);
 }
 
-/* Total label styling */
-.amount-label {
-    -fx-font-family: "Roboto", "Arial", sans-serif;
-    -fx-font-size: 16px;
-    -fx-font-weight: bold;
-    -fx-text-fill: #333333;
+.password-field:focused {
+    -fx-border-color: #0056D2;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 8, 0, 0, 3);
+}
+
+/* Button container */
+.button-container {
     -fx-alignment: center;
+    -fx-spacing: 10px;
+    -fx-padding: 15px;
 }
 
 /* Buttons */
@@ -135,7 +93,7 @@
     -fx-font-family: "Roboto", "Arial", sans-serif;
     -fx-font-size: 14px;
     -fx-font-weight: bold;
-    -fx-padding: 10px 20px;
+    -fx-padding: 12px 24px;
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 10, 0, 0, 4);
 }
 
@@ -158,7 +116,7 @@
     -fx-font-family: "Roboto", "Arial", sans-serif;
     -fx-font-size: 14px;
     -fx-font-weight: bold;
-    -fx-padding: 10px 20px;
+    -fx-padding: 12px 24px;
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 8, 0, 0, 4);
 }
 

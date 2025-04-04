@@ -54,17 +54,18 @@ public class ConfirmacaoPagViewController {
     // --------------------------------------------------------------------------------
     @FXML
     private void initialize() {
+        System.out.println("CSS carregado: " + getClass().getResource("../css/confirmacao-pag.css"));
         SessionManager.getInstance().refreshClienteLogado();
         // Verifica se há cliente logado
         if (SessionManager.getInstance().getClienteLogado() == null) {
             System.err.println("Nenhum cliente logado encontrado no SessionManager!");
-            voltarParaLogin(); // Redireciona para o login se não houver cliente
+            voltarParaLogin();
             return;
         }
 
         // Remover foco automático da senha
         javafx.application.Platform.runLater(() -> {
-            confirmacaoContainer.requestFocus(); // foca no container "neutro"
+            confirmacaoContainer.requestFocus();
         });
 
         // Password field formatting
@@ -114,6 +115,7 @@ public class ConfirmacaoPagViewController {
             if (senhaValida) {
                 parcelaController.putListParcelas(parcelasSelecionadas);
                 mensagemLabel.setText("Pagamento confirmado com sucesso!");
+                mensagemLabel.setStyle("-fx-text-fill: #008000;");
                 voltarParaParcelas();
             } else {
                 mensagemLabel.setText("Senha inválida. Tente novamente.");
@@ -146,7 +148,7 @@ public class ConfirmacaoPagViewController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("parcela.fxml"));
             Scene parcelaScene = new Scene(loader.load(), 360, 640);
             ParcelaViewController controller = loader.getController();
-            controller.setParcelas(parcelasSelecionadas); // Reutiliza as parcelas selecionadas
+            controller.setParcelas(parcelasSelecionadas);
             if (parcelaViewController != null && parcelaViewController.getEmprestimo() != null) {
                 controller.setEmprestimo(parcelaViewController.getEmprestimo());
                 controller.setTipoEmprestimo(parcelaViewController.getTipoEmprestimo());
@@ -164,7 +166,7 @@ public class ConfirmacaoPagViewController {
 
     private void voltarParaLogin() {
         try {
-            SessionManager.getInstance().clearSession(); // Limpa a sessão
+            SessionManager.getInstance().clearSession();
             FXMLLoader loader = new FXMLLoader(getClass().getResource("login.fxml"));
             Scene loginScene = new Scene(loader.load(), 360, 640);
             Stage stage = (Stage) cancelarButton.getScene().getWindow();

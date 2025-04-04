@@ -58,6 +58,7 @@ public class ContratarEmprestimoViewController {
     // --------------------------------------------------------------------------------
     @FXML
     private void initialize() {
+        System.out.println("CSS carregado: " + getClass().getResource("../css/contratar.css"));
         SessionManager.getInstance().refreshClienteLogado();
         emprestimoController = new EmprestimoController(new EmprestimoDAO(), new ClienteDAO());
 
@@ -75,7 +76,7 @@ public class ContratarEmprestimoViewController {
         // Verifica se há cliente logado
         if (SessionManager.getInstance().getClienteLogado() == null) {
             System.err.println("Nenhum cliente logado encontrado no SessionManager!");
-            onExitClick(); // Redireciona para o login se não houver cliente
+            onExitClick();
         }
     }
 
@@ -162,7 +163,7 @@ public class ContratarEmprestimoViewController {
     @FXML
     private void onExitClick() {
         try {
-            SessionManager.getInstance().clearSession(); // Limpa a sessão ao sair
+            SessionManager.getInstance().clearSession();
             FXMLLoader loader = new FXMLLoader(getClass().getResource("login.fxml"));
             Scene mainScene = new Scene(loader.load(), 360, 640);
             Stage stage = (Stage) exitButton.getScene().getWindow();

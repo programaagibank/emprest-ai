@@ -7,7 +7,7 @@
 .header {
     -fx-background-color: linear-gradient(to bottom, #0056D2 0%, #00A3FF 70%, rgba(0, 163, 255, 0) 100%);
     -fx-alignment: center;
-    -fx-padding: 40px 15px 20px 15px;
+    -fx-padding: 15px;
 }
 
 .greeting-label {
@@ -20,13 +20,13 @@
 }
 
 /* ScrollPane styling */
-.scroll-pane {
+.content-scroll {
     -fx-background-color: transparent;
     -fx-background: transparent;
     -fx-border-color: transparent;
 }
 
-.scroll-pane .viewport {
+.content-scroll .viewport {
     -fx-background-color: transparent;
 }
 
@@ -35,96 +35,72 @@
     -fx-background-color: #FFFFFF;
     -fx-background-radius: 15px 15px 0 0;
     -fx-alignment: center;
-    -fx-spacing: 10px;
+    -fx-spacing: 20px;
     -fx-padding: 15px;
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 10, 0, 0, 4);
 }
 
-/* Parcela row styling */
-.parcela-row {
-    -fx-alignment: center-left;
-    -fx-spacing: 10px;
-    -fx-padding: 10px;
-    -fx-background-color: #FFFFFF;
-    -fx-background-radius: 8px;
-    -fx-border-radius: 8px;
-    -fx-border-color: #E0E0E0;
-    -fx-border-width: 1px;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 8, 0, 0, 4);
-}
-
-/* Parcela numero styling */
-.parcela-numero {
-    -fx-font-family: "Roboto", "Arial", sans-serif;
-    -fx-font-size: 14px;
-    -fx-text-fill: #666666;
-    -fx-pref-width: 80px; /* Aumentado para evitar corte */
-    -fx-min-width: 80px;
-    -fx-alignment: center-left;
-}
-
-/* Valor-data box styling */
-.valor-data-box {
-    -fx-alignment: center-left;
-    -fx-spacing: 2px;
-    -fx-pref-width: 200px; /* Ajustado para caber na largura */
-}
-
-/* Parcela valor styling */
-.parcela-valor {
-    -fx-font-family: "Roboto", "Arial", sans-serif;
-    -fx-font-size: 14px;
-    -fx-font-weight: bold;
-    -fx-text-fill: #333333;
-    -fx-alignment: center-left;
-}
-
-/* Parcela vencimento styling */
-.parcela-vencimento {
-    -fx-font-family: "Roboto", "Arial", sans-serif;
-    -fx-font-size: 12px;
-    -fx-text-fill: #666666;
-    -fx-alignment: center-left;
-}
-
-/* Checkbox styling */
-.check-box .box {
-    -fx-background-color: #FFFFFF;
-    -fx-border-color: #666666;
-    -fx-border-width: 1px;
-    -fx-border-radius: 3px;
-    -fx-pref-width: 20px;
-    -fx-pref-height: 20px;
-}
-
-.check-box:selected .box {
-    -fx-background-color: #0056D2;
-    -fx-border-color: #0056D2;
-}
-
-.check-box:selected .mark {
-    -fx-background-color: #FFFFFF;
-    -fx-shape: "M 9 16.2 L 4.8 12 l -1.4 1.4 L 9 19 L 21 7 l -1.4 -1.4 L 9 16.2 Z";
-}
-
-/* Navigation bar styling */
-.nav-bar {
-    -fx-background-color: #FFFFFF;
-    -fx-border-color: #E0E0E0;
-    -fx-border-width: 0.5px 0 0 0;
-    -fx-padding: 10px;
-    -fx-alignment: center;
-    -fx-spacing: 10px;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 8, 0, 0, -4);
-}
-
-/* Total label styling */
-.amount-label {
+/* Section titles */
+.section-title {
     -fx-font-family: "Roboto", "Arial", sans-serif;
     -fx-font-size: 16px;
     -fx-font-weight: bold;
     -fx-text-fill: #333333;
+}
+
+/* Loan info section */
+.loan-info {
+    -fx-background-color: #FFFFFF;
+    -fx-background-radius: 12px;
+    -fx-border-radius: 12px;
+    -fx-border-color: #E0E0E0;
+    -fx-border-width: 1px;
+    -fx-padding: 15px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 8, 0, 0, 4);
     -fx-alignment: center;
+    -fx-spacing: 10px;
+    -fx-max-width: 330px;
+}
+
+/* GridPane labels */
+.info-label {
+    -fx-font-family: "Roboto", "Arial", sans-serif;
+    -fx-font-size: 12px;
+    -fx-text-fill: #666666;
+    -fx-wrap-text: true;
+    -fx-max-width: 180px;
+}
+
+.info-value {
+    -fx-font-family: "Roboto", "Arial", sans-serif;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+    -fx-wrap-text: false;
+    -fx-max-width: 110px;
+    -fx-alignment: center-right;
+}
+
+/* Terms section */
+.terms-container {
+    -fx-background-color: #FFFFFF;
+    -fx-background-radius: 12px;
+    -fx-border-radius: 12px;
+    -fx-border-color: #E0E0E0;
+    -fx-border-width: 1px;
+    -fx-padding: 15px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 8, 0, 0, 4);
+    -fx-alignment: center;
+    -fx-spacing: 10px;
+    -fx-max-width: 330px;
+}
+
+.terms-checkbox {
+    -fx-font-family: "Roboto", "Arial", sans-serif;
+    -fx-font-size: 12px;
+    -fx-text-fill: #333333;
+    -fx-wrap-text: true;
+    -fx-max-width: 300px;
 }
 
 /* Buttons */
@@ -135,7 +111,7 @@
     -fx-font-family: "Roboto", "Arial", sans-serif;
     -fx-font-size: 14px;
     -fx-font-weight: bold;
-    -fx-padding: 10px 20px;
+    -fx-padding: 12px 24px;
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 10, 0, 0, 4);
 }
 
@@ -149,6 +125,12 @@
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 0, 0, 2);
 }
 
+.confirm-button:disabled {
+    -fx-background-color: #CCCCCC;
+    -fx-text-fill: #999999;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 0, 0, 2);
+}
+
 .secondary-button {
     -fx-background-color: #FFFFFF;
     -fx-background-radius: 12px;
@@ -158,7 +140,7 @@
     -fx-font-family: "Roboto", "Arial", sans-serif;
     -fx-font-size: 14px;
     -fx-font-weight: bold;
-    -fx-padding: 10px 20px;
+    -fx-padding: 12px 24px;
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 8, 0, 0, 4);
 }
 
@@ -170,4 +152,31 @@
 .secondary-button:pressed {
     -fx-background-color: #E0E0E0;
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 0, 0, 2);
+}
+
+/* Navigation bar */
+.nav-bar {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #E0E0E0;
+    -fx-border-width: 0.5px 0 0 0;
+    -fx-padding: 10px 0;
+    -fx-alignment: center;
+    -fx-spacing: 0;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 8, 0, 0, -4);
+}
+
+/* Navigation buttons */
+.nav-button {
+    -fx-background-color: transparent;
+    -fx-font-family: "Roboto", "Arial", sans-serif;
+    -fx-font-size: 10px;
+    -fx-text-fill: #666666;
+    -fx-alignment: center;
+    -fx-pref-width: 120px;
+    -fx-max-width: 120px;
+}
+
+.nav-button:hover,
+.nav-button:selected {
+    -fx-text-fill: #0056D2;
 }

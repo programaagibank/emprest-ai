@@ -284,7 +284,13 @@ public class ParcelaDAO {
         java.sql.Date dataVencimento = rs.getDate("data_vencimento");
         parcela.setDataVencimento(dataVencimento != null ? dataVencimento.toLocalDate() : null);
 
-        parcela.setValorPresenteParcela(rs.getDouble("valor_parcela"));
+        // Verifica se a coluna "valor_parcela" existe no ResultSet
+        try {
+            parcela.setValorPresenteParcela(rs.getDouble("valor_parcela"));
+        } catch (SQLException e) {
+            // Caso a coluna não exista, define um valor padrão ou busca de outra forma
+            parcela.setValorPresenteParcela(0.0); // Ou buscar via EmprestimoDAO, se necessário
+        }
 
         parcela.setValorPago(rs.getDouble("valor_pago"));
 

@@ -52,12 +52,12 @@
     -fx-background-radius: 50%;
     -fx-pref-width: 60px;
     -fx-pref-height: 60px;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 8, 0, 0, 4); /* Igual ao dashboard */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 8, 0, 0, 4);
 }
 
 .action-button:hover {
     -fx-background-color: #F5F5F5;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 8, 0, 0, 4); /* Igual ao dashboard */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 8, 0, 0, 4);
 }
 
 /* Info label (Mensagem de solicitação) */
@@ -145,4 +145,18 @@
 
 .status-circle.yellow {
     -fx-fill: #FFC107;
+}
+
+/* Banner button style for dynamic buttons */
+.banner-button {
+    -fx-background-color: #0056D2;
+    -fx-background-radius: 8px;
+    -fx-text-fill: #FFFFFF;
+    -fx-font-family: "Roboto", "Arial", sans-serif;
+    -fx-font-size: 12px;
+    -fx-padding: 6px 12px;
+}
+
+.banner-button:hover {
+    -fx-background-color: #003A8C;
 }

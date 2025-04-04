@@ -79,6 +79,7 @@ public class EmprestimoViewController {
             onExitClick();
             return;
         }
+        System.out.println("CSS carregado: " + getClass().getResource("../css/emprestimos.css"));
         if (tipoEmprestimo != null) {
             carregarEmprestimos(clienteLogado);
         }
@@ -133,9 +134,9 @@ public class EmprestimoViewController {
     }
 
     @FXML
-    private void onSolicitacaoClick() {  // Alterado de onSimulateClick para onOffersClick
+    private void onSolicitacaoClick() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("ofertas.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("solicitacaoEmprestimo.fxml")); // Caminho relativo
             Scene SolicitacaoScene = new Scene(loader.load(), 360, 640);
             SolicitacaoEmprestimoViewController solicitacaoEmprestimoViewController = loader.getController();
             solicitacaoEmprestimoViewController.setTipoEmprestimo(tipoEmprestimo);
@@ -246,11 +247,17 @@ public class EmprestimoViewController {
 
             if (!emprestimosFiltrados.isEmpty()) {
                 showLoanDetails(emprestimosFiltrados);
-                solicitacaoButton.setVisible(hasMargin);  // Alterado de simulateButton para solicitacaoButton
-                solicitacaoButton.setManaged(hasMargin);  // Alterado de simulateButton para soliitacaoButton
-                solicitacaoMensagem.setVisible(!hasMargin);
-                solicitacaoMensagem.setManaged(!hasMargin);
-                solicitacaoMensagem.setText(hasMargin ? "" : "Sem margem disponível");
+                solicitacaoButton.setVisible(hasMargin);
+                solicitacaoButton.setManaged(hasMargin);
+                if (hasMargin) {
+                    solicitacaoMensagem.setText("Confira nossas ofertas!");
+                    solicitacaoMensagem.setVisible(true);
+                    solicitacaoMensagem.setManaged(true);
+                } else {
+                    solicitacaoMensagem.setText("Sem margem disponível");
+                    solicitacaoMensagem.setVisible(true);
+                    solicitacaoMensagem.setManaged(true);
+                }
             } else {
                 showNoLoanState();
             }
@@ -258,7 +265,6 @@ public class EmprestimoViewController {
             showNoLoanState();
         }
     }
-
     private void showLoanDetails(List<Emprestimo> emprestimosFiltrados) {
         toggleVisibility(true, false);
         contractTitle.setText("Contratos Ativos");
@@ -402,19 +408,17 @@ public class EmprestimoViewController {
 
     private void showNoLoanState() {
         contractTitle.setText("Nenhum Empréstimo Ativo");
-        boolean canOffer = checkMarginAvailability();  // Alterado de canSimulate para canOffer
+        boolean canOffer = checkMarginAvailability();
 
+        solicitacaoButton.setVisible(canOffer);
+        solicitacaoButton.setManaged(canOffer);
         if (canOffer) {
-            toggleVisibility(false, true);
-            solicitacaoMensagem.setText("Confira nossas ofertas!");  // Mensagem ajustada
-            solicitacaoMensagem.setVisible(true);
-            solicitacaoMensagem.setManaged(true);
+            solicitacaoMensagem.setText("Confira nossas ofertas!");
         } else {
-            toggleVisibility(false, false);
             solicitacaoMensagem.setText("Produto não disponível ou sem margem");
-            solicitacaoMensagem.setVisible(true);
-            solicitacaoMensagem.setManaged(true);
         }
+        solicitacaoMensagem.setVisible(true);
+        solicitacaoMensagem.setManaged(true);
     }
 
     private boolean checkMarginAvailability() {
@@ -427,26 +431,11 @@ public class EmprestimoViewController {
         return false;
     }
 
-    private void toggleVisibility(boolean loanVisible, boolean solicitacaoVisible) {  // Alterado de simulateVisible para solicitacaoVisible
+    private void toggleVisibility(boolean loanVisible, boolean solicitacaoVisible) {
         loanInfoBox.setVisible(loanVisible);
         loanInfoBox.setManaged(loanVisible);
-        solicitacaoButton.setVisible(solicitacaoVisible);  // Alterado de simulateButton para solicitacaoButton
-        solicitacaoButton.setManaged(solicitacaoVisible);  // Alterado de simulateButton para solicitacaoButton
-        solicitacaoMensagem.setVisible(false);
-        solicitacaoMensagem.setManaged(false);
-    }
-
-    public void updateStatus(StatusEmprestimoEnum status) {
-        statusCircle.getStyleClass().removeAll("green", "gray", "yellow");
-        statusCircle.getStyleClass().add("status-circle");
-
-        String style = switch (status) {
-            case ABERTO -> "green";
-            case QUITADO -> "gray";
-            case RENEGOCIADO -> "yellow";
-            default -> "gray";
-        };
-        statusCircle.getStyleClass().add(style);
+        solicitacaoButton.setVisible(solicitacaoVisible);
+        solicitacaoButton.setManaged(solicitacaoVisible);
     }
 
     private void generateContractPDF(File file, Emprestimo emprestimo) throws Exception {

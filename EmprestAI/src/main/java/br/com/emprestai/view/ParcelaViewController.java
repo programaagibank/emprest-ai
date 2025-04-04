@@ -57,7 +57,12 @@ public class ParcelaViewController {
     // --------------------------------------------------------------------------------
     @FXML
     private void initialize() {
-        // Pode-se adicionar uma verificação inicial aqui, se desejado
+        System.out.println("CSS carregado: " + getClass().getResource("../css/parcela.css"));
+        // Verifica se há cliente logado
+        if (SessionManager.getInstance().getClienteLogado() == null) {
+            totalLabel.setText("Sessão expirada. Redirecionando para login...");
+            onClickReturnToLogin();
+        }
     }
 
     // --------------------------------------------------------------------------------
@@ -164,7 +169,7 @@ public class ParcelaViewController {
 
     private void onClickReturnToLogin() {
         try {
-            SessionManager.getInstance().clearSession(); // Limpa a sessão
+            SessionManager.getInstance().clearSession();
             FXMLLoader loader = new FXMLLoader(getClass().getResource("login.fxml"));
             Scene mainScene = new Scene(loader.load(), 360, 640);
             Stage stage = (Stage) returnButton.getScene().getWindow();
@@ -197,7 +202,6 @@ public class ParcelaViewController {
             VBox valorDataBox = new VBox(2);
             valorDataBox.setPrefWidth(Region.USE_COMPUTED_SIZE);
             valorDataBox.getStyleClass().add("valor-data-box");
-            valorDataBox.setTranslateX(30);
 
             Label valorLabel = new Label(df.format(wrapper.getValorAPagar()));
             valorLabel.getStyleClass().add("parcela-valor");

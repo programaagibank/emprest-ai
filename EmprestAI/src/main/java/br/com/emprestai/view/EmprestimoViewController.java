@@ -9,7 +9,6 @@ import br.com.emprestai.enums.TipoEmprestimoEnum;
 import br.com.emprestai.model.Cliente;
 import br.com.emprestai.model.Emprestimo;
 import br.com.emprestai.model.Parcela;
-import br.com.emprestai.service.calculos.CalculadoraSaldos;
 import br.com.emprestai.util.GeneratePDF;
 import br.com.emprestai.util.SessionManager;
 import com.itextpdf.html2pdf.HtmlConverter;
@@ -28,8 +27,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -215,7 +212,7 @@ public class EmprestimoViewController {
     // --------------------------------------------------------------------------------
     private void carregarEmprestimos(Cliente cliente) {
         try {
-            emprestimos = emprestimoController.getByCliente(cliente.getIdCliente(), tipoEmprestimo);
+            emprestimos = emprestimoController.getByClienteTipoEmprestimo(cliente.getIdCliente(), tipoEmprestimo);
             System.out.println("Total de empréstimos buscados: " + (emprestimos != null ? emprestimos.size() : 0));
             if (emprestimos != null) {
                 emprestimos.forEach(e -> System.out.println("Empréstimo ID: " + e.getIdEmprestimo() + ", Tipo: " + e.getTipoEmprestimo() + ", Parcelas Pagas: " + e.getParcelasPagas() + ", Total Parcelas: " + e.getQuantidadeParcelas()));

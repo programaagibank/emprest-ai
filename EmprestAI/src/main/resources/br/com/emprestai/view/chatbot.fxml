@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<BorderPane prefWidth="300" prefHeight="400" styleClass="whatsapp-window"
+            stylesheets="@../css/whatsapp.css"
+            xmlns:fx="http://javafx.com/fxml/1"
+            xmlns="http://javafx.com/javafx/17.0.12"
+            fx:controller="br.com.emprestai.view.ChatbotViewController">
+    <!-- Top: Cabeçalho do WhatsApp -->
+    <top>
+        <HBox alignment="CENTER_LEFT" styleClass="whatsapp-header" prefHeight="50">
+            <padding>
+                <Insets left="10" right="10" top="5" bottom="5"/>
+            </padding>
+            <Label text="EmprestAI Bot" styleClass="whatsapp-title"/>
+        </HBox>
+    </top>
+
+    <!-- Center: Área de Mensagens -->
+    <center>
+        <TextArea fx:id="chatArea" editable="false" wrapText="true" styleClass="whatsapp-chat-area" BorderPane.alignment="CENTER"/>
+    </center>
+
+    <!-- Bottom: Entrada de Mensagem -->
+    <bottom>
+        <HBox alignment="CENTER" spacing="5" styleClass="whatsapp-input-area">
+            <padding>
+                <Insets bottom="10" left="10" right="10" top="10"/>
+            </padding>
+            <TextField fx:id="chatInput" promptText="Digite sua mensagem..." styleClass="whatsapp-input" HBox.hgrow="ALWAYS" onAction="#sendMessage"/>
+            <Button fx:id="chatbotButton" text="Iniciar" styleClass="whatsapp-start-button" onAction="#startChatbot"/>
+        </HBox>
+    </bottom>
+</BorderPane>

@@ -147,19 +147,6 @@ public class ContratarEmprestimoViewController {
 
     @FXML
     private void onBackClick() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("simulacaoEmprestimo.fxml"));
-            Scene mainScene = new Scene(loader.load(), 360, 640);
-            SimulacaoViewController simulacaoController = loader.getController();
-            simulacaoController.setTipoEmprestimo(emprestimoParaContratar.getTipoEmprestimo());
-            Stage stage = (Stage) backButton.getScene().getWindow();
-            stage.setScene(mainScene);
-            stage.setTitle("EmprestAI - Simulação de Empréstimo");
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.err.println("Erro ao carregar simulacaoEmprestimo.fxml: " + e.getMessage());
-        }
     }
 
     @FXML

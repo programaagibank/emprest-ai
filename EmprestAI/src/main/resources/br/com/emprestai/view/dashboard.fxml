@@ -17,12 +17,12 @@
                 <padding>
                     <Insets bottom="10.0" left="0.0" right="0.0" top="10.0" />
                 </padding>
-                <VBox alignment="TOP_LEFT" spacing="4.0" prefWidth="150.0">
+                <VBox alignment="TOP_LEFT" prefWidth="150.0" spacing="4.0">
                     <Label styleClass="credit-label" text="Consignado" />
                     <Label fx:id="consignadoCredit" styleClass="credit-subamount" text="R$ 0,00" />
                     <Label styleClass="credit-subtitle" text="Aposentados, pensionista e servidores" wrapText="true" />
                 </VBox>
-                <VBox alignment="TOP_LEFT" spacing="4.0" prefWidth="150.0">
+                <VBox alignment="TOP_LEFT" prefWidth="150.0" spacing="4.0">
                     <Label styleClass="credit-label" text="Pessoal" />
                     <Label fx:id="pessoalCredit" styleClass="credit-subamount" text="R$ 0,00" />
                     <Label styleClass="credit-subtitle" text="Para todos os públicos" wrapText="true" />
@@ -76,11 +76,22 @@
                                 <HBox spacing="10.0" styleClass="promo-container">
                                     <VBox styleClass="promo-card">
                                         <Label styleClass="promo-title" text="Empréstimo com Juros Baixos" wrapText="true" />
-                                        <Label styleClass="promo-subtitle" text="Aproveite taxas a partir de 1,5%!" wrapText="true" />
+                                        <Label styleClass="promo-subtitle" text="Aproveite taxas a partir de 1,8%!" wrapText="true" />
                                     </VBox>
                                     <VBox styleClass="promo-card">
-                                        <Label styleClass="promo-title" text="Simule Agora" wrapText="true" />
-                                        <Label styleClass="promo-subtitle" text="Descubra o melhor plano para você." wrapText="true" />
+                                        <Label styleClass="promo-title" text="ChatBot" wrapText="true" />
+                                        <Label styleClass="promo-subtitle" text="Fale com nosso assistente" wrapText="true" />
+                                        <!-- Dentro do HBox da seção bottom -->
+                                        <Button fx:id="chatbotButton" onAction="#onChatBot" styleClass="nav-button">
+                                            <graphic>
+                                                <ImageView fitHeight="24" fitWidth="24" preserveRatio="true">
+                                                    <image>
+                                                        <Image url="@../images/chatbot.png" /> <!-- Adicione um ícone de chat, se tiver -->
+                                                    </image>
+                                                </ImageView>
+                                            </graphic>
+                                            <text>Chatbot</text>
+                                        </Button>
                                     </VBox>
                                 </HBox>
                             </content>

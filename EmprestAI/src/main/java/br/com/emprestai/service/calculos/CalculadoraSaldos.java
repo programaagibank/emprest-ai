@@ -14,7 +14,7 @@ public class CalculadoraSaldos {
 
         for (Parcela parcela : parcelas) {
             if (parcela.getDataPagamento() != null) {
-                somaValorPresentePagas = somaValorPresentePagas.add(BigDecimal.valueOf(parcela.getValorPago()), DECIMAL128);
+                somaValorPresentePagas = somaValorPresentePagas.add(BigDecimal.valueOf(parcela.getValorPresenteParcela()), DECIMAL128);
             }
         }
 

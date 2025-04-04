@@ -1,4 +1,4 @@
-package br.com.emprestai.service.elegibilidade;
+package br.com.emprestai.service.validator;
 
 import br.com.emprestai.exception.ValidationException;
 import br.com.emprestai.model.Cliente;

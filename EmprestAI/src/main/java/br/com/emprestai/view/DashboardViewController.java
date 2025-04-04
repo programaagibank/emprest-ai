@@ -113,6 +113,26 @@ public class DashboardViewController {
         }
     }
 
+    @FXML
+    private void onChatBot() {
+        try {
+            // Carrega o FXML do chatbot
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("chatbot.fxml"));
+            if (loader.getLocation() == null) {
+                System.err.println("Erro: Não foi possível encontrar chatbot.fxml no caminho especificado.");
+                return;
+            }
+            Scene chatbotScene = new Scene(loader.load(), 300, 400);
+            Stage chatbotStage = new Stage();
+            chatbotStage.setScene(chatbotScene);
+            chatbotStage.setTitle("EmprestAI - Chatbot");
+            chatbotStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.err.println("Erro ao carregar chatbot.fxml: " + e.getMessage());
+        }
+    }
+
     // --------------------------------------------------------------------------------
     // Helper Methods
     // --------------------------------------------------------------------------------

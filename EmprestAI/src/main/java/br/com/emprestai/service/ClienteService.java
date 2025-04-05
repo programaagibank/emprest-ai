@@ -49,14 +49,19 @@ public class ClienteService {
     }
 
     public static double calcularLimiteCreditoConsignado(Cliente cliente) {
-        return calcularMargemConsignavelDisponivel(cliente) * getPercentualScore(cliente.getScore())*getPrazoMaximoConsignadoPorScore(cliente.getScore());
+        return calcularMargemConsignavelDisponivel(cliente) *getPrazoMaximoConsignadoPorScore(cliente.getScore());
     }
 
     private static double getPercentualScore(int score) {
-        if (score <= 200) return 0;
-        if (score <= 400) return 0.10;
-        if (score <= 600) return 0.50;
-        return 1.00;
+        if (score <= 200) return 0.0;   // 0% para scores muito baixos
+        if (score <= 300) return 0.10;  // 10%
+        if (score <= 400) return 0.25;  // 25%
+        if (score <= 500) return 0.40;  // 40%
+        if (score <= 600) return 0.55;  // 55%
+        if (score <= 700) return 0.70;  // 70%
+        if (score <= 800) return 0.85;  // 85%
+        if (score <= 900) return 0.95;  // 95%
+        return 1.00;                    // 100% para scores acima de 900
     }
 
     private static int getPrazoMaximoPessoalPorScore(int score) {

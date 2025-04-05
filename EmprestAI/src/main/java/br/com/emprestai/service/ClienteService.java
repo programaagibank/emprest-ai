@@ -67,22 +67,18 @@ public class ClienteService {
     private static int getPrazoMaximoPessoalPorScore(int score) {
         if (score < params.getScoreMinimoPessoal()) return 0;
         if (score <= 300) return 6;
-        if (score <= 450) return 12;
-        if (score <= 600) return 18;
-        if (score <= 750) return 24;
-        if (score <= 900) return 27;
+        if (score <= 400) return 12;
+        if (score <= 500) return 18;
+        if (score <= 600) return 24;
         return params.getPrazoMaximoPessoal();
     }
 
     private static int getPrazoMaximoConsignadoPorScore(int score) {
         if (score < params.getScoreMinimoPessoal()) return 0;
         if (score <= 300) return 12;
-        if (score <= 400) return 24;
-        if (score <= 500) return 36;
-        if (score <= 600) return 48;
-        if (score <= 700) return 60;
-        if (score <= 800) return 72;
-        if (score <= 900) return 84;
+        if (score <= 400) return 36;
+        if (score <= 500) return 60;
+        if (score <= 600) return 84;
         return params.getPrazoMaximoConsignado();
     }
 }

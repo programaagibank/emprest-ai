@@ -133,7 +133,7 @@ public class EmprestimoController {
         int prazoMinimo = tipoEmprestimo == TipoEmprestimoEnum.CONSIGNADO
                 ? params.getPrazoMinimoConsignado()
                 : params.getPrazoMinimoPessoal();
-        int[] prazosPossiveis = gerarPrazosViaveis(prazoMinimo, prazoMaximo);
+        int[] prazosPossiveis = gerarPrazosViaveis(prazoMinimo, prazoMaximo, tipoEmprestimo);
 
         // Gerar ofertas para cada prazo
         for (int parcelas : prazosPossiveis) {
@@ -175,9 +175,15 @@ public class EmprestimoController {
         return ofertasValidas;
     }
 
-    private int[] gerarPrazosViaveis(int prazoMinimo, int prazoMaximo) {
+    private int[] gerarPrazosViaveis(int prazoMinimo, int prazoMaximo, TipoEmprestimoEnum tipoEmprestimo) {
         List<Integer> prazos = new ArrayList<>();
-        for (int i = prazoMinimo; i <= prazoMaximo; i += 12) { // Incremento de 12 meses
+        int incremento = 0;
+        if(tipoEmprestimo == TipoEmprestimoEnum.CONSIGNADO){
+            incremento = 12;
+        } else {
+            incremento = 6;
+        }
+        for (int i = prazoMinimo; i <= prazoMaximo; i += incremento) { // Incremento de 12 meses
             prazos.add(i);
         }
         if (!prazos.contains(prazoMaximo) && prazoMaximo >= prazoMinimo) {

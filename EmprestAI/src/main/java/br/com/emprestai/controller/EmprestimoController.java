@@ -181,7 +181,7 @@ public class EmprestimoController {
         if(tipoEmprestimo == TipoEmprestimoEnum.CONSIGNADO){
             incremento = 12;
         } else {
-            incremento = 6;
+            incremento = 4;
         }
         for (int i = prazoMinimo; i <= prazoMaximo; i += incremento) { // Incremento de 12 meses
             prazos.add(i);

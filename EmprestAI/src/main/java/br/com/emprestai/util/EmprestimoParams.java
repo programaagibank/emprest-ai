@@ -26,7 +26,7 @@ public class EmprestimoParams {
     private int prazoMinimoPessoal = 6;
     private int prazoMaximoPessoal = 30;
     private int prazoMinimoConsignado = 24;
-    private int prazoMaximoConsignado = 94;
+    private int prazoMaximoConsignado = 84;
 
     // Carências
     private double carenciaMaximaPessoal = 30;

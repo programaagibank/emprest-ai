@@ -60,25 +60,28 @@ public class ClienteService {
         if (score <= 600) return 0.55;  // 55%
         if (score <= 700) return 0.70;  // 70%
         if (score <= 800) return 0.85;  // 85%
-        if (score <= 900) return 0.95;  // 95%
         return 1.00;                    // 100% para scores acima de 900
     }
 
     private static int getPrazoMaximoPessoalPorScore(int score) {
         if (score < params.getScoreMinimoPessoal()) return 0;
         if (score <= 300) return 6;
-        if (score <= 400) return 12;
-        if (score <= 500) return 18;
-        if (score <= 600) return 24;
+        if (score <= 400) return 10;
+        if (score <= 500) return 14;
+        if (score <= 600) return 18;
+        if (score <= 700) return 22;
+        if (score <= 800) return 26;
         return params.getPrazoMaximoPessoal();
     }
 
     private static int getPrazoMaximoConsignadoPorScore(int score) {
         if (score < params.getScoreMinimoPessoal()) return 0;
         if (score <= 300) return 12;
-        if (score <= 400) return 36;
-        if (score <= 500) return 60;
-        if (score <= 600) return 84;
+        if (score <= 400) return 24;
+        if (score <= 500) return 36;
+        if (score <= 600) return 48;
+        if (score <= 700) return 60;
+        if (score <= 800) return 72;
         return params.getPrazoMaximoConsignado();
     }
 }

@@ -33,7 +33,7 @@
 
     <!-- Center Section: Main Content -->
     <center>
-        <ScrollPane fitToHeight="true" fitToWidth="true" styleClass="scroll-pane">
+        <ScrollPane styleClass="scroll-pane">
             <content>
                 <VBox alignment="CENTER" spacing="15.0" styleClass="content">
                     <padding>
@@ -45,7 +45,7 @@
                         <VBox alignment="CENTER" spacing="5.0">
                             <Button fx:id="consignadoButton" onAction="#onConsignadoClick" styleClass="action-button">
                                 <graphic>
-                                    <ImageView fitHeight="30" fitWidth="30" preserveRatio="true">
+                                    <ImageView fitHeight="40" fitWidth="40" preserveRatio="true">
                                         <image>
                                             <Image url="@../images/consignado.png" />
                                         </image>
@@ -57,7 +57,7 @@
                         <VBox alignment="CENTER" spacing="5.0">
                             <Button fx:id="pessoalButton" onAction="#onPessoalClick" styleClass="action-button">
                                 <graphic>
-                                    <ImageView fitHeight="30" fitWidth="30" preserveRatio="true">
+                                    <ImageView fitHeight="40" fitWidth="40" preserveRatio="true">
                                         <image>
                                             <Image url="@../images/pessoal.png" />
                                         </image>
@@ -68,34 +68,28 @@
                         </VBox>
                     </HBox>
 
-                    <!-- Promotional Section (Placeholder) -->
+                    <!-- Promotional Section -->
                     <VBox spacing="8.0" styleClass="promo-section">
                         <Label styleClass="section-title" text="Ofertas para Você" />
-                        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="promo-scroll">
-                            <content>
-                                <HBox spacing="10.0" styleClass="promo-container">
-                                    <VBox styleClass="promo-card">
-                                        <Label styleClass="promo-title" text="Empréstimo com Juros Baixos" wrapText="true" />
-                                        <Label styleClass="promo-subtitle" text="Aproveite taxas a partir de 1,8%!" wrapText="true" />
-                                    </VBox>
-                                    <VBox styleClass="promo-card">
-                                        <Label styleClass="promo-title" text="ChatBot" wrapText="true" />
-                                        <Label styleClass="promo-subtitle" text="Fale com nosso assistente" wrapText="true" />
-                                        <!-- Dentro do HBox da seção bottom -->
-                                        <Button fx:id="chatbotButton" onAction="#onChatBot" styleClass="nav-button">
-                                            <graphic>
-                                                <ImageView fitHeight="24" fitWidth="24" preserveRatio="true">
-                                                    <image>
-                                                        <Image url="@../images/chatbot.png" /> <!-- Adicione um ícone de chat, se tiver -->
-                                                    </image>
-                                                </ImageView>
-                                            </graphic>
-                                            <text>Chatbot</text>
-                                        </Button>
-                                    </VBox>
-                                </HBox>
-                            </content>
-                        </ScrollPane>
+                        <HBox spacing="10.0" styleClass="promo-container">
+                            <VBox styleClass="promo-card">
+                                <Label styleClass="promo-title" text="Empréstimo com Juros Baixos" wrapText="true" />
+                                <Label styleClass="promo-subtitle" text="Aproveite taxas a partir de 1,8%!" wrapText="true" />
+                            </VBox>
+                            <VBox styleClass="promo-card">
+                                <Label styleClass="promo-title" text="ChatBot" wrapText="true" />
+                                <Label styleClass="promo-subtitle" text="Fale com nosso assistente" wrapText="true" />
+                                <Button fx:id="chatbotButton" onAction="#onChatBot" styleClass="nav-button">
+                                    <graphic>
+                                        <ImageView fitHeight="24" fitWidth="24" preserveRatio="true">
+                                            <image>
+                                                <Image url="@../images/chatbot.png" />
+                                            </image>
+                                        </ImageView>
+                                    </graphic>
+                                </Button>
+                            </VBox>
+                        </HBox>
                     </VBox>
 
                     <!-- Upcoming Payments Section -->

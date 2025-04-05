@@ -5,6 +5,7 @@ import br.com.emprestai.controller.LoginController;
 import br.com.emprestai.controller.ParcelaController;
 import br.com.emprestai.dao.ClienteDAO;
 import br.com.emprestai.dao.ParcelaDAO;
+import br.com.emprestai.enums.OrdemEnum;
 import br.com.emprestai.model.Parcela;
 import br.com.emprestai.util.SessionManager;
 import javafx.beans.value.ChangeListener;
@@ -14,10 +15,11 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -28,7 +30,7 @@ public class ConfirmacaoPagViewController {
     // --------------------------------------------------------------------------------
     // FXML Components
     // --------------------------------------------------------------------------------
-    @FXML private VBox confirmacaoContainer;
+    @FXML private BorderPane confirmacaoContainer; // Atualizado de VBox para BorderPane
     @FXML private Label valorLabel;
     @FXML private Label parcelasLabel;
     @FXML private Label dataLabel;
@@ -36,6 +38,9 @@ public class ConfirmacaoPagViewController {
     @FXML private Button confirmarButton;
     @FXML private Button cancelarButton;
     @FXML private Label mensagemLabel;
+    @FXML private Button homeButton;
+    @FXML private Button profileButton;
+    @FXML private Button exitButton;
 
     // --------------------------------------------------------------------------------
     // Class Properties
@@ -110,7 +115,6 @@ public class ConfirmacaoPagViewController {
         }
 
         try {
-            // Valida a senha usando o cliente do SessionManager
             boolean senhaValida = loginController.validaSenha(senha, SessionManager.getInstance().getClienteLogado().getSenha());
             if (senhaValida) {
                 parcelaController.putListParcelas(parcelasSelecionadas);
@@ -131,6 +135,32 @@ public class ConfirmacaoPagViewController {
         voltarParaParcelas();
     }
 
+    @FXML
+    private void onHomeClick() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("dashboard.fxml"));
+            Scene dashboardScene = new Scene(loader.load(), 360, 640);
+            Stage stage = (Stage) homeButton.getScene().getWindow();
+            stage.setScene(dashboardScene);
+            stage.setTitle("EmprestAI - Dashboard");
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            mensagemLabel.setText("Erro ao voltar para o início: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void onProfileClick() {
+        System.out.println("Navegar para a tela de perfil (não implementado).");
+        mensagemLabel.setText("Funcionalidade de perfil ainda não implementada.");
+    }
+
+    @FXML
+    private void onExitClick() {
+        voltarParaLogin();
+    }
+
     // --------------------------------------------------------------------------------
     // Helper Methods
     // --------------------------------------------------------------------------------
@@ -148,10 +178,13 @@ public class ConfirmacaoPagViewController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("parcela.fxml"));
             Scene parcelaScene = new Scene(loader.load(), 360, 640);
             ParcelaViewController controller = loader.getController();
-            controller.setParcelas(parcelasSelecionadas);
+
             if (parcelaViewController != null && parcelaViewController.getEmprestimo() != null) {
-                controller.setEmprestimo(parcelaViewController.getEmprestimo());
+                controller.setEmprestimo(parcelaViewController.getEmprestimo(), OrdemEnum.ASC); // Ordem crescente
                 controller.setTipoEmprestimo(parcelaViewController.getTipoEmprestimo());
+            } else {
+                voltarParaLogin();
+                return;
             }
 
             Stage stage = (Stage) cancelarButton.getScene().getWindow();
@@ -161,6 +194,8 @@ public class ConfirmacaoPagViewController {
         } catch (IOException e) {
             e.printStackTrace();
             mensagemLabel.setText("Erro ao voltar para parcelas: " + e.getMessage());
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 

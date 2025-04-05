@@ -1,33 +1,73 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.image.*?>
 
-<VBox fx:id="confirmacaoContainer" alignment="CENTER" prefHeight="640" prefWidth="360" stylesheets="@../css/confirmacao-pag.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.com.emprestai.view.ConfirmacaoPagViewController">
-    <children>
-        <!-- Header -->
+<BorderPane fx:id="confirmacaoContainer" prefHeight="640" prefWidth="360" stylesheets="@../css/confirmacao-pag.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.com.emprestai.view.ConfirmacaoPagViewController">
+    <!-- Top Section: Header -->
+    <top>
         <VBox prefWidth="360" styleClass="header">
             <Label styleClass="greeting-label" text="Confirmação de Pagamento" />
         </VBox>
+    </top>
 
-        <!-- Conteúdo -->
+    <!-- Center Section: Main Content -->
+    <center>
         <VBox alignment="CENTER" prefWidth="360" spacing="15" styleClass="content" VBox.vgrow="ALWAYS">
+            <padding>
+                <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+            </padding>
             <Label fx:id="valorLabel" styleClass="confirmacao-valor" />
             <Label fx:id="parcelasLabel" styleClass="confirmacao-parcelas" />
             <Label fx:id="dataLabel" styleClass="confirmacao-data" />
             <Label styleClass="confirmacao-label" text="Digite sua senha" />
             <PasswordField fx:id="senhaField" prefWidth="200" promptText="Digite sua senha" />
             <Label fx:id="mensagemLabel" styleClass="confirmacao-mensagem" text="" />
+            <!-- Botões Confirmar e Cancelar -->
+            <HBox alignment="CENTER" spacing="10" styleClass="button-container">
+                <Button fx:id="confirmarButton" onAction="#onConfirmarClick" styleClass="confirm-button" text="Confirmar" />
+                <Button fx:id="cancelarButton" onAction="#onCancelarClick" styleClass="secondary-button" text="Cancelar" />
+            </HBox>
         </VBox>
+    </center>
 
-        <!-- Botões -->
-        <HBox alignment="CENTER" prefWidth="360" spacing="10" styleClass="button-container">
+    <!-- Bottom Section: Navigation Bar -->
+    <bottom>
+        <HBox alignment="CENTER" spacing="0.0" styleClass="nav-bar">
             <padding>
-                <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                <Insets bottom="10.0" left="0.0" right="0.0" top="10.0" />
             </padding>
-            <Button fx:id="confirmarButton" onAction="#onConfirmarClick" styleClass="confirm-button" text="Confirmar" />
-            <Button fx:id="cancelarButton" onAction="#onCancelarClick" styleClass="secondary-button" text="Cancelar" />
+            <Button fx:id="homeButton" onAction="#onHomeClick" styleClass="nav-button">
+                <graphic>
+                    <ImageView fitHeight="26" fitWidth="26" preserveRatio="true">
+                        <image>
+                            <Image url="@../images/home.png" />
+                        </image>
+                    </ImageView>
+                </graphic>
+                <text>Início</text>
+            </Button>
+            <Button fx:id="profileButton" onAction="#onProfileClick" styleClass="nav-button">
+                <graphic>
+                    <ImageView fitHeight="26" fitWidth="26" preserveRatio="true">
+                        <image>
+                            <Image url="@../images/user.png" />
+                        </image>
+                    </ImageView>
+                </graphic>
+                <text>Perfil</text>
+            </Button>
+            <Button fx:id="exitButton" onAction="#onExitClick" styleClass="nav-button">
+                <graphic>
+                    <ImageView fitHeight="26" fitWidth="26" preserveRatio="true">
+                        <image>
+                            <Image url="@../images/exit.png" />
+                        </image>
+                    </ImageView>
+                </graphic>
+                <text>Sair</text>
+            </Button>
         </HBox>
-    </children>
-</VBox>
+    </bottom>
+</BorderPane>

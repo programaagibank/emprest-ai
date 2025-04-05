@@ -100,6 +100,35 @@
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 0, 0, 2);
 }
 
+/* Adicione ao final do arquivo CSS */
+
+/* Botão Cancelar */
+.cancel-button {
+    -fx-background-color: #FFFFFF;
+    -fx-background-radius: 12px;
+    -fx-text-fill: #333333; /* Cor do texto mais escura para contraste */
+    -fx-font-family: "Roboto", "Arial", sans-serif;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-padding: 12px 24px;
+    -fx-border-color: #CCCCCC; /* Borda leve para definição */
+    -fx-border-width: 1px;
+    -fx-border-radius: 12px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 8, 0, 0, 2);
+}
+
+.cancel-button:hover {
+    -fx-background-color: #F5F5F5; /* Leve cinza ao passar o mouse */
+    -fx-border-color: #999999;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 10, 0, 0, 3);
+}
+
+.cancel-button:pressed {
+    -fx-background-color: #E0E0E0; /* Cinza mais escuro ao clicar */
+    -fx-border-color: #666666;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 0, 0, 1);
+}
+
 /* Navigation bar */
 .nav-bar {
     -fx-background-color: #FFFFFF;

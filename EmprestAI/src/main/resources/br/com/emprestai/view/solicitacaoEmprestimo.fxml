@@ -16,6 +16,7 @@
     </top>
 
     <!-- Center Section: Main Content -->
+    <!-- Substitua a parte dos botões no <center> -->
     <center>
         <VBox alignment="CENTER" spacing="20" styleClass="content">
             <padding>
@@ -29,8 +30,11 @@
                 <TextField fx:id="loanAmountField" promptText="R$ 0,00" prefWidth="200" styleClass="input-field" />
             </VBox>
 
-            <!-- Botão Continuar -->
-            <Button fx:id="continueButton" text="Continuar" onAction="#onContinueClick" styleClass="action-button" />
+            <!-- Botões Continuar e Cancelar lado a lado -->
+            <HBox alignment="CENTER" spacing="10">
+                <Button fx:id="continueButton" text="Continuar" onAction="#onContinueClick" styleClass="action-button" />
+                <Button fx:id="cancelButton" text="Cancelar" onAction="#onBackClick" styleClass="cancel-button" />
+            </HBox>
         </VBox>
     </center>
 
@@ -40,7 +44,7 @@
             <padding>
                 <Insets bottom="10.0" left="0.0" right="0.0" top="10.0" />
             </padding>
-            <Button fx:id="homeButton" onAction="#onBackClick" styleClass="nav-button">
+            <Button fx:id="homeButton" onAction="#onHomeClick" styleClass="nav-button">
                 <graphic>
                     <ImageView fitHeight="26" fitWidth="26" preserveRatio="true">
                         <image>

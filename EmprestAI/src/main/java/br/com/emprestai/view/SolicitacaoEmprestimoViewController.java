@@ -23,6 +23,7 @@ public class SolicitacaoEmprestimoViewController {
     @FXML private TextField loanAmountField;
     @FXML private Button    continueButton;
     @FXML private Button    homeButton;
+    @FXML private Button    cancelButton;
     @FXML private Button    profileButton;
     @FXML private Button    exitButton;
 
@@ -71,7 +72,6 @@ public class SolicitacaoEmprestimoViewController {
     private void onContinueClick() {
         try {
             if (loanAmountField.getText().isEmpty()) {
-                showAlert("Valor Requerido", "Por favor, informe o valor do empréstimo.");
                 return;
             }
 
@@ -91,10 +91,7 @@ public class SolicitacaoEmprestimoViewController {
             stage.setTitle("EmprestAI - Ofertas de Empréstimo");
             stage.show();
 
-        } catch (NumberFormatException e) {
-            showAlert("Erro de Formato", "Por favor, insira um valor numérico válido.");
-        } catch (IOException e) {
-            showAlert("Erro", "Erro ao carregar tela de ofertas: " + e.getMessage());
+        }catch (IOException | NumberFormatException e) {
             e.printStackTrace();
         }
     }
@@ -106,13 +103,27 @@ public class SolicitacaoEmprestimoViewController {
             Scene mainScene = new Scene(loader.load(), 360, 640);
             EmprestimoViewController emprestimoController = loader.getController();
             emprestimoController.setTipoEmprestimo(tipoEmprestimo);
-            Stage stage = (Stage) homeButton.getScene().getWindow();
+            Stage stage = (Stage) cancelButton.getScene().getWindow();
             stage.setScene(mainScene);
             stage.setTitle("EmprestAI - Empréstimos");
             stage.show();
         } catch (IOException e) {
-            showAlert("Erro", "Erro ao voltar para tela de empréstimos: " + e.getMessage());
             e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void onHomeClick() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("dashboard.fxml"));
+            Scene mainScene = new Scene(loader.load(), 360, 640);
+            Stage stage = (Stage) homeButton.getScene().getWindow();
+            stage.setScene(mainScene);
+            stage.setTitle("EmprestAI - Dashboard");
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.err.println("Erro ao carregar dashboard.fxml: " + e.getMessage());
         }
     }
 
@@ -132,7 +143,6 @@ public class SolicitacaoEmprestimoViewController {
             stage.setTitle("EmprestAI - Login");
             stage.show();
         } catch (IOException e) {
-            showAlert("Erro", "Erro ao voltar para tela de login: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -140,14 +150,6 @@ public class SolicitacaoEmprestimoViewController {
     // --------------------------------------------------------------------------------
     // Helper Methods
     // --------------------------------------------------------------------------------
-    private void showAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
-
     private void configureCurrencyField() {
         // Configura o NumberFormat para reais
         DecimalFormat decimalFormat = (DecimalFormat) NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));

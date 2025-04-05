@@ -63,15 +63,20 @@ public class DashboardViewController {
             return;
         }
 
-        // Highlight the "Início" button as the active page
         homeButton.setStyle("-fx-text-fill: #0056D2;");
-
-        // Update greeting and credit limits
         greetingLabel.setText("Olá, " + clienteLogado.getNomeCliente() + "!");
         updateCreditLimits(clienteLogado);
-
-        // Load upcoming payments
         loadUpcomingPayments(clienteLogado);
+
+        // Ajuste dinâmico da largura da seção de promoções (opcional)
+        upcomingPaymentsBox.sceneProperty().addListener((obs, oldScene, newScene) -> {
+            if (newScene != null) {
+                newScene.widthProperty().addListener((obsW, oldW, newW) -> {
+                    // Ajuste os tamanhos das seções conforme a largura da janela
+                    upcomingPaymentsBox.setPrefWidth(newW.doubleValue() - 30); // 30 é a soma do padding lateral
+                });
+            }
+        });
     }
 
     // --------------------------------------------------------------------------------

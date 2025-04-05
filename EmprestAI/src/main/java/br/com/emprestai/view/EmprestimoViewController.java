@@ -4,11 +4,11 @@ import br.com.emprestai.controller.EmprestimoController;
 import br.com.emprestai.controller.ParcelaController;
 import br.com.emprestai.dao.EmprestimoDAO;
 import br.com.emprestai.dao.ParcelaDAO;
+import br.com.emprestai.enums.OrdemEnum; // Novo import
 import br.com.emprestai.enums.StatusEmprestimoEnum;
 import br.com.emprestai.enums.TipoEmprestimoEnum;
 import br.com.emprestai.model.Cliente;
 import br.com.emprestai.model.Emprestimo;
-import br.com.emprestai.model.Parcela;
 import br.com.emprestai.util.GeneratePDF;
 import br.com.emprestai.util.SessionManager;
 import com.itextpdf.html2pdf.HtmlConverter;
@@ -27,8 +27,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 import static br.com.emprestai.enums.TipoEmprestimoEnum.CONSIGNADO;
@@ -133,78 +131,28 @@ public class EmprestimoViewController {
     @FXML
     private void onSolicitacaoClick() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("solicitacaoEmprestimo.fxml")); // Caminho relativo
-            Scene SolicitacaoScene = new Scene(loader.load(), 360, 640);
-            SolicitacaoEmprestimoViewController solicitacaoEmprestimoViewController = loader.getController();
-            solicitacaoEmprestimoViewController.setTipoEmprestimo(tipoEmprestimo);
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("solicitacaoEmprestimo.fxml"));
+            Scene solicitacaoScene = new Scene(loader.load(), 360, 640);
+            SolicitacaoEmprestimoViewController solicitacaoController = loader.getController();
+            solicitacaoController.setTipoEmprestimo(tipoEmprestimo);
             Stage stage = (Stage) solicitacaoButton.getScene().getWindow();
-            stage.setScene(SolicitacaoScene);
+            stage.setScene(solicitacaoScene);
             stage.setTitle("EmprestAI - Ofertas de Empréstimo");
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
-            System.err.println("Erro ao carregar ofertas.fxml: " + e.getMessage());
+            System.err.println("Erro ao carregar solicitacaoEmprestimo.fxml: " + e.getMessage());
         }
     }
 
     @FXML
     private void onOrdemVencimentoClick() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("parcela.fxml"));
-            Scene parcelaScene = new Scene(loader.load(), 360, 640);
-            ParcelaViewController parcelaViewController = loader.getController();
-
-            List<Parcela> todasParcelas = new ArrayList<>();
-            for (Emprestimo emprestimo : emprestimos) {
-                List<Parcela> parcelas = parcelaController.getParcelasByEmprestimo(emprestimo);
-                if (parcelas != null) {
-                    todasParcelas.addAll(parcelas);
-                }
-            }
-            todasParcelas.sort(Comparator.comparing(Parcela::getDataVencimento));
-
-            parcelaViewController.setEmprestimo(null);
-            parcelaViewController.setTipoEmprestimo(tipoEmprestimo); // Passa o tipo para manter o contexto
-            parcelaViewController.setParcelas(todasParcelas);
-
-            Stage stage = (Stage) ordemVencimentoButton.getScene().getWindow();
-            stage.setScene(parcelaScene);
-            stage.setTitle("EmprestAI - Parcelas (Ordem de Vencimento)");
-            stage.show();
-        } catch (IOException | SQLException e) {
-            e.printStackTrace();
-            System.err.println("Erro ao carregar parcela.fxml: " + e.getMessage());
-        }
+        // Este método não é mais necessário aqui, pois os botões estão nos cards individuais
     }
 
     @FXML
     private void onMaiorDescontoClick() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("parcela.fxml"));
-            Scene parcelaScene = new Scene(loader.load(), 360, 640);
-            ParcelaViewController parcelaViewController = loader.getController();
-
-            List<Parcela> todasParcelas = new ArrayList<>();
-            for (Emprestimo emprestimo : emprestimos) {
-                List<Parcela> parcelas = parcelaController.getParcelasByEmprestimo(emprestimo);
-                if (parcelas != null) {
-                    todasParcelas.addAll(parcelas);
-                }
-            }
-            todasParcelas.sort(Comparator.comparing(Parcela::getDataVencimento, Comparator.reverseOrder()));
-
-            parcelaViewController.setEmprestimo(null);
-            parcelaViewController.setTipoEmprestimo(tipoEmprestimo); // Passa o tipo para manter o contexto
-            parcelaViewController.setParcelas(todasParcelas);
-
-            Stage stage = (Stage) maiorDescontoButton.getScene().getWindow();
-            stage.setScene(parcelaScene);
-            stage.setTitle("EmprestAI - Parcelas (Maior Desconto)");
-            stage.show();
-        } catch (IOException | SQLException e) {
-            e.printStackTrace();
-            System.err.println("Erro ao carregar parcela.fxml: " + e.getMessage());
-        }
+        // Este método não é mais necessário aqui, pois os botões estão nos cards individuais
     }
 
     // --------------------------------------------------------------------------------
@@ -262,6 +210,7 @@ public class EmprestimoViewController {
             showNoLoanState();
         }
     }
+
     private void showLoanDetails(List<Emprestimo> emprestimosFiltrados) {
         toggleVisibility(true, false);
         contractTitle.setText("Contratos Ativos");
@@ -274,13 +223,14 @@ public class EmprestimoViewController {
             loanInfoBox.getChildren().add(loanCard);
         }
     }
+
     private VBox createLoanCard(Emprestimo emprestimo) {
         VBox card = new VBox(8);
-        card.getStyleClass().add("payment-card"); // Usar classe do CSS
+        card.getStyleClass().add("payment-card");
 
         HBox titleBox = new HBox(10);
         Label titleLabel = new Label(emprestimo.getTipoEmprestimo().name() + " R$ " + formatCurrency(emprestimo.getValorTotal() - emprestimo.getValorSeguro() - emprestimo.getOutrosCustos() - emprestimo.getValorIOF()));
-        titleLabel.getStyleClass().add("payment-date"); // Título como data
+        titleLabel.getStyleClass().add("payment-date");
         titleBox.getChildren().add(titleLabel);
         card.getChildren().add(titleBox);
 
@@ -302,7 +252,7 @@ public class EmprestimoViewController {
         card.getChildren().addAll(valorLabel, parcelaLabel, parcelasLabel, statusBox);
 
         Button ordemVencimentoBtn = new Button("Ordem de Vencimento");
-        ordemVencimentoBtn.getStyleClass().add("banner-button"); // Novo estilo para botões
+        ordemVencimentoBtn.getStyleClass().add("banner-button");
         ordemVencimentoBtn.setOnAction(e -> handleOrdemVencimento(emprestimo));
 
         Button maiorDescontoBtn = new Button("Maior Desconto");
@@ -335,14 +285,9 @@ public class EmprestimoViewController {
             Scene parcelaScene = new Scene(loader.load(), 360, 640);
             ParcelaViewController parcelaViewController = loader.getController();
 
-            List<Parcela> parcelas = parcelaController.getParcelasByEmprestimo(emprestimo);
-            if (parcelas != null) {
-                parcelas.sort(Comparator.comparing(Parcela::getDataVencimento));
-            }
-
-            parcelaViewController.setEmprestimo(emprestimo);
-            parcelaViewController.setTipoEmprestimo(tipoEmprestimo); // Mantém o contexto
-            parcelaViewController.setParcelas(parcelas);
+            // Passa o empréstimo e a ordem ASC (crescente por número da parcela)
+            parcelaViewController.setEmprestimo(emprestimo, OrdemEnum.ASC);
+            parcelaViewController.setTipoEmprestimo(tipoEmprestimo);
 
             Stage stage = (Stage) loanInfoBox.getScene().getWindow();
             stage.setScene(parcelaScene);
@@ -360,14 +305,9 @@ public class EmprestimoViewController {
             Scene parcelaScene = new Scene(loader.load(), 360, 640);
             ParcelaViewController parcelaViewController = loader.getController();
 
-            List<Parcela> parcelas = parcelaController.getParcelasByEmprestimo(emprestimo);
-            if (parcelas != null) {
-                parcelas.sort(Comparator.comparing(Parcela::getDataVencimento, Comparator.reverseOrder()));
-            }
-
-            parcelaViewController.setEmprestimo(emprestimo);
-            parcelaViewController.setTipoEmprestimo(tipoEmprestimo); // Mantém o contexto
-            parcelaViewController.setParcelas(parcelas);
+            // Passa o empréstimo e a ordem DESC (decrescente por número da parcela)
+            parcelaViewController.setEmprestimo(emprestimo, OrdemEnum.DESC);
+            parcelaViewController.setTipoEmprestimo(tipoEmprestimo);
 
             Stage stage = (Stage) loanInfoBox.getScene().getWindow();
             stage.setScene(parcelaScene);

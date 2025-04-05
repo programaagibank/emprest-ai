@@ -48,6 +48,7 @@ public class ContratarEmprestimoViewController {
     // --------------------------------------------------------------------------------
     private Emprestimo emprestimoParaContratar;
     private EmprestimoController emprestimoController;
+    private TipoEmprestimoEnum tipoEmprestimo;
 
     // Formatters
     private final NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
@@ -90,6 +91,10 @@ public class ContratarEmprestimoViewController {
         if (emprestimo != null) {
             updateLoanDetails();
         }
+    }
+
+    public void setTipoEmprestimo(TipoEmprestimoEnum tipoEmprestimo) {
+        this.tipoEmprestimo = tipoEmprestimo;
     }
 
     // --------------------------------------------------------------------------------
@@ -147,6 +152,19 @@ public class ContratarEmprestimoViewController {
 
     @FXML
     private void onBackClick() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("solicitacaoEmprestimo.fxml")); // Caminho relativo
+            Scene SolicitacaoScene = new Scene(loader.load(), 360, 640);
+            SolicitacaoEmprestimoViewController solicitacaoEmprestimoViewController = loader.getController();
+            solicitacaoEmprestimoViewController.setTipoEmprestimo(tipoEmprestimo);
+            Stage stage = (Stage) cancelButton.getScene().getWindow();
+            stage.setScene(SolicitacaoScene);
+            stage.setTitle("EmprestAI - Ofertas de Empréstimo");
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.err.println("Erro ao carregar ofertas.fxml: " + e.getMessage());
+        }
     }
 
     @FXML

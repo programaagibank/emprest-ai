@@ -28,6 +28,9 @@
 
             <!-- Botão Selecionar Oferta -->
             <Button fx:id="selectOfferButton" text="Selecionar Oferta" onAction="#onSelectOfferClick" styleClass="action-button" disable="true" />
+
+            <!-- Dentro do <center> após o selectOfferButton -->
+            <Button fx:id="backButton" text="Voltar" onAction="#onBackClick" styleClass="back-button" visible="false" />
         </VBox>
     </center>
 
@@ -37,7 +40,7 @@
             <padding>
                 <Insets bottom="10.0" left="0.0" right="0.0" top="10.0" />
             </padding>
-            <Button fx:id="homeButton" onAction="#onBackClick" styleClass="nav-button">
+            <Button fx:id="homeButton" onAction="#onHomeClick" styleClass="nav-button">
                 <graphic>
                     <ImageView fitHeight="26" fitWidth="26" preserveRatio="true">
                         <image>

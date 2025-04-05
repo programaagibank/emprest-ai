@@ -129,3 +129,30 @@
     -fx-background-color: #E0E0E0;
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 0, 0, 2);
 }
+
+/* Navigation bar */
+.nav-bar {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #E0E0E0;
+    -fx-border-width: 0.5px 0 0 0;
+    -fx-padding: 10px 0 10px 0;
+    -fx-alignment: center;
+    -fx-spacing: 0;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 8, 0, 0, -4);
+}
+
+/* Navigation buttons */
+.nav-button {
+    -fx-background-color: transparent;
+    -fx-font-family: "Roboto", "Arial", sans-serif;
+    -fx-font-size: 10px;
+    -fx-text-fill: #666666;
+    -fx-alignment: center;
+    -fx-pref-width: 120px;
+    -fx-max-width: 120px;
+}
+
+.nav-button:hover,
+.nav-button:selected {
+    -fx-text-fill: #0056D2;
+}

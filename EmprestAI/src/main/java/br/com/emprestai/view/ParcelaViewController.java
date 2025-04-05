@@ -2,6 +2,7 @@ package br.com.emprestai.view;
 
 import br.com.emprestai.controller.ParcelaController;
 import br.com.emprestai.dao.ParcelaDAO;
+import br.com.emprestai.enums.OrdemEnum;
 import br.com.emprestai.enums.TipoEmprestimoEnum;
 import br.com.emprestai.model.Emprestimo;
 import br.com.emprestai.model.Parcela;
@@ -21,10 +22,12 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import static br.com.emprestai.enums.StatusParcelaEnum.ATRASADA;
@@ -35,7 +38,7 @@ public class ParcelaViewController {
     // --------------------------------------------------------------------------------
     // FXML Components
     // --------------------------------------------------------------------------------
-    @FXML private VBox  parcelaList;
+    @FXML private VBox parcelaList;
     @FXML private Label totalLabel;
     @FXML private Button returnButton;
     @FXML private Button pagarButton;
@@ -43,13 +46,13 @@ public class ParcelaViewController {
     // --------------------------------------------------------------------------------
     // Class Properties
     // --------------------------------------------------------------------------------
-    private Emprestimo          emprestimo;
-    private TipoEmprestimoEnum  tipoEmprestimo;
+    private Emprestimo emprestimo;
+    private TipoEmprestimoEnum tipoEmprestimo;
     private ObservableList<ParcelaWrapper> parcelasList;
-    private ParcelaController   parcelaController = new ParcelaController(new ParcelaDAO());
+    private ParcelaController parcelaController = new ParcelaController(new ParcelaDAO());
 
     // Formatters
-    private static final DecimalFormat    df         = new DecimalFormat("R$ #,##0.00");
+    private static final DecimalFormat df = new DecimalFormat("R$ #,##0.00");
     private static final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     // --------------------------------------------------------------------------------
@@ -58,7 +61,6 @@ public class ParcelaViewController {
     @FXML
     private void initialize() {
         System.out.println("CSS carregado: " + getClass().getResource("../css/parcela.css"));
-        // Verifica se há cliente logado
         if (SessionManager.getInstance().getClienteLogado() == null) {
             totalLabel.setText("Sessão expirada. Redirecionando para login...");
             onClickReturnToLogin();
@@ -68,15 +70,30 @@ public class ParcelaViewController {
     // --------------------------------------------------------------------------------
     // Setters
     // --------------------------------------------------------------------------------
-    public void setEmprestimo(Emprestimo emprestimo) {
+    public void setEmprestimo(Emprestimo emprestimo, OrdemEnum ordem) throws SQLException {
         this.emprestimo = emprestimo;
+        if (emprestimo != null) {
+            List<Parcela> parcelas = parcelaController.getParcelasByEmprestimo(emprestimo);
+            if (parcelas != null) {
+                // Ordenar as parcelas com base no parâmetro 'ordem'
+                if (ordem == OrdemEnum.ASC) {
+                    parcelas.sort(Comparator.comparing(Parcela::getNumeroParcela));
+                } else if (ordem == OrdemEnum.DESC) {
+                    parcelas.sort(Comparator.comparing(Parcela::getNumeroParcela).reversed());
+                }
+                carregarParcelas(parcelas);
+            } else {
+                totalLabel.setText("Nenhuma parcela encontrada para este empréstimo.");
+            }
+        }
     }
 
     public void setTipoEmprestimo(TipoEmprestimoEnum tipoEmprestimo) {
         this.tipoEmprestimo = tipoEmprestimo;
     }
 
-    public void setParcelas(List<Parcela> parcelas) {
+    // Método interno para carregar as parcelas na interface
+    private void carregarParcelas(List<Parcela> parcelas) {
         parcelasList = FXCollections.observableArrayList();
         int totalParcelas = parcelas.size();
 
@@ -132,7 +149,6 @@ public class ParcelaViewController {
                 return;
             }
 
-            // Abrir tela de confirmação
             FXMLLoader loader = new FXMLLoader(getClass().getResource("confirmacaoPag.fxml"));
             Scene confirmacaoScene = new Scene(loader.load(), 360, 640);
             ConfirmacaoPagViewController confirmacaoController = loader.getController();
@@ -263,9 +279,9 @@ public class ParcelaViewController {
     // Inner Class
     // --------------------------------------------------------------------------------
     public static class ParcelaWrapper {
-        private final Parcela                parcela;
-        private final SimpleBooleanProperty  selected;
-        private final String                 numeroParcela;
+        private final Parcela parcela;
+        private final SimpleBooleanProperty selected;
+        private final String numeroParcela;
         private final ObservableList<ParcelaWrapper> parcelasList;
 
         public ParcelaWrapper(Parcela parcela, ObservableList<ParcelaWrapper> parcelasList, String numeroParcela) {

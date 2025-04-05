@@ -53,6 +53,7 @@
 .scroll-pane {
     -fx-background-color: transparent;
     -fx-background: transparent;
+    -fx-hbar-policy: never; /* Desativa a barra de rolagem horizontal */
 }
 
 .scroll-pane .viewport {
@@ -72,9 +73,19 @@
 .action-button {
     -fx-background-color: #FFFFFF;
     -fx-background-radius: 50%;
-    -fx-pref-width: 60px;
-    -fx-pref-height: 60px;
+    -fx-pref-width: 50px;
+    -fx-pref-height: 50px;
+    -fx-min-width: 50px; /* Força o botão a manter o tamanho exato */
+    -fx-min-height: 50px;
+    -fx-max-width: 50px;
+    -fx-max-height: 50px;
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 8, 0, 0, 4);
+    -fx-alignment: center; /* Centraliza o conteúdo */
+}
+
+.action-button .image-view {
+    -fx-fit-height: 40px;
+    -fx-fit-width: 40px;
 }
 
 .action-button:hover {
@@ -101,14 +112,10 @@
     -fx-text-fill: #333333;
 }
 
-.promo-scroll {
-    -fx-background-color: transparent;
-    -fx-background: transparent;
-}
-
 .promo-container {
     -fx-spacing: 10px;
     -fx-padding: 0 0 10px 0;
+    -fx-wrap: true; /* Permite que os cartões quebrem linha se necessário */
 }
 
 .promo-card {
@@ -116,6 +123,7 @@
     -fx-background-radius: 8px;
     -fx-padding: 10px;
     -fx-pref-width: 150px;
+    -fx-min-height: 100px; /* Altura mínima para evitar achatamento */
     -fx-alignment: top-left;
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 8, 0, 0, 4);
 }
@@ -147,33 +155,39 @@
     -fx-padding: 10px;
     -fx-alignment: center-left;
     -fx-spacing: 10px;
+    -fx-min-height: 50px; /* Altura mínima para evitar achatamento */
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 8, 0, 0, 4);
 }
 
 .payment-date {
     -fx-font-family: "Roboto", "Arial", sans-serif;
-    -fx-font-size: 14px;
+    -fx-font-size: 12px;
     -fx-font-weight: bold;
     -fx-text-fill: #333333;
+    -fx-wrap-text: true;
+    -fx-wrap-text: true;
 }
 
 .payment-amount {
     -fx-font-family: "Roboto", "Arial", sans-serif;
-    -fx-font-size: 14px;
+    -fx-font-size: 12px;
     -fx-font-weight: bold;
     -fx-text-fill: #0056D2;
+    -fx-wrap-text: true;
 }
 
 .payment-type {
     -fx-font-family: "Roboto", "Arial", sans-serif;
-    -fx-font-size: 12px;
+    -fx-font-size: 10px;
     -fx-text-fill: #666666;
+    -fx-wrap-text: true;
 }
 
 .payment-contract {
     -fx-font-family: "Roboto", "Arial", sans-serif;
-    -fx-font-size: 12px;
+    -fx-font-size: 10px;
     -fx-text-fill: #666666;
+    -fx-wrap-text: true;
 }
 
 /* Info label for error or no payments message */

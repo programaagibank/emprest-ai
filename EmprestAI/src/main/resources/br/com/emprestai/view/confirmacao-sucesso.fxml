@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.*?>
+
+<BorderPane fx:id="confirmacaoContainer" prefHeight="640" prefWidth="360" stylesheets="@../css/confirmacao-sucesso.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.com.emprestai.view.ConfirmacaoSucessoViewController">
+    <!-- Top Section: Header -->
+    <top>
+        <VBox prefWidth="360" styleClass="header">
+            <Label styleClass="greeting-label" text="Confirmação" />
+        </VBox>
+    </top>
+
+    <!-- Center Section: Main Content -->
+    <center>
+        <VBox alignment="CENTER" prefWidth="360" spacing="20" styleClass="content" VBox.vgrow="ALWAYS">
+            <padding>
+                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+            </padding>
+            <!-- Adicionando um espaço vazio para ajudar na centralização vertical -->
+            <Region VBox.vgrow="ALWAYS" />
+            <Label fx:id="mensagemLabel" styleClass="mensagem-sucesso" wrapText="true" maxWidth="320" alignment="CENTER" />
+            <Button fx:id="voltarButton" onAction="#onVoltarClick" styleClass="confirm-button" text="Voltar" />
+            <Region VBox.vgrow="ALWAYS" />
+        </VBox>
+    </center>
+
+    <!-- Bottom Section: Navigation Bar -->
+    <bottom>
+        <HBox alignment="CENTER" spacing="0.0" styleClass="nav-bar">
+            <padding>
+                <Insets bottom="10.0" left="0.0" right="0.0" top="10.0" />
+            </padding>
+            <Button fx:id="homeButton" onAction="#onHomeClick" styleClass="nav-button">
+                <graphic>
+                    <ImageView fitHeight="26" fitWidth="26" preserveRatio="true">
+                        <image>
+                            <Image url="@../images/home.png" />
+                        </image>
+                    </ImageView>
+                </graphic>
+                <text>Início</text>
+            </Button>
+            <Button fx:id="profileButton" onAction="#onProfileClick" styleClass="nav-button">
+                <graphic>
+                    <ImageView fitHeight="26" fitWidth="26" preserveRatio="true">
+                        <image>
+                            <Image url="@../images/user.png" />
+                        </image>
+                    </ImageView>
+                </graphic>
+                <text>Perfil</text>
+            </Button>
+            <Button fx:id="exitButton" onAction="#onExitClick" styleClass="nav-button">
+                <graphic>
+                    <ImageView fitHeight="26" fitWidth="26" preserveRatio="true">
+                        <image>
+                            <Image url="@../images/exit.png" />
+                        </image>
+                    </ImageView>
+                </graphic>
+                <text>Sair</text>
+            </Button>
+        </HBox>
+    </bottom>
+</BorderPane>

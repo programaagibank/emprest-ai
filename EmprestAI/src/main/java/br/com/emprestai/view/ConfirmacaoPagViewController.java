@@ -30,7 +30,7 @@ public class ConfirmacaoPagViewController {
     // --------------------------------------------------------------------------------
     // FXML Components
     // --------------------------------------------------------------------------------
-    @FXML private BorderPane confirmacaoContainer; // Atualizado de VBox para BorderPane
+    @FXML private BorderPane confirmacaoContainer;
     @FXML private Label valorLabel;
     @FXML private Label parcelasLabel;
     @FXML private Label dataLabel;
@@ -118,15 +118,30 @@ public class ConfirmacaoPagViewController {
             boolean senhaValida = loginController.validaSenha(senha, SessionManager.getInstance().getClienteLogado().getSenha());
             if (senhaValida) {
                 parcelaController.putListParcelas(parcelasSelecionadas);
-                mensagemLabel.setText("Pagamento confirmado com sucesso!");
-                mensagemLabel.setStyle("-fx-text-fill: #008000;");
-                voltarParaParcelas();
+                exibirTelaSucesso("Pagamento confirmado com sucesso!");
             } else {
                 mensagemLabel.setText("Senha inválida. Tente novamente.");
             }
         } catch (Exception e) {
             e.printStackTrace();
             mensagemLabel.setText("Erro ao confirmar pagamento: " + e.getMessage());
+        }
+    }
+
+    private void exibirTelaSucesso(String mensagem) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("confirmacao-sucesso.fxml"));
+            Scene sucessoScene = new Scene(loader.load(), 360, 640);
+            ConfirmacaoSucessoViewController controller = loader.getController();
+            controller.setMensagem(mensagem);
+
+            Stage stage = (Stage) confirmarButton.getScene().getWindow();
+            stage.setScene(sucessoScene);
+            stage.setTitle("EmprestAI - Sucesso");
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            mensagemLabel.setText("Erro ao exibir tela de sucesso: " + e.getMessage());
         }
     }
 

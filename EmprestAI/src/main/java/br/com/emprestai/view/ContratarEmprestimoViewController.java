@@ -115,14 +115,7 @@ public class ContratarEmprestimoViewController {
             }
 
             Emprestimo createdEmprestimo = emprestimoController.postEmprestimo(emprestimoParaContratar);
-
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Empréstimo Contratado");
-            alert.setHeaderText("Empréstimo Realizado com Sucesso");
-            alert.setContentText("Seu empréstimo foi aprovado e contratado com sucesso!");
-            alert.showAndWait();
-
-            onHomeClick();
+            exibirTelaSucesso("Empréstimo contratado com sucesso!");
 
         } catch (Exception e) {
             showAlert("Erro", "Ocorreu um erro ao confirmar o empréstimo: " + e.getMessage());
@@ -153,17 +146,17 @@ public class ContratarEmprestimoViewController {
     @FXML
     private void onBackClick() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("solicitacaoEmprestimo.fxml")); // Caminho relativo
-            Scene SolicitacaoScene = new Scene(loader.load(), 360, 640);
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("solicitacao-emprestimo.fxml"));
+            Scene solicitacaoScene = new Scene(loader.load(), 360, 640);
             SolicitacaoEmprestimoViewController solicitacaoEmprestimoViewController = loader.getController();
             solicitacaoEmprestimoViewController.setTipoEmprestimo(tipoEmprestimo);
             Stage stage = (Stage) cancelButton.getScene().getWindow();
-            stage.setScene(SolicitacaoScene);
+            stage.setScene(solicitacaoScene);
             stage.setTitle("EmprestAI - Ofertas de Empréstimo");
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
-            System.err.println("Erro ao carregar ofertas.fxml: " + e.getMessage());
+            System.err.println("Erro ao carregar solicitacao-emprestimo.fxml: " + e.getMessage());
         }
     }
 
@@ -218,5 +211,22 @@ public class ContratarEmprestimoViewController {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    private void exibirTelaSucesso(String mensagem) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("confirmacao-sucesso.fxml"));
+            Scene sucessoScene = new Scene(loader.load(), 360, 640);
+            ConfirmacaoSucessoViewController controller = loader.getController();
+            controller.setMensagem(mensagem);
+
+            Stage stage = (Stage) confirmButton.getScene().getWindow();
+            stage.setScene(sucessoScene);
+            stage.setTitle("EmprestAI - Sucesso");
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Erro", "Erro ao exibir tela de sucesso: " + e.getMessage());
+        }
     }
 }

@@ -131,7 +131,7 @@ public class EmprestimoViewController {
     @FXML
     private void onSolicitacaoClick() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("solicitacaoEmprestimo.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("solicitacao-emprestimo.fxml"));
             Scene solicitacaoScene = new Scene(loader.load(), 360, 640);
             SolicitacaoEmprestimoViewController solicitacaoController = loader.getController();
             solicitacaoController.setTipoEmprestimo(tipoEmprestimo);
@@ -141,7 +141,7 @@ public class EmprestimoViewController {
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
-            System.err.println("Erro ao carregar solicitacaoEmprestimo.fxml: " + e.getMessage());
+            System.err.println("Erro ao carregar solicitacao-emprestimo.fxml: " + e.getMessage());
         }
     }
 

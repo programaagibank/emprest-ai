@@ -103,7 +103,7 @@ public class LoginViewController {
     @FXML
     private void onCriarContaClick() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("cadastroCliente.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("cadastro-cliente.fxml"));
             Scene mainScene = new Scene(loader.load(), 360, 640);
 
             Stage stage = (Stage) loginButton.getScene().getWindow();

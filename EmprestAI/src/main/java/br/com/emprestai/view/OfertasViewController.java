@@ -93,7 +93,7 @@ public class OfertasViewController {
         selectedOffer.setIdCliente(clienteLogado.getIdCliente());
 
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("contratarEmprestimo.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("contratar-emprestimo.fxml"));
             Scene mainScene = new Scene(loader.load(), 360, 640);
             ContratarEmprestimoViewController contratarController = loader.getController();
             contratarController.setEmprestimoParaContratar(selectedOffer);

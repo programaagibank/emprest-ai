@@ -149,7 +149,7 @@ public class ParcelaViewController {
                 return;
             }
 
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("confirmacaoPag.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("confirmacao-pagamento.fxml"));
             Scene confirmacaoScene = new Scene(loader.load(), 360, 640);
             ConfirmacaoPagViewController confirmacaoController = loader.getController();
             confirmacaoController.setParcelasSelecionadas(parcelasSelecionadas);

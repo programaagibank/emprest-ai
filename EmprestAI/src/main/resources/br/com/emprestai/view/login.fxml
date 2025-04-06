@@ -4,50 +4,58 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
 
-<VBox spacing="20.0" styleClass="root"
+<VBox spacing="20.0" styleClass="root" minWidth="400" minHeight="650" prefWidth="450" prefHeight="700"
       stylesheets="@../css/login.css"
       xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/17.0.6"
-            fx:controller="br.com.emprestai.view.LoginViewController">
-<padding>
-    <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
-</padding>
- <Label styleClass="version-label" text="v1.0.0" />
+      fx:controller="br.com.emprestai.view.LoginViewController">
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+    </padding>
+    <Label styleClass="version-label" text="v1.0.0" />
 
-<!-- Top Section: Logo and Version -->
-<HBox alignment="TOP_LEFT" spacing="10.0">
-    <ImageView fx:id="logo" fitHeight="200" fitWidth="200" preserveRatio="true">
-        <image>
-            <Image url="@../images/logo.png" />
-        </image>
-    </ImageView> <!-- Replace with your version -->
-</HBox>
+    <!-- Top Section: Logo -->
+    <HBox alignment="CENTER" spacing="10.0">
+        <ImageView fx:id="logo" fitHeight="140" fitWidth="140" preserveRatio="true">
+            <image>
+                <Image url="@../images/logo1.png" />
+            </image>
+        </ImageView>
+    </HBox>
 
-<!-- Main Content -->
-<VBox alignment="CENTER" spacing="15.0" styleClass="content">
-    <!-- Greeting Label -->
-    <Label fx:id="greetingLabel" styleClass="greeting-label" text="Que bom ter você de volta,\nJosue!" />
+    <!-- Main Content -->
+    <VBox alignment="CENTER" spacing="15.0" styleClass="content" VBox.vgrow="ALWAYS">
+        <!-- Greeting Label -->
+        <Label fx:id="greetingLabel" styleClass="greeting-label" text="Que bom ter você de volta,\nJosue!" />
 
-    <!-- CPF Field -->
-    <Label styleClass="input-label" text="CPF" />
-    <TextField fx:id="cpfField" promptText="Digite seu CPF" styleClass="input-field" />
+        <!-- CPF Field -->
+        <Label styleClass="input-label" text="CPF" />
+        <TextField fx:id="cpfField" promptText="Digite seu CPF" styleClass="input-field" />
 
-    <!-- Password Field -->
-    <Label styleClass="input-label" text="Senha" />
-    <PasswordField fx:id="passwordField" promptText="Digite sua senha" styleClass="input-field" />
+        <!-- Password Field -->
+        <Label styleClass="input-label" text="Senha" />
+        <PasswordField fx:id="passwordField" promptText="Digite sua senha" styleClass="input-field" />
 
-    <!-- Login Button -->
-    <Button fx:id="loginButton" onAction="#onLoginButtonClick" styleClass="primary-button" text="Entrar" />
-    <!-- Cadastro Link -->
-    <Hyperlink fx:id="criarConta" onAction="#onCriarContaClick" styleClass="register-link" text="Cadastre-se agora"  alignment="CENTER_RIGHT" />
+        <!-- Login Button -->
+        <Button fx:id="loginButton" onAction="#onLoginButtonClick" styleClass="primary-button" text="Entrar" />
 
-    <!-- Privacy Policy Link -->
-    <Hyperlink fx:id="privacyLink" onAction="#onPrivacyLinkClick" styleClass="privacy-link" text="Política de Privacidade" />
+        <!-- Cadastro Link - Alinhado à direita -->
+        <HBox alignment="CENTER_RIGHT" maxWidth="300">
+            <Hyperlink fx:id="criarConta" onAction="#onCriarContaClick" styleClass="register-link" text="Cadastre-se agora" />
+        </HBox>
 
+        <!-- Error Box -->
+        <VBox fx:id="errorBox" stylesheets="@../css/error-box.css" visible="false" managed="false" alignment="CENTER" spacing="10">
+            <Label text="Credenciais inválidas" styleClass="error-title"/>
+            <Label text="O CPF ou a senha estão incorretos." styleClass="error-message"/>
+        </VBox>
 
-    <VBox fx:id="errorBox" stylesheets="@../css/error-box.css" visible="false" managed="false" alignment="CENTER" spacing="10">
-        <Label text="Credenciais inválidas"/>
-        <Label text="O CPF ou a senha estão incorretos."/>
+        <Region VBox.vgrow="ALWAYS" /> <!-- Espaço flexível para empurrar o link de privacidade para baixo -->
+
+        <!-- Privacy Policy Link - Sempre visível na parte inferior -->
+        <HBox alignment="CENTER">
+            <Hyperlink fx:id="privacyLink" onAction="#onPrivacyLinkClick" styleClass="privacy-link" text="Política de Privacidade" />
+        </HBox>
     </VBox>
-</VBox>
 </VBox>

@@ -1,6 +1,5 @@
-/* Estilos para a tela de cadastro moderna */
+/* Estilos para a tela de cadastro */
 
-/* Estilo base da aplicação */
 .root {
     -fx-background-color: #F7F7F7;
     -fx-font-family: "Roboto", "Segoe UI", sans-serif;
@@ -13,20 +12,18 @@
 }
 
 .greeting-label {
-    -fx-font-family: "Roboto", "Arial", sans-serif;
     -fx-font-size: 24px;
     -fx-text-fill: #0056D2;
     -fx-font-weight: bold;
 }
 
-/* Bloco principal de conteúdo */
+/* Conteúdo principal */
 .content {
     -fx-background-color: #FFFFFF;
     -fx-background-radius: 16px;
     -fx-padding: 30px;
-    -fx-spacing: 25px;
+    -fx-spacing: 20px;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0, 0, 4);
-    -fx-alignment: center;
 }
 
 /* Campos de entrada */
@@ -46,13 +43,14 @@
     -fx-background-color: #F0F7FF;
 }
 
-/* DatePicker com visual harmonizado */
+/* Estilo para o DatePicker */
 .date-picker {
     -fx-background-color: #FFFFFF;
     -fx-border-color: #EAEAEA;
     -fx-border-radius: 8px;
     -fx-background-radius: 8px;
     -fx-font-size: 14px;
+    -fx-pref-width: 300px;
 }
 
 .date-picker .text-field {
@@ -79,9 +77,8 @@
     -fx-text-fill: white;
 }
 
-/* Estilo para os rótulos */
+/* Labels */
 .info-label {
-    -fx-font-family: "Roboto", "Arial", sans-serif;
     -fx-font-size: 14px;
     -fx-font-weight: bold;
     -fx-text-fill: #555555;

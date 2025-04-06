@@ -141,18 +141,79 @@
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 8, 0, 0, -4);
 }
 
+/* Navigation bar - Modernizada */
+.nav-bar-container {
+    -fx-background-color: #FFFFFF;
+    -fx-padding: 8px 0 8px 0;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 10, 0, 0, -3);
+}
+
+.nav-bar {
+    -fx-background-color: transparent;
+    -fx-alignment: center;
+    -fx-spacing: 0;
+    -fx-padding: 0;
+    -fx-pref-width: 100%;
+}
+
+.nav-button-container {
+    -fx-padding: 0;
+    -fx-alignment: center;
+    -fx-pref-width: 33.33%; /* Force equal width for 3 buttons */
+}
+
+/* Círculo de fundo ativo */
+.nav-button-circle {
+    -fx-fill: #F0F7FF;
+    -fx-stroke: #E1E9F8;
+    -fx-stroke-width: 1;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.08), 4, 0, 0, 1);
+}
+
+/* Ícones de navegação */
+.nav-icon {
+    -fx-fill: #666666;
+    -fx-scale-x: 1.2;
+    -fx-scale-y: 1.2;
+    -fx-translate-y: -8;
+}
+
 /* Navigation buttons */
 .nav-button {
     -fx-background-color: transparent;
-    -fx-font-family: "Roboto", "Arial", sans-serif;
-    -fx-font-size: 10px;
-    -fx-text-fill: #666666;
-    -fx-alignment: center;
-    -fx-pref-width: 120px;
-    -fx-max-width: 120px;
+    -fx-padding: 0;
+    -fx-border-width: 0;
+    -fx-cursor: hand;
+    -fx-transition: all 0.2s ease-in-out;
 }
 
-.nav-button:hover,
-.nav-button:selected {
+.nav-button:hover .nav-icon {
+    -fx-fill: #0056D2;
+}
+
+.nav-button:hover .nav-button-circle {
+    -fx-fill: #EBF3FF;
+    -fx-effect: dropshadow(gaussian, rgba(0, 80, 200, 0.15), 5, 0, 0, 2);
+}
+
+.nav-button:hover .nav-button-label {
+    -fx-text-fill: #0056D2;
+}
+
+/* Label dentro dos botões de navegação */
+.nav-button-label {
+    -fx-font-family: "Roboto", "Arial", sans-serif;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #666666;
+    -fx-translate-y: 8;
+}
+
+/* Estilo ativo para navegação */
+.nav-button-active .nav-icon {
+    -fx-fill: #0056D2;
+}
+
+.nav-button-active .nav-button-label {
     -fx-text-fill: #0056D2;
 }

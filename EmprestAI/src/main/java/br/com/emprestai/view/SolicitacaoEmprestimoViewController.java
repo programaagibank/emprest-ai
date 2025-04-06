@@ -75,9 +75,16 @@ public class SolicitacaoEmprestimoViewController {
                 return;
             }
 
-            // Remove o formato de moeda para converter para double
-            String cleanValue = loanAmountField.getText().replaceAll("[^0-9,]", "").replace(",", ".");
-            double loanAmount = Double.parseDouble(cleanValue);
+            // Obtém o valor diretamente do TextFormatter
+            Number formatterValue = ((TextFormatter<Number>)loanAmountField.getTextFormatter()).getValue();
+            double loanAmount = (formatterValue != null) ? formatterValue.doubleValue() : 0.0;
+
+            // Verifica se o valor é válido
+            if (loanAmount <= 0.0) {
+                System.out.println("Valor inválido: " + loanAmount);
+                return;
+            }
+
             System.out.println("Valor convertido: " + loanAmount);
 
             // Carrega a tela de ofertas
@@ -91,7 +98,7 @@ public class SolicitacaoEmprestimoViewController {
             stage.setTitle("EmprestAI - Ofertas de Empréstimo");
             stage.show();
 
-        }catch (IOException | NumberFormatException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

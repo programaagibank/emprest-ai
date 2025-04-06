@@ -188,7 +188,7 @@
     -fx-alignment: center;
 }
 
-/* Buttons
+Buttons
 .confirm-button {
     -fx-background-color: linear-gradient(to right, #0056D2 0%, #00A3FF 100%);
     -fx-background-radius: 12px;
@@ -231,4 +231,4 @@
 .secondary-button:pressed {
     -fx-background-color: #E0E0E0;
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 0, 0, 2);
-}*/
+}

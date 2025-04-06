@@ -142,6 +142,10 @@ public class ContratarEmprestimoViewController {
             System.err.println("Erro ao carregar dashboard.fxml: " + e.getMessage());
         }
     }
+    @FXML
+    private void onProfileClick() {
+        // Implement navigation to profile if needed
+    }
 
     @FXML
     private void onBackClick() {

@@ -46,15 +46,16 @@
         </ScrollPane>
     </center>
 
-    <!-- Bottom Section: Navigation Bar -->
+    <!-- Bottom Navigation - Modernizado -->
     <bottom>
         <StackPane styleClass="nav-bar-container">
             <HBox alignment="CENTER" styleClass="nav-bar" HBox.hgrow="ALWAYS">
+                <!-- Make each button container take equal space -->
                 <StackPane styleClass="nav-button-container" HBox.hgrow="ALWAYS" maxWidth="Infinity">
-                    <Button fx:id="homeButton" onAction="#onHomeClick" styleClass="nav-button">
+                    <Button fx:id="homeButton" onAction="#onHomeClick" styleClass="nav-button, nav-button-active">
                         <graphic>
                             <StackPane>
-                                <Circle styleClass="nav-button-circle" radius="22" visible="false" />
+                                <Circle styleClass="nav-button-circle" radius="22" />
                                 <StackPane>
                                     <SVGPath styleClass="nav-icon" content="M3,12V19H9V13H15V19H21V12L12,3L3,12Z" />
                                     <Label styleClass="nav-button-label" text="Início" />

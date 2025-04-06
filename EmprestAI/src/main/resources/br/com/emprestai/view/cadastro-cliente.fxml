@@ -8,8 +8,11 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.image.*?>
 
-<VBox xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.com.emprestai.view.CadastroClienteViewController"
-      spacing="20" alignment="CENTER" maxWidth="Infinity" styleClass="root" stylesheets="@../css/dashboard.css">
+<VBox xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="br.com.emprestai.view.CadastroClienteViewController"
+      spacing="20" alignment="CENTER" maxWidth="Infinity"
+      styleClass="root" stylesheets="@../css/tela-cadastro.css">
+
     <padding>
         <Insets top="20" right="20" bottom="20" left="20" />
     </padding>
@@ -22,13 +25,12 @@
         <Label text="Cadastro de Cliente" styleClass="greeting-label"/>
     </HBox>
 
-    <!-- Conteúdo -->
+    <!-- Conteúdo principal (única caixa visual) -->
     <VBox styleClass="content" spacing="15" VBox.vgrow="ALWAYS">
-        <GridPane hgap="10" vgap="15" alignment="CENTER" maxWidth="Infinity" styleClass="info-box">
+
+        <GridPane hgap="10" vgap="15" alignment="CENTER" maxWidth="Infinity">
             <columnConstraints>
-                <!-- Coluna dos labels -->
                 <ColumnConstraints halignment="LEFT" minWidth="100" />
-                <!-- Coluna dos campos, expansível -->
                 <ColumnConstraints hgrow="ALWAYS" fillWidth="true" />
             </columnConstraints>
 
@@ -57,10 +59,9 @@
                            GridPane.hgrow="ALWAYS" maxWidth="Infinity" styleClass="input-field" />
         </GridPane>
 
-        <!-- Botões -->
+        <!-- Botão dentro da caixa de conteúdo -->
         <HBox spacing="10.0" alignment="CENTER">
             <Button text="Cadastrar" onAction="#cadastrarCliente" styleClass="confirm-button" prefWidth="150" />
-
         </HBox>
     </VBox>
 
@@ -73,7 +74,7 @@
             <graphic>
                 <ImageView fitHeight="24" fitWidth="24" preserveRatio="true">
                     <image>
-                      <!--  <Image url="@../images/back.png" />  -->
+                        <!--  <Image url="@../images/back.png" />  -->
                     </image>
                 </ImageView>
             </graphic>

@@ -24,18 +24,27 @@
         </ImageView>
     </HBox>
 
+
     <!-- Main Content -->
     <VBox alignment="CENTER" spacing="15.0" styleClass="content" VBox.vgrow="ALWAYS">
         <!-- Greeting Label -->
-        <Label fx:id="greetingLabel" styleClass="greeting-label" text="Que bom ter você de volta,\nJosue!" />
+        <Label fx:id="greetingLabel" styleClass="greeting-label" text="Que bom ter você de volta!" />
 
-        <!-- CPF Field -->
-        <Label styleClass="input-label" text="CPF" />
-        <TextField fx:id="cpfField" promptText="Digite seu CPF" styleClass="input-field" />
+        <!-- CPF Field - Alinhado à esquerda -->
+        <HBox alignment="CENTER" maxWidth="300">
+            <VBox alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
+                <Label styleClass="input-label" text="CPF " />
+                <TextField fx:id="cpfField" promptText="Digite seu CPF" styleClass="input-field" maxWidth="Infinity" />
+            </VBox>
+        </HBox>
 
         <!-- Password Field -->
-        <Label styleClass="input-label" text="Senha" />
-        <PasswordField fx:id="passwordField" promptText="Digite sua senha" styleClass="input-field" />
+        <HBox alignment="CENTER" maxWidth="300">
+            <VBox alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
+                <Label styleClass="input-label" text="Senha" />
+                <PasswordField fx:id="passwordField" promptText="Digite sua senha" styleClass="input-field" maxWidth="Infinity" />
+            </VBox>
+        </HBox>
 
         <!-- Login Button -->
         <Button fx:id="loginButton" onAction="#onLoginButtonClick" styleClass="primary-button" text="Entrar" />

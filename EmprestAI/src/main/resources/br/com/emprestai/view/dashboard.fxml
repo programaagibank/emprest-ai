@@ -37,18 +37,51 @@
             <content>
                 <VBox alignment="CENTER" spacing="20.0" styleClass="content">
 
+
+                    <!-- Ações principais -->
+                    <HBox alignment="CENTER" spacing="30.0">
+                        <VBox alignment="CENTER" spacing="5.0">
+                            <Button fx:id="consignadoButton" onAction="#onConsignadoClick" styleClass="action-button">
+                                <graphic>
+                                    <ImageView fitHeight="40" fitWidth="40" preserveRatio="true">
+                                        <image>
+                                            <Image url="@../images/consignado.png" />
+                                        </image>
+                                    </ImageView>
+                                </graphic>
+                            </Button>
+                            <Label styleClass="action-label" text="Consignado" />
+                        </VBox>
+                        <VBox alignment="CENTER" spacing="5.0">
+                            <Button fx:id="pessoalButton" onAction="#onPessoalClick" styleClass="action-button">
+                                <graphic>
+                                    <ImageView fitHeight="40" fitWidth="40" preserveRatio="true">
+                                        <image>
+                                            <Image url="@../images/pessoal.png" />
+                                        </image>
+                                    </ImageView>
+                                </graphic>
+                            </Button>
+                            <Label styleClass="action-label" text="Pessoal" />
+                        </VBox>
+                    </HBox>
+
+
+
+
                     <!-- Promoções com design melhorado -->
                     <VBox spacing="15.0" styleClass="promo-section">
-                        <Label styleClass="section-title" text="Ofertas para Você" />
 
-                        <!-- Informações de crédito - Movidas para a seção de ofertas -->
+                          <Label styleClass="section-title" text="Ofertas para Você" />
+
+                           <!-- Informações de crédito - Movidas para a seção de ofertas -->
                         <HBox alignment="CENTER" spacing="20.0" styleClass="credit-breakdown">
-                            <VBox alignment="TOP_LEFT" prefWidth="150.0" spacing="4.0">
+                            <VBox alignment="CENTER" prefWidth="150.0" spacing="4.0">
                                 <Label styleClass="credit-label" text="Consignado" />
                                 <Label fx:id="consignadoCredit" styleClass="credit-subamount" text="R$ 0,00" />
                                 <Label styleClass="credit-subtitle" text="Aposentados, pensionista e servidores" wrapText="true" />
                             </VBox>
-                            <VBox alignment="TOP_LEFT" prefWidth="150.0" spacing="4.0">
+                            <VBox alignment="CENTER" prefWidth="150.0" spacing="4.0">
                                 <Label styleClass="credit-label" text="Pessoal" />
                                 <Label fx:id="pessoalCredit" styleClass="credit-subamount" text="R$ 0,00" />
                                 <Label styleClass="credit-subtitle" text="Para todos os públicos" wrapText="true" />
@@ -57,40 +90,12 @@
                         </HBox>
 
 
-                        <!-- Ações principais -->
-                        <HBox alignment="CENTER" spacing="30.0">
-                            <VBox alignment="CENTER" spacing="5.0">
-                                <Button fx:id="consignadoButton" onAction="#onConsignadoClick" styleClass="action-button">
-                                    <graphic>
-                                        <ImageView fitHeight="40" fitWidth="40" preserveRatio="true">
-                                            <image>
-                                                <Image url="@../images/consignado.png" />
-                                            </image>
-                                        </ImageView>
-                                    </graphic>
-                                </Button>
-                                <Label styleClass="action-label" text="Consignado" />
-                            </VBox>
-                            <VBox alignment="CENTER" spacing="5.0">
-                                <Button fx:id="pessoalButton" onAction="#onPessoalClick" styleClass="action-button">
-                                    <graphic>
-                                        <ImageView fitHeight="40" fitWidth="40" preserveRatio="true">
-                                            <image>
-                                                <Image url="@../images/pessoal.png" />
-                                            </image>
-                                        </ImageView>
-                                    </graphic>
-                                </Button>
-                                <Label styleClass="action-label" text="Pessoal" />
-                            </VBox>
-                        </HBox>
-
 
                         <HBox spacing="15.0" styleClass="promo-container">
                             <!-- Card de Empréstimo sem imagem -->
                             <VBox styleClass="promo-card" spacing="10.0">
                                 <Label styleClass="promo-title" text="Empréstimo com Juros Baixos" wrapText="true" />
-                                <Label styleClass="promo-subtitle" text="Aproveite taxas a partir de 1,8%!" wrapText="true" />
+                                <Label styleClass="promo-subtitle" text="Taxas a partir de 1,8%!" wrapText="true" />
                                 <Region VBox.vgrow="ALWAYS" /> <!-- Espaçador para alinhar o botão na parte inferior -->
                                 <Button styleClass="promo-button" text="Ver oferta" />
                             </VBox>

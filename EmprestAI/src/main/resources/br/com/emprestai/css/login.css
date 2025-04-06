@@ -35,16 +35,25 @@
     -fx-font-size: 14px;
     -fx-text-fill: #333333;
     -fx-padding: 5 0 0 0;
+    -fx-alignment: center-left; /* Alinhamento à esquerda */
 }
 
 .input-field {
-    -fx-pref-width: 300px;
     -fx-background-color: #ffffff;
     -fx-border-color: #d3d3d3;
     -fx-border-radius: 8px;
     -fx-background-radius: 8px;
     -fx-padding: 12px;
     -fx-font-size: 14px;
+    -fx-alignment: center-left; /* Texto alinhado à esquerda */
+    -fx-max-width: Infinity; /* Permitir que expanda até o máximo */
+}
+
+/* Estilo para os containers VBox que contêm os inputs */
+.content > HBox > VBox {
+    -fx-alignment: center-left;
+    -fx-spacing: 5px;
+    -fx-fill-width: true;
 }
 
 .input-field:focused {

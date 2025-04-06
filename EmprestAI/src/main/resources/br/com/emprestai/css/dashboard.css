@@ -1,27 +1,28 @@
 /* Root styling */
 .root {
     -fx-background-color: #F7F7F7;
-    -fx-font-family: "Roboto", "Segoe UI", sans-serif;
+    -fx-font-family: "Roboto Light", "Segoe UI Light", sans-serif; /* Fonte mais fina */
 }
 
 /* Header styling - Área com o cartão fixo */
 .header {
     -fx-background-color: transparent;
-    -fx-padding: 10px 10px 15px 10px;
+    -fx-padding: 15px 15px 25px 15px; /* Aumentado o padding */
 }
 
 /* Card Container */
 .card-container {
-    -fx-padding: 0 0px;
+    -fx-padding: 5px 0px;
+    -fx-margin: 0 0 20px 0; /* Adicionado margem inferior */
 }
 
 /* Card Header styling - Design para o cartão azul */
 .card-header {
     -fx-background-color: linear-gradient(to right, #0056D2, #0077CC, #008BE6);
-    -fx-background-radius: 16px;
-    -fx-padding: 25px;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0.5, 0, 4);
-    -fx-min-height: 140px; /* Altura mínima para o cartão */
+    -fx-background-radius: 18px; /* Bordas mais arredondadas */
+    -fx-padding: 30px; /* Aumentado padding interno */
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 12, 0.5, 0, 4);
+    -fx-min-height: 150px; /* Altura mínima aumentada */
 }
 
 /* Card number - estilo para números do cartão */
@@ -29,27 +30,27 @@
     -fx-font-size: 15px;
     -fx-text-fill: rgba(255, 255, 255, 0.9);
     -fx-font-family: "Courier New", monospace;
-    -fx-padding: 0 0 10px 0;
-    -fx-letter-spacing: 1px;
+    -fx-padding: 0 0 15px 0; /* Aumentado padding inferior */
+    -fx-letter-spacing: 1.5px; /* Maior espaçamento entre letras */
 }
 
 /* Brand name - Logo Agibank */
 .card-brand {
     -fx-font-size: 18px;
-    -fx-font-weight: bold;
+    -fx-font-weight: normal; /* Mudado para fonte normal ao invés de bold */
     -fx-text-fill: white;
-    -fx-font-family: "Arial Black", "Helvetica Bold", sans-serif;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 2, 0.5, 0, 1);
-    -fx-padding: 10px 5px 0 0;
+    -fx-font-family: "Arial", sans-serif; /* Fonte mais clean */
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 1, 0.3, 0, 1);
+    -fx-padding: 15px 5px 0 0; /* Aumentado padding superior */
 }
 
 /* Labels no header */
 .greeting-label {
-    -fx-font-family: "Roboto", "Arial", sans-serif;
-    -fx-font-size: 20px;
+    -fx-font-family: "Roboto Light", "Arial", sans-serif; /* Fonte mais fina */
+    -fx-font-size: 22px; /* Tamanho maior */
     -fx-text-fill: #FFFFFF;
-    -fx-font-weight: bold;
-    -fx-padding: 0 0 6px 0;
+    -fx-font-weight: normal; /* Mudado para normal */
+    -fx-padding: 0 0 10px 0; /* Aumentado padding inferior */
 }
 
 /* ScrollPane styling */
@@ -57,7 +58,7 @@
     -fx-background-color: transparent;
     -fx-background: transparent;
     -fx-hbar-policy: never;
-    -fx-padding: 0;
+    -fx-padding: 5px 0;
 }
 
 .scroll-pane .viewport {
@@ -67,28 +68,29 @@
 .scroll-pane .scroll-bar:vertical {
     -fx-background-color: transparent;
     -fx-background-radius: 0;
+    -fx-padding: 0 5px 0 0; /* Adicionado padding direito */
 }
 
 .scroll-pane .scroll-bar:vertical .thumb {
     -fx-background-color: #DDDDDD;
-    -fx-background-radius: 5px;
+    -fx-background-radius: 6px; /* Bordas mais suaves */
 }
 
 /* Content styling - Todo o conteúdo com rolagem */
 .content {
     -fx-background-color: #FFFFFF;
-    -fx-background-radius: 20px 20px 0 0;
-    -fx-padding: 20px 15px;
-    -fx-spacing: 25px;
+    -fx-background-radius: 24px 24px 0 0; /* Bordas mais arredondadas */
+    -fx-padding: 30px 20px; /* Mais padding */
+    -fx-spacing: 40px; /* Espaçamento maior entre os elementos */
     -fx-alignment: top-center;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, -5);
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 12, 0, 0, -5);
 }
 
 /* Credit breakdown styling - Ajustado para estar na seção de ofertas */
 .credit-breakdown {
     -fx-alignment: center-left;
-    -fx-spacing: 20px;
-    -fx-padding: 5px 0 15px 0;
+    -fx-spacing: 35px; /* Maior espaçamento entre elementos */
+    -fx-padding: 10px 5px 25px 5px; /* Mais padding */
     -fx-border-color: #EAEAEA;
     -fx-border-width: 0 0 1px 0;
     -fx-border-style: dashed;
@@ -97,204 +99,223 @@
 /* Créditos - ajustado para estar fora do cartão */
 .credit-label,
 .credit-subamount {
-    -fx-font-family: "Roboto", "Arial", sans-serif;
-    -fx-font-weight: bold;
+    -fx-font-family: "Roboto Light", "Arial", sans-serif; /* Fonte mais fina */
 }
 
 .credit-label {
     -fx-font-size: 16px;
     -fx-text-fill: #333333;
+    -fx-font-weight: normal; /* Normal em vez de bold */
 }
 
 .credit-subamount {
-    -fx-font-size: 18px;
+    -fx-font-size: 20px; /* Aumentado tamanho */
     -fx-text-fill: #0056D2;
+    -fx-padding: 5px 0; /* Adicionado padding vertical */
 }
 
 .credit-subtitle {
-    -fx-font-family: "Roboto", "Arial", sans-serif;
+    -fx-font-family: "Roboto Light", "Arial", sans-serif;
     -fx-font-size: 12px;
     -fx-text-fill: #666666;
     -fx-wrap-text: true;
+    -fx-padding: 5px 0 0 0; /* Adicionado padding superior */
 }
 
 /* Action buttons */
 .action-button {
     -fx-background-color: #FFFFFF;
     -fx-background-radius: 50%;
-    -fx-pref-width: 60px;
-    -fx-pref-height: 60px;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 10, 0, 0, 4);
+    -fx-pref-width: 70px; /* Botão maior */
+    -fx-pref-height: 70px; /* Botão maior */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.08), 12, 0, 0, 4);
     -fx-cursor: hand;
     -fx-transition: all 0.3s ease-in-out;
 }
 
 .action-button .image-view {
-    -fx-fit-height: 30px;
-    -fx-fit-width: 30px;
+    -fx-fit-height: 35px; /* Ícone maior */
+    -fx-fit-width: 35px; /* Ícone maior */
 }
 
 .action-button:hover {
     -fx-background-color: #F0F7FF;
-    -fx-effect: dropshadow(gaussian, rgba(0, 86, 210, 0.2), 12, 0, 0, 5);
+    -fx-effect: dropshadow(gaussian, rgba(0, 86, 210, 0.15), 12, 0, 0, 5);
     -fx-scale-x: 1.05;
     -fx-scale-y: 1.05;
 }
 
 /* Label abaixo do botão */
 .action-label {
-    -fx-font-family: "Roboto", "Arial", sans-serif;
+    -fx-font-family: "Roboto Light", "Arial", sans-serif; /* Fonte mais fina */
     -fx-font-size: 14px;
     -fx-text-fill: #555555;
-    -fx-font-weight: bold;
+    -fx-font-weight: normal; /* Normal em vez de bold */
+    -fx-padding: 8px 0 0 0; /* Adicionado padding superior */
+}
+
+/* HBox para os action buttons */
+HBox.action-button-container {
+    -fx-spacing: 50px; /* Muito mais espaço entre os botões */
+    -fx-padding: 10px 0 20px 0; /* Padding adicional */
 }
 
 /* Promoção */
 .promo-section {
     -fx-alignment: center;
-    -fx-spacing: 12px;
-    -fx-padding: 0 0 10px 0;
+    -fx-spacing: 20px; /* Maior espaçamento */
+    -fx-padding: 10px 0 20px 0; /* Mais padding */
 }
 
 .section-title {
-    -fx-font-family: "Roboto", "Arial", sans-serif;
-    -fx-font-size: 18px;
-    -fx-font-weight: bold;
+    -fx-font-family: "Roboto Light", "Arial", sans-serif; /* Fonte mais fina */
+    -fx-font-size: 20px; /* Tamanho maior */
+    -fx-font-weight: normal; /* Normal em vez de bold */
     -fx-text-fill: #333333;
-    -fx-padding: 0 0 5px 5px;
+    -fx-padding: 5px 0 10px 5px; /* Mais padding */
 }
 
 /* Cartões */
 .promo-container {
-    -fx-spacing: 15px;
-    -fx-padding: 0 0 10px 0;
+    -fx-spacing: 25px; /* Maior espaçamento */
+    -fx-padding: 5px 0 15px 0; /* Mais padding */
 }
 
 .promo-card {
     -fx-background-color: linear-gradient(to bottom right, #FAFAFA, #F0F0F0);
-    -fx-background-radius: 15px;
-    -fx-padding: 15px;
+    -fx-background-radius: 18px; /* Bordas mais arredondadas */
+    -fx-padding: 20px; /* Mais padding interno */
     -fx-pref-width: 160px;
-    -fx-min-height: 150px; /* Altura mínima para garantir alinhamento dos botões */
+    -fx-min-height: 170px; /* Altura mínima aumentada */
     -fx-alignment: top-left;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.08), 8, 0, 0, 3);
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 10, 0, 0, 3);
     -fx-transition: all 0.3s ease-in-out;
     -fx-border-color: #EEEEEE;
-    -fx-border-radius: 15px;
+    -fx-border-radius: 18px; /* Bordas mais arredondadas */
     -fx-border-width: 1px;
+    -fx-spacing: 15px; /* Maior espaçamento interno */
 }
 
 .promo-card:hover {
     -fx-background-color: linear-gradient(to bottom right, #F0F7FF, #E6F0FA);
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 12, 0, 0, 5);
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.12), 12, 0, 0, 5);
     -fx-border-color: #D6E4F0;
 }
 
 .promo-title {
-    -fx-font-size: 15px;
-    -fx-font-weight: bold;
+    -fx-font-size: 16px; /* Tamanho maior */
+    -fx-font-weight: normal; /* Normal em vez de bold */
     -fx-text-fill: #333333;
+    -fx-padding: 0 0 5px 0; /* Adicionado padding inferior */
 }
 
 .promo-subtitle {
     -fx-font-size: 13px;
     -fx-text-fill: #666666;
+    -fx-padding: 5px 0; /* Adicionado padding vertical */
 }
 
 /* Botão nas promoções */
 .promo-button {
     -fx-background-color: #0056D2;
     -fx-text-fill: white;
-    -fx-font-size: 12px;
-    -fx-font-weight: bold;
-    -fx-background-radius: 20px;
-    -fx-padding: 8px 12px;
+    -fx-font-size: 13px; /* Tamanho maior */
+    -fx-font-weight: normal; /* Normal em vez de bold */
+    -fx-background-radius: 25px; /* Bordas mais arredondadas */
+    -fx-padding: 10px 15px; /* Mais padding */
     -fx-cursor: hand;
     -fx-alignment: center;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 3, 0, 0, 1);
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 3, 0, 0, 1);
 }
 
 .promo-button:hover {
     -fx-background-color: #0066F5;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 2);
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 5, 0, 0, 2);
 }
 
 .promo-button .image-view {
     -fx-fit-height: 16px;
     -fx-fit-width: 16px;
+    -fx-padding: 0 5px 0 0; /* Adicionado padding direito */
 }
 
 /* Pagamentos */
 .upcoming-payments-section {
     -fx-alignment: top-left;
-    -fx-spacing: 12px;
+    -fx-spacing: 18px; /* Maior espaçamento */
+    -fx-padding: 10px 0; /* Adicionado padding vertical */
 }
 
 .payment-card {
     -fx-background-color: #F8F9FA;
-    -fx-background-radius: 10px;
-    -fx-padding: 12px;
+    -fx-background-radius: 12px; /* Bordas mais arredondadas */
+    -fx-padding: 18px; /* Mais padding */
     -fx-alignment: center-left;
-    -fx-spacing: 10px;
-    -fx-min-height: 60px;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 8, 0, 0, 2);
+    -fx-spacing: 15px; /* Maior espaçamento interno */
+    -fx-min-height: 70px; /* Altura mínima aumentada */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.04), 8, 0, 0, 2);
     -fx-border-color: #EEEEEE;
-    -fx-border-radius: 10px;
+    -fx-border-radius: 12px; /* Bordas mais arredondadas */
     -fx-border-width: 1px;
+    -fx-margin: 0 0 10px 0; /* Adicionado margem inferior */
 }
 
 .payment-card:hover {
     -fx-background-color: #F0F7FF;
     -fx-border-color: #D6E4F0;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 10, 0, 0, 3);
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.08), 10, 0, 0, 3);
 }
 
 /* Pagamento texto */
 .payment-date, .payment-amount, .payment-type, .payment-contract {
-    -fx-font-family: "Roboto", "Arial", sans-serif;
+    -fx-font-family: "Roboto Light", "Arial", sans-serif; /* Fonte mais fina */
     -fx-wrap-text: true;
 }
 
 .payment-date {
-    -fx-font-size: 13px;
-    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-font-weight: normal; /* Normal em vez de bold */
     -fx-text-fill: #333333;
+    -fx-padding: 0 0 5px 0; /* Adicionado padding inferior */
 }
 
 .payment-amount {
-    -fx-font-size: 14px;
-    -fx-font-weight: bold;
+    -fx-font-size: 16px; /* Tamanho maior */
+    -fx-font-weight: normal; /* Normal em vez de bold */
     -fx-text-fill: #0056D2;
+    -fx-padding: 5px 0; /* Adicionado padding vertical */
 }
 
 .payment-type, .payment-contract {
-    -fx-font-size: 12px;
+    -fx-font-size: 13px; /* Tamanho maior */
     -fx-text-fill: #666666;
+    -fx-padding: 5px 0 0 0; /* Adicionado padding superior */
 }
 
 /* Info label */
 .info-label {
     -fx-font-size: 14px;
     -fx-text-fill: #666666;
+    -fx-padding: 5px 0; /* Adicionado padding vertical */
 }
 
 /* Navigation bar - Modernizada */
 .nav-bar-container {
     -fx-background-color: #FFFFFF;
-    -fx-padding: 8px 0 8px 0;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 10, 0, 0, -3);
+    -fx-padding: 12px 0; /* Mais padding */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.12), 12, 0, 0, -3);
 }
 
 .nav-bar {
     -fx-background-color: transparent;
     -fx-alignment: center;
-    -fx-spacing: 0;
-    -fx-padding: 0;
+    -fx-spacing: 10px; /* Adicionado espaçamento entre os botões */
+    -fx-padding: 0 15px; /* Adicionado padding horizontal */
     -fx-pref-width: 100%;
 }
 
 .nav-button-container {
-    -fx-padding: 0;
+    -fx-padding: 0 5px; /* Adicionado padding horizontal */
     -fx-alignment: center;
     -fx-pref-width: 33.33%; /* Force equal width for 3 buttons */
 }
@@ -304,21 +325,21 @@
     -fx-fill: #F0F7FF;
     -fx-stroke: #E1E9F8;
     -fx-stroke-width: 1;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.08), 4, 0, 0, 1);
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 4, 0, 0, 1);
 }
 
 /* Ícones de navegação */
 .nav-icon {
     -fx-fill: #666666;
-    -fx-scale-x: 1.2;
-    -fx-scale-y: 1.2;
-    -fx-translate-y: -8;
+    -fx-scale-x: 1.3; /* Ícone maior */
+    -fx-scale-y: 1.3; /* Ícone maior */
+    -fx-translate-y: -10; /* Mais espaço do texto */
 }
 
 /* Navigation buttons */
 .nav-button {
     -fx-background-color: transparent;
-    -fx-padding: 0;
+    -fx-padding: 5px 0; /* Adicionado padding vertical */
     -fx-border-width: 0;
     -fx-cursor: hand;
     -fx-transition: all 0.2s ease-in-out;
@@ -330,7 +351,7 @@
 
 .nav-button:hover .nav-button-circle {
     -fx-fill: #EBF3FF;
-    -fx-effect: dropshadow(gaussian, rgba(0, 80, 200, 0.15), 5, 0, 0, 2);
+    -fx-effect: dropshadow(gaussian, rgba(0, 80, 200, 0.12), 5, 0, 0, 2);
 }
 
 .nav-button:hover .nav-button-label {
@@ -339,11 +360,11 @@
 
 /* Label dentro dos botões de navegação */
 .nav-button-label {
-    -fx-font-family: "Roboto", "Arial", sans-serif;
-    -fx-font-size: 11px;
-    -fx-font-weight: bold;
+    -fx-font-family: "Roboto Light", "Arial", sans-serif; /* Fonte mais fina */
+    -fx-font-size: 12px; /* Tamanho maior */
+    -fx-font-weight: normal; /* Normal em vez de bold */
     -fx-text-fill: #666666;
-    -fx-translate-y: 8;
+    -fx-translate-y: 10; /* Mais separado do ícone */
 }
 
 /* Estilo ativo para navegação */

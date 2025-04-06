@@ -2,7 +2,6 @@ package br.com.emprestai.view;
 
 import br.com.emprestai.controller.ParcelaController;
 import br.com.emprestai.dao.ParcelaDAO;
-import br.com.emprestai.enums.OrdemEnum;
 import br.com.emprestai.enums.TipoEmprestimoEnum;
 import br.com.emprestai.model.Emprestimo;
 import br.com.emprestai.model.Parcela;
@@ -43,6 +42,7 @@ public class ParcelaViewController {
     @FXML private Button returnButton;
     @FXML private Button pagarButton;
     @FXML private Button exitButton;
+    private boolean ordenacaoCrescente;
 
     // --------------------------------------------------------------------------------
     // Class Properties
@@ -71,16 +71,23 @@ public class ParcelaViewController {
     // --------------------------------------------------------------------------------
     // Setters
     // --------------------------------------------------------------------------------
-    public void setEmprestimo(Emprestimo emprestimo, OrdemEnum ordem) throws SQLException {
+
+    // Adicionar setter
+    public void setOrdenacaoCrescente(boolean ordenacaoCrescente) {
+        this.ordenacaoCrescente = ordenacaoCrescente;
+    }
+
+    // Modificar o método setEmprestimo para usar a ordenação personalizada
+    public void setEmprestimo(Emprestimo emprestimo) throws SQLException {
         this.emprestimo = emprestimo;
         if (emprestimo != null) {
             List<Parcela> parcelas = parcelaController.getParcelasByEmprestimo(emprestimo);
             if (parcelas != null) {
-                // Ordenar as parcelas com base no parâmetro 'ordem'
-                if (ordem == OrdemEnum.ASC) {
-                    parcelas.sort(Comparator.comparing(Parcela::getNumeroParcela));
-                } else if (ordem == OrdemEnum.DESC) {
-                    parcelas.sort(Comparator.comparing(Parcela::getNumeroParcela).reversed());
+                // Usar ordenação personalizada definida pelo usuário
+                if (ordenacaoCrescente) {
+                    parcelas.sort(Comparator.comparing(Parcela::getNumeroParcela)); // Crescente
+                } else {
+                    parcelas.sort(Comparator.comparing(Parcela::getNumeroParcela).reversed()); // Decrescente
                 }
                 carregarParcelas(parcelas);
             } else {
@@ -110,10 +117,8 @@ public class ParcelaViewController {
         }
 
         populateParcelaList();
-
         updateTotal();
     }
-
 
     // --------------------------------------------------------------------------------
     // Getters
@@ -226,17 +231,9 @@ public class ParcelaViewController {
             valorLabel.getStyleClass().add("parcela-valor");
 
             Label vencimentoLabel = new Label(wrapper.getVencimento().format(dateFormat));
-
-            // Calcula valor mínimo (15% da parcela original)
-            double valorMinimo = wrapper.getParcela().getValorPresenteParcela() * 0.15;
-            Label minimoLabel = new Label("Mínimo: " + df.format(valorMinimo));
-            minimoLabel.getStyleClass().add("parcela-minimo");
-
             vencimentoLabel.getStyleClass().add("parcela-vencimento");
-            valorDataBox.getChildren().addAll(valorLabel, vencimentoLabel, minimoLabel);
-
-
             valorDataBox.getChildren().addAll(valorLabel, vencimentoLabel);
+
             row.getChildren().addAll(checkBox, numeroLabel, valorDataBox);
             parcelaList.getChildren().add(row);
         }
@@ -330,6 +327,7 @@ public class ParcelaViewController {
             return parcela.getDataVencimento();
         }
     }
+
     @FXML
     private void onHomeClick() {
         // Already on the dashboard, no action needed

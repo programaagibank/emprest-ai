@@ -195,7 +195,7 @@ public class ConfirmacaoPagViewController {
             ParcelaViewController controller = loader.getController();
 
             if (parcelaViewController != null && parcelaViewController.getEmprestimo() != null) {
-                controller.setEmprestimo(parcelaViewController.getEmprestimo(), OrdemEnum.ASC); // Ordem crescente
+                controller.setEmprestimo(parcelaViewController.getEmprestimo()); // Ordem crescente
                 controller.setTipoEmprestimo(parcelaViewController.getTipoEmprestimo());
             } else {
                 voltarParaLogin();

@@ -232,3 +232,34 @@ Buttons
     -fx-background-color: #E0E0E0;
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 0, 0, 2);
 }
+
+/* Explanation label styling */
+.explanation-label {
+    -fx-font-family: "Roboto", "Arial", sans-serif;
+    -fx-font-size: 14px;
+    -fx-text-fill: #666666;
+    -fx-alignment: center;
+    -fx-max-width: 300px;
+}
+
+/* Action buttons */
+.action-button {
+    -fx-background-color: linear-gradient(to right, #0056D2 0%, #00A3FF 100%);
+    -fx-background-radius: 12px;
+    -fx-text-fill: #FFFFFF;
+    -fx-font-family: "Roboto", "Arial", sans-serif;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-padding: 12px 24px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 10, 0, 0, 4);
+}
+
+.action-button:hover {
+    -fx-background-color: linear-gradient(to right, #003A8C 0%, #007ACC 100%);
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 12, 0, 0, 5);
+}
+
+.action-button:pressed {
+    -fx-background-color: linear-gradient(to right, #002660 0%, #0056B3 100%);
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 0, 0, 2);
+}

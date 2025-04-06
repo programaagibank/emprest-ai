@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane styleClass="root" stylesheets="@../css/parcela.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.com.emprestai.view.OrdenacaoParcelasViewController">
+    <!-- Top Section: Header -->
+    <top>
+        <HBox alignment="CENTER" spacing="10.0" styleClass="header">
+            <padding>
+                <Insets bottom="10.0" left="15.0" right="15.0" top="15.0" />
+            </padding>
+            <Label text="Ordenar Parcelas" styleClass="greeting-label" />
+        </HBox>
+    </top>
+
+    <!-- Center Section: Buttons and Explanations -->
+    <center>
+        <VBox alignment="CENTER" spacing="20.0" styleClass="content">
+            <padding>
+                <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+            </padding>
+            <Label fx:id="infoLabel" styleClass="amount-label" wrapText="true" alignment="CENTER" />
+
+            <VBox spacing="10" alignment="CENTER">
+                <Button fx:id="crescenteButton" onAction="#onCrescenteClick" text="Das primeiras para as ultimas" styleClass="action-button" />
+                <Label text="Pagar parcelas na ordem de vencimento!" styleClass="explanation-label" wrapText="true" />
+            </VBox>
+
+            <VBox spacing="10" alignment="CENTER">
+                <Button fx:id="decrescenteButton" onAction="#onDecrescenteClick" text="Maior desconto - Das últimas para as primeiras" styleClass="action-button" />
+                <Label text="Pagar parcelas com maior desconto!" styleClass="explanation-label" wrapText="true" />
+            </VBox>
+        </VBox>
+    </center>
+
+    <!-- Bottom Section: Return Button -->
+    <bottom>
+        <HBox alignment="CENTER" spacing="20.0" styleClass="button-container">
+            <padding>
+                <Insets bottom="15.0" />
+            </padding>
+            <Button fx:id="returnButton" onAction="#onReturnClick" text="Voltar" styleClass="action-button" />
+        </HBox>
+    </bottom>
+</BorderPane>

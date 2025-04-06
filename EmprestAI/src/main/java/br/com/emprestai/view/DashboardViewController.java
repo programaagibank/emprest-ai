@@ -68,12 +68,21 @@ public class DashboardViewController {
         updateCreditLimits(clienteLogado);
         loadUpcomingPayments(clienteLogado);
 
-        // Ajuste dinâmico da largura da seção de promoções (opcional)
+        // Ajuste dinâmico da largura para responsividade
         upcomingPaymentsBox.sceneProperty().addListener((obs, oldScene, newScene) -> {
             if (newScene != null) {
+                // Listener para ajustar com a largura
                 newScene.widthProperty().addListener((obsW, oldW, newW) -> {
-                    // Ajuste os tamanhos das seções conforme a largura da janela
-                    upcomingPaymentsBox.setPrefWidth(newW.doubleValue() - 30); // 30 é a soma do padding lateral
+                    upcomingPaymentsBox.setPrefWidth(newW.doubleValue() - 40);
+                });
+
+                // Listener para ajustar com a altura
+                newScene.heightProperty().addListener((obsH, oldH, newH) -> {
+                    // Ajusta a altura do conteúdo proporcionalmente
+                    double contentHeight = newH.doubleValue() - 200; // Desconta header e navbar
+                    if (contentHeight > 300) {
+                        upcomingPaymentsBox.setPrefHeight(contentHeight * 0.4); // 40% do espaço disponível
+                    }
                 });
             }
         });
@@ -142,10 +151,11 @@ public class DashboardViewController {
     // Helper Methods
     // --------------------------------------------------------------------------------
     private void updateCreditLimits(Cliente cliente) {
-        double margemConsignavel = cliente.getMargemConsignavelDisponivel();
-        double margemPessoal = cliente.getMargemPessoalDisponivel();
-        consignadoCredit.setText(df.format(margemConsignavel));
-        pessoalCredit.setText(df.format(margemPessoal));
+        // Alterado para mostrar o limite ao invés da margem
+        double limiteConsignavel = cliente.getLimiteCreditoConsignado(); // Alterado para acessar o limite
+        double limitePessoal = cliente.getLimiteCreditoPessoal(); // Alterado para acessar o limite
+        consignadoCredit.setText(df.format(limiteConsignavel));
+        pessoalCredit.setText(df.format(limitePessoal));
     }
 
     private void loadUpcomingPayments(Cliente cliente) {
@@ -215,7 +225,7 @@ public class DashboardViewController {
     private void navigateToEmprestimos(TipoEmprestimoEnum tipoEmprestimo) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("emprestimos.fxml"));
-            Scene emprestimosScene = new Scene(loader.load(), 360, 640);
+            Scene emprestimosScene = new Scene(loader.load(), 400, 700); // Ajustada dimensão para match com dashboard
             EmprestimoViewController controller = loader.getController();
             controller.setTipoEmprestimo(tipoEmprestimo);
             Stage stage = (Stage) consignadoButton.getScene().getWindow();

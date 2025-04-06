@@ -326,14 +326,15 @@ HBox.action-button-container {
     -fx-stroke: #E1E9F8;
     -fx-stroke-width: 1;
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 4, 0, 0, 1);
+    -fx-radius: 18; /* Reduced from 22 */
 }
 
 /* Ícones de navegação */
 .nav-icon {
     -fx-fill: #666666;
-    -fx-scale-x: 1.3; /* Ícone maior */
-    -fx-scale-y: 1.3; /* Ícone maior */
-    -fx-translate-y: -10; /* Mais espaço do texto */
+    -fx-scale-x: 1.0; /* Ícone maior */
+    -fx-scale-y: 1.0; /* Ícone maior */
+    -fx-translate-y: -8; /* Mais espaço do texto */
 }
 
 /* Navigation buttons */

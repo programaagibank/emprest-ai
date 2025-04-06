@@ -7,7 +7,11 @@
 <?import javafx.scene.text.*?>
 <?import javafx.scene.shape.*?>
 
-<BorderPane styleClass="root" stylesheets="@../css/dashboard.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.com.emprestai.view.DashboardViewController">
+<BorderPane styleClass="root" stylesheets="@../css/dashboard.css"
+            prefHeight="700.0" prefWidth="400.0"
+            xmlns="http://javafx.com/javafx/17.0.12"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="br.com.emprestai.view.DashboardViewController">
 
     <!-- Top Section: Cartão fixo com apenas o nome do cliente -->
     <top>
@@ -17,7 +21,7 @@
                 <VBox styleClass="card-header" spacing="10">
                     <HBox alignment="TOP_LEFT">
                         <VBox spacing="5">
-                            <Label fx:id="greetingLabel" styleClass="greeting-label" text="Olá, [Nome]" />
+                            <Label fx:id="greetingLabel" styleClass="greeting-label" text="[Nome]" />
                             <Label styleClass="card-number" text="•••• •••• •••• 1234" />
                         </VBox>
                     </HBox>
@@ -33,10 +37,9 @@
 
     <!-- Center Section: Todo o conteúdo com rolagem, incluindo informações de crédito -->
     <center>
-        <ScrollPane styleClass="scroll-pane" fitToWidth="true">
+        <ScrollPane styleClass="scroll-pane" fitToWidth="true" VBox.vgrow="ALWAYS">
             <content>
-                <VBox alignment="CENTER" spacing="20.0" styleClass="content">
-
+                <VBox alignment="CENTER" spacing="20.0" styleClass="content" VBox.vgrow="ALWAYS">
 
                     <!-- Ações principais -->
                     <HBox alignment="CENTER" spacing="30.0">
@@ -66,34 +69,30 @@
                         </VBox>
                     </HBox>
 
-
-
-
                     <!-- Promoções com design melhorado -->
                     <VBox spacing="15.0" styleClass="promo-section">
+                        <Label styleClass="section-title" text="Ofertas para Você" />
 
-                          <Label styleClass="section-title" text="Ofertas para Você" />
-
-                           <!-- Informações de crédito - Movidas para a seção de ofertas -->
+                        <!-- Informações de crédito - Títulos alterados para limites -->
                         <HBox alignment="CENTER" spacing="20.0" styleClass="credit-breakdown">
-                            <VBox alignment="CENTER" prefWidth="150.0" spacing="4.0">
-                                <Label styleClass="credit-label" text="Consignado" />
-                                <Label fx:id="consignadoCredit" styleClass="credit-subamount" text="R$ 0,00" />
-                                <Label styleClass="credit-subtitle" text="Aposentados, pensionista e servidores" wrapText="true" />
+                            <padding>
+                                <Insets left="5.0" right="5.0" />
+                            </padding>
+                            <VBox alignment="CENTER" prefWidth="150.0" spacing="4.0" HBox.hgrow="ALWAYS">
+                                <Label styleClass="credit-label" text="Limite Consignado" textAlignment="CENTER" />
+                                <Label fx:id="consignadoCredit" styleClass="credit-subamount" />
+                                <Label styleClass="credit-subtitle" text="Aposentados, pensionista e servidores" textAlignment="CENTER" wrapText="true" />
                             </VBox>
-                            <VBox alignment="CENTER" prefWidth="150.0" spacing="4.0">
-                                <Label styleClass="credit-label" text="Pessoal" />
-                                <Label fx:id="pessoalCredit" styleClass="credit-subamount" text="R$ 0,00" />
-                                <Label styleClass="credit-subtitle" text="Para todos os públicos" wrapText="true" />
-
+                            <VBox alignment="CENTER" prefWidth="150.0" spacing="4.0" HBox.hgrow="ALWAYS">
+                                <Label styleClass="credit-label" text="Limite Pessoal" textAlignment="CENTER" />
+                                <Label fx:id="pessoalCredit" styleClass="credit-subamount" />
+                                <Label styleClass="credit-subtitle" text="Para todos os públicos" textAlignment="CENTER" wrapText="true" />
                             </VBox>
                         </HBox>
 
-
-
                         <HBox spacing="15.0" styleClass="promo-container">
                             <!-- Card de Empréstimo sem imagem -->
-                            <VBox styleClass="promo-card" spacing="10.0">
+                            <VBox styleClass="promo-card" spacing="10.0" HBox.hgrow="ALWAYS">
                                 <Label styleClass="promo-title" text="Empréstimo com Juros Baixos" wrapText="true" />
                                 <Label styleClass="promo-subtitle" text="Taxas a partir de 1,8%!" wrapText="true" />
                                 <Region VBox.vgrow="ALWAYS" /> <!-- Espaçador para alinhar o botão na parte inferior -->
@@ -101,7 +100,7 @@
                             </VBox>
 
                             <!-- Card do ChatBot -->
-                            <VBox styleClass="promo-card" spacing="10.0">
+                            <VBox styleClass="promo-card" spacing="10.0" HBox.hgrow="ALWAYS">
                                 <HBox alignment="CENTER_LEFT" spacing="10">
                                     <ImageView fitHeight="30" fitWidth="30" preserveRatio="true">
                                         <image>
@@ -126,16 +125,16 @@
                     </VBox>
 
                     <!-- Próximos pagamentos -->
-                    <VBox spacing="15.0" styleClass="upcoming-payments-section">
+                    <VBox spacing="15.0" styleClass="upcoming-payments-section" VBox.vgrow="ALWAYS">
                         <Label styleClass="section-title" text="Próximos Pagamentos" />
-                        <VBox fx:id="upcomingPaymentsBox" spacing="12.0" />
+                        <VBox fx:id="upcomingPaymentsBox" spacing="10.0" VBox.vgrow="ALWAYS" />
                     </VBox>
                 </VBox>
             </content>
         </ScrollPane>
     </center>
 
-    <!-- Bottom Navigation - Modernizado -->
+    <!-- Bottom Navigation - Modernizado e reduzido -->
     <bottom>
         <StackPane styleClass="nav-bar-container">
             <HBox alignment="CENTER" styleClass="nav-bar" HBox.hgrow="ALWAYS">
@@ -144,7 +143,7 @@
                     <Button fx:id="homeButton" onAction="#onHomeClick" styleClass="nav-button, nav-button-active">
                         <graphic>
                             <StackPane>
-                                <Circle styleClass="nav-button-circle" radius="22" />
+                                <Circle styleClass="nav-button-circle" radius="18" />
                                 <StackPane>
                                     <SVGPath styleClass="nav-icon" content="M3,12V19H9V13H15V19H21V12L12,3L3,12Z" />
                                     <Label styleClass="nav-button-label" text="Início" />
@@ -158,7 +157,7 @@
                     <Button fx:id="profileButton" onAction="#onProfileClick" styleClass="nav-button">
                         <graphic>
                             <StackPane>
-                                <Circle styleClass="nav-button-circle" radius="22" visible="false" />
+                                <Circle styleClass="nav-button-circle" radius="18" visible="false" />
                                 <StackPane>
                                     <SVGPath styleClass="nav-icon" content="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z" />
                                     <Label styleClass="nav-button-label" text="Perfil" />
@@ -172,7 +171,7 @@
                     <Button fx:id="exitButton" onAction="#onExitClick" styleClass="nav-button">
                         <graphic>
                             <StackPane>
-                                <Circle styleClass="nav-button-circle" radius="22" visible="false" />
+                                <Circle styleClass="nav-button-circle" radius="18" visible="false" />
                                 <StackPane>
                                     <SVGPath styleClass="nav-icon" content="M19,3H5C3.89,3 3,3.89 3,5V9H5V5H19V19H5V15H3V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5C21,3.89 20.1,3 19,3M10.08,15.58L11.5,17L16.5,12L11.5,7L10.08,8.41L12.67,11H3V13H12.67L10.08,15.58Z" />
                                     <Label styleClass="nav-button-label" text="Sair" />

@@ -86,8 +86,6 @@
                         </HBox>
 
 
-
-
                         <HBox spacing="15.0" styleClass="promo-container">
                             <!-- Card de Empréstimo sem imagem -->
                             <VBox styleClass="promo-card" spacing="10.0">

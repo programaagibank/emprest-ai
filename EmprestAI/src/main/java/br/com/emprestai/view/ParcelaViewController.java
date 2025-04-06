@@ -42,6 +42,7 @@ public class ParcelaViewController {
     @FXML private Label totalLabel;
     @FXML private Button returnButton;
     @FXML private Button pagarButton;
+    @FXML private Button exitButton;
 
     // --------------------------------------------------------------------------------
     // Class Properties
@@ -327,6 +328,31 @@ public class ParcelaViewController {
 
         public LocalDate getVencimento() {
             return parcela.getDataVencimento();
+        }
+    }
+    @FXML
+    private void onHomeClick() {
+        // Already on the dashboard, no action needed
+    }
+
+    @FXML
+    private void onProfileClick() {
+        // Implement navigation to profile if needed
+    }
+
+    @FXML
+    private void onExitClick() {
+        try {
+            SessionManager.getInstance().clearSession();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("login.fxml"));
+            Scene loginScene = new Scene(loader.load(), 360, 640);
+            Stage stage = (Stage) exitButton.getScene().getWindow();
+            stage.setScene(loginScene);
+            stage.setTitle("EmprestAI - Login");
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.err.println("Erro ao carregar login.fxml: " + e.getMessage());
         }
     }
 }

@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.shape.*?>
 
-<VBox spacing="20.0" styleClass="root" minWidth="400" minHeight="650" prefWidth="450" prefHeight="700"
+<VBox spacing="20.0" styleClass="root" minWidth="380" minHeight="620" prefWidth="450" prefHeight="700"
       stylesheets="@../css/login.css"
       xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/17.0.6"
       fx:controller="br.com.emprestai.view.LoginViewController">

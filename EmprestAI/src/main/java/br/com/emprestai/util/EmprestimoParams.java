@@ -28,6 +28,9 @@ public class EmprestimoParams {
     private int prazoMinimoConsignado = 24;
     private int prazoMaximoConsignado = 84;
 
+    //***************** Valores parcela minimo *****************
+    private double percentualPagamentoMinimoParcelaPessoal = 0.15;
+    private double percentualPagamentoMinimoParcelaConsignado = 0.15;
     // Carências
     private double carenciaMaximaPessoal = 30;
     private double carenciaMaximaConsignado = 60;
@@ -45,7 +48,7 @@ public class EmprestimoParams {
     private double idadeMinimaPessoal = 18;
 
     // Percentuais
-    private double margemConsignavel = 35;
+    private double  margemConsignavel = 35;
     private double percentualIofFixo = 0.38;
     private double percentualIofVar = 0.0082;
     private double percentualSegFixo = 0.25;

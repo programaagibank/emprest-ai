@@ -109,8 +109,10 @@ public class ParcelaViewController {
         }
 
         populateParcelaList();
+
         updateTotal();
     }
+
 
     // --------------------------------------------------------------------------------
     // Getters
@@ -223,7 +225,15 @@ public class ParcelaViewController {
             valorLabel.getStyleClass().add("parcela-valor");
 
             Label vencimentoLabel = new Label(wrapper.getVencimento().format(dateFormat));
+
+            // Calcula valor mínimo (15% da parcela original)
+            double valorMinimo = wrapper.getParcela().getValorPresenteParcela() * 0.15;
+            Label minimoLabel = new Label("Mínimo: " + df.format(valorMinimo));
+            minimoLabel.getStyleClass().add("parcela-minimo");
+
             vencimentoLabel.getStyleClass().add("parcela-vencimento");
+            valorDataBox.getChildren().addAll(valorLabel, vencimentoLabel, minimoLabel);
+
 
             valorDataBox.getChildren().addAll(valorLabel, vencimentoLabel);
             row.getChildren().addAll(checkBox, numeroLabel, valorDataBox);

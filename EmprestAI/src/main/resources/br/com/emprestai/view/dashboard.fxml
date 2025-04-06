@@ -4,43 +4,39 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
 <BorderPane styleClass="root" stylesheets="@../css/dashboard.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.com.emprestai.view.DashboardViewController">
-    <!-- Top Section: Gradient Header with Greeting and Available Credit -->
+
+    <!-- Top Section: Cartão fixo com apenas o nome do cliente -->
     <top>
-        <VBox prefWidth="380.0" styleClass="header">
-            <padding>
-                <Insets bottom="20.0" left="15.0" right="15.0" top="40.0" />
-            </padding>
-            <Label fx:id="greetingLabel" styleClass="greeting-label" text="Olá, [Nome]!" />
-            <HBox alignment="CENTER" spacing="20.0" styleClass="credit-breakdown">
-                <padding>
-                    <Insets bottom="10.0" left="0.0" right="0.0" top="10.0" />
-                </padding>
-                <VBox alignment="TOP_LEFT" prefWidth="150.0" spacing="4.0">
-                    <Label styleClass="credit-label" text="Consignado" />
-                    <Label fx:id="consignadoCredit" styleClass="credit-subamount" text="R$ 0,00" />
-                    <Label styleClass="credit-subtitle" text="Aposentados, pensionista e servidores" wrapText="true" />
+        <VBox styleClass="header" spacing="15">
+            <!-- Cartão do Cliente - FIXO -->
+            <StackPane styleClass="card-container">
+                <VBox styleClass="card-header" spacing="10">
+                    <HBox alignment="TOP_LEFT">
+                        <VBox spacing="5">
+                            <Label fx:id="greetingLabel" styleClass="greeting-label" text="Olá, [Nome]!" />
+                            <Label styleClass="card-number" text="•••• •••• •••• 1234" />
+                        </VBox>
+                    </HBox>
+
+                    <!-- Logo Agibank no canto inferior direito -->
+                    <HBox alignment="BOTTOM_RIGHT">
+                        <Label styleClass="card-brand" text="Agibank" />
+                    </HBox>
                 </VBox>
-                <VBox alignment="TOP_LEFT" prefWidth="150.0" spacing="4.0">
-                    <Label styleClass="credit-label" text="Pessoal" />
-                    <Label fx:id="pessoalCredit" styleClass="credit-subamount" text="R$ 0,00" />
-                    <Label styleClass="credit-subtitle" text="Para todos os públicos" wrapText="true" />
-                </VBox>
-            </HBox>
+            </StackPane>
         </VBox>
     </top>
 
-    <!-- Center Section: Main Content -->
+    <!-- Center Section: Todo o conteúdo com rolagem, incluindo informações de crédito -->
     <center>
-        <ScrollPane styleClass="scroll-pane">
+        <ScrollPane styleClass="scroll-pane" fitToWidth="true">
             <content>
-                <VBox alignment="CENTER" spacing="15.0" styleClass="content">
-                    <padding>
-                        <Insets bottom="10.0" left="15.0" right="15.0" top="10.0" />
-                    </padding>
+                <VBox alignment="CENTER" spacing="20.0" styleClass="content">
 
-                    <!-- Action Buttons (Consignado and Pessoal) -->
+                    <!-- Ações principais -->
                     <HBox alignment="CENTER" spacing="30.0">
                         <VBox alignment="CENTER" spacing="5.0">
                             <Button fx:id="consignadoButton" onAction="#onConsignadoClick" styleClass="action-button">
@@ -68,20 +64,48 @@
                         </VBox>
                     </HBox>
 
-                    <!-- Promotional Section -->
-                    <VBox spacing="8.0" styleClass="promo-section">
+                    <!-- Promoções com design melhorado -->
+                    <VBox spacing="15.0" styleClass="promo-section">
                         <Label styleClass="section-title" text="Ofertas para Você" />
-                        <HBox spacing="10.0" styleClass="promo-container">
-                            <VBox styleClass="promo-card">
+
+                        <!-- Informações de crédito - Movidas para a seção de ofertas -->
+                        <HBox alignment="CENTER" spacing="20.0" styleClass="credit-breakdown">
+                            <VBox alignment="TOP_LEFT" prefWidth="150.0" spacing="4.0">
+                                <Label styleClass="credit-label" text="Consignado" />
+                                <Label fx:id="consignadoCredit" styleClass="credit-subamount" text="R$ 0,00" />
+                                <Label styleClass="credit-subtitle" text="Aposentados, pensionista e servidores" wrapText="true" />
+                            </VBox>
+                            <VBox alignment="TOP_LEFT" prefWidth="150.0" spacing="4.0">
+                                <Label styleClass="credit-label" text="Pessoal" />
+                                <Label fx:id="pessoalCredit" styleClass="credit-subamount" text="R$ 0,00" />
+                                <Label styleClass="credit-subtitle" text="Para todos os públicos" wrapText="true" />
+                            </VBox>
+                        </HBox>
+
+                        <HBox spacing="15.0" styleClass="promo-container">
+                            <!-- Card de Empréstimo sem imagem -->
+                            <VBox styleClass="promo-card" spacing="10.0">
                                 <Label styleClass="promo-title" text="Empréstimo com Juros Baixos" wrapText="true" />
                                 <Label styleClass="promo-subtitle" text="Aproveite taxas a partir de 1,8%!" wrapText="true" />
+                                <Region VBox.vgrow="ALWAYS" /> <!-- Espaçador para alinhar o botão na parte inferior -->
+                                <Button styleClass="promo-button" text="Ver oferta" />
                             </VBox>
-                            <VBox styleClass="promo-card">
-                                <Label styleClass="promo-title" text="ChatBot" wrapText="true" />
+
+                            <!-- Card do ChatBot -->
+                            <VBox styleClass="promo-card" spacing="10.0">
+                                <HBox alignment="CENTER_LEFT" spacing="10">
+                                    <ImageView fitHeight="30" fitWidth="30" preserveRatio="true">
+                                        <image>
+                                            <Image url="@../images/chatbot.png" />
+                                        </image>
+                                    </ImageView>
+                                    <Label styleClass="promo-title" text="ChatBot" wrapText="true" />
+                                </HBox>
                                 <Label styleClass="promo-subtitle" text="Fale com nosso assistente" wrapText="true" />
-                                <Button fx:id="chatbotButton" onAction="#onChatBot" styleClass="nav-button">
+                                <Region VBox.vgrow="ALWAYS" /> <!-- Espaçador para alinhar o botão na parte inferior -->
+                                <Button fx:id="chatbotButton" onAction="#onChatBot" styleClass="promo-button" text="Conversar">
                                     <graphic>
-                                        <ImageView fitHeight="24" fitWidth="24" preserveRatio="true">
+                                        <ImageView fitHeight="16" fitWidth="16" preserveRatio="true">
                                             <image>
                                                 <Image url="@../images/chatbot.png" />
                                             </image>
@@ -92,24 +116,19 @@
                         </HBox>
                     </VBox>
 
-                    <!-- Upcoming Payments Section -->
-                    <VBox spacing="8.0" styleClass="upcoming-payments-section">
+                    <!-- Próximos pagamentos -->
+                    <VBox spacing="15.0" styleClass="upcoming-payments-section">
                         <Label styleClass="section-title" text="Próximos Pagamentos" />
-                        <VBox fx:id="upcomingPaymentsBox" spacing="8.0">
-                            <!-- Payment cards will be dynamically added here -->
-                        </VBox>
+                        <VBox fx:id="upcomingPaymentsBox" spacing="12.0" />
                     </VBox>
                 </VBox>
             </content>
         </ScrollPane>
     </center>
 
-    <!-- Bottom Section: Navigation Bar -->
+    <!-- Bottom Navigation -->
     <bottom>
         <HBox alignment="CENTER" spacing="0.0" styleClass="nav-bar">
-            <padding>
-                <Insets bottom="10.0" left="0.0" right="0.0" top="10.0" />
-            </padding>
             <Button fx:id="homeButton" onAction="#onHomeClick" styleClass="nav-button">
                 <graphic>
                     <ImageView fitHeight="26" fitWidth="26" preserveRatio="true">

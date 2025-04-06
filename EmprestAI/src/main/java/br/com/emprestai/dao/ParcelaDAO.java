@@ -164,7 +164,7 @@ public class ParcelaDAO {
     }
 
     // PUT - Pagar uma única parcela
-    public Parcela pagarParcela(Parcela parcela) {
+    /*public Parcela pagarParcela(Parcela parcela) {
         String sql = "UPDATE parcelas SET valor_pago = ?, data_pagamento = ?, id_status = ? WHERE id_parcela = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
@@ -185,7 +185,71 @@ public class ParcelaDAO {
         } catch (SQLException | IOException e) {
             throw new ApiException("Erro ao pagar parcela: " + e.getMessage(), 500);
         }
+    } */
+    public Parcela pagarParcela(Parcela parcela) {
+        double valorParcela = parcela.getValorPresenteParcela();
+        double valorPago = parcela.getValorPago(); // Valor que o cliente está tentando pagar
+        double valorMinimo = parcela.getValorPresenteParcela() * 0.15;
+
+        if (valorPago < valorMinimo) {
+            throw new ApiException("O valor pago é menor que os 15% mínimos permitidos.", 400);
+        }
+
+        try (Connection conn = DatabaseConnection.getConnection()) {
+            conn.setAutoCommit(false);
+
+            // Atualiza a parcela atual
+            String sqlAtual = "UPDATE parcelas SET valor_pago = ?, data_pagamento = ?, id_status = ? WHERE id_parcela = ?";
+            try (PreparedStatement stmtAtual = conn.prepareStatement(sqlAtual)) {
+                stmtAtual.setDouble(1, valorPago);
+                stmtAtual.setDate(2, Date.valueOf(parcela.getDataPagamento()));
+                stmtAtual.setInt(3, valorPago >= valorParcela ? StatusParcelaEnum.PAGA.getValor() : StatusParcelaEnum.PARCIAL.getValor());
+                stmtAtual.setLong(4, parcela.getIdParcela());
+
+                int affected = stmtAtual.executeUpdate();
+                if (affected == 0) {
+                    conn.rollback();
+                    throw new ApiException("Parcela não encontrada com ID: " + parcela.getIdParcela(), 404);
+                }
+            }
+
+            // Se o pagamento foi parcial, repassa o valor restante para a próxima
+            if (valorPago < valorParcela) {
+                double valorRestante = valorParcela - valorPago;
+
+                // Busca próxima parcela não paga
+                String sqlProxima = "SELECT * FROM parcelas WHERE id_emprestimo = ? AND data_pagamento IS NULL AND numero_parcela > ? ORDER BY numero_parcela ASC LIMIT 1";
+                try (PreparedStatement stmtProx = conn.prepareStatement(sqlProxima)) {
+                    stmtProx.setLong(1, parcela.getIdEmprestimo());
+                    stmtProx.setInt(2, parcela.getNumeroParcela());
+
+                    try (ResultSet rs = stmtProx.executeQuery()) {
+                        if (rs.next()) {
+                            Long idProxima = rs.getLong("id_parcela");
+                            double valorAtual = rs.getDouble("valor_parcela");
+                            double novoValor = valorAtual + valorRestante;
+
+                            // Atualiza a próxima parcela
+                            String sqlUpdateProx = "UPDATE parcelas SET valor_parcela = ? WHERE id_parcela = ?";
+                            try (PreparedStatement stmtUpdate = conn.prepareStatement(sqlUpdateProx)) {
+                                stmtUpdate.setDouble(1, novoValor);
+                                stmtUpdate.setLong(2, idProxima);
+                                stmtUpdate.executeUpdate();
+                            }
+                        } else {
+                            System.out.println("Não há próxima parcela para repassar valor restante.");
+                        }
+                    }
+                }
+            }
+
+            conn.commit();
+            return parcela;
+        } catch (SQLException | IOException e) {
+            throw new ApiException("Erro ao pagar parcela: " + e.getMessage(), 500);
+        }
     }
+
 
     // PUT - Pagar uma lista de parcelas em lote
     public List<Parcela> pagarParcelas(List<Parcela> parcelas) throws SQLException, IOException {

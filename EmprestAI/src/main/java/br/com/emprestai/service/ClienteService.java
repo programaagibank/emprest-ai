@@ -1,7 +1,18 @@
 package br.com.emprestai.service;
 
+import br.com.emprestai.enums.TipoEmprestimoEnum;
 import br.com.emprestai.model.Cliente;
+import br.com.emprestai.service.calculos.CalculadoraContrato;
+import br.com.emprestai.service.calculos.CalculadoraCustosAdicionais;
+import br.com.emprestai.service.calculos.CalculadoraParcela;
+import br.com.emprestai.service.calculos.CalculoTaxaJuros;
 import br.com.emprestai.util.EmprestimoParams;
+
+import java.math.BigDecimal;
+import java.rmi.server.ExportException;
+
+import static br.com.emprestai.enums.TipoEmprestimoEnum.CONSIGNADO;
+import static br.com.emprestai.enums.TipoEmprestimoEnum.PESSOAL;
 
 public class ClienteService {
     private static final EmprestimoParams params = EmprestimoParams.getInstance();
@@ -41,15 +52,50 @@ public class ClienteService {
 
     public static double calcularMargemPessoalDisponivel(Cliente cliente) {
         double margem = cliente.getVencimentoLiquidoTotal() * params.getPercentualRendaPessoal() / 100;
-        return Math.max(0, margem - cliente.getValorParcelasMensaisTotal());
+        return Math.max(0, margem - cliente.getValorParcelasMensaisTotal())*getPercentualScore(cliente.getScore());
     }
 
     public static double calcularLimiteCreditoPessoal(Cliente cliente) {
-        return calcularMargemPessoalDisponivel(cliente) * getPercentualScore(cliente.getScore())*getPrazoMaximoPessoalPorScore(cliente.getScore());
+        double valorTotalFinanciado = 0;
+        try{
+            double taxaJuros = CalculoTaxaJuros.calcularTaxaJurosMensal(cliente.getScore(),cliente.getPrazoMaximoPessoal(), PESSOAL);
+            valorTotalFinanciado = CalculadoraContrato.calcularValorTotalFinanciado(
+                    cliente.getMargemPessoalDisponivel(),
+                    taxaJuros,
+                    getPrazoMaximoPessoalPorScore(cliente.getScore()));
+            return CalculadoraCustosAdicionais.reverterValorEmprestimo(
+                    valorTotalFinanciado,
+                    cliente.getIdade(),
+                    cliente.getPrazoMaximoPessoal(),
+                    taxaJuros,
+                    params.getCarenciaMaxima(),
+                    true);
+        } catch (Exception e){
+            System.out.println(e.getMessage());
+            return 0;
+        }
     }
 
     public static double calcularLimiteCreditoConsignado(Cliente cliente) {
-        return calcularMargemConsignavelDisponivel(cliente) *getPrazoMaximoConsignadoPorScore(cliente.getScore());
+        double valorTotalFinanciado = 0;
+        try{
+            double taxaJuros = CalculoTaxaJuros.calcularTaxaJurosMensal(cliente.getScore(),cliente.getPrazoMaximoConsignado(), CONSIGNADO);
+            valorTotalFinanciado = CalculadoraContrato.calcularValorTotalFinanciado(
+                    cliente.getMargemConsignavelDisponivel(),
+                    taxaJuros,
+                    getPrazoMaximoConsignadoPorScore(cliente.getScore()));
+            return CalculadoraCustosAdicionais.reverterValorEmprestimo(
+                    valorTotalFinanciado,
+                    cliente.getIdade(),
+                    cliente.getPrazoMaximoConsignado(),
+                    taxaJuros,
+                    params.getCarenciaMaxima(),
+                    true);
+        } catch (Exception e){
+            System.out.println(e.getMessage());
+            return 0;
+        }
+
     }
 
     private static double getPercentualScore(int score) {

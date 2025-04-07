@@ -98,7 +98,7 @@ public class GeneratePDF {
                 .append("<th>Valor Parcela</th>")
                 .append("<th>Valor Principal da Parcela</th>")
                 .append("<th>Valor dos Juros da Parcela</th>")
-                .append("<th>Saldo Devedor/Encargos</th>")
+                .append("<th>Saldo Devedor Presente</th>")
                 .append("<th>Situação da Parcela</th>")
                 .append("</tr>");
 

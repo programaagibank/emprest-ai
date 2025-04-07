@@ -20,9 +20,9 @@ public class ValidatorConsignado {
     // Carência
     public static void verificarCarenciaEmprestimoConsig(int carencia) {
         if (carencia < 0) throw new ValidationException("Carência não pode ser negativa.");
-        if (carencia > params.getCarenciaMaximaConsignado()) {
+        if (carencia > params.getCarenciaMaxima()) {
             throw new ValidationException("Carência excede o limite máximo de " +
-                    params.getCarenciaMaximaConsignado() + " dias.");
+                    params.getCarenciaMaxima() + " dias.");
         }
     }
 

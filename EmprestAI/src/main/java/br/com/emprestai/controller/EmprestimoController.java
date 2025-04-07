@@ -79,7 +79,7 @@ public class EmprestimoController {
             double taxaJuros = CalculoTaxaJuros.calcularTaxaJurosMensal(cliente.getScore(),
                     emprestimo.getQuantidadeParcelas(), emprestimo.getTipoEmprestimo());
             emprestimo.setTaxaJuros(taxaJuros);
-            CalculadoraContrato.contratoPrice(emprestimo, cliente.getDataNascimento());
+            CalculadoraContrato.contratoPrice(emprestimo, cliente.getIdade());
             emprestimo.setTaxaMulta(params.getPercentualMultaAtraso());
             emprestimo.setTaxaJurosMora(params.getPercentualJurosMora());
         } catch (Exception e) {
@@ -142,7 +142,7 @@ public class EmprestimoController {
             emprestimo.setQuantidadeParcelas(parcelas);
             emprestimo.setTipoEmprestimo(tipoEmprestimo);
             emprestimo.setDataContratacao(LocalDate.now());
-            emprestimo.setDataInicio(LocalDate.now().plusDays(30)); // Padrão, pode ser ajustado
+            emprestimo.setDataInicio(LocalDate.now().plusDays(params.getCarenciaMaxima())); // Padrão, pode ser ajustado
             emprestimo.setContratarSeguro(true); // Padrão, pode ser ajustado
 
             try {
@@ -150,7 +150,7 @@ public class EmprestimoController {
                 double taxaJuros = CalculoTaxaJuros.calcularTaxaJurosMensal(cliente.getScore(), parcelas, tipoEmprestimo);
                 emprestimo.setTaxaJuros(Math.min(taxaJuros, tipoEmprestimo == TipoEmprestimoEnum.CONSIGNADO
                         ? params.getJurosMaximoConsignado() : params.getJurosMaximoPessoal()));
-                CalculadoraContrato.contratoPrice(emprestimo, cliente.getDataNascimento());
+                CalculadoraContrato.contratoPrice(emprestimo, cliente.getIdade());
                 emprestimo.setTaxaMulta(params.getPercentualMultaAtraso());
                 emprestimo.setTaxaJurosMora(params.getPercentualJurosMora());
 

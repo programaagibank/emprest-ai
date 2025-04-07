@@ -25,6 +25,7 @@ public class CalculadoraParcela {
         return valorTotalFinanciado.multiply(BigDecimal.valueOf(taxaJurosMensal / 100)).divide(denominador, DECIMAL128);
     }
 
+
     public static List<Parcela> processarValoresParcela(Emprestimo emprestimo) {
         if (emprestimo.getValorParcela() <= 0 || emprestimo.getTaxaJuros() <= 0 || emprestimo.getQuantidadeParcelas() <= 1) {
             throw new IllegalArgumentException("Valores inválidos");

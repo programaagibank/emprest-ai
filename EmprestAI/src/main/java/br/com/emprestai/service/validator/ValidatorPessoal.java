@@ -65,9 +65,9 @@ public class ValidatorPessoal {
     // Carência
     public static void verificarCarenciaPessoal(int carencia) {
         if (carencia < 0) throw new ValidationException("Carência não pode ser negativa.");
-        if (carencia > params.getCarenciaMaximaPessoal()) {
+        if (carencia > params.getCarenciaMaxima()) {
             throw new ValidationException("Carência excede o limite máximo de " +
-                    params.getCarenciaMaximaPessoal() + " dias.");
+                    params.getCarenciaMaxima() + " dias.");
         }
     }
 
@@ -79,6 +79,7 @@ public class ValidatorPessoal {
                     ") excede a margem pessoal disponível (R$ " + margemDisponivel + ").");
         }
     }
+
 
     // Elegibilidade do Empréstimo
     public static void verificarElegibilidadePessoal(Cliente cliente, Emprestimo emprestimo) {

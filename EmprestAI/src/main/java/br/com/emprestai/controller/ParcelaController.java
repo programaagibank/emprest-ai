@@ -14,6 +14,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import static br.com.emprestai.enums.StatusParcelaEnum.ATRASADA;
 import static br.com.emprestai.enums.StatusParcelaEnum.PAGA;
 
 public class ParcelaController {
@@ -54,9 +55,14 @@ public class ParcelaController {
 
     // PUT - Atualizar uma lista de parcelas (exemplo: pagar várias parcelas)
     public List<Parcela> putListParcelas(List<Parcela> parcelas) throws ApiException, SQLException, IOException {
+
+        List<Parcela> parcelasOriginais = parcelaDAO.buscarParcelasPorEmprestimo(parcelas.getFirst().getIdEmprestimo());
+
         if (parcelas == null || parcelas.isEmpty()) {
             throw new ApiException("Lista de parcelas não pode ser nula ou vazia.", 400); // Bad Request
         }
+        boolean atrasada = parcelasOriginais.stream().anyMatch(p -> p.getStatus() == ATRASADA);
+
         return parcelaDAO.pagarParcelas(parcelas);
     }
 

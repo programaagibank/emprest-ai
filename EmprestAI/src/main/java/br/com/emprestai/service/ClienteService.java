@@ -59,10 +59,12 @@ public class ClienteService {
         double valorTotalFinanciado = 0;
         try{
             double taxaJuros = CalculoTaxaJuros.calcularTaxaJurosMensal(cliente.getScore(),cliente.getPrazoMaximoPessoal(), PESSOAL);
+
             valorTotalFinanciado = CalculadoraContrato.calcularValorTotalFinanciado(
                     cliente.getMargemPessoalDisponivel(),
                     taxaJuros,
-                    getPrazoMaximoPessoalPorScore(cliente.getScore()));
+                    cliente.getPrazoMaximoPessoal());
+
             return CalculadoraCustosAdicionais.reverterValorEmprestimo(
                     valorTotalFinanciado,
                     cliente.getIdade(),
@@ -70,6 +72,7 @@ public class ClienteService {
                     taxaJuros,
                     params.getCarenciaMaxima(),
                     true);
+
         } catch (Exception e){
             System.out.println(e.getMessage());
             return 0;
@@ -77,20 +80,29 @@ public class ClienteService {
     }
 
     public static double calcularLimiteCreditoConsignado(Cliente cliente) {
+        System.out.println("Prazo Máximo: " + cliente.getPrazoMaximoConsignado());
         double valorTotalFinanciado = 0;
+        double valorTotalRevertido = 0;
         try{
             double taxaJuros = CalculoTaxaJuros.calcularTaxaJurosMensal(cliente.getScore(),cliente.getPrazoMaximoConsignado(), CONSIGNADO);
+            System.out.println("Taxa Juros: " + taxaJuros);
             valorTotalFinanciado = CalculadoraContrato.calcularValorTotalFinanciado(
                     cliente.getMargemConsignavelDisponivel(),
                     taxaJuros,
-                    getPrazoMaximoConsignadoPorScore(cliente.getScore()));
-            return CalculadoraCustosAdicionais.reverterValorEmprestimo(
+                    cliente.getPrazoMaximoConsignado());
+
+            valorTotalRevertido = CalculadoraCustosAdicionais.reverterValorEmprestimo(
                     valorTotalFinanciado,
                     cliente.getIdade(),
                     cliente.getPrazoMaximoConsignado(),
                     taxaJuros,
                     params.getCarenciaMaxima(),
                     true);
+            System.out.println("Margem Consignável: " + cliente.getMargemConsignavelDisponivel());
+            System.out.println("Valor Total Financiado: " + valorTotalFinanciado);
+            System.out.println("Valor Revertido: " + valorTotalRevertido);
+            return valorTotalRevertido;
+
         } catch (Exception e){
             System.out.println(e.getMessage());
             return 0;

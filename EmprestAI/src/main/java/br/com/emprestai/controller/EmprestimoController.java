@@ -139,6 +139,7 @@ public class EmprestimoController {
         for (int parcelas : prazosPossiveis) {
             Emprestimo emprestimo = new Emprestimo();
             emprestimo.setValorEmprestimo(valorSolicitado);
+            System.out.println(parcelas);
             emprestimo.setQuantidadeParcelas(parcelas);
             emprestimo.setTipoEmprestimo(tipoEmprestimo);
             emprestimo.setDataContratacao(LocalDate.now());
@@ -164,6 +165,7 @@ public class EmprestimoController {
                 ofertasValidas.add(emprestimo);
             } catch (Exception e) {
                 // Ignorar prazos inválidos (ex.: margem excedida, idade final inválida)
+                System.out.println(e.getMessage());
                 continue;
             }
         }

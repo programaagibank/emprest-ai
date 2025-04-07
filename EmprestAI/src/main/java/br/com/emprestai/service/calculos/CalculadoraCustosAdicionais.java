@@ -74,8 +74,10 @@ public class CalculadoraCustosAdicionais {
             BigDecimal segVar = new BigDecimal(Double.toString(params.getPercentualSegVar() / 100));
             BigDecimal fatorParcelas = BigDecimal.valueOf(qtdeParcelas).divide(DOZE, DECIMAL128);
             BigDecimal fatorSeguro = ONE.add(segFixo.add(segVar.multiply(BigDecimal.valueOf(idade))).multiply(fatorParcelas));
+            System.out.println(valorSemIOF.divide(fatorSeguro, DECIMAL128).doubleValue());
             return valorSemIOF.divide(fatorSeguro, DECIMAL128).doubleValue();
         }
+        System.out.println(valorSemIOF.doubleValue());
         return valorSemIOF.doubleValue(); // Se não houver seguro, o valor sem IOF é o valorEmprestimo
     }
 }

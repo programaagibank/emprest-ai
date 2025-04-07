@@ -128,6 +128,11 @@ public class Cliente {
         return ClienteService.calcularMargemConsignavelDisponivel(this);
     }
 
+    public double getLimiteCreditoConsignado() {
+        System.out.println(ClienteService.calcularLimiteCreditoConsignado(this));
+        return ClienteService.calcularLimiteCreditoConsignado(this);
+    }
+
     public double getMargemPessoalDisponivel() {
         return ClienteService.calcularMargemPessoalDisponivel(this);
     }
@@ -136,7 +141,5 @@ public class Cliente {
         return ClienteService.calcularLimiteCreditoPessoal(this);
     }
 
-    public double getLimiteCreditoConsignado() {
-        return ClienteService.calcularLimiteCreditoConsignado(this);
-    }
+
 }

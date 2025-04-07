@@ -1,7 +1,6 @@
 package br.com.emprestai.util;
 
 import br.com.emprestai.controller.ParcelaController;
-import br.com.emprestai.dao.ParcelaDAO;
 import br.com.emprestai.model.Cliente;
 import br.com.emprestai.model.Emprestimo;
 import br.com.emprestai.model.Parcela;

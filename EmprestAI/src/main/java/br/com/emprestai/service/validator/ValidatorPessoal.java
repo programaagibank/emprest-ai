@@ -10,7 +10,7 @@ public class ValidatorPessoal {
     private static final EmprestimoParams params = EmprestimoParams.getInstance();
 
     // Idade Máxima Final
-    public static void verificarIdadePessoal(Cliente cliente, int parcelas) {
+    public static void validarIdadePessoal(Cliente cliente, int parcelas) {
         int idade = cliente.getIdade();
         int anos = parcelas / 12;
         int idadeFinal = idade + anos;
@@ -21,7 +21,7 @@ public class ValidatorPessoal {
     }
 
     // Parcelas
-    public static void verificarParcelasPessoal(Cliente cliente, int parcelas) {
+    public static void validarParcelasPessoal(Cliente cliente, int parcelas) {
         int prazoMaximoPessoal = ClienteService.calcularPrazoMaximoPessoal(cliente);
         if (parcelas < params.getPrazoMinimoPessoal()) {
             throw new ValidationException("Quantidade de parcelas (" + parcelas +
@@ -34,7 +34,7 @@ public class ValidatorPessoal {
     }
 
     // Taxa de Juros
-    public static void verificarTaxaJurosPessoal(double juros) {
+    public static void validarTaxaJurosPessoal(double juros) {
         if (juros < params.getJurosMinimoPessoal() || juros > params.getJurosMaximoPessoal()) {
             throw new ValidationException("Taxa de juros fora do intervalo permitido (" +
                     params.getJurosMinimoPessoal() + " a " + params.getJurosMaximoPessoal() + "%).");
@@ -42,7 +42,7 @@ public class ValidatorPessoal {
     }
 
     // Valor Solicitado
-    public static void verificarValorPessoal(double valorSolicitado) {
+    public static void validarValorPessoal(double valorSolicitado) {
         if (valorSolicitado < params.getValorMinimoPessoal()) {
             throw new ValidationException("O valor solicitado (R$ " + valorSolicitado +
                     ") é inferior ao mínimo de R$ " + params.getValorMinimoPessoal() + ".");
@@ -54,7 +54,7 @@ public class ValidatorPessoal {
     }
 
     // Limite de Crédito
-    public static void verificarLimiteCreditoPessoal(Cliente cliente, double valorSolicitado) {
+    public static void validarLimiteCreditoPessoal(Cliente cliente, double valorSolicitado) {
         double limiteCredito = ClienteService.calcularLimiteCreditoPessoal(cliente);
         if (valorSolicitado > limiteCredito) {
             throw new ValidationException("O valor solicitado (R$ " + valorSolicitado +
@@ -63,7 +63,7 @@ public class ValidatorPessoal {
     }
 
     // Carência
-    public static void verificarCarenciaPessoal(int carencia) {
+    public static void validarCarenciaPessoal(int carencia) {
         if (carencia < 0) throw new ValidationException("Carência não pode ser negativa.");
         if (carencia > params.getCarenciaMaximaPessoal()) {
             throw new ValidationException("Carência excede o limite máximo de " +
@@ -72,7 +72,7 @@ public class ValidatorPessoal {
     }
 
     // Margem por Parcela
-    public static void verificarMargemPessoal(Cliente cliente, double valorParcela) {
+    public static void validarMargemPessoal(Cliente cliente, double valorParcela) {
         double margemDisponivel = ClienteService.calcularMargemPessoalDisponivel(cliente);
         if (valorParcela > margemDisponivel) {
             throw new ValidationException("O valor da parcela (R$ " + valorParcela +
@@ -82,7 +82,7 @@ public class ValidatorPessoal {
 
 
     // Elegibilidade do Empréstimo
-    public static void verificarElegibilidadePessoal(Cliente cliente, Emprestimo emprestimo) {
+    public static void validarPessoal(Cliente cliente, Emprestimo emprestimo) {
         if (emprestimo.getValorParcela() <= 0) throw new ValidationException("Valor da parcela deve ser maior que zero.");
         if (cliente.getIdade() <= 0) throw new ValidationException("Idade deve ser maior que zero.");
         if (emprestimo.getQuantidadeParcelas() <= 0) throw new ValidationException("Quantidade de parcelas deve ser maior que zero.");
@@ -90,12 +90,12 @@ public class ValidatorPessoal {
         if (emprestimo.getCarencia() < 0) throw new ValidationException("Carência não pode ser negativa.");
         if (emprestimo.getValorEmprestimo() <= 0) throw new ValidationException("Valor solicitado deve ser maior que zero.");
 
-        verificarIdadePessoal(cliente, emprestimo.getQuantidadeParcelas());
-        verificarParcelasPessoal(cliente, emprestimo.getQuantidadeParcelas());
-        verificarTaxaJurosPessoal(emprestimo.getTaxaJuros());
-        verificarValorPessoal(emprestimo.getValorEmprestimo());
-        verificarCarenciaPessoal(emprestimo.getCarencia());
-        verificarLimiteCreditoPessoal(cliente, emprestimo.getValorEmprestimo());
-        verificarMargemPessoal(cliente, emprestimo.getValorParcela());
+        validarIdadePessoal(cliente, emprestimo.getQuantidadeParcelas());
+        validarParcelasPessoal(cliente, emprestimo.getQuantidadeParcelas());
+        validarTaxaJurosPessoal(emprestimo.getTaxaJuros());
+        validarValorPessoal(emprestimo.getValorEmprestimo());
+        validarCarenciaPessoal(emprestimo.getCarencia());
+        validarLimiteCreditoPessoal(cliente, emprestimo.getValorEmprestimo());
+        validarMargemPessoal(cliente, emprestimo.getValorParcela());
     }
 }

@@ -1,14 +1,13 @@
 package br.com.emprestai.service.calculos;
 
 import br.com.emprestai.model.Emprestimo;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import static br.com.emprestai.util.DateUtils.primeiroDiaUtil;
 import static java.math.BigDecimal.ONE;
 import static java.math.MathContext.DECIMAL128;
-import static java.time.temporal.ChronoUnit.DAYS;
-
-import static br.com.emprestai.util.DateUtils.primeiroDiaUtil;
 
 public class CalculadoraContrato {
 

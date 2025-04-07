@@ -1,7 +1,6 @@
 package br.com.emprestai.controller;
 
 import br.com.emprestai.dao.ParcelaDAO;
-import br.com.emprestai.enums.StatusParcelaEnum;
 import br.com.emprestai.enums.TipoEmprestimoEnum;
 import br.com.emprestai.exception.ApiException;
 import br.com.emprestai.model.Emprestimo;
@@ -10,12 +9,9 @@ import br.com.emprestai.service.calculos.CalculadoraParcela;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 import static br.com.emprestai.enums.StatusParcelaEnum.ATRASADA;
-import static br.com.emprestai.enums.StatusParcelaEnum.PAGA;
 
 public class ParcelaController {
 

@@ -5,7 +5,6 @@ import br.com.emprestai.controller.LoginController;
 import br.com.emprestai.controller.ParcelaController;
 import br.com.emprestai.dao.ClienteDAO;
 import br.com.emprestai.dao.ParcelaDAO;
-import br.com.emprestai.enums.OrdemEnum;
 import br.com.emprestai.model.Parcela;
 import br.com.emprestai.util.SessionManager;
 import javafx.beans.value.ChangeListener;

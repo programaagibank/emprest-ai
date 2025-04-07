@@ -99,9 +99,9 @@ public class EmprestimoController {
         }
 
         if (emprestimo.getTipoEmprestimo() == TipoEmprestimoEnum.PESSOAL) {
-            ValidatorPessoal.verificarElegibilidadePessoal(cliente, emprestimo);
+            ValidatorPessoal.validarPessoal(cliente, emprestimo);
         } else {
-            ValidatorConsignado.verificarElegibilidadeConsignado(cliente, emprestimo);
+            ValidatorConsignado.validarConsignado(cliente, emprestimo);
         }
     }
 
@@ -160,9 +160,9 @@ public class EmprestimoController {
 
                 // Validar oferta
                 if (tipoEmprestimo == TipoEmprestimoEnum.CONSIGNADO) {
-                    ValidatorConsignado.verificarElegibilidadeConsignado(cliente, emprestimo);
+                    ValidatorConsignado.validarConsignado(cliente, emprestimo);
                 } else {
-                    ValidatorPessoal.verificarElegibilidadePessoal(cliente, emprestimo);
+                    ValidatorPessoal.validarPessoal(cliente, emprestimo);
                 }
 
                 ofertasValidas.add(emprestimo);

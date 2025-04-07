@@ -1,9 +1,9 @@
 package br.com.emprestai.model;
 
+import br.com.emprestai.service.ClienteService;
+
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-
-import br.com.emprestai.service.ClienteService;
 
 public class Cliente {
     private Long idCliente;

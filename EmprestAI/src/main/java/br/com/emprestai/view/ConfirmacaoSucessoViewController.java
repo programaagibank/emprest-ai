@@ -1,5 +1,6 @@
 package br.com.emprestai.view;
 
+import br.com.emprestai.util.SessionManager;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -7,7 +8,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import br.com.emprestai.util.SessionManager;
 
 import java.io.IOException;
 

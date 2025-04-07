@@ -3,7 +3,6 @@ package br.com.emprestai.service.calculos;
 import br.com.emprestai.enums.StatusParcelaEnum;
 import br.com.emprestai.model.Emprestimo;
 import br.com.emprestai.model.Parcela;
-import br.com.emprestai.util.ConversorFinanceiro;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

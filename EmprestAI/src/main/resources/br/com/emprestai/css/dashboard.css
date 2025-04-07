@@ -103,9 +103,16 @@
 }
 
 .credit-label {
-    -fx-font-size: 16px;
-    -fx-text-fill: #333333;
-    -fx-font-weight: normal; /* Normal em vez de bold */
+  .credit-label {
+      -fx-font-size: 16px;
+      -fx-text-fill: #333333;
+      -fx-font-weight: normal;
+      -fx-padding: 0;
+      -fx-alignment: top-center;
+      -fx-pref-height: 24px; /* Altura fixa para ambos os rótulos */
+      -fx-min-height: 24px;  /* Altura mínima igual à altura preferida */
+      -fx-max-height: 24px;  /* Altura máxima igual à altura preferida */
+  }
 }
 
 .credit-subamount {

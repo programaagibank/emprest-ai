@@ -78,12 +78,20 @@
                             <padding>
                                 <Insets left="5.0" right="5.0" />
                             </padding>
-                            <VBox alignment="CENTER" prefWidth="150.0" spacing="4.0" HBox.hgrow="ALWAYS">
+                            <!-- Limite Consignado -->
+                            <VBox alignment="TOP_CENTER" prefWidth="150.0" spacing="4.0" HBox.hgrow="ALWAYS">
+                                <padding>
+                                    <Insets top="0" bottom="0" />
+                                </padding>
                                 <Label styleClass="credit-label" text="Limite Consignado" textAlignment="CENTER" />
                                 <Label fx:id="consignadoCredit" styleClass="credit-subamount" />
                                 <Label styleClass="credit-subtitle" text="Aposentados, pensionista e servidores" textAlignment="CENTER" wrapText="true" />
                             </VBox>
-                            <VBox alignment="CENTER" prefWidth="150.0" spacing="4.0" HBox.hgrow="ALWAYS">
+                            <!-- Limite Pessoal -->
+                            <VBox alignment="TOP_CENTER" prefWidth="150.0" spacing="4.0" HBox.hgrow="ALWAYS">
+                                <padding>
+                                    <Insets top="0" bottom="0" />
+                                </padding>
                                 <Label styleClass="credit-label" text="Limite Pessoal" textAlignment="CENTER" />
                                 <Label fx:id="pessoalCredit" styleClass="credit-subamount" />
                                 <Label styleClass="credit-subtitle" text="Para todos os públicos" textAlignment="CENTER" wrapText="true" />

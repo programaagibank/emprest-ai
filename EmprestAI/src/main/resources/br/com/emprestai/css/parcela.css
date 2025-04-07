@@ -1,13 +1,14 @@
 /* Root styling */
 .root {
-    -fx-background-color: #F5F5F5; /* Fundo claro consistente */
+    -fx-background-color: #F7F7F7;
+    -fx-font-family: "Roboto", "Segoe UI", sans-serif;
 }
 
 /* Header styling */
 .header {
     -fx-background-color: linear-gradient(to bottom, #0056D2 0%, #00A3FF 70%, rgba(0, 163, 255, 0) 100%);
     -fx-alignment: center;
-    -fx-padding: 40px 15px 20px 15px;
+    -fx-padding: 15px 15px 10px 15px;
 }
 
 .greeting-label {
@@ -33,11 +34,11 @@
 /* Main content styling */
 .content {
     -fx-background-color: #FFFFFF;
-    -fx-background-radius: 15px 15px 0 0;
+    -fx-background-radius: 20px 20px 0 0;
     -fx-alignment: center;
     -fx-spacing: 10px;
     -fx-padding: 15px;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 10, 0, 0, 4);
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 10, 0, 0, -5);
 }
 
 /* Parcela row styling */
@@ -45,20 +46,26 @@
     -fx-alignment: center-left;
     -fx-spacing: 10px;
     -fx-padding: 10px;
-    -fx-background-color: #FFFFFF;
+    -fx-background-color: #F8F9FA;
     -fx-background-radius: 8px;
     -fx-border-radius: 8px;
     -fx-border-color: #E0E0E0;
     -fx-border-width: 1px;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 8, 0, 0, 4);
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 8, 0, 0, 2);
+}
+
+.parcela-row:hover {
+    -fx-background-color: #F0F7FF;
+    -fx-border-color: #D6E4F0;
 }
 
 /* Parcela numero styling */
 .parcela-numero {
     -fx-font-family: "Roboto", "Arial", sans-serif;
     -fx-font-size: 14px;
-    -fx-text-fill: #666666;
-    -fx-pref-width: 80px; /* Aumentado para evitar corte */
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+    -fx-pref-width: 80px;
     -fx-min-width: 80px;
     -fx-alignment: center-left;
 }
@@ -67,7 +74,7 @@
 .valor-data-box {
     -fx-alignment: center-left;
     -fx-spacing: 2px;
-    -fx-pref-width: 200px; /* Ajustado para caber na largura */
+    -fx-pref-width: 200px;
 }
 
 /* Parcela valor styling */
@@ -75,7 +82,7 @@
     -fx-font-family: "Roboto", "Arial", sans-serif;
     -fx-font-size: 14px;
     -fx-font-weight: bold;
-    -fx-text-fill: #333333;
+    -fx-text-fill: #0056D2;
     -fx-alignment: center-left;
 }
 
@@ -107,12 +114,87 @@
     -fx-shape: "M 9 16.2 L 4.8 12 l -1.4 1.4 L 9 19 L 21 7 l -1.4 -1.4 L 9 16.2 Z";
 }
 
+/* Footer container */
+.footer-container {
+    -fx-background-color: #FFFFFF;
+    -fx-padding: 10px 0;
+    -fx-spacing: 10px;
+}
+
+/* Total container */
+.total-container {
+    -fx-background-color: #F0F7FF;
+    -fx-background-radius: 10px;
+    -fx-padding: 10px;
+    -fx-alignment: center;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 8, 0, 0, 2);
+}
+
+/* Total label styling */
+.total-label {
+    -fx-font-family: "Roboto", "Arial", sans-serif;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #0056D2;
+    -fx-alignment: center;
+}
+
+/* Button container */
+.button-container {
+    -fx-alignment: center;
+    -fx-spacing: 15px;
+    -fx-padding: 10px;
+}
+
+/* Action button (Pagar) */
+.action-button {
+    -fx-background-color: #0056D2;
+    -fx-background-radius: 8px;
+    -fx-text-fill: #FFFFFF;
+    -fx-font-family: "Roboto", "Arial", sans-serif;
+    -fx-font-size: 14px;
+    -fx-padding: 10px 20px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 10, 0, 0, 4);
+    -fx-transition: all 0.3s ease-in-out;
+}
+
+.action-button:hover {
+    -fx-background-color: #003A8C;
+    -fx-effect: dropshadow(gaussian, rgba(0, 86, 210, 0.2), 12, 0, 0, 5);
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}
+
+/* Secondary button (Voltar) */
+.secondary-button {
+    -fx-background-color: #FFFFFF;
+    -fx-background-radius: 8px;
+    -fx-border-color: #0056D2;
+    -fx-border-width: 1px;
+    -fx-text-fill: #0056D2;
+    -fx-font-family: "Roboto", "Arial", sans-serif;
+    -fx-font-size: 14px;
+    -fx-padding: 10px 20px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 10, 0, 0, 4);
+    -fx-transition: all 0.3s ease-in-out;
+}
+
+.secondary-button:hover {
+    -fx-background-color: #F0F7FF;
+    -fx-effect: dropshadow(gaussian, rgba(0, 86, 210, 0.2), 12, 0, 0, 5);
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}
+
 /* Navigation bar styling */
 .nav-bar-container {
     -fx-background-color: #FFFFFF;
-    -fx-padding: 8px 0 8px 0;
+    -fx-padding: 8px 0;
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 10, 0, 0, -3);
 }
+
 .nav-bar {
     -fx-background-color: transparent;
     -fx-alignment: center;
@@ -120,19 +202,20 @@
     -fx-padding: 0;
     -fx-pref-width: 100%;
 }
+
 .nav-button-container {
     -fx-padding: 0;
     -fx-alignment: center;
-    -fx-pref-width: 33.33%; /* Force equal width for 3 buttons */
+    -fx-pref-width: 33.33%;
 }
-/* Círculo de fundo ativo */
+
 .nav-button-circle {
     -fx-fill: #F0F7FF;
     -fx-stroke: #E1E9F8;
     -fx-stroke-width: 1;
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.08), 4, 0, 0, 1);
 }
-/* Ícones de navegação */
+
 .nav-icon {
     -fx-fill: #666666;
     -fx-scale-x: 1.2;
@@ -140,7 +223,6 @@
     -fx-translate-y: -8;
 }
 
-/* Navigation buttons */
 .nav-button {
     -fx-background-color: transparent;
     -fx-padding: 0;
@@ -152,6 +234,7 @@
 .nav-button:hover .nav-icon {
     -fx-fill: #0056D2;
 }
+
 .nav-button:hover .nav-button-circle {
     -fx-fill: #EBF3FF;
     -fx-effect: dropshadow(gaussian, rgba(0, 80, 200, 0.15), 5, 0, 0, 2);
@@ -161,7 +244,6 @@
     -fx-text-fill: #0056D2;
 }
 
-/* Label dentro dos botões de navegação */
 .nav-button-label {
     -fx-font-family: "Roboto", "Arial", sans-serif;
     -fx-font-size: 11px;
@@ -170,96 +252,10 @@
     -fx-translate-y: 8;
 }
 
-/* Estilo ativo para navegação */
 .nav-button-active .nav-icon {
     -fx-fill: #0056D2;
 }
 
 .nav-button-active .nav-button-label {
     -fx-text-fill: #0056D2;
-}
-
-/* Total label styling */
-.amount-label {
-    -fx-font-family: "Roboto", "Arial", sans-serif;
-    -fx-font-size: 16px;
-    -fx-font-weight: bold;
-    -fx-text-fill: #333333;
-    -fx-alignment: center;
-}
-
-Buttons
-.confirm-button {
-    -fx-background-color: linear-gradient(to right, #0056D2 0%, #00A3FF 100%);
-    -fx-background-radius: 12px;
-    -fx-text-fill: #FFFFFF;
-    -fx-font-family: "Roboto", "Arial", sans-serif;
-    -fx-font-size: 14px;
-    -fx-font-weight: bold;
-    -fx-padding: 10px 20px;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 10, 0, 0, 4);
-}
-
-.confirm-button:hover {
-    -fx-background-color: linear-gradient(to right, #003A8C 0%, #007ACC 100%);
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 12, 0, 0, 5);
-}
-
-.confirm-button:pressed {
-    -fx-background-color: linear-gradient(to right, #002660 0%, #0056B3 100%);
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 0, 0, 2);
-}
-
-.secondary-button {
-    -fx-background-color: #FFFFFF;
-    -fx-background-radius: 12px;
-    -fx-border-color: #E0E0E0;
-    -fx-border-width: 1px;
-    -fx-text-fill: #666666;
-    -fx-font-family: "Roboto", "Arial", sans-serif;
-    -fx-font-size: 14px;
-    -fx-font-weight: bold;
-    -fx-padding: 10px 20px;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 8, 0, 0, 4);
-}
-
-.secondary-button:hover {
-    -fx-background-color: #F9F9F9;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 10, 0, 0, 5);
-}
-
-.secondary-button:pressed {
-    -fx-background-color: #E0E0E0;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 0, 0, 2);
-}
-
-/* Explanation label styling */
-.explanation-label {
-    -fx-font-family: "Roboto", "Arial", sans-serif;
-    -fx-font-size: 14px;
-    -fx-text-fill: #666666;
-    -fx-alignment: center;
-    -fx-max-width: 300px;
-}
-
-/* Action buttons */
-.action-button {
-    -fx-background-color: linear-gradient(to right, #0056D2 0%, #00A3FF 100%);
-    -fx-background-radius: 12px;
-    -fx-text-fill: #FFFFFF;
-    -fx-font-family: "Roboto", "Arial", sans-serif;
-    -fx-font-size: 16px;
-    -fx-font-weight: bold;
-    -fx-padding: 12px 24px;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 10, 0, 0, 4);
-}
-
-.action-button:hover {
-    -fx-background-color: linear-gradient(to right, #003A8C 0%, #007ACC 100%);
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 12, 0, 0, 5);
-}
-
-.action-button:pressed {
-    -fx-background-color: linear-gradient(to right, #002660 0%, #0056B3 100%);
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 0, 0, 2);
 }

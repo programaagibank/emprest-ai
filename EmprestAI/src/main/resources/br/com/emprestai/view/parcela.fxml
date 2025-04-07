@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.shape.SVGPath?>
@@ -31,23 +29,26 @@
         </ScrollPane>
     </center>
 
-    <!-- Total Label -->
+    <!-- Bottom Section: Total, Buttons, and Navigation -->
     <bottom>
-        <VBox>
-            <Label fx:id="totalLabel" styleClass="amount-label" alignment="CENTER" prefWidth="Infinity">
+        <VBox styleClass="footer-container">
+            <!-- Total Label -->
+            <HBox styleClass="total-container" alignment="CENTER">
+                <Label fx:id="totalLabel" styleClass="total-label" text="Total a Pagar: R$ 0,00" />
+            </HBox>
+
+            <!-- Buttons -->
+            <HBox alignment="CENTER" spacing="15.0" styleClass="button-container">
                 <padding>
-                    <Insets bottom="10.0" top="10.0" />
+                    <Insets top="10.0" bottom="10.0" />
                 </padding>
-            </Label>
-            <!-- Botões Pagar e Voltar -->
-            <HBox alignment="CENTER" spacing="20.0" styleClass="button-container">
                 <Button fx:id="pagarButton" onAction="#onPagarClick" text="Pagar" styleClass="action-button" />
-                <Button fx:id="returnButton" onAction="#onClickReturn" text="Voltar" styleClass="action-button" />
+                <Button fx:id="returnButton" onAction="#onClickReturn" text="Voltar" styleClass="secondary-button" />
             </HBox>
 
             <!-- Bottom Navigation -->
             <StackPane styleClass="nav-bar-container">
-                <HBox alignment="CENTER" styleClass="nav-bar" HBox.hgrow="ALWAYS">
+                <HBox styleClass="nav-bar" alignment="CENTER" HBox.hgrow="ALWAYS">
                     <StackPane styleClass="nav-button-container" HBox.hgrow="ALWAYS" maxWidth="Infinity">
                         <Button fx:id="homeButton" onAction="#onHomeClick" styleClass="nav-button, nav-button-active">
                             <graphic>
@@ -61,7 +62,6 @@
                             </graphic>
                         </Button>
                     </StackPane>
-
                     <StackPane styleClass="nav-button-container" HBox.hgrow="ALWAYS" maxWidth="Infinity">
                         <Button fx:id="profileButton" onAction="#onProfileClick" styleClass="nav-button">
                             <graphic>
@@ -75,7 +75,6 @@
                             </graphic>
                         </Button>
                     </StackPane>
-
                     <StackPane styleClass="nav-button-container" HBox.hgrow="ALWAYS" maxWidth="Infinity">
                         <Button fx:id="exitButton" onAction="#onExitClick" styleClass="nav-button">
                             <graphic>

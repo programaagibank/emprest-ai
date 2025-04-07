@@ -133,6 +133,9 @@ public class EmprestimoController {
         int prazoMinimo = tipoEmprestimo == TipoEmprestimoEnum.CONSIGNADO
                 ? params.getPrazoMinimoConsignado()
                 : params.getPrazoMinimoPessoal();
+        int carenciaMaxima = tipoEmprestimo == TipoEmprestimoEnum.CONSIGNADO
+                ? params.getCarenciaMaximaConsignado()
+                : params.getCarenciaMaximaPessoal();
         int[] prazosPossiveis = gerarPrazosViaveis(prazoMinimo, prazoMaximo, tipoEmprestimo);
 
         // Gerar ofertas para cada prazo
@@ -143,7 +146,7 @@ public class EmprestimoController {
             emprestimo.setQuantidadeParcelas(parcelas);
             emprestimo.setTipoEmprestimo(tipoEmprestimo);
             emprestimo.setDataContratacao(LocalDate.now());
-            emprestimo.setDataInicio(LocalDate.now().plusDays(params.getCarenciaMaxima())); // Padrão, pode ser ajustado
+            emprestimo.setDataInicio(LocalDate.now().plusDays(carenciaMaxima)); // Padrão, pode ser ajustado
             emprestimo.setContratarSeguro(true); // Padrão, pode ser ajustado
 
             try {

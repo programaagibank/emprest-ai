@@ -65,9 +65,9 @@ public class ValidatorPessoal {
     // Carência
     public static void verificarCarenciaPessoal(int carencia) {
         if (carencia < 0) throw new ValidationException("Carência não pode ser negativa.");
-        if (carencia > params.getCarenciaMaxima()) {
+        if (carencia > params.getCarenciaMaximaPessoal()) {
             throw new ValidationException("Carência excede o limite máximo de " +
-                    params.getCarenciaMaxima() + " dias.");
+                    params.getCarenciaMaximaPessoal() + " dias.");
         }
     }
 

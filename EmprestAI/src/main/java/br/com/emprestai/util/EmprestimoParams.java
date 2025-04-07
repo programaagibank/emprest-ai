@@ -28,11 +28,9 @@ public class EmprestimoParams {
     private int prazoMinimoConsignado = 24;
     private int prazoMaximoConsignado = 84;
 
-    //***************** Valores parcela minimo *****************
-    private double percentualPagamentoMinimoParcelaPessoal = 0.15;
-    private double percentualPagamentoMinimoParcelaConsignado = 0.15;
     // Carências
-    private int carenciaMaxima = 30;
+    private int carenciaMaximaConsignado = 60;
+    private int carenciaMaximaPessoal = 30;
 
     // Idades score minimo
     private  int  scoreMinimoPessoal = 201;
@@ -152,13 +150,22 @@ public class EmprestimoParams {
         this.prazoMaximoConsignado = prazoMaximoConsignado;
     }
 
-    public int getCarenciaMaxima() {
-        return carenciaMaxima;
+    public int getCarenciaMaximaConsignado() {
+        return carenciaMaximaConsignado;
     }
 
-    public void setCarenciaMaxima(int carenciaMaxima) {
-        this.carenciaMaxima = carenciaMaxima;
+    public void setCarenciaMaximaConsignado(int carenciaMaximaConsignado) {
+        this.carenciaMaximaConsignado = carenciaMaximaConsignado;
     }
+
+    public int getCarenciaMaximaPessoal() {
+        return carenciaMaximaPessoal;
+    }
+
+    public void setCarenciaMaximaPessoal(int carenciaMaximaPessoal) {
+        this.carenciaMaximaPessoal = carenciaMaximaPessoal;
+    }
+
     public int getScoreMinimoPessoal() {
         return scoreMinimoPessoal;
     }

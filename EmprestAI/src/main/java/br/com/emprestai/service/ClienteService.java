@@ -70,7 +70,7 @@ public class ClienteService {
                     cliente.getIdade(),
                     cliente.getPrazoMaximoPessoal(),
                     taxaJuros,
-                    params.getCarenciaMaxima(),
+                    params.getCarenciaMaximaPessoal(),
                     true);
 
         } catch (Exception e){
@@ -96,7 +96,7 @@ public class ClienteService {
                     cliente.getIdade(),
                     cliente.getPrazoMaximoConsignado(),
                     taxaJuros,
-                    params.getCarenciaMaxima(),
+                    params.getCarenciaMaximaConsignado(),
                     true);
             System.out.println("Margem Consignável: " + cliente.getMargemConsignavelDisponivel());
             System.out.println("Valor Total Financiado: " + valorTotalFinanciado);

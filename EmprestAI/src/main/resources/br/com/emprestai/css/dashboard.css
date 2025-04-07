@@ -280,28 +280,28 @@ HBox.action-button-container {
 }
 
 .payment-date {
-    -fx-font-size: 14px;
+    -fx-font-size: 12px;
     -fx-font-weight: normal; /* Normal em vez de bold */
     -fx-text-fill: #333333;
     -fx-padding: 0 0 5px 0; /* Adicionado padding inferior */
 }
 
 .payment-amount {
-    -fx-font-size: 16px; /* Tamanho maior */
+    -fx-font-size: 12px; /* Tamanho maior */
     -fx-font-weight: normal; /* Normal em vez de bold */
     -fx-text-fill: #0056D2;
     -fx-padding: 5px 0; /* Adicionado padding vertical */
 }
 
 .payment-type, .payment-contract {
-    -fx-font-size: 13px; /* Tamanho maior */
+    -fx-font-size: 12px; /* Tamanho maior */
     -fx-text-fill: #666666;
     -fx-padding: 5px 0 0 0; /* Adicionado padding superior */
 }
 
 /* Info label */
 .info-label {
-    -fx-font-size: 14px;
+    -fx-font-size: 12px;
     -fx-text-fill: #666666;
     -fx-padding: 5px 0; /* Adicionado padding vertical */
 }

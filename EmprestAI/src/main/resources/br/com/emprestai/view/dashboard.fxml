@@ -132,11 +132,15 @@
                         </HBox>
                     </VBox>
 
-                    <!-- Próximos pagamentos -->
-                    <VBox spacing="15.0" styleClass="upcoming-payments-section" VBox.vgrow="ALWAYS">
+
+                    <!-- Upcoming Payments Section -->
+                    <VBox spacing="8.0" styleClass="upcoming-payments-section">
                         <Label styleClass="section-title" text="Próximos Pagamentos" />
-                        <VBox fx:id="upcomingPaymentsBox" spacing="10.0" VBox.vgrow="ALWAYS" />
+                        <VBox fx:id="upcomingPaymentsBox" spacing="8.0">
+                            <!-- Payment cards will be dynamically added here -->
+                        </VBox>
                     </VBox>
+
                 </VBox>
             </content>
         </ScrollPane>

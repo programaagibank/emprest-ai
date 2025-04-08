@@ -247,14 +247,14 @@ public class EmprestimoViewController {
     }
 
     private VBox createLoanCard(Emprestimo emprestimo) {
-        VBox card = new VBox(8);
+        VBox card = new VBox(15);
         card.getStyleClass().add("payment-card");
 
-        HBox titleBox = new HBox(10);
-        Label titleLabel = new Label(emprestimo.getTipoEmprestimo().name() + " R$ " + formatCurrency(emprestimo.getValorTotal() - emprestimo.getValorSeguro() - emprestimo.getOutrosCustos() - emprestimo.getValorIOF()));
-        titleLabel.getStyleClass().add("payment-date");
-        titleBox.getChildren().add(titleLabel);
-        card.getChildren().add(titleBox);
+       // HBox titleBox = new HBox(10);
+       // Label titleLabel = new Label(emprestimo.getTipoEmprestimo().name() + " R$ " + formatCurrency(emprestimo.getValorTotal() - emprestimo.getValorSeguro() - emprestimo.getOutrosCustos() - emprestimo.getValorIOF()));
+      //  titleLabel.getStyleClass().add("payment-date");
+      //  titleBox.getChildren().add(titleLabel);
+        //card.getChildren().add(titleBox);
 
         Label valorLabel = new Label("Valor Empréstimo: " + formatCurrency(emprestimo.getValorTotal()));
         valorLabel.getStyleClass().add("payment-type");

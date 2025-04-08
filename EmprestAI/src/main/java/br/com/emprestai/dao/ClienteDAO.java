@@ -3,6 +3,7 @@ package br.com.emprestai.dao;
 import br.com.emprestai.database.DatabaseConnection;
 import br.com.emprestai.exception.ApiException;
 import br.com.emprestai.model.Cliente;
+import br.com.emprestai.service.ClienteService;
 
 import java.io.IOException;
 import java.sql.*;
@@ -291,7 +292,7 @@ public class ClienteDAO implements GenericDAO<Cliente> {
 
     // Mapear ResultSet para objeto Cliente
     private Cliente mapearResultSet(ResultSet rs) throws SQLException {
-        Cliente cliente = new Cliente();
+        Cliente cliente = new Cliente(new ClienteService());
         cliente.setIdCliente(rs.getLong("id_cliente"));
         cliente.setCpfCliente(rs.getString("cpf_cliente"));
         cliente.setNomeCliente(rs.getString("nome_cliente"));

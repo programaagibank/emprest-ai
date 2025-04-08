@@ -52,10 +52,6 @@ public class CalculadoraContrato {
         if (parcelaBD.doubleValue() <= 0 || qtdeParcelas <= 1 || taxaJurosMensal <= 0) {
             throw new IllegalArgumentException("Valores inválidos");
         }
-        System.out.println("Taxa usada no cálculo: " + valorParcela);
-        System.out.println("Taxa usada no cálculo: " + taxaJurosMensal);
-        System.out.println("Taxa usada no cálculo: " + qtdeParcelas);
-
 
         BigDecimal i = BigDecimal.valueOf(taxaJurosMensal / 100); // Taxa em decimal
         BigDecimal umMaisTaxa = ONE.add(i);
@@ -65,62 +61,5 @@ public class CalculadoraContrato {
         System.out.println("valorTotalFinanciado antes do double: " + valorTotalFinanciado);
 
         return valorTotalFinanciado.doubleValue();
-    }
-
-    public static void main(String[] args) {
-        double result = calcularValorTotalFinanciado(594.52, 2.065, 60);
-        System.out.println("Teste isolado: " + result);
-
-//        // Criando um objeto Emprestimo com valores de teste
-//        Emprestimo emprestimo = new Emprestimo();
-//        emprestimo.setValorEmprestimo(10000.0); // Valor do empréstimo: R$ 10.000,00
-//        emprestimo.setQuantidadeParcelas(12);   // 12 parcelas
-//        emprestimo.setTaxaJuros(1.5);          // Taxa de juros mensal: 1,5%
-//        emprestimo.setDataContratacao(LocalDate.now()); // Data de contratação: hoje
-//        emprestimo.setDataInicio(LocalDate.now().plusMonths(1)); // Início do pagamento: daqui a 1 mês
-//        emprestimo.setContratarSeguro(true);   // Contratar seguro
-//
-//        // Idade do cliente
-//        int idade = 30;
-//
-//        // Executando o cálculo do contrato
-//        CalculadoraContrato.contratoPrice(emprestimo, idade);
-//
-//        // Exibindo os resultados do contrato
-//        System.out.println("=== Resultados do Contrato ===");
-//        System.out.printf("Valor do Empréstimo: R$ %.2f%n", emprestimo.getValorEmprestimo());
-//        System.out.printf("Quantidade de Parcelas: %d%n", emprestimo.getQuantidadeParcelas());
-//        System.out.printf("Taxa de Juros Mensal: %.2f%%%n", emprestimo.getTaxaJuros());
-//        System.out.printf("Valor do Seguro: R$ %.2f%n", emprestimo.getValorSeguro());
-//        System.out.printf("Valor do IOF: R$ %.2f%n", emprestimo.getValorIOF());
-//        System.out.printf("Custo da Carência: R$ %.2f%n", emprestimo.getOutrosCustos());
-//        System.out.printf("Valor Total Financiado: R$ %.2f%n", emprestimo.getValorTotal());
-//        System.out.printf("Valor da Parcela Mensal: R$ %.2f%n", emprestimo.getValorParcela());
-//        System.out.printf("Taxa Efetiva Mensal: %.4f%%%n", emprestimo.getTaxaEfetivaMensal());
-//
-//        // Teste adicional: verificar consistência com calcularValorTotalFinanciado
-//        double valorTotalCalculado = CalculadoraContrato.calcularValorTotalFinanciado(
-//                emprestimo.getValorParcela(), emprestimo.getTaxaJuros(), emprestimo.getQuantidadeParcelas());
-//        System.out.printf("Valor Total Financiado (recalculado pela parcela): R$ %.2f%n", valorTotalCalculado);
-//
-//        // Teste de reversão: reverter o valor total financiado para o valor original
-//        double valorRevertido = CalculadoraCustosAdicionais.reverterValorEmprestimo(
-//                emprestimo.getValorTotal(), // Valor total financiado
-//                idade,                      // Idade
-//                emprestimo.getQuantidadeParcelas(), // Quantidade de parcelas
-//                emprestimo.getTaxaJuros(),  // Taxa de juros mensal
-//                emprestimo.getCarencia(),   // Dias de carência
-//                emprestimo.getContratarSeguro() // Contratar seguro
-//        );
-//        System.out.printf("Valor Revertido (valor original do empréstimo): R$ %.2f%n", valorRevertido);
-//
-//        // Verificação de consistência
-//        double diferenca = Math.abs(emprestimo.getValorEmprestimo() - valorRevertido);
-//        System.out.printf("Diferença entre valor original e revertido: R$ %.2f%n", diferenca);
-//        if (diferenca < 0.01) {
-//            System.out.println("Reversão consistente (diferença insignificante)!");
-//        } else {
-//            System.out.println("Atenção: Reversão inconsistente!");
-//        }
     }
 }

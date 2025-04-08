@@ -4,6 +4,7 @@ import br.com.emprestai.controller.ClienteController;
 import br.com.emprestai.dao.ClienteDAO;
 import br.com.emprestai.exception.ApiException;
 import br.com.emprestai.model.Cliente;
+import br.com.emprestai.service.ClienteService;
 import br.com.emprestai.util.SessionManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -59,7 +60,7 @@ public class CadastroClienteViewController {
             }
 
             // Criação do objeto Cliente
-            Cliente cliente = new Cliente();
+            Cliente cliente = new Cliente(new ClienteService());
             cliente.setCpfCliente(cpf);
             cliente.setNomeCliente(nome);
             cliente.setDataNascimento(dataNascimento);

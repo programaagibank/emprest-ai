@@ -65,7 +65,7 @@ public class ContratarEmprestimoViewController {
     private void initialize() {
         System.out.println("CSS carregado: " + getClass().getResource("../css/contratar.css"));
         SessionManager.getInstance().refreshClienteLogado();
-        emprestimoController = new EmprestimoController(new EmprestimoDAO(), new ClienteDAO());
+        emprestimoController = new EmprestimoController(new EmprestimoDAO());
 
         // Setup checkboxes to enable confirm button only when both are checked
         termsCheckBox.selectedProperty().addListener((observable, oldValue, newValue) ->

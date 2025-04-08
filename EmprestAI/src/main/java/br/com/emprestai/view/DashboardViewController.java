@@ -177,9 +177,19 @@ public class DashboardViewController {
     private void loadUpcomingPayments(Cliente cliente) {
         try {
             // Fetch unpaid parcels for Consignado (id_tipo_emprestimo = 1)
-            List<Parcela> consignadoParcels = parcelaController.getUltimasNaoPagas(cliente.getIdCliente(), CONSIGNADO);
+            List<Parcela> consignadoParcels = List.of();
+            List<Parcela> pessoalParcels = List.of();
+            try{
+                consignadoParcels = parcelaController.getUltimasNaoPagas(cliente.getIdCliente(), CONSIGNADO);
+            } catch (Exception e){
+                System.out.println(e.getMessage());
+            }
             // Fetch unpaid parcels for Pessoal (id_tipo_emprestimo = 2)
-            List<Parcela> pessoalParcels = parcelaController.getUltimasNaoPagas(cliente.getIdCliente(), PESSOAL);
+            try{
+                pessoalParcels = parcelaController.getUltimasNaoPagas(cliente.getIdCliente(), PESSOAL);
+            } catch (Exception e){
+                System.out.println(e.getMessage());
+            }
 
             // Combine the lists
             List<Parcela> allUnpaidParcels = new ArrayList<>();

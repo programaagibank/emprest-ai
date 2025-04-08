@@ -1,12 +1,11 @@
-package br.com.emprestai.service.validator;
+package br.com.emprestai.service.elegibilidade;
 
 import br.com.emprestai.exception.ValidationException;
 import br.com.emprestai.model.Cliente;
 import br.com.emprestai.model.Emprestimo;
-import br.com.emprestai.service.ClienteService;
 import br.com.emprestai.util.EmprestimoParams;
 
-public class ValidatorConsignado {
+public class ElegibilidadeConsignado {
     private static final EmprestimoParams params = EmprestimoParams.getInstance();
 
     // Taxa de Juros
@@ -36,7 +35,7 @@ public class ValidatorConsignado {
 
     // Limite de Crédito
     public static void validarLimiteCreditoConsignado(Cliente cliente, double valorSolicitado) {
-        double limiteCredito = ClienteService.calcularLimiteCreditoConsignado(cliente);
+        double limiteCredito = cliente.getLimiteCreditoConsignado();
         if (valorSolicitado > limiteCredito) {
             throw new ValidationException("O valor solicitado (R$ " + valorSolicitado +
                     ") excede o limite de crédito consignado disponível (R$ " + limiteCredito + ").");
@@ -56,7 +55,7 @@ public class ValidatorConsignado {
 
     // Prazo
     public static void validarPrazoConsignado(Cliente cliente, int parcelas) {
-        int prazoMaximoConsignado = ClienteService.calcularPrazoMaximoConsignado(cliente);
+        int prazoMaximoConsignado = cliente.getPrazoMaximoConsignado();
         if (parcelas < params.getPrazoMinimoConsignado()) {
             throw new ValidationException("Quantidade de parcelas (" + parcelas +
                     ") inferior ao mínimo de " + params.getPrazoMinimoConsignado() + ".");
@@ -69,7 +68,7 @@ public class ValidatorConsignado {
 
     // Margem por Parcela
     public static void validarMargemConsignavel(Cliente cliente, double valorParcela) {
-        double margemDisponivel = ClienteService.calcularMargemConsignavelDisponivel(cliente);
+        double margemDisponivel = cliente.getMargemConsignavelDisponivel();
         if (valorParcela > margemDisponivel) {
             throw new ValidationException("O valor da parcela (R$ " + valorParcela +
                     ") excede a margem consignável disponível (R$ " + margemDisponivel + ").");
@@ -78,13 +77,6 @@ public class ValidatorConsignado {
 
     // Elegibilidade do Empréstimo
     public static void validarConsignado(Cliente cliente, Emprestimo emprestimo) {
-        if (emprestimo.getValorParcela() <= 0) throw new ValidationException("Valor da parcela deve ser maior que zero.");
-        if (cliente.getIdade() <= 0) throw new ValidationException("Idade deve ser maior que zero.");
-        if (emprestimo.getQuantidadeParcelas() <= 0) throw new ValidationException("Quantidade de parcelas deve ser maior que zero.");
-        if (emprestimo.getTaxaJuros() <= 0) throw new ValidationException("Taxa de juros deve ser maior que zero.");
-        if (emprestimo.getCarencia() < 0) throw new ValidationException("Carência não pode ser negativa.");
-        if (emprestimo.getValorEmprestimo() <= 0) throw new ValidationException("Valor solicitado deve ser maior que zero.");
-
         validarTaxaJurosEmprestimoConsig(emprestimo.getTaxaJuros());
         validarCarenciaEmprestimoConsig(emprestimo.getCarencia());
         validarValorMinimoEmprestimo(emprestimo.getValorEmprestimo());

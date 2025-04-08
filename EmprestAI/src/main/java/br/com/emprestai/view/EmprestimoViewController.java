@@ -96,7 +96,7 @@ public class EmprestimoViewController {
     private void onHomeClick() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("dashboard.fxml"));
-            Scene mainScene = new Scene(loader.load(), 360, 640);
+            Scene mainScene = new Scene(loader.load(), 400, 700);
             Stage stage = (Stage) homeButton.getScene().getWindow();
             stage.setScene(mainScene);
             stage.setTitle("EmprestAI - Dashboard");
@@ -115,7 +115,7 @@ public class EmprestimoViewController {
         try {
             SessionManager.getInstance().clearSession();
             FXMLLoader loader = new FXMLLoader(getClass().getResource("login.fxml"));
-            Scene mainScene = new Scene(loader.load(), 360, 640);
+            Scene mainScene = new Scene(loader.load(), 400, 700);
             Stage stage = (Stage) homeButton.getScene().getWindow();
             stage.setScene(mainScene);
             stage.setTitle("EmprestAI - Login");
@@ -130,7 +130,7 @@ public class EmprestimoViewController {
     private void onSolicitacaoClick() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("solicitacao-emprestimo.fxml"));
-            Scene solicitacaoScene = new Scene(loader.load(), 360, 640);
+            Scene solicitacaoScene = new Scene(loader.load(), 400, 700);
             SolicitacaoEmprestimoViewController solicitacaoController = loader.getController();
             solicitacaoController.setTipoEmprestimo(tipoEmprestimo);
             Stage stage = (Stage) solicitacaoButton.getScene().getWindow();
@@ -149,7 +149,7 @@ public class EmprestimoViewController {
             if (emprestimo.getTipoEmprestimo() == TipoEmprestimoEnum.PESSOAL) {
                 // Abrir tela de ordenação para empréstimos pessoais
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("ordenacao-parcelas.fxml"));
-                Scene ordenacaoScene = new Scene(loader.load(), 360, 640);
+                Scene ordenacaoScene = new Scene(loader.load(), 400, 700);
                 OrdenacaoParcelasViewController ordenacaoController = loader.getController();
                 ordenacaoController.setEmprestimo(emprestimo);
                 ordenacaoController.setTipoEmprestimo(tipoEmprestimo);
@@ -161,7 +161,7 @@ public class EmprestimoViewController {
             } else {
                 // Abrir diretamente a tela de parcelas para outros tipos (ex.: CONSIGNADO)
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("parcela.fxml"));
-                Scene parcelaScene = new Scene(loader.load(), 360, 640);
+                Scene parcelaScene = new Scene(loader.load(), 400, 700);
                 ParcelaViewController parcelaViewController = loader.getController();
                 parcelaViewController.setEmprestimo(emprestimo);
                 parcelaViewController.setTipoEmprestimo(tipoEmprestimo);
@@ -249,7 +249,7 @@ public class EmprestimoViewController {
     private VBox createLoanCard(Emprestimo emprestimo) {
         VBox card = new VBox(15);
         card.getStyleClass().add("payment-card");
-
+        card.setPrefWidth(Double.MAX_VALUE);
        // HBox titleBox = new HBox(10);
        // Label titleLabel = new Label(emprestimo.getTipoEmprestimo().name() + " R$ " + formatCurrency(emprestimo.getValorTotal() - emprestimo.getValorSeguro() - emprestimo.getOutrosCustos() - emprestimo.getValorIOF()));
       //  titleLabel.getStyleClass().add("payment-date");
@@ -357,6 +357,13 @@ public class EmprestimoViewController {
         String htmlContent = GeneratePDF.generateHtmlContent(emprestimo, parcelaController);
         try (FileOutputStream fos = new FileOutputStream(file)) {
             HtmlConverter.convertToPdf(htmlContent, fos);
+        }
+    }
+    //  método EmprestimoViewController
+    public void recarregarEmprestimos() {
+        Cliente clienteLogado = SessionManager.getInstance().getClienteLogado();
+        if (clienteLogado != null && tipoEmprestimo != null) {
+            carregarEmprestimos(clienteLogado);
         }
     }
 }

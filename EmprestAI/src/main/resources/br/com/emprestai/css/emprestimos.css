@@ -43,11 +43,16 @@
 .scroll-pane .scroll-bar:vertical {
     -fx-background-color: transparent;
     -fx-background-radius: 0;
+    -fx-pref-width: 12;
 }
 
 .scroll-pane .scroll-bar:vertical .thumb {
-    -fx-background-color: #DDDDDD;
-    -fx-background-radius: 5px;
+    -fx-background-color: #757575;
+    -fx-background-radius: 6px;
+}
+.scroll-pane .scroll-bar:vertical .track {
+    -fx-background-color: #f0f0f0;
+    -fx-background-radius: 0;
 }
 
 /* Main content styling */
@@ -58,6 +63,7 @@
     -fx-spacing: 15px;
     -fx-padding: 20px 15px;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, -5);
+    -fx-min-height: -Infinity;
 }
 
 /* Action button (Solicitação) */
@@ -105,16 +111,11 @@
 
 /* Estilo dos cards de empréstimo (definido dinamicamente no controlador) */
 .payment-card {
-    -fx-background-color: #F8F9FA;
-    -fx-background-radius: 10px;
-    -fx-padding: 12px;
-    -fx-alignment: center-left;
-    -fx-spacing: 10px;
-    -fx-min-height: 60px;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 8, 0, 0, 2);
-    -fx-border-color: #EEEEEE;
-    -fx-border-radius: 10px;
-    -fx-border-width: 1px;
+    -fx-background-color: white;
+    -fx-background-radius: 8px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 1);
+    -fx-padding: 15px;
+    -fx-spacing: 8px;
 }
 
 .payment-card:hover {

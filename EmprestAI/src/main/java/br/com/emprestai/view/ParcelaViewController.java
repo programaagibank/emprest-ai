@@ -158,7 +158,7 @@ public class ParcelaViewController {
             }
 
             FXMLLoader loader = new FXMLLoader(getClass().getResource("confirmacao-pagamento.fxml"));
-            Scene confirmacaoScene = new Scene(loader.load(), 360, 640);
+            Scene confirmacaoScene = new Scene(loader.load(), 400, 640);
             ConfirmacaoPagViewController confirmacaoController = loader.getController();
             confirmacaoController.setParcelasSelecionadas(parcelasSelecionadas);
             confirmacaoController.setParcelaViewController(this);
@@ -173,29 +173,51 @@ public class ParcelaViewController {
         }
     }
 
-    @FXML
-    public void onClickReturn() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("emprestimos.fxml"));
-            Scene mainScene = new Scene(loader.load(), 360, 640);
-            EmprestimoViewController emprestimoViewController = loader.getController();
-            emprestimoViewController.setTipoEmprestimo(tipoEmprestimo);
+//    @FXML
+//    public void onClickReturn() {
+//        try {
+//            FXMLLoader loader = new FXMLLoader(getClass().getResource("emprestimos.fxml"));
+//            Scene mainScene = new Scene(loader.load(), 400, 640);
+//            EmprestimoViewController emprestimoViewController = loader.getController();
+//            emprestimoViewController.setTipoEmprestimo(tipoEmprestimo);
+//
+//            Stage stage = (Stage) returnButton.getScene().getWindow();
+//            stage.setScene(mainScene);
+//            stage.setTitle("EmprestAI - Emprestimos");
+//            stage.show();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            System.err.println("Erro ao carregar emprestimos.fxml: " + e.getMessage());
+//        }
+//    }
+@FXML
+public void onClickReturn() {
+    try {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("emprestimos.fxml"));
+        Scene mainScene = new Scene(loader.load(), 400, 700);
+        EmprestimoViewController emprestimoViewController = loader.getController();
 
-            Stage stage = (Stage) returnButton.getScene().getWindow();
-            stage.setScene(mainScene);
-            stage.setTitle("EmprestAI - Emprestimos");
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.err.println("Erro ao carregar emprestimos.fxml: " + e.getMessage());
-        }
+        // Defina o tipo de empréstimo primeiro
+        emprestimoViewController.setTipoEmprestimo(tipoEmprestimo);
+
+        // Forçar uma recarga dos empréstimos
+        emprestimoViewController.recarregarEmprestimos();
+
+        Stage stage = (Stage) returnButton.getScene().getWindow();
+        stage.setScene(mainScene);
+        stage.setTitle("EmprestAI - Emprestimos");
+        stage.show();
+    } catch (IOException e) {
+        e.printStackTrace();
+        System.err.println("Erro ao carregar emprestimos.fxml: " + e.getMessage());
     }
+}
 
     private void onClickReturnToLogin() {
         try {
             SessionManager.getInstance().clearSession();
             FXMLLoader loader = new FXMLLoader(getClass().getResource("login.fxml"));
-            Scene mainScene = new Scene(loader.load(), 360, 640);
+            Scene mainScene = new Scene(loader.load(), 400, 640);
             Stage stage = (Stage) returnButton.getScene().getWindow();
             stage.setScene(mainScene);
             stage.setTitle("EmprestAI - Login");
@@ -343,7 +365,7 @@ public class ParcelaViewController {
         try {
             SessionManager.getInstance().clearSession();
             FXMLLoader loader = new FXMLLoader(getClass().getResource("login.fxml"));
-            Scene loginScene = new Scene(loader.load(), 360, 640);
+            Scene loginScene = new Scene(loader.load(), 400, 640);
             Stage stage = (Stage) exitButton.getScene().getWindow();
             stage.setScene(loginScene);
             stage.setTitle("EmprestAI - Login");

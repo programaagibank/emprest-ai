@@ -13,7 +13,7 @@ public class App extends Application {
     public void start(Stage stage) throws IOException {
         // Carregar o FXML
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("view/login.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 400, 680); // Resolução de celular
+        Scene scene = new Scene(fxmlLoader.load(), 400, 700); // Resolução de celular
 
         // Definir o título da janela
         stage.setTitle("Emprest.AI - Gerenciador de Empréstimos");

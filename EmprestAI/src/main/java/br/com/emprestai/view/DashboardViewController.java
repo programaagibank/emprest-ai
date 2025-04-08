@@ -10,7 +10,9 @@ import br.com.emprestai.model.Parcela;
 import br.com.emprestai.util.SessionManager;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
@@ -108,7 +110,21 @@ public class DashboardViewController {
 
     @FXML
     private void onProfileClick() {
-        // Implement navigation to profile if needed
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/perfilCliente.fxml"));
+            Parent root = loader.load();
+            Scene scene = profileButton.getScene();
+            Stage stage = (Stage) scene.getWindow();
+            scene.setRoot(root);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erro ao carregar tela");
+            alert.setHeaderText(null);
+            alert.setContentText("Ocorreu um erro ao carregar a tela de perfil: " + e.getMessage());
+            alert.showAndWait();
+        }
     }
 
     @FXML
@@ -237,4 +253,7 @@ public class DashboardViewController {
             System.err.println("Erro ao carregar emprestimos.fxml: " + e.getMessage());
         }
     }
+    // Método a ser adicionado ao DashboardViewController.java
+
+
 }

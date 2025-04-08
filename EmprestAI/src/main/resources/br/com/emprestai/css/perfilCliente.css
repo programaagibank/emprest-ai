@@ -1,0 +1,142 @@
+/* Base Styles */
+.root {
+    -fx-background-color: #f5f5f5;
+    -fx-font-family: "Segoe UI", sans-serif;
+}
+
+.scroll-pane {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+    -fx-background-insets: 0;
+}
+
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+
+/* Header Styles */
+.header {
+    -fx-background-color: #3f51b5;
+    -fx-padding: 10px;
+}
+
+.top-bar {
+    -fx-padding: 5px;
+}
+
+.back-button {
+    -fx-background-color: transparent;
+    -fx-cursor: hand;
+}
+
+.back-button:hover {
+    -fx-opacity: 0.8;
+}
+
+.back-icon {
+    -fx-fill: white;
+    -fx-scale-x: 1.5;
+    -fx-scale-y: 1.5;
+}
+
+.header-title {
+    -fx-text-fill: white;
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+}
+
+/* Profile Content Styles */
+.profile-content {
+    -fx-padding: 20px 15px;
+    -fx-spacing: 20px;
+}
+
+/* Profile Image */
+.profile-image-container {
+    -fx-padding: 10px 0 20px 0;
+}
+
+.profile-image-circle {
+    -fx-fill: #3f51b5;
+}
+
+.profile-initials {
+    -fx-text-fill: white;
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+}
+
+.profile-name {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+}
+
+/* Section Styles */
+.section-container {
+    -fx-background-color: white;
+    -fx-background-radius: 8px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 0, 0, 2);
+    -fx-padding: 15px;
+}
+
+.section-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+    -fx-padding: 0 0 10px 0;
+    -fx-border-color: transparent transparent #e0e0e0 transparent;
+    -fx-border-width: 0 0 1px 0;
+}
+
+/* Field Styles */
+.info-field {
+    -fx-padding: 5px 0;
+}
+
+.field-label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #757575;
+    -fx-padding: 0 0 2px 0;
+}
+
+.field-value {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+}
+
+.field-subtitle {
+    -fx-font-size: 12px;
+    -fx-text-fill: #757575;
+    -fx-font-style: italic;
+}
+
+/* Score Progress Bar */
+.score-progress {
+    -fx-accent: #4caf50;
+}
+
+.score-progress .bar {
+    -fx-background-radius: 2px;
+}
+
+.score-progress .track {
+    -fx-background-color: #e0e0e0;
+    -fx-background-radius: 2px;
+}
+
+/* Action Buttons */
+.action-button {
+    -fx-background-color: #3f51b5;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-padding: 12px;
+    -fx-background-radius: 4px;
+    -fx-cursor: hand;
+}
+
+.action-button:hover {
+    -fx-background-color: #303f9f;
+}

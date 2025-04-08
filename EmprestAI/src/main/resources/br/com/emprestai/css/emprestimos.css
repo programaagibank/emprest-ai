@@ -43,101 +43,117 @@
 .scroll-pane .scroll-bar:vertical {
     -fx-background-color: transparent;
     -fx-background-radius: 0;
-    -fx-pref-width: 12;
+    -fx-padding: 0 5px 0 0;
 }
 
 .scroll-pane .scroll-bar:vertical .thumb {
-    -fx-background-color: #757575;
+    -fx-background-color: #DDDDDD;
     -fx-background-radius: 6px;
 }
-.scroll-pane .scroll-bar:vertical .track {
-    -fx-background-color: #f0f0f0;
-    -fx-background-radius: 0;
-}
 
-/* Main content styling */
+/* Content styling */
 .content {
     -fx-background-color: #FFFFFF;
-    -fx-background-radius: 20px 20px 0 0;
+    -fx-background-radius: 24px 24px 0 0;
+    -fx-padding: 30px 20px;
+    -fx-spacing: 40px;
     -fx-alignment: top-center;
-    -fx-spacing: 15px;
-    -fx-padding: 20px 15px;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, -5);
-    -fx-min-height: -Infinity;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 12, 0, 0, -5);
 }
 
 /* Action button (Solicitação) */
 .action-button {
     -fx-background-color: #FFFFFF;
     -fx-background-radius: 50%;
-    -fx-pref-width: 60px;
-    -fx-pref-height: 60px;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 10, 0, 0, 4);
+    -fx-pref-width: 70px;
+    -fx-pref-height: 70px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.08), 12, 0, 0, 4);
     -fx-cursor: hand;
     -fx-transition: all 0.3s ease-in-out;
 }
 
 .action-button .image-view {
-    -fx-fit-height: 30px;
-    -fx-fit-width: 30px;
+    -fx-fit-height: 35px;
+    -fx-fit-width: 35px;
 }
 
 .action-button:hover {
     -fx-background-color: #F0F7FF;
-    -fx-effect: dropshadow(gaussian, rgba(0, 86, 210, 0.2), 12, 0, 0, 5);
+    -fx-effect: dropshadow(gaussian, rgba(0, 86, 210, 0.15), 12, 0, 0, 5);
     -fx-scale-x: 1.05;
     -fx-scale-y: 1.05;
 }
 
 /* Label abaixo do botão */
 .action-label {
-    -fx-font-family: "Roboto", "Arial", sans-serif;
+    -fx-font-family: "Roboto Light", "Arial", sans-serif;
     -fx-font-size: 14px;
     -fx-text-fill: #555555;
-    -fx-font-weight: bold;
+    -fx-font-weight: normal;
+    -fx-padding: 8px 0 0 0;
 }
 
 /* Info label (Mensagem de solicitação) */
 .info-label {
-    -fx-font-size: 14px;
+    -fx-font-size: 13px;
     -fx-text-fill: #666666;
+    -fx-padding: 5px 0;
 }
 
 /* Upcoming payments section (Loan Info) */
 .upcoming-payments-section {
     -fx-alignment: top-left;
-    -fx-spacing: 12px;
+    -fx-spacing: 25px;
+    -fx-padding: 10px 0;
 }
 
-/* Estilo dos cards de empréstimo (definido dinamicamente no controlador) */
+/* Estilo dos cards de empréstimo */
 .payment-card {
-    -fx-background-color: white;
-    -fx-background-radius: 8px;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 1);
-    -fx-padding: 15px;
-    -fx-spacing: 8px;
+    -fx-background-color: #F8F9FA;
+    -fx-background-radius: 12px;
+    -fx-padding: 20px;
+    -fx-spacing: 15px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.04), 8, 0, 0, 2);
+    -fx-border-color: #EEEEEE;
+    -fx-border-radius: 12px;
+    -fx-border-width: 1px;
 }
 
-.payment-card:hover {
-    -fx-background-color: #F0F7FF;
-    -fx-border-color: #D6E4F0;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 10, 0, 0, 3);
+/* Layout interno do card de empréstimo */
+.loan-header {
+    -fx-alignment: center-left;
+    -fx-spacing: 10px;
+    -fx-padding: 0 0 10px 0;
 }
 
-/* Pagamento texto */
-.payment-date, .payment-amount, .payment-type, .payment-contract {
+.loan-title {
     -fx-font-family: "Roboto", "Arial", sans-serif;
-    -fx-wrap-text: true;
-}
-
-.payment-date {
-    -fx-font-size: 13px;
+    -fx-font-size: 16px;
     -fx-font-weight: bold;
     -fx-text-fill: #333333;
 }
 
-.payment-amount {
+.loan-detail-grid {
+    -fx-hgap: 15px;
+    -fx-vgap: 15px;
+    -fx-padding: 10px 0;
+}
+
+.loan-detail-label {
+    -fx-font-family: "Roboto Light", "Arial", sans-serif;
+    -fx-font-size: 13px;
+    -fx-text-fill: #666666;
+}
+
+.loan-detail-value {
+    -fx-font-family: "Roboto", "Arial", sans-serif;
     -fx-font-size: 14px;
+    -fx-text-fill: #333333;
+    -fx-padding: 3px 0 0 0;
+}
+
+.loan-amount {
+    -fx-font-size: 16px;
     -fx-font-weight: bold;
     -fx-text-fill: #0056D2;
 }

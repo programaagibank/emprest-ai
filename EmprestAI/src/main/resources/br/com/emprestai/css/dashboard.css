@@ -15,6 +15,9 @@
     -fx-padding: 5px 0px;
     -fx-margin: 0 0 20px 0; /* Adicionado margem inferior */
 }
+.mastercard-logo {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 2, 0, 0, 1);
+}
 
 /* Card Header styling - Design para o cartão azul */
 .card-header {

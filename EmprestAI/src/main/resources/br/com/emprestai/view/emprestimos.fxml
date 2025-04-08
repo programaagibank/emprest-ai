@@ -8,11 +8,11 @@
 <BorderPane styleClass="root" stylesheets="@../css/emprestimos.css" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/17.0.12" fx:controller="br.com.emprestai.view.EmprestimoViewController">
     <!-- Top Section: Gradient Header -->
     <top>
-        <VBox prefWidth="380.0" styleClass="header">
+        <VBox styleClass="header">
             <padding>
-                <Insets bottom="20.0" left="15.0" right="15.0" top="40.0" />
+                <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
             </padding>
-            <Label fx:id="contractTitle" styleClass="greeting-label" text="Contrato" />
+            <Label fx:id="contractTitle" styleClass="greeting-label" text="Contratos Ativos" />
             <Label fx:id="contractType" styleClass="credit-label" text="" />
         </VBox>
     </top>
@@ -22,31 +22,32 @@
     <center>
         <ScrollPane fitToWidth="true" styleClass="scroll-pane" VBox.vgrow="ALWAYS">
             <content>
-                <VBox alignment="CENTER" spacing="15.0" styleClass="content">
+                <VBox alignment="CENTER" spacing="40.0" styleClass="content">
                     <padding>
-                        <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                        <Insets bottom="30.0" left="20.0" right="20.0" top="30.0" />
                     </padding>
 
                     <!-- Solicitação Button and Message -->
-                    <VBox alignment="CENTER" spacing="10.0">
-                        <Button fx:id="solicitacaoButton" styleClass="action-button" onAction="#onSolicitacaoClick" visible="false" managed="false">
+                    <VBox alignment="CENTER" spacing="15.0">
+                        <Button fx:id="solicitacaoButton" styleClass="action-button" onAction="#onSolicitacaoClick">
                             <graphic>
-                                <ImageView fitHeight="40" fitWidth="40" style="-fx-border-color: red; -fx-border-width: 1;">
+                                <ImageView fitHeight="35" fitWidth="35">
                                     <image>
                                         <Image url="@../images/offers.png" />
                                     </image>
                                     <clip>
-                                        <Circle radius="20" centerX="20" centerY="20" />
+                                        <Circle radius="17.5" centerX="17.5" centerY="17.5" />
                                     </clip>
                                 </ImageView>
                             </graphic>
                         </Button>
-                        <Label fx:id="solicitacaoMensagem" text="" styleClass="info-label" visible="false" managed="false" />
+                        <Label fx:id="solicitacaoMensagem" text="Confira novas ofertas!" styleClass="action-label" />
                     </VBox>
 
-                    <!-- Loan Information -->
-                    <VBox fx:id="loanInfoBox" spacing="10.0" styleClass="upcoming-payments-section" visible="true" managed="true">
-                        <!-- Cards de empréstimo serão adicionados dinamicamente pelo controlador -->
+                    <!-- Loan Information - Agora sem box, apenas usando VBox para layout -->
+                    <VBox fx:id="loanInfoBox" spacing="25.0" styleClass="upcoming-payments-section" visible="true" managed="true">
+                        <!-- Exemplo de card de empréstimo com layout melhorado -->
+                        <!-- Os cards reais serão adicionados dinamicamente pelo controlador -->
                     </VBox>
                 </VBox>
             </content>
@@ -56,13 +57,13 @@
     <!-- Bottom Navigation - Modernizado -->
     <bottom>
         <StackPane styleClass="nav-bar-container">
-            <HBox alignment="CENTER" styleClass="nav-bar" HBox.hgrow="ALWAYS">
+            <HBox alignment="CENTER" styleClass="nav-bar">
                 <!-- Make each button container take equal space -->
-                <StackPane styleClass="nav-button-container" HBox.hgrow="ALWAYS" maxWidth="Infinity">
+                <StackPane styleClass="nav-button-container" HBox.hgrow="ALWAYS">
                     <Button fx:id="homeButton" onAction="#onHomeClick" styleClass="nav-button, nav-button-active">
                         <graphic>
                             <StackPane>
-                                <Circle styleClass="nav-button-circle" radius="22" />
+                                <Circle styleClass="nav-button-circle" radius="18" />
                                 <StackPane>
                                     <SVGPath styleClass="nav-icon" content="M3,12V19H9V13H15V19H21V12L12,3L3,12Z" />
                                     <Label styleClass="nav-button-label" text="Início" />
@@ -72,11 +73,11 @@
                     </Button>
                 </StackPane>
 
-                <StackPane styleClass="nav-button-container" HBox.hgrow="ALWAYS" maxWidth="Infinity">
+                <StackPane styleClass="nav-button-container" HBox.hgrow="ALWAYS">
                     <Button fx:id="profileButton" onAction="#onProfileClick" styleClass="nav-button">
                         <graphic>
                             <StackPane>
-                                <Circle styleClass="nav-button-circle" radius="22" visible="false" />
+                                <Circle styleClass="nav-button-circle" radius="18" visible="false" />
                                 <StackPane>
                                     <SVGPath styleClass="nav-icon" content="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z" />
                                     <Label styleClass="nav-button-label" text="Perfil" />
@@ -86,11 +87,11 @@
                     </Button>
                 </StackPane>
 
-                <StackPane styleClass="nav-button-container" HBox.hgrow="ALWAYS" maxWidth="Infinity">
+                <StackPane styleClass="nav-button-container" HBox.hgrow="ALWAYS">
                     <Button fx:id="exitButton" onAction="#onExitClick" styleClass="nav-button">
                         <graphic>
                             <StackPane>
-                                <Circle styleClass="nav-button-circle" radius="22" visible="false" />
+                                <Circle styleClass="nav-button-circle" radius="18" visible="false" />
                                 <StackPane>
                                     <SVGPath styleClass="nav-icon" content="M19,3H5C3.89,3 3,3.89 3,5V9H5V5H19V19H5V15H3V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5C21,3.89 20.1,3 19,3M10.08,15.58L11.5,17L16.5,12L11.5,7L10.08,8.41L12.67,11H3V13H12.67L10.08,15.58Z" />
                                     <Label styleClass="nav-button-label" text="Sair" />

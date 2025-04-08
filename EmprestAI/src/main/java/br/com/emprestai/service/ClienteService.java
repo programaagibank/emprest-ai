@@ -46,11 +46,17 @@ public class ClienteService {
     }
 
     public static double calcularMargemConsignavelDisponivel(Cliente cliente) {
+        if (cliente.getScore() < params.getScoreMinimoPessoal() || cliente.getPrazoMaximoConsignado() <= params.getPrazoMinimoConsignado()) {
+            return 0.0; // Cliente não elegível
+        }
         double margem = cliente.getVencimentoConsignavelTotal() * params.getMargemConsignavel() / 100;
         return Math.max(0, margem - cliente.getValorParcelasMensaisConsignado());
     }
 
     public static double calcularMargemPessoalDisponivel(Cliente cliente) {
+        if (cliente.getScore() < params.getScoreMinimoPessoal() || cliente.getPrazoMaximoPessoal() <= params.getPrazoMinimoPessoal()) {
+            return 0.0; // Cliente não elegível
+        }
         double margem = cliente.getVencimentoLiquidoTotal() * params.getPercentualRendaPessoal() / 100;
         return Math.max(0, margem - cliente.getValorParcelasMensaisTotal())*getPercentualScore(cliente.getScore());
     }

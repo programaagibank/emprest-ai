@@ -129,7 +129,6 @@ public class Cliente {
     }
 
     public double getLimiteCreditoConsignado() {
-        System.out.println(ClienteService.calcularLimiteCreditoConsignado(this));
         return ClienteService.calcularLimiteCreditoConsignado(this);
     }
 

@@ -130,7 +130,7 @@ public class ConfirmacaoPagViewController {
     private void exibirTelaSucesso(String mensagem) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("confirmacao-sucesso.fxml"));
-            Scene sucessoScene = new Scene(loader.load(), 360, 640);
+            Scene sucessoScene = new Scene(loader.load(), 400, 700);
             ConfirmacaoSucessoViewController controller = loader.getController();
             controller.setMensagem(mensagem);
 
@@ -153,7 +153,7 @@ public class ConfirmacaoPagViewController {
     private void onHomeClick() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("dashboard.fxml"));
-            Scene dashboardScene = new Scene(loader.load(), 360, 640);
+            Scene dashboardScene = new Scene(loader.load(), 400, 700);
             Stage stage = (Stage) homeButton.getScene().getWindow();
             stage.setScene(dashboardScene);
             stage.setTitle("EmprestAI - Dashboard");
@@ -190,7 +190,7 @@ public class ConfirmacaoPagViewController {
     private void voltarParaParcelas() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("parcela.fxml"));
-            Scene parcelaScene = new Scene(loader.load(), 360, 640);
+            Scene parcelaScene = new Scene(loader.load(), 400, 700);
             ParcelaViewController controller = loader.getController();
 
             if (parcelaViewController != null && parcelaViewController.getEmprestimo() != null) {
@@ -217,7 +217,7 @@ public class ConfirmacaoPagViewController {
         try {
             SessionManager.getInstance().clearSession();
             FXMLLoader loader = new FXMLLoader(getClass().getResource("login.fxml"));
-            Scene loginScene = new Scene(loader.load(), 360, 640);
+            Scene loginScene = new Scene(loader.load(), 400, 700);
             Stage stage = (Stage) cancelarButton.getScene().getWindow();
             stage.setScene(loginScene);
             stage.setTitle("EmprestAI - Login");

@@ -135,7 +135,7 @@ public class ContratarEmprestimoViewController {
     private void onHomeClick() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("dashboard.fxml"));
-            Scene mainScene = new Scene(loader.load(), 360, 640);
+            Scene mainScene = new Scene(loader.load(), 400, 700);
             Stage stage = (Stage) homeButton.getScene().getWindow();
             stage.setScene(mainScene);
             stage.setTitle("EmprestAI - Dashboard");
@@ -154,7 +154,7 @@ public class ContratarEmprestimoViewController {
     private void onBackClick() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("solicitacao-emprestimo.fxml"));
-            Scene solicitacaoScene = new Scene(loader.load(), 360, 640);
+            Scene solicitacaoScene = new Scene(loader.load(), 400, 700);
             SolicitacaoEmprestimoViewController solicitacaoEmprestimoViewController = loader.getController();
             solicitacaoEmprestimoViewController.setTipoEmprestimo(tipoEmprestimo);
             Stage stage = (Stage) cancelButton.getScene().getWindow();
@@ -172,7 +172,7 @@ public class ContratarEmprestimoViewController {
         try {
             SessionManager.getInstance().clearSession();
             FXMLLoader loader = new FXMLLoader(getClass().getResource("login.fxml"));
-            Scene mainScene = new Scene(loader.load(), 360, 640);
+            Scene mainScene = new Scene(loader.load(), 400, 700);
             Stage stage = (Stage) exitButton.getScene().getWindow();
             stage.setScene(mainScene);
             stage.setTitle("EmprestAI - Login");
@@ -223,7 +223,7 @@ public class ContratarEmprestimoViewController {
     private void exibirTelaSucesso(String mensagem) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("confirmacao-sucesso.fxml"));
-            Scene sucessoScene = new Scene(loader.load(), 360, 640);
+            Scene sucessoScene = new Scene(loader.load(), 400, 700);
             ConfirmacaoSucessoViewController controller = loader.getController();
             controller.setMensagem(mensagem);
 

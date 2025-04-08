@@ -65,7 +65,7 @@ public class ConfirmacaoSucessoViewController {
         try {
             SessionManager.getInstance().clearSession();
             FXMLLoader loader = new FXMLLoader(getClass().getResource("login.fxml"));
-            Scene loginScene = new Scene(loader.load(), 360, 640);
+            Scene loginScene = new Scene(loader.load(), 400, 700);
             Stage stage = (Stage) exitButton.getScene().getWindow();
             stage.setScene(loginScene);
             stage.setTitle("EmprestAI - Login");
@@ -83,7 +83,7 @@ public class ConfirmacaoSucessoViewController {
     private void irParaDashboard() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("dashboard.fxml"));
-            Scene dashboardScene = new Scene(loader.load(), 360, 640);
+            Scene dashboardScene = new Scene(loader.load(), 400, 700);
             Stage stage = (Stage) voltarButton.getScene().getWindow();
             stage.setScene(dashboardScene);
             stage.setTitle("EmprestAI - Dashboard");

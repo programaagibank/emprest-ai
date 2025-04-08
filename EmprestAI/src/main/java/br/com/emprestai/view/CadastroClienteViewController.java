@@ -86,7 +86,7 @@ public class CadastroClienteViewController {
         try {
             SessionManager.getInstance().clearSession(); // Limpa qualquer sessão residual
             FXMLLoader loader = new FXMLLoader(getClass().getResource("login.fxml"));
-            Scene loginScene = new Scene(loader.load(), 360, 640);
+            Scene loginScene = new Scene(loader.load(), 400, 700);
             Stage stage = (Stage) cpfField.getScene().getWindow();
             stage.setScene(loginScene);
             stage.setTitle("EmprestAI - Login");
@@ -109,7 +109,7 @@ public class CadastroClienteViewController {
         try {
             SessionManager.getInstance().clearSession(); // Limpa qualquer sessão residual
             FXMLLoader loader = new FXMLLoader(getClass().getResource("login.fxml"));
-            Scene loginScene = new Scene(loader.load(), 360, 640);
+            Scene loginScene = new Scene(loader.load(), 400, 700);
             Stage stage = (Stage) cpfField.getScene().getWindow();
             stage.setScene(loginScene);
             stage.setTitle("EmprestAI - Login");
@@ -149,7 +149,7 @@ public class CadastroClienteViewController {
     private void irParaDashboard() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("dashboard.fxml"));
-            Scene dashboardScene = new Scene(loader.load(), 360, 640);
+            Scene dashboardScene = new Scene(loader.load(), 400, 700);
             Stage stage = (Stage) cpfField.getScene().getWindow();
             stage.setScene(dashboardScene);
             stage.setTitle("EmprestAI - Dashboard");

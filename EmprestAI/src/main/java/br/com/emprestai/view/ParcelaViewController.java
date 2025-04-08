@@ -158,7 +158,7 @@ public class ParcelaViewController {
             }
 
             FXMLLoader loader = new FXMLLoader(getClass().getResource("confirmacao-pagamento.fxml"));
-            Scene confirmacaoScene = new Scene(loader.load(), 400, 640);
+            Scene confirmacaoScene = new Scene(loader.load(), 400, 700);
             ConfirmacaoPagViewController confirmacaoController = loader.getController();
             confirmacaoController.setParcelasSelecionadas(parcelasSelecionadas);
             confirmacaoController.setParcelaViewController(this);
@@ -217,7 +217,7 @@ public void onClickReturn() {
         try {
             SessionManager.getInstance().clearSession();
             FXMLLoader loader = new FXMLLoader(getClass().getResource("login.fxml"));
-            Scene mainScene = new Scene(loader.load(), 400, 640);
+            Scene mainScene = new Scene(loader.load(), 400, 700);
             Stage stage = (Stage) returnButton.getScene().getWindow();
             stage.setScene(mainScene);
             stage.setTitle("EmprestAI - Login");
@@ -365,7 +365,7 @@ public void onClickReturn() {
         try {
             SessionManager.getInstance().clearSession();
             FXMLLoader loader = new FXMLLoader(getClass().getResource("login.fxml"));
-            Scene loginScene = new Scene(loader.load(), 400, 640);
+            Scene loginScene = new Scene(loader.load(), 400, 700);
             Stage stage = (Stage) exitButton.getScene().getWindow();
             stage.setScene(loginScene);
             stage.setTitle("EmprestAI - Login");

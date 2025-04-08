@@ -116,7 +116,7 @@ public class DashboardViewController {
         try {
             SessionManager.getInstance().clearSession();
             FXMLLoader loader = new FXMLLoader(getClass().getResource("login.fxml"));
-            Scene loginScene = new Scene(loader.load(), 360, 640);
+            Scene loginScene = new Scene(loader.load(), 400, 700);
             Stage stage = (Stage) exitButton.getScene().getWindow();
             stage.setScene(loginScene);
             stage.setTitle("EmprestAI - Login");
@@ -136,7 +136,7 @@ public class DashboardViewController {
                 System.err.println("Erro: Não foi possível encontrar chatbot.fxml no caminho especificado.");
                 return;
             }
-            Scene chatbotScene = new Scene(loader.load(), 300, 400);
+            Scene chatbotScene = new Scene(loader.load(), 350, 500);
             Stage chatbotStage = new Stage();
             chatbotStage.setScene(chatbotScene);
             chatbotStage.setTitle("EmprestAI - Chatbot");

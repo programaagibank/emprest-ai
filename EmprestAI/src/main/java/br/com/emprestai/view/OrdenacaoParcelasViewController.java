@@ -74,7 +74,7 @@ public class OrdenacaoParcelasViewController {
     private void onReturnClick() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("emprestimos.fxml"));
-            Scene mainScene = new Scene(loader.load(), 360, 640);
+            Scene mainScene = new Scene(loader.load(), 400, 700);
             EmprestimoViewController emprestimoViewController = loader.getController();
             emprestimoViewController.setTipoEmprestimo(tipoEmprestimo);
 
@@ -92,7 +92,7 @@ public class OrdenacaoParcelasViewController {
     private void onHomeClick() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("dashboard.fxml"));
-            Scene mainScene = new Scene(loader.load(), 360, 640);
+            Scene mainScene = new Scene(loader.load(), 400, 700);
             Stage stage = (Stage) homeButton.getScene().getWindow();
             stage.setScene(mainScene);
             stage.setTitle("EmprestAI - Dashboard");
@@ -113,7 +113,7 @@ public class OrdenacaoParcelasViewController {
         try {
             SessionManager.getInstance().clearSession();
             FXMLLoader loader = new FXMLLoader(getClass().getResource("login.fxml"));
-            Scene mainScene = new Scene(loader.load(), 360, 640);
+            Scene mainScene = new Scene(loader.load(), 400, 700);
             Stage stage = (Stage) exitButton.getScene().getWindow();
             stage.setScene(mainScene);
             stage.setTitle("EmprestAI - Login");
@@ -126,7 +126,7 @@ public class OrdenacaoParcelasViewController {
 
     private void abrirParcelaView(boolean crescente) throws Exception {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("parcela.fxml"));
-        Scene parcelaScene = new Scene(loader.load(), 360, 640);
+        Scene parcelaScene = new Scene(loader.load(), 400, 700);
         ParcelaViewController parcelaController = loader.getController();
         parcelaController.setEmprestimo(emprestimo);
         parcelaController.setTipoEmprestimo(tipoEmprestimo);

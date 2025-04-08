@@ -93,7 +93,7 @@ public class SolicitacaoEmprestimoViewController {
 
             // Carrega a tela de ofertas
             FXMLLoader loader = new FXMLLoader(getClass().getResource("ofertas.fxml"));
-            Scene scene = new Scene(loader.load(), 360, 640);
+            Scene scene = new Scene(loader.load(), 400, 700);
             OfertasViewController controller = loader.getController();
             controller.setOfertaData(loanAmount, tipoEmprestimo);
 

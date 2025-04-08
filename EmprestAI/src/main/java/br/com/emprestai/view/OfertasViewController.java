@@ -95,7 +95,7 @@ public class OfertasViewController {
 
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("contratar-emprestimo.fxml"));
-            Scene mainScene = new Scene(loader.load(), 360, 640);
+            Scene mainScene = new Scene(loader.load(), 400, 700);
             ContratarEmprestimoViewController contratarController = loader.getController();
             contratarController.setEmprestimoParaContratar(selectedOffer);
             contratarController.setTipoEmprestimo(tipoEmprestimo);
@@ -112,7 +112,7 @@ public class OfertasViewController {
     private void onBackClick() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("emprestimos.fxml"));
-            Scene mainScene = new Scene(loader.load(), 360, 640);
+            Scene mainScene = new Scene(loader.load(), 400, 700);
             EmprestimoViewController emprestimoController = loader.getController();
             emprestimoController.setTipoEmprestimo(tipoEmprestimo);
             Stage stage = (Stage) backButton.getScene().getWindow();
@@ -128,7 +128,7 @@ public class OfertasViewController {
     private void onHomeClick() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("dashboard.fxml"));
-            Scene mainScene = new Scene(loader.load(), 360, 640);
+            Scene mainScene = new Scene(loader.load(), 400, 700);
             Stage stage = (Stage) homeButton.getScene().getWindow();
             stage.setScene(mainScene);
             stage.setTitle("EmprestAI - Dashboard");
@@ -149,7 +149,7 @@ public class OfertasViewController {
         try {
             SessionManager.getInstance().clearSession();
             FXMLLoader loader = new FXMLLoader(getClass().getResource("login.fxml"));
-            Scene mainScene = new Scene(loader.load(), 360, 640);
+            Scene mainScene = new Scene(loader.load(), 400, 700);
             Stage stage = (Stage) exitButton.getScene().getWindow();
             stage.setScene(mainScene);
             stage.setTitle("EmprestAI - Login");

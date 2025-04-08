@@ -85,7 +85,7 @@ public class LoginViewController {
                 errorBox.setManaged(false);
 
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("dashboard.fxml"));
-                Scene mainScene = new Scene(loader.load(), 360, 640);
+                Scene mainScene = new Scene(loader.load(), 400, 700);
 
                 Stage stage = (Stage) criarConta.getScene().getWindow();
                 stage.setScene(mainScene);
@@ -104,7 +104,7 @@ public class LoginViewController {
     private void onCriarContaClick() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("cadastro-cliente.fxml"));
-            Scene mainScene = new Scene(loader.load(), 360, 640);
+            Scene mainScene = new Scene(loader.load(), 400, 700);
 
             Stage stage = (Stage) loginButton.getScene().getWindow();
             stage.setTitle("Cadastro de Cliente");

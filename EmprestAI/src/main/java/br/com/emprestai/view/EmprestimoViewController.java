@@ -339,7 +339,7 @@ public class EmprestimoViewController {
     private boolean checkMarginAvailability() {
         Cliente clienteLogado = SessionManager.getInstance().getClienteLogado();
         if (tipoEmprestimo == PESSOAL) {
-            return true;
+            return clienteLogado.getMargemPessoalDisponivel() > 0;
         } else if (tipoEmprestimo == CONSIGNADO) {
             return clienteLogado.getMargemConsignavelDisponivel() > 0;
         }

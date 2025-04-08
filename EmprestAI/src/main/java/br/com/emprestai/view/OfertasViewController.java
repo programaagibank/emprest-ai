@@ -56,7 +56,7 @@ public class OfertasViewController {
     @FXML
     private void initialize() {
         System.out.println("CSS carregado: " + getClass().getResource("../css/ofertas.css"));
-        emprestimoController = new EmprestimoController(new EmprestimoDAO(), new ClienteDAO());
+        emprestimoController = new EmprestimoController(new EmprestimoDAO());
         clienteLogado = SessionManager.getInstance().getClienteLogado();
 
         if (clienteLogado == null) {

@@ -39,10 +39,10 @@ public class EmprestimoParams {
 
     // Idades máximas
 
-    private double idadeMinimaConsignado = 18;
-    private double idadeMaximaConsignado = 80;
-    private double idadeMaximaPessoal = 75;
-    private double idadeMinimaPessoal = 18;
+    private int idadeMinimaConsignado = 18;
+    private int idadeMaximaConsignado = 80;
+    private int idadeMaximaPessoal = 75;
+    private int idadeMinimaPessoal = 18;
 
     // Percentuais
     private double  margemConsignavel = 35;
@@ -182,27 +182,27 @@ public class EmprestimoParams {
         this.scoreMinimoConsignado = scoreMinimoConsignado;
     }
 
-    public double getIdadeMinimaConsignado() {
+    public int getIdadeMinimaConsignado() {
         return idadeMinimaConsignado;
     }
 
-    public void setIdadeMinimaConsignado(double idadeMinimaConsignado) {
+    public void setIdadeMinimaConsignado(int idadeMinimaConsignado) {
         this.idadeMinimaConsignado = idadeMinimaConsignado;
     }
 
-    public double getIdadeMaximaConsignado() {
+    public int getIdadeMaximaConsignado() {
         return idadeMaximaConsignado;
     }
 
-    public void setIdadeMaximaConsignado(double idadeMaximaConsignado) {
+    public void setIdadeMaximaConsignado(int idadeMaximaConsignado) {
         this.idadeMaximaConsignado = idadeMaximaConsignado;
     }
 
-    public double getIdadeMaximaPessoal() {
+    public int getIdadeMaximaPessoal() {
         return idadeMaximaPessoal;
     }
 
-    public void setIdadeMaximaPessoal(double idadeMaximaPessoal) {
+    public void setIdadeMaximaPessoal(int idadeMaximaPessoal) {
         this.idadeMaximaPessoal = idadeMaximaPessoal;
     }
 
@@ -210,7 +210,7 @@ public class EmprestimoParams {
         return idadeMinimaPessoal;
     }
 
-    public void setIdadeMinimaPessoal(double idadeMinimaPessoal) {
+    public void setIdadeMinimaPessoal(int idadeMinimaPessoal) {
         this.idadeMinimaPessoal = idadeMinimaPessoal;
     }
 

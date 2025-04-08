@@ -1,5 +1,6 @@
 package br.com.emprestai.service.validator;
 
+import br.com.emprestai.enums.TipoEmprestimoEnum;
 import br.com.emprestai.exception.ApiException;
 import br.com.emprestai.model.Emprestimo;
 import br.com.emprestai.util.EmprestimoParams;
@@ -33,7 +34,6 @@ public class EmprestimoValidator {
         if (emprestimo.getTipoEmprestimo() == null) {
             throw new ApiException("O tipo de empréstimo é obrigatório.", 400);
         }
-
         // Validações de consistência de datas
         if (emprestimo.getDataContratacao().isAfter(LocalDate.now())) {
             throw new ApiException("A data de contratação não pode ser futura.", 400);
@@ -61,11 +61,24 @@ public class EmprestimoValidator {
         if (emprestimo.getQuantidadeParcelas() > prazoMaximo) {
             throw new ApiException("Quantidade de parcelas excede o prazo máximo permitido: " + prazoMaximo, 400);
         }
+
         double jurosMaximo = emprestimo.getTipoEmprestimo() == CONSIGNADO
                 ? params.getJurosMaximoConsignado()
                 : params.getJurosMaximoPessoal();
         if (emprestimo.getTaxaJuros() > jurosMaximo) {
             throw new ApiException("Taxa de juros excede o máximo permitido: " + jurosMaximo, 400);
+        }
+    }
+
+    public static void validarId(Long id) throws ApiException {
+        if (id == null || id <= 0) {
+            throw new ApiException("ID do cliente deve ser um valor positivo.", 400);
+        }
+    }
+
+    public static void validarTipoEmprestimo(TipoEmprestimoEnum tipo) throws ApiException {
+        if (tipo == null) {
+            throw new ApiException("Tipo de empréstimo não pode ser nulo.", 400);
         }
     }
 }

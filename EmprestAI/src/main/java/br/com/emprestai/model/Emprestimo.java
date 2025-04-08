@@ -35,7 +35,6 @@ public class Emprestimo {
     public Emprestimo() {
     }
 
-
     public long getIdEmprestimo(){
         return idEmprestimo;
     }

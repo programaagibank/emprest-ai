@@ -58,7 +58,7 @@ public class EmprestimoViewController {
     private List<Emprestimo> emprestimos;
     private TipoEmprestimoEnum tipoEmprestimo;
     private ParcelaController parcelaController = new ParcelaController(new ParcelaDAO());
-    private EmprestimoController emprestimoController = new EmprestimoController(new EmprestimoDAO(), null);
+    private EmprestimoController emprestimoController = new EmprestimoController(new EmprestimoDAO());
 
     // --------------------------------------------------------------------------------
     // Initialization

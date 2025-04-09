@@ -59,7 +59,7 @@
                     <VBox styleClass="profile-header" alignment="CENTER" spacing="15">
                         <ImageView fitHeight="100" fitWidth="100" preserveRatio="true">
                             <image>
-                                <Image url="@../images/profile.png" />
+                                <Image url="@../images/user.png" />
                             </image>
                         </ImageView>
                         <Label fx:id="nomeClienteLabel" styleClass="profile-name" text="[Nome Completo]" />

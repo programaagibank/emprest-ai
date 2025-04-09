@@ -256,7 +256,7 @@ public class EmprestimoViewController {
       //  titleBox.getChildren().add(titleLabel);
         //card.getChildren().add(titleBox);
 
-        Label valorLabel = new Label("Valor Empréstimo: " + formatCurrency(emprestimo.getValorTotal()));
+        Label valorLabel = new Label("Valor Empréstimo: " + formatCurrency(emprestimo.getValorTotal() - emprestimo.getValorSeguro() - emprestimo.getOutrosCustos() - emprestimo.getValorIOF()));
         valorLabel.getStyleClass().add("payment-type");
         Label parcelaLabel = new Label("Valor da Parcela: " + formatCurrency(emprestimo.getValorParcela()));
         parcelaLabel.getStyleClass().add("payment-type");

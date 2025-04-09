@@ -8,8 +8,6 @@ import br.com.emprestai.enums.StatusEmprestimoEnum;
 import br.com.emprestai.enums.TipoEmprestimoEnum;
 import br.com.emprestai.model.Cliente;
 import br.com.emprestai.model.Emprestimo;
-import br.com.emprestai.model.Parcela;
-import br.com.emprestai.service.calculos.CalculadoraSaldos;
 import br.com.emprestai.util.GeneratePDF;
 import br.com.emprestai.util.SessionManager;
 import com.itextpdf.html2pdf.HtmlConverter;
@@ -28,10 +26,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 import static br.com.emprestai.enums.TipoEmprestimoEnum.CONSIGNADO;
@@ -56,8 +50,7 @@ public class EmprestimoViewController {
     @FXML private Button exitButton;
     @FXML private Button solicitacaoButton;
     @FXML private VBox loanInfoBox;
-    @FXML private Button ordemVencimentoButton;
-    @FXML private Button maiorDescontoButton;
+    @FXML private Button verParcelasButton; // Novo botão único
 
     // --------------------------------------------------------------------------------
     // Class Properties
@@ -65,7 +58,7 @@ public class EmprestimoViewController {
     private List<Emprestimo> emprestimos;
     private TipoEmprestimoEnum tipoEmprestimo;
     private ParcelaController parcelaController = new ParcelaController(new ParcelaDAO());
-    private EmprestimoController emprestimoController = new EmprestimoController(new EmprestimoDAO(), null);
+    private EmprestimoController emprestimoController = new EmprestimoController(new EmprestimoDAO());
 
     // --------------------------------------------------------------------------------
     // Initialization
@@ -103,7 +96,7 @@ public class EmprestimoViewController {
     private void onHomeClick() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("dashboard.fxml"));
-            Scene mainScene = new Scene(loader.load(), 360, 640);
+            Scene mainScene = new Scene(loader.load(), 400, 700);
             Stage stage = (Stage) homeButton.getScene().getWindow();
             stage.setScene(mainScene);
             stage.setTitle("EmprestAI - Dashboard");
@@ -122,7 +115,7 @@ public class EmprestimoViewController {
         try {
             SessionManager.getInstance().clearSession();
             FXMLLoader loader = new FXMLLoader(getClass().getResource("login.fxml"));
-            Scene mainScene = new Scene(loader.load(), 360, 640);
+            Scene mainScene = new Scene(loader.load(), 400, 700);
             Stage stage = (Stage) homeButton.getScene().getWindow();
             stage.setScene(mainScene);
             stage.setTitle("EmprestAI - Login");
@@ -136,77 +129,51 @@ public class EmprestimoViewController {
     @FXML
     private void onSolicitacaoClick() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("solicitacaoEmprestimo.fxml")); // Caminho relativo
-            Scene SolicitacaoScene = new Scene(loader.load(), 360, 640);
-            SolicitacaoEmprestimoViewController solicitacaoEmprestimoViewController = loader.getController();
-            solicitacaoEmprestimoViewController.setTipoEmprestimo(tipoEmprestimo);
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("solicitacao-emprestimo.fxml"));
+            Scene solicitacaoScene = new Scene(loader.load(), 400, 700);
+            SolicitacaoEmprestimoViewController solicitacaoController = loader.getController();
+            solicitacaoController.setTipoEmprestimo(tipoEmprestimo);
             Stage stage = (Stage) solicitacaoButton.getScene().getWindow();
-            stage.setScene(SolicitacaoScene);
+            stage.setScene(solicitacaoScene);
             stage.setTitle("EmprestAI - Ofertas de Empréstimo");
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
-            System.err.println("Erro ao carregar ofertas.fxml: " + e.getMessage());
+            System.err.println("Erro ao carregar solicitacao-emprestimo.fxml: " + e.getMessage());
         }
     }
 
     @FXML
-    private void onOrdemVencimentoClick() {
+    private void onVerParcelasClick(Emprestimo emprestimo) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("parcela.fxml"));
-            Scene parcelaScene = new Scene(loader.load(), 360, 640);
-            ParcelaViewController parcelaViewController = loader.getController();
+            if (emprestimo.getTipoEmprestimo() == TipoEmprestimoEnum.PESSOAL) {
+                // Abrir tela de ordenação para empréstimos pessoais
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("ordenacao-parcelas.fxml"));
+                Scene ordenacaoScene = new Scene(loader.load(), 400, 700);
+                OrdenacaoParcelasViewController ordenacaoController = loader.getController();
+                ordenacaoController.setEmprestimo(emprestimo);
+                ordenacaoController.setTipoEmprestimo(tipoEmprestimo);
 
-            List<Parcela> todasParcelas = new ArrayList<>();
-            for (Emprestimo emprestimo : emprestimos) {
-                List<Parcela> parcelas = parcelaController.getParcelasByEmprestimo(emprestimo);
-                if (parcelas != null) {
-                    todasParcelas.addAll(parcelas);
-                }
+                Stage stage = (Stage) loanInfoBox.getScene().getWindow();
+                stage.setScene(ordenacaoScene);
+                stage.setTitle("EmprestAI - Ordenar Parcelas");
+                stage.show();
+            } else {
+                // Abrir diretamente a tela de parcelas para outros tipos (ex.: CONSIGNADO)
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("parcela.fxml"));
+                Scene parcelaScene = new Scene(loader.load(), 400, 700);
+                ParcelaViewController parcelaViewController = loader.getController();
+                parcelaViewController.setEmprestimo(emprestimo);
+                parcelaViewController.setTipoEmprestimo(tipoEmprestimo);
+
+                Stage stage = (Stage) loanInfoBox.getScene().getWindow();
+                stage.setScene(parcelaScene);
+                stage.setTitle("EmprestAI - Parcelas");
+                stage.show();
             }
-            todasParcelas.sort(Comparator.comparing(Parcela::getDataVencimento));
-
-            parcelaViewController.setEmprestimo(null);
-            parcelaViewController.setTipoEmprestimo(tipoEmprestimo); // Passa o tipo para manter o contexto
-            parcelaViewController.setParcelas(todasParcelas);
-
-            Stage stage = (Stage) ordemVencimentoButton.getScene().getWindow();
-            stage.setScene(parcelaScene);
-            stage.setTitle("EmprestAI - Parcelas (Ordem de Vencimento)");
-            stage.show();
         } catch (IOException | SQLException e) {
             e.printStackTrace();
-            System.err.println("Erro ao carregar parcela.fxml: " + e.getMessage());
-        }
-    }
-
-    @FXML
-    private void onMaiorDescontoClick() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("parcela.fxml"));
-            Scene parcelaScene = new Scene(loader.load(), 360, 640);
-            ParcelaViewController parcelaViewController = loader.getController();
-
-            List<Parcela> todasParcelas = new ArrayList<>();
-            for (Emprestimo emprestimo : emprestimos) {
-                List<Parcela> parcelas = parcelaController.getParcelasByEmprestimo(emprestimo);
-                if (parcelas != null) {
-                    todasParcelas.addAll(parcelas);
-                }
-            }
-            todasParcelas.sort(Comparator.comparing(Parcela::getDataVencimento, Comparator.reverseOrder()));
-
-            parcelaViewController.setEmprestimo(null);
-            parcelaViewController.setTipoEmprestimo(tipoEmprestimo); // Passa o tipo para manter o contexto
-            parcelaViewController.setParcelas(todasParcelas);
-
-            Stage stage = (Stage) maiorDescontoButton.getScene().getWindow();
-            stage.setScene(parcelaScene);
-            stage.setTitle("EmprestAI - Parcelas (Maior Desconto)");
-            stage.show();
-        } catch (IOException | SQLException e) {
-            e.printStackTrace();
-            System.err.println("Erro ao carregar parcela.fxml: " + e.getMessage());
+            System.err.println("Erro ao carregar tela: " + e.getMessage());
         }
     }
 
@@ -215,7 +182,7 @@ public class EmprestimoViewController {
     // --------------------------------------------------------------------------------
     private void carregarEmprestimos(Cliente cliente) {
         try {
-            emprestimos = emprestimoController.getByCliente(cliente.getIdCliente(), tipoEmprestimo);
+            emprestimos = emprestimoController.getByClienteTipoEmprestimo(cliente.getIdCliente(), tipoEmprestimo);
             System.out.println("Total de empréstimos buscados: " + (emprestimos != null ? emprestimos.size() : 0));
             if (emprestimos != null) {
                 emprestimos.forEach(e -> System.out.println("Empréstimo ID: " + e.getIdEmprestimo() + ", Tipo: " + e.getTipoEmprestimo() + ", Parcelas Pagas: " + e.getParcelasPagas() + ", Total Parcelas: " + e.getQuantidadeParcelas()));
@@ -265,6 +232,7 @@ public class EmprestimoViewController {
             showNoLoanState();
         }
     }
+
     private void showLoanDetails(List<Emprestimo> emprestimosFiltrados) {
         toggleVisibility(true, false);
         contractTitle.setText("Contratos Ativos");
@@ -274,20 +242,21 @@ public class EmprestimoViewController {
 
         for (Emprestimo emprestimo : emprestimosFiltrados) {
             VBox loanCard = createLoanCard(emprestimo);
-            loanInfoBox.getChildren().add(loanCard);
+            loanInfoBox.getChildren().add(loanCard); // Corrigido aqui
         }
     }
+
     private VBox createLoanCard(Emprestimo emprestimo) {
-        VBox card = new VBox(8);
-        card.getStyleClass().add("payment-card"); // Usar classe do CSS
+        VBox card = new VBox(15);
+        card.getStyleClass().add("payment-card");
+        card.setPrefWidth(Double.MAX_VALUE);
+       // HBox titleBox = new HBox(10);
+       // Label titleLabel = new Label(emprestimo.getTipoEmprestimo().name() + " R$ " + formatCurrency(emprestimo.getValorTotal() - emprestimo.getValorSeguro() - emprestimo.getOutrosCustos() - emprestimo.getValorIOF()));
+      //  titleLabel.getStyleClass().add("payment-date");
+      //  titleBox.getChildren().add(titleLabel);
+        //card.getChildren().add(titleBox);
 
-        HBox titleBox = new HBox(10);
-        Label titleLabel = new Label(emprestimo.getTipoEmprestimo().name() + " R$ " + formatCurrency(emprestimo.getValorTotal() - emprestimo.getValorSeguro() - emprestimo.getOutrosCustos() - emprestimo.getValorIOF()));
-        titleLabel.getStyleClass().add("payment-date"); // Título como data
-        titleBox.getChildren().add(titleLabel);
-        card.getChildren().add(titleBox);
-
-        Label valorLabel = new Label("Valor Empréstimo: " + formatCurrency(emprestimo.getValorTotal()));
+        Label valorLabel = new Label("Valor Empréstimo: " + formatCurrency(emprestimo.getValorTotal() - emprestimo.getValorSeguro() - emprestimo.getOutrosCustos() - emprestimo.getValorIOF()));
         valorLabel.getStyleClass().add("payment-type");
         Label parcelaLabel = new Label("Valor da Parcela: " + formatCurrency(emprestimo.getValorParcela()));
         parcelaLabel.getStyleClass().add("payment-type");
@@ -304,19 +273,15 @@ public class EmprestimoViewController {
 
         card.getChildren().addAll(valorLabel, parcelaLabel, parcelasLabel, statusBox);
 
-        Button ordemVencimentoBtn = new Button("Ordem de Vencimento");
-        ordemVencimentoBtn.getStyleClass().add("banner-button"); // Novo estilo para botões
-        ordemVencimentoBtn.setOnAction(e -> handleOrdemVencimento(emprestimo));
-
-        Button maiorDescontoBtn = new Button("Maior Desconto");
-        maiorDescontoBtn.getStyleClass().add("banner-button");
-        maiorDescontoBtn.setOnAction(e -> handleMaiorDesconto(emprestimo));
+        Button verParcelasBtn = new Button("Ver Parcelas");
+        verParcelasBtn.getStyleClass().add("banner-button");
+        verParcelasBtn.setOnAction(e -> onVerParcelasClick(emprestimo));
 
         Button gerarPdfBtn = new Button("Gerar Contrato em PDF");
         gerarPdfBtn.getStyleClass().add("banner-button");
         gerarPdfBtn.setOnAction(e -> handleGeneratePdf(emprestimo));
 
-        card.getChildren().addAll(ordemVencimentoBtn, maiorDescontoBtn, gerarPdfBtn);
+        card.getChildren().addAll(verParcelasBtn, gerarPdfBtn);
 
         return card;
     }
@@ -330,56 +295,6 @@ public class EmprestimoViewController {
             default -> "gray";
         };
         circle.setStyle("-fx-fill: " + style + ";");
-    }
-
-    private void handleOrdemVencimento(Emprestimo emprestimo) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("parcela.fxml"));
-            Scene parcelaScene = new Scene(loader.load(), 360, 640);
-            ParcelaViewController parcelaViewController = loader.getController();
-
-            List<Parcela> parcelas = parcelaController.getParcelasByEmprestimo(emprestimo);
-            if (parcelas != null) {
-                parcelas.sort(Comparator.comparing(Parcela::getDataVencimento));
-            }
-
-            parcelaViewController.setEmprestimo(emprestimo);
-            parcelaViewController.setTipoEmprestimo(tipoEmprestimo); // Mantém o contexto
-            parcelaViewController.setParcelas(parcelas);
-
-            Stage stage = (Stage) loanInfoBox.getScene().getWindow();
-            stage.setScene(parcelaScene);
-            stage.setTitle("EmprestAI - Parcelas (Ordem de Vencimento)");
-            stage.show();
-        } catch (IOException | SQLException e) {
-            e.printStackTrace();
-            System.err.println("Erro ao carregar parcela.fxml: " + e.getMessage());
-        }
-    }
-
-    private void handleMaiorDesconto(Emprestimo emprestimo) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("parcela.fxml"));
-            Scene parcelaScene = new Scene(loader.load(), 360, 640);
-            ParcelaViewController parcelaViewController = loader.getController();
-
-            List<Parcela> parcelas = parcelaController.getParcelasByEmprestimo(emprestimo);
-            if (parcelas != null) {
-                parcelas.sort(Comparator.comparing(Parcela::getDataVencimento, Comparator.reverseOrder()));
-            }
-
-            parcelaViewController.setEmprestimo(emprestimo);
-            parcelaViewController.setTipoEmprestimo(tipoEmprestimo); // Mantém o contexto
-            parcelaViewController.setParcelas(parcelas);
-
-            Stage stage = (Stage) loanInfoBox.getScene().getWindow();
-            stage.setScene(parcelaScene);
-            stage.setTitle("EmprestAI - Parcelas (Maior Desconto)");
-            stage.show();
-        } catch (IOException | SQLException e) {
-            e.printStackTrace();
-            System.err.println("Erro ao carregar parcela.fxml: " + e.getMessage());
-        }
     }
 
     private void handleGeneratePdf(Emprestimo emprestimo) {
@@ -424,7 +339,7 @@ public class EmprestimoViewController {
     private boolean checkMarginAvailability() {
         Cliente clienteLogado = SessionManager.getInstance().getClienteLogado();
         if (tipoEmprestimo == PESSOAL) {
-            return true;
+            return clienteLogado.getMargemPessoalDisponivel() > 0;
         } else if (tipoEmprestimo == CONSIGNADO) {
             return clienteLogado.getMargemConsignavelDisponivel() > 0;
         }
@@ -442,6 +357,13 @@ public class EmprestimoViewController {
         String htmlContent = GeneratePDF.generateHtmlContent(emprestimo, parcelaController);
         try (FileOutputStream fos = new FileOutputStream(file)) {
             HtmlConverter.convertToPdf(htmlContent, fos);
+        }
+    }
+    //  método EmprestimoViewController
+    public void recarregarEmprestimos() {
+        Cliente clienteLogado = SessionManager.getInstance().getClienteLogado();
+        if (clienteLogado != null && tipoEmprestimo != null) {
+            carregarEmprestimos(clienteLogado);
         }
     }
 }

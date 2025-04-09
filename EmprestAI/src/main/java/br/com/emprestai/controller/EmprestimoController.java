@@ -1,6 +1,5 @@
 package br.com.emprestai.controller;
 
-import br.com.emprestai.dao.ClienteDAO;
 import br.com.emprestai.dao.EmprestimoDAO;
 import br.com.emprestai.enums.StatusEmprestimoEnum;
 import br.com.emprestai.enums.TipoEmprestimoEnum;
@@ -8,12 +7,12 @@ import br.com.emprestai.exception.ApiException;
 import br.com.emprestai.exception.ElegibilidadeException;
 import br.com.emprestai.model.Cliente;
 import br.com.emprestai.model.Emprestimo;
-import br.com.emprestai.service.ClienteService;
 import br.com.emprestai.service.calculos.CalculadoraContrato;
 import br.com.emprestai.service.calculos.CalculoTaxaJuros;
 import br.com.emprestai.service.elegibilidade.ElegibilidadeCliente;
-import br.com.emprestai.service.elegibilidade.ValidatorConsignado;
-import br.com.emprestai.service.elegibilidade.ValidatorPessoal;
+import br.com.emprestai.service.validator.EmprestimoValidator;
+import br.com.emprestai.service.elegibilidade.ElegibilidadeConsignado;
+import br.com.emprestai.service.elegibilidade.ElegibilidadePessoal;
 import br.com.emprestai.util.EmprestimoParams;
 
 import java.time.LocalDate;
@@ -25,28 +24,37 @@ import static br.com.emprestai.enums.StatusEmprestimoEnum.NEGADO;
 public class EmprestimoController {
 
     private final EmprestimoDAO emprestimoDAO;
-    private final ClienteDAO clienteDAO;
     private static final EmprestimoParams params = EmprestimoParams.getInstance();
 
-    public EmprestimoController(EmprestimoDAO emprestimoDAO, ClienteDAO clienteDAO) {
+    public EmprestimoController(EmprestimoDAO emprestimoDAO) {
         this.emprestimoDAO = emprestimoDAO;
-        this.clienteDAO = clienteDAO;
     }
 
     public Emprestimo postEmprestimo(Emprestimo emprestimo) throws ApiException {
-        if (emprestimo.getStatusEmprestimo() == NEGADO) {
+        if (emprestimo == null) {
+            throw new ApiException("Empréstimo não pode ser nulo.", 400);
+        }
+        if (emprestimo.getStatusEmprestimo() == StatusEmprestimoEnum.NEGADO) {
             throw new ApiException("Empréstimo não é elegível para concessão.", 400);
         }
         emprestimo.setStatusEmprestimo(StatusEmprestimoEnum.ABERTO);
         emprestimo.setTaxaMulta(params.getPercentualMultaAtraso());
         emprestimo.setTaxaJurosMora(params.getPercentualJurosMora());
+        EmprestimoValidator.validarAntesDeSalvar(emprestimo);
         return emprestimoDAO.criar(emprestimo);
     }
 
-    public List<Emprestimo> getByCliente(Long id, TipoEmprestimoEnum empEnum) throws ApiException {
+    public List<Emprestimo> getByClienteTipoEmprestimo(Long id, TipoEmprestimoEnum empEnum) throws ApiException {
+        EmprestimoValidator.validarId(id);
+        EmprestimoValidator.validarTipoEmprestimo(empEnum);
         try {
-            List<Emprestimo> emprestimos = emprestimoDAO.buscarPorIdCliente(id, empEnum);
+            List<Emprestimo> emprestimos = emprestimoDAO.buscarPorIdClienteEmprestimo(id, empEnum);
+            if (emprestimos.isEmpty()) {
+                throw new ApiException("Nenhum empréstimo encontrado para o cliente e tipo especificados.", 404);
+            }
             return emprestimos;
+        } catch (ApiException e) {
+            throw e; // Repropaga exceções específicas já tratadas no DAO
         } catch (Exception e) {
             throw new ApiException("Erro ao buscar empréstimos: " + e.getMessage(), 500);
         }
@@ -54,7 +62,13 @@ public class EmprestimoController {
 
     public List<Emprestimo> getTodos() throws ApiException {
         try {
-            return emprestimoDAO.buscarTodos();
+            List<Emprestimo> emprestimos = emprestimoDAO.buscarTodos();
+            if (emprestimos.isEmpty()) {
+                throw new ApiException("Nenhum empréstimo encontrado.", 404);
+            }
+            return emprestimos;
+        } catch (ApiException e) {
+            throw e; // Repropaga exceções específicas já tratadas no DAO
         } catch (Exception e) {
             throw new ApiException("Erro ao buscar todos os empréstimos: " + e.getMessage(), 500);
         }
@@ -79,7 +93,7 @@ public class EmprestimoController {
             double taxaJuros = CalculoTaxaJuros.calcularTaxaJurosMensal(cliente.getScore(),
                     emprestimo.getQuantidadeParcelas(), emprestimo.getTipoEmprestimo());
             emprestimo.setTaxaJuros(taxaJuros);
-            CalculadoraContrato.contratoPrice(emprestimo, cliente.getDataNascimento());
+            CalculadoraContrato.contratoPrice(emprestimo, cliente.getIdade());
             emprestimo.setTaxaMulta(params.getPercentualMultaAtraso());
             emprestimo.setTaxaJurosMora(params.getPercentualJurosMora());
         } catch (Exception e) {
@@ -99,9 +113,9 @@ public class EmprestimoController {
         }
 
         if (emprestimo.getTipoEmprestimo() == TipoEmprestimoEnum.PESSOAL) {
-            ValidatorPessoal.verificarElegibilidadePessoal(cliente, emprestimo);
+            ElegibilidadePessoal.validarPessoal(cliente, emprestimo);
         } else {
-            ValidatorConsignado.verificarElegibilidadeConsignado(cliente, emprestimo);
+            ElegibilidadeConsignado.validarConsignado(cliente, emprestimo);
         }
     }
 
@@ -120,20 +134,23 @@ public class EmprestimoController {
 
         // Calcular limite de crédito e margem disponível
         double limiteCredito = tipoEmprestimo == TipoEmprestimoEnum.CONSIGNADO
-                ? ClienteService.calcularLimiteCreditoConsignado(cliente)
-                : ClienteService.calcularLimiteCreditoPessoal(cliente);
+                ? cliente.getLimiteCreditoConsignado()
+                : cliente.getLimiteCreditoPessoal();
         if (valorSolicitado > limiteCredito) {
             throw new ApiException("Valor solicitado (R$" + valorSolicitado + ") excede o limite de crédito (R$" + limiteCredito + ").", 400);
         }
 
         // Definir prazos possíveis com base no cliente
         int prazoMaximo = tipoEmprestimo == TipoEmprestimoEnum.CONSIGNADO
-                ? ClienteService.calcularPrazoMaximoConsignado(cliente)
-                : ClienteService.calcularPrazoMaximoPessoal(cliente);
+                ? cliente.getPrazoMaximoConsignado()
+                : cliente.getPrazoMaximoPessoal();
         int prazoMinimo = tipoEmprestimo == TipoEmprestimoEnum.CONSIGNADO
                 ? params.getPrazoMinimoConsignado()
                 : params.getPrazoMinimoPessoal();
-        int[] prazosPossiveis = gerarPrazosViaveis(prazoMinimo, prazoMaximo);
+        int carenciaMaxima = tipoEmprestimo == TipoEmprestimoEnum.CONSIGNADO
+                ? params.getCarenciaMaximaConsignado()
+                : params.getCarenciaMaximaPessoal();
+        int[] prazosPossiveis = gerarPrazosViaveis(prazoMinimo, prazoMaximo, tipoEmprestimo);
 
         // Gerar ofertas para cada prazo
         for (int parcelas : prazosPossiveis) {
@@ -142,7 +159,7 @@ public class EmprestimoController {
             emprestimo.setQuantidadeParcelas(parcelas);
             emprestimo.setTipoEmprestimo(tipoEmprestimo);
             emprestimo.setDataContratacao(LocalDate.now());
-            emprestimo.setDataInicio(LocalDate.now().plusDays(30)); // Padrão, pode ser ajustado
+            emprestimo.setDataInicio(LocalDate.now().plusDays(carenciaMaxima)); // Padrão, pode ser ajustado
             emprestimo.setContratarSeguro(true); // Padrão, pode ser ajustado
 
             try {
@@ -150,20 +167,21 @@ public class EmprestimoController {
                 double taxaJuros = CalculoTaxaJuros.calcularTaxaJurosMensal(cliente.getScore(), parcelas, tipoEmprestimo);
                 emprestimo.setTaxaJuros(Math.min(taxaJuros, tipoEmprestimo == TipoEmprestimoEnum.CONSIGNADO
                         ? params.getJurosMaximoConsignado() : params.getJurosMaximoPessoal()));
-                CalculadoraContrato.contratoPrice(emprestimo, cliente.getDataNascimento());
+                CalculadoraContrato.contratoPrice(emprestimo, cliente.getIdade());
                 emprestimo.setTaxaMulta(params.getPercentualMultaAtraso());
                 emprestimo.setTaxaJurosMora(params.getPercentualJurosMora());
 
                 // Validar oferta
                 if (tipoEmprestimo == TipoEmprestimoEnum.CONSIGNADO) {
-                    ValidatorConsignado.verificarElegibilidadeConsignado(cliente, emprestimo);
+                    ElegibilidadeConsignado.validarConsignado(cliente, emprestimo);
                 } else {
-                    ValidatorPessoal.verificarElegibilidadePessoal(cliente, emprestimo);
+                    ElegibilidadePessoal.validarPessoal(cliente, emprestimo);
                 }
 
                 ofertasValidas.add(emprestimo);
             } catch (Exception e) {
                 // Ignorar prazos inválidos (ex.: margem excedida, idade final inválida)
+                System.out.println(e.getMessage());
                 continue;
             }
         }
@@ -175,9 +193,15 @@ public class EmprestimoController {
         return ofertasValidas;
     }
 
-    private int[] gerarPrazosViaveis(int prazoMinimo, int prazoMaximo) {
+    private int[] gerarPrazosViaveis(int prazoMinimo, int prazoMaximo, TipoEmprestimoEnum tipoEmprestimo) {
         List<Integer> prazos = new ArrayList<>();
-        for (int i = prazoMinimo; i <= prazoMaximo; i += 12) { // Incremento de 12 meses
+        int incremento = 0;
+        if(tipoEmprestimo == TipoEmprestimoEnum.CONSIGNADO){
+            incremento = 12;
+        } else {
+            incremento = 4;
+        }
+        for (int i = prazoMinimo; i <= prazoMaximo; i += incremento) { // Incremento de 12 meses
             prazos.add(i);
         }
         if (!prazos.contains(prazoMaximo) && prazoMaximo >= prazoMinimo) {

@@ -186,8 +186,7 @@ public class ParcelaDAO {
             throw new ApiException("Erro ao pagar parcela: " + e.getMessage(), 500);
         }
     }
-
-    // PUT - Pagar uma lista de parcelas em lote
+      // PUT - Pagar uma lista de parcelas em lote
     public List<Parcela> pagarParcelas(List<Parcela> parcelas) throws SQLException, IOException {
         Connection conn = null;
         PreparedStatement pstmt = null;

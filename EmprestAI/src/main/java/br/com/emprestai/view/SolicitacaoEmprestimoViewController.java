@@ -5,9 +5,13 @@ import br.com.emprestai.util.SessionManager;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
+
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -23,6 +27,7 @@ public class SolicitacaoEmprestimoViewController {
     @FXML private TextField loanAmountField;
     @FXML private Button    continueButton;
     @FXML private Button    homeButton;
+    @FXML private Button    cancelButton;
     @FXML private Button    profileButton;
     @FXML private Button    exitButton;
 
@@ -71,18 +76,24 @@ public class SolicitacaoEmprestimoViewController {
     private void onContinueClick() {
         try {
             if (loanAmountField.getText().isEmpty()) {
-                showAlert("Valor Requerido", "Por favor, informe o valor do empréstimo.");
                 return;
             }
 
-            // Remove o formato de moeda para converter para double
-            String cleanValue = loanAmountField.getText().replaceAll("[^0-9,]", "").replace(",", ".");
-            double loanAmount = Double.parseDouble(cleanValue);
+            // Obtém o valor diretamente do TextFormatter
+            Number formatterValue = ((TextFormatter<Number>)loanAmountField.getTextFormatter()).getValue();
+            double loanAmount = (formatterValue != null) ? formatterValue.doubleValue() : 0.0;
+
+            // Verifica se o valor é válido
+            if (loanAmount <= 0.0) {
+                System.out.println("Valor inválido: " + loanAmount);
+                return;
+            }
+
             System.out.println("Valor convertido: " + loanAmount);
 
             // Carrega a tela de ofertas
             FXMLLoader loader = new FXMLLoader(getClass().getResource("ofertas.fxml"));
-            Scene scene = new Scene(loader.load(), 360, 640);
+            Scene scene = new Scene(loader.load(), 400, 700);
             OfertasViewController controller = loader.getController();
             controller.setOfertaData(loanAmount, tipoEmprestimo);
 
@@ -91,10 +102,7 @@ public class SolicitacaoEmprestimoViewController {
             stage.setTitle("EmprestAI - Ofertas de Empréstimo");
             stage.show();
 
-        } catch (NumberFormatException e) {
-            showAlert("Erro de Formato", "Por favor, insira um valor numérico válido.");
         } catch (IOException e) {
-            showAlert("Erro", "Erro ao carregar tela de ofertas: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -106,13 +114,27 @@ public class SolicitacaoEmprestimoViewController {
             Scene mainScene = new Scene(loader.load(), 360, 640);
             EmprestimoViewController emprestimoController = loader.getController();
             emprestimoController.setTipoEmprestimo(tipoEmprestimo);
-            Stage stage = (Stage) homeButton.getScene().getWindow();
+            Stage stage = (Stage) cancelButton.getScene().getWindow();
             stage.setScene(mainScene);
             stage.setTitle("EmprestAI - Empréstimos");
             stage.show();
         } catch (IOException e) {
-            showAlert("Erro", "Erro ao voltar para tela de empréstimos: " + e.getMessage());
             e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void onHomeClick() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("dashboard.fxml"));
+            Scene mainScene = new Scene(loader.load(), 360, 640);
+            Stage stage = (Stage) homeButton.getScene().getWindow();
+            stage.setScene(mainScene);
+            stage.setTitle("EmprestAI - Dashboard");
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.err.println("Erro ao carregar dashboard.fxml: " + e.getMessage());
         }
     }
 
@@ -132,7 +154,6 @@ public class SolicitacaoEmprestimoViewController {
             stage.setTitle("EmprestAI - Login");
             stage.show();
         } catch (IOException e) {
-            showAlert("Erro", "Erro ao voltar para tela de login: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -140,14 +161,6 @@ public class SolicitacaoEmprestimoViewController {
     // --------------------------------------------------------------------------------
     // Helper Methods
     // --------------------------------------------------------------------------------
-    private void showAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
-
     private void configureCurrencyField() {
         // Configura o NumberFormat para reais
         DecimalFormat decimalFormat = (DecimalFormat) NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));

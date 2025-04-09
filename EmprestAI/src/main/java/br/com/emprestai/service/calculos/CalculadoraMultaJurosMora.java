@@ -10,7 +10,7 @@ import static java.math.RoundingMode.HALF_UP;
 public class CalculadoraMultaJurosMora {
 
     public static BigDecimal multaAtraso(BigDecimal valorParcela, double taxaMulta) {
-        return valorParcela.multiply(BigDecimal.valueOf(taxaMulta));
+        return valorParcela.multiply(BigDecimal.valueOf(taxaMulta/100));
     }
 
     public static BigDecimal valorJurosMora(double valorParcela, double taxaJurosMora, LocalDate dataVencimento) {

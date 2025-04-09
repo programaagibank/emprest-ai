@@ -1,7 +1,6 @@
 package br.com.emprestai.util;
 
 import br.com.emprestai.controller.ParcelaController;
-import br.com.emprestai.dao.ParcelaDAO;
 import br.com.emprestai.model.Cliente;
 import br.com.emprestai.model.Emprestimo;
 import br.com.emprestai.model.Parcela;
@@ -12,6 +11,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+import static br.com.emprestai.enums.StatusParcelaEnum.ATRASADA;
+import static br.com.emprestai.enums.StatusParcelaEnum.PENDENTE;
 import static br.com.emprestai.util.Formatos.formatCpf;
 import static br.com.emprestai.util.Formatos.formatCurrency;
 
@@ -53,7 +54,7 @@ public class GeneratePDF {
         html.append("<div class=\"section-title\">Característica do Contrato</div>")
                 .append("<table>")
                 .append("<tr><td>Modalidade de Operação</td><td>").append(emprestimo.getTipoEmprestimo().name()).append("</td></tr>")
-                .append("<tr><td>Valor da Operação</td><td>").append(formatCurrency(emprestimo.getValorEmprestimo())).append("</td></tr>")
+                .append("<tr><td>Valor da Operação</td><td>").append(formatCurrency(emprestimo.getValorTotal() - emprestimo.getValorSeguro() - emprestimo.getOutrosCustos() - emprestimo.getValorIOF())).append("</td></tr>")
                 .append("<tr><td>Número do Contrato</td><td>").append(emprestimo.getIdEmprestimo()).append("</td></tr>")
                 .append("<tr><td>Data da Contratação</td><td>").append(emprestimo.getDataContratacao().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))).append("</td></tr>")
                 .append("<tr><td>Data de Liberação do Crédito</td><td>").append(emprestimo.getDataLiberacaoCred().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))).append("</td></tr>")
@@ -98,7 +99,7 @@ public class GeneratePDF {
                 .append("<th>Valor Parcela</th>")
                 .append("<th>Valor Principal da Parcela</th>")
                 .append("<th>Valor dos Juros da Parcela</th>")
-                .append("<th>Saldo Devedor/Encargos</th>")
+                .append("<th>Saldo Devedor Presente</th>")
                 .append("<th>Situação da Parcela</th>")
                 .append("</tr>");
 
@@ -108,7 +109,7 @@ public class GeneratePDF {
                 double valorParcela = emprestimo.getValorParcela();
                 double valorPrincipal = parcela.getAmortizacao();
                 double valorJuros = parcela.getJuros();
-                double valorPresenteParcela = parcela.getValorPresenteParcela();
+                double valorPresenteParcela = parcela.getStatus() == PENDENTE || parcela.getStatus() == ATRASADA? parcela.getValorPresenteParcela(): 0;
 
                 html.append("<tr>")
                         .append("<td>").append(i + 1).append("</td>")

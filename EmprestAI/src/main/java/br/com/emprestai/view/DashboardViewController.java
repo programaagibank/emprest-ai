@@ -10,7 +10,9 @@ import br.com.emprestai.model.Parcela;
 import br.com.emprestai.util.SessionManager;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
@@ -63,15 +65,29 @@ public class DashboardViewController {
             return;
         }
 
-        // Highlight the "Início" button as the active page
         homeButton.setStyle("-fx-text-fill: #0056D2;");
-
-        // Update greeting and credit limits
         greetingLabel.setText("Olá, " + clienteLogado.getNomeCliente() + "!");
         updateCreditLimits(clienteLogado);
-
-        // Load upcoming payments
         loadUpcomingPayments(clienteLogado);
+
+        // Ajuste dinâmico da largura para responsividade
+        upcomingPaymentsBox.sceneProperty().addListener((obs, oldScene, newScene) -> {
+            if (newScene != null) {
+                // Listener para ajustar com a largura
+                newScene.widthProperty().addListener((obsW, oldW, newW) -> {
+                    upcomingPaymentsBox.setPrefWidth(newW.doubleValue() - 40);
+                });
+
+                // Listener para ajustar com a altura
+                newScene.heightProperty().addListener((obsH, oldH, newH) -> {
+                    // Ajusta a altura do conteúdo proporcionalmente
+                    double contentHeight = newH.doubleValue() - 200; // Desconta header e navbar
+                    if (contentHeight > 300) {
+                        upcomingPaymentsBox.setPrefHeight(contentHeight * 0.4); // 40% do espaço disponível
+                    }
+                });
+            }
+        });
     }
 
     // --------------------------------------------------------------------------------
@@ -94,7 +110,21 @@ public class DashboardViewController {
 
     @FXML
     private void onProfileClick() {
-        // Implement navigation to profile if needed
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/perfilCliente.fxml"));
+            Parent root = loader.load();
+            Scene scene = profileButton.getScene();
+            Stage stage = (Stage) scene.getWindow();
+            scene.setRoot(root);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erro ao carregar tela");
+            alert.setHeaderText(null);
+            alert.setContentText("Ocorreu um erro ao carregar a tela de perfil: " + e.getMessage());
+            alert.showAndWait();
+        }
     }
 
     @FXML
@@ -102,7 +132,7 @@ public class DashboardViewController {
         try {
             SessionManager.getInstance().clearSession();
             FXMLLoader loader = new FXMLLoader(getClass().getResource("login.fxml"));
-            Scene loginScene = new Scene(loader.load(), 360, 640);
+            Scene loginScene = new Scene(loader.load(), 400, 700);
             Stage stage = (Stage) exitButton.getScene().getWindow();
             stage.setScene(loginScene);
             stage.setTitle("EmprestAI - Login");
@@ -113,22 +143,53 @@ public class DashboardViewController {
         }
     }
 
+    @FXML
+    private void onChatBot() {
+        try {
+            // Carrega o FXML do chatbot
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("chatbot.fxml"));
+            if (loader.getLocation() == null) {
+                System.err.println("Erro: Não foi possível encontrar chatbot.fxml no caminho especificado.");
+                return;
+            }
+            Scene chatbotScene = new Scene(loader.load(), 350, 500);
+            Stage chatbotStage = new Stage();
+            chatbotStage.setScene(chatbotScene);
+            chatbotStage.setTitle("EmprestAI - Chat");
+            chatbotStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.err.println("Erro ao carregar chatbot.fxml: " + e.getMessage());
+        }
+    }
+
     // --------------------------------------------------------------------------------
     // Helper Methods
     // --------------------------------------------------------------------------------
     private void updateCreditLimits(Cliente cliente) {
-        double margemConsignavel = cliente.getMargemConsignavelDisponivel();
-        double margemPessoal = cliente.getMargemPessoalDisponivel();
-        consignadoCredit.setText(df.format(margemConsignavel));
-        pessoalCredit.setText(df.format(margemPessoal));
+        // Alterado para mostrar o limite ao invés da margem
+        double limiteConsignavel = cliente.getLimiteCreditoConsignado(); // Alterado para acessar o limite
+        double limitePessoal = cliente.getLimiteCreditoPessoal(); // Alterado para acessar o limite
+        consignadoCredit.setText(df.format(limiteConsignavel));
+        pessoalCredit.setText(df.format(limitePessoal));
     }
 
     private void loadUpcomingPayments(Cliente cliente) {
         try {
             // Fetch unpaid parcels for Consignado (id_tipo_emprestimo = 1)
-            List<Parcela> consignadoParcels = parcelaController.getUltimasNaoPagas(cliente.getIdCliente(), CONSIGNADO);
+            List<Parcela> consignadoParcels = List.of();
+            List<Parcela> pessoalParcels = List.of();
+            try{
+                consignadoParcels = parcelaController.getUltimasNaoPagas(cliente.getIdCliente(), CONSIGNADO);
+            } catch (Exception e){
+                System.out.println(e.getMessage());
+            }
             // Fetch unpaid parcels for Pessoal (id_tipo_emprestimo = 2)
-            List<Parcela> pessoalParcels = parcelaController.getUltimasNaoPagas(cliente.getIdCliente(), PESSOAL);
+            try{
+                pessoalParcels = parcelaController.getUltimasNaoPagas(cliente.getIdCliente(), PESSOAL);
+            } catch (Exception e){
+                System.out.println(e.getMessage());
+            }
 
             // Combine the lists
             List<Parcela> allUnpaidParcels = new ArrayList<>();
@@ -190,7 +251,7 @@ public class DashboardViewController {
     private void navigateToEmprestimos(TipoEmprestimoEnum tipoEmprestimo) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("emprestimos.fxml"));
-            Scene emprestimosScene = new Scene(loader.load(), 360, 640);
+            Scene emprestimosScene = new Scene(loader.load(), 400, 700); // Ajustada dimensão para match com dashboard
             EmprestimoViewController controller = loader.getController();
             controller.setTipoEmprestimo(tipoEmprestimo);
             Stage stage = (Stage) consignadoButton.getScene().getWindow();
@@ -202,4 +263,7 @@ public class DashboardViewController {
             System.err.println("Erro ao carregar emprestimos.fxml: " + e.getMessage());
         }
     }
+    // Método a ser adicionado ao DashboardViewController.java
+
+
 }

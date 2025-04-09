@@ -4,12 +4,16 @@ import br.com.emprestai.controller.EmprestimoController;
 import br.com.emprestai.dao.ClienteDAO;
 import br.com.emprestai.dao.EmprestimoDAO;
 import br.com.emprestai.enums.TipoEmprestimoEnum;
+import br.com.emprestai.model.Cliente;
 import br.com.emprestai.model.Emprestimo;
 import br.com.emprestai.util.SessionManager;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.Label;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -47,6 +51,7 @@ public class ContratarEmprestimoViewController {
     // --------------------------------------------------------------------------------
     private Emprestimo emprestimoParaContratar;
     private EmprestimoController emprestimoController;
+    private TipoEmprestimoEnum tipoEmprestimo;
 
     // Formatters
     private final NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
@@ -60,7 +65,7 @@ public class ContratarEmprestimoViewController {
     private void initialize() {
         System.out.println("CSS carregado: " + getClass().getResource("../css/contratar.css"));
         SessionManager.getInstance().refreshClienteLogado();
-        emprestimoController = new EmprestimoController(new EmprestimoDAO(), new ClienteDAO());
+        emprestimoController = new EmprestimoController(new EmprestimoDAO());
 
         // Setup checkboxes to enable confirm button only when both are checked
         termsCheckBox.selectedProperty().addListener((observable, oldValue, newValue) ->
@@ -72,9 +77,10 @@ public class ContratarEmprestimoViewController {
         // Percent formatter setup
         percentFormatter.setMinimumFractionDigits(2);
         percentFormatter.setMaximumFractionDigits(2);
+        Cliente clienteLogado = SessionManager.getInstance().getClienteLogado();
 
         // Verifica se há cliente logado
-        if (SessionManager.getInstance().getClienteLogado() == null) {
+        if (clienteLogado == null) {
             System.err.println("Nenhum cliente logado encontrado no SessionManager!");
             onExitClick();
         }
@@ -88,6 +94,10 @@ public class ContratarEmprestimoViewController {
         if (emprestimo != null) {
             updateLoanDetails();
         }
+    }
+
+    public void setTipoEmprestimo(TipoEmprestimoEnum tipoEmprestimo) {
+        this.tipoEmprestimo = tipoEmprestimo;
     }
 
     // --------------------------------------------------------------------------------
@@ -108,14 +118,7 @@ public class ContratarEmprestimoViewController {
             }
 
             Emprestimo createdEmprestimo = emprestimoController.postEmprestimo(emprestimoParaContratar);
-
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Empréstimo Contratado");
-            alert.setHeaderText("Empréstimo Realizado com Sucesso");
-            alert.setContentText("Seu empréstimo foi aprovado e contratado com sucesso!");
-            alert.showAndWait();
-
-            onHomeClick();
+            exibirTelaSucesso("Empréstimo contratado com sucesso!");
 
         } catch (Exception e) {
             showAlert("Erro", "Ocorreu um erro ao confirmar o empréstimo: " + e.getMessage());
@@ -132,7 +135,7 @@ public class ContratarEmprestimoViewController {
     private void onHomeClick() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("dashboard.fxml"));
-            Scene mainScene = new Scene(loader.load(), 360, 640);
+            Scene mainScene = new Scene(loader.load(), 400, 700);
             Stage stage = (Stage) homeButton.getScene().getWindow();
             stage.setScene(mainScene);
             stage.setTitle("EmprestAI - Dashboard");
@@ -142,21 +145,25 @@ public class ContratarEmprestimoViewController {
             System.err.println("Erro ao carregar dashboard.fxml: " + e.getMessage());
         }
     }
+    @FXML
+    private void onProfileClick() {
+        // Implement navigation to profile if needed
+    }
 
     @FXML
     private void onBackClick() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("simulacaoEmprestimo.fxml"));
-            Scene mainScene = new Scene(loader.load(), 360, 640);
-            SimulacaoViewController simulacaoController = loader.getController();
-            simulacaoController.setTipoEmprestimo(emprestimoParaContratar.getTipoEmprestimo());
-            Stage stage = (Stage) backButton.getScene().getWindow();
-            stage.setScene(mainScene);
-            stage.setTitle("EmprestAI - Simulação de Empréstimo");
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("solicitacao-emprestimo.fxml"));
+            Scene solicitacaoScene = new Scene(loader.load(), 400, 700);
+            SolicitacaoEmprestimoViewController solicitacaoEmprestimoViewController = loader.getController();
+            solicitacaoEmprestimoViewController.setTipoEmprestimo(tipoEmprestimo);
+            Stage stage = (Stage) cancelButton.getScene().getWindow();
+            stage.setScene(solicitacaoScene);
+            stage.setTitle("EmprestAI - Ofertas de Empréstimo");
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
-            System.err.println("Erro ao carregar simulacaoEmprestimo.fxml: " + e.getMessage());
+            System.err.println("Erro ao carregar solicitacao-emprestimo.fxml: " + e.getMessage());
         }
     }
 
@@ -165,7 +172,7 @@ public class ContratarEmprestimoViewController {
         try {
             SessionManager.getInstance().clearSession();
             FXMLLoader loader = new FXMLLoader(getClass().getResource("login.fxml"));
-            Scene mainScene = new Scene(loader.load(), 360, 640);
+            Scene mainScene = new Scene(loader.load(), 400, 700);
             Stage stage = (Stage) exitButton.getScene().getWindow();
             stage.setScene(mainScene);
             stage.setTitle("EmprestAI - Login");
@@ -211,5 +218,22 @@ public class ContratarEmprestimoViewController {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    private void exibirTelaSucesso(String mensagem) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("confirmacao-sucesso.fxml"));
+            Scene sucessoScene = new Scene(loader.load(), 400, 700);
+            ConfirmacaoSucessoViewController controller = loader.getController();
+            controller.setMensagem(mensagem);
+
+            Stage stage = (Stage) confirmButton.getScene().getWindow();
+            stage.setScene(sucessoScene);
+            stage.setTitle("EmprestAI - Sucesso");
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Erro", "Erro ao exibir tela de sucesso: " + e.getMessage());
+        }
     }
 }

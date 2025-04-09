@@ -10,7 +10,8 @@ import br.com.emprestai.util.SessionManager;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -33,13 +34,14 @@ public class OfertasViewController {
     @FXML private Button    homeButton;
     @FXML private Button    profileButton;
     @FXML private Button    exitButton;
+    @FXML private Button    backButton;
 
     // --------------------------------------------------------------------------------
     // Class Properties
     // --------------------------------------------------------------------------------
     private double              valorSolicitado;
     private TipoEmprestimoEnum  tipoEmprestimo;
-    private Cliente             cliente;
+    private Cliente             clienteLogado;
     private EmprestimoController emprestimoController;
     private Emprestimo          selectedOffer;
 
@@ -54,10 +56,10 @@ public class OfertasViewController {
     @FXML
     private void initialize() {
         System.out.println("CSS carregado: " + getClass().getResource("../css/ofertas.css"));
-        emprestimoController = new EmprestimoController(new EmprestimoDAO(), new ClienteDAO());
-        cliente = SessionManager.getInstance().getClienteLogado();
+        emprestimoController = new EmprestimoController(new EmprestimoDAO());
+        clienteLogado = SessionManager.getInstance().getClienteLogado();
 
-        if (cliente == null) {
+        if (clienteLogado == null) {
             System.err.println("Nenhum cliente logado encontrado no SessionManager!");
             onExitClick();
             return;
@@ -87,21 +89,21 @@ public class OfertasViewController {
     @FXML
     private void onSelectOfferClick() {
         if (selectedOffer == null) {
-            showAlert("Seleção Requerida", "Por favor, selecione uma oferta.");
             return;
         }
+        selectedOffer.setIdCliente(clienteLogado.getIdCliente());
 
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("contratarEmprestimo.fxml"));
-            Scene mainScene = new Scene(loader.load(), 360, 640);
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("contratar-emprestimo.fxml"));
+            Scene mainScene = new Scene(loader.load(), 400, 700);
             ContratarEmprestimoViewController contratarController = loader.getController();
             contratarController.setEmprestimoParaContratar(selectedOffer);
+            contratarController.setTipoEmprestimo(tipoEmprestimo);
             Stage stage = (Stage) selectOfferButton.getScene().getWindow();
             stage.setScene(mainScene);
             stage.setTitle("EmprestAI - Contratar Empréstimo");
             stage.show();
         } catch (IOException e) {
-            showAlert("Erro", "Erro ao abrir tela de contratação: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -110,16 +112,30 @@ public class OfertasViewController {
     private void onBackClick() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("emprestimos.fxml"));
-            Scene mainScene = new Scene(loader.load(), 360, 640);
+            Scene mainScene = new Scene(loader.load(), 400, 700);
             EmprestimoViewController emprestimoController = loader.getController();
             emprestimoController.setTipoEmprestimo(tipoEmprestimo);
-            Stage stage = (Stage) homeButton.getScene().getWindow();
+            Stage stage = (Stage) backButton.getScene().getWindow();
             stage.setScene(mainScene);
             stage.setTitle("EmprestAI - Empréstimos");
             stage.show();
         } catch (IOException e) {
-            showAlert("Erro", "Erro ao voltar para tela de empréstimos: " + e.getMessage());
             e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void onHomeClick() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("dashboard.fxml"));
+            Scene mainScene = new Scene(loader.load(), 400, 700);
+            Stage stage = (Stage) homeButton.getScene().getWindow();
+            stage.setScene(mainScene);
+            stage.setTitle("EmprestAI - Dashboard");
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.err.println("Erro ao carregar dashboard.fxml: " + e.getMessage());
         }
     }
 
@@ -133,13 +149,12 @@ public class OfertasViewController {
         try {
             SessionManager.getInstance().clearSession();
             FXMLLoader loader = new FXMLLoader(getClass().getResource("login.fxml"));
-            Scene mainScene = new Scene(loader.load(), 360, 640);
+            Scene mainScene = new Scene(loader.load(), 400, 700);
             Stage stage = (Stage) exitButton.getScene().getWindow();
             stage.setScene(mainScene);
             stage.setTitle("EmprestAI - Login");
             stage.show();
         } catch (IOException e) {
-            showAlert("Erro", "Erro ao voltar para tela de login: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -149,14 +164,13 @@ public class OfertasViewController {
     // --------------------------------------------------------------------------------
     private void loadOffers() {
         try {
-            List<Emprestimo> ofertas = emprestimoController.gerarOfertasEmprestimo(valorSolicitado, tipoEmprestimo, cliente);
+            List<Emprestimo> ofertas = emprestimoController.gerarOfertasEmprestimo(valorSolicitado, tipoEmprestimo, clienteLogado);
             offersContainer.getChildren().clear();
 
-            if (ofertas.isEmpty()) {
-                showAlert("Sem Ofertas", "Não foram encontradas ofertas disponíveis para os parâmetros informados.");
-                selectOfferButton.setDisable(true);
-                return;
-            }
+            // Quando há ofertas
+            backButton.setVisible(false); // Esconde o botão Voltar
+            selectOfferButton.setVisible(true); // Mostra o botão Selecionar Ofertas
+            selectOfferButton.setDisable(true); // Desabilita até uma oferta ser selecionada
 
             // Limita o número de ofertas exibidas (máximo 4)
             int maxOffers = Math.min(ofertas.size(), 4);
@@ -173,7 +187,13 @@ public class OfertasViewController {
             }
 
         } catch (Exception e) {
-            showAlert("Erro", "Erro ao carregar ofertas: " + e.getMessage());
+            // Tratamento de erro
+            offersContainer.getChildren().clear();
+            Label errorLabel = new Label("Não há ofertas disponíveis para você neste valor.");
+            errorLabel.getStyleClass().add("more-offers-label");
+            offersContainer.getChildren().add(errorLabel);
+            selectOfferButton.setVisible(false); // Esconde o botão Selecionar Ofertas
+            backButton.setVisible(true); // Mostra o botão Voltar
             e.printStackTrace();
         }
     }
@@ -231,13 +251,5 @@ public class OfertasViewController {
         });
 
         return card;
-    }
-
-    private void showAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
     }
 }

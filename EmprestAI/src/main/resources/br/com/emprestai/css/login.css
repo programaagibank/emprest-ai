@@ -1,6 +1,6 @@
 .root {
-    -fx-background-color: #ffffff; /* White background */
-    -fx-font-family: "Arial";
+    -fx-background-color: #F7F7F7; /* Matched with dashboard */
+    -fx-font-family: "Roboto", "Segoe UI", sans-serif; /* Matched with dashboard */
 }
 
 .version-label {
@@ -10,33 +10,55 @@
     -fx-padding: 5 0 0 0;
 }
 
+.content {
+    -fx-background-color: #FFFFFF;
+    -fx-background-radius: 20px;
+    -fx-padding: 25px 20px;
+    -fx-spacing: 15px;
+    -fx-alignment: top-center;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 5);
+}
+
 .greeting-label {
+    -fx-font-family: "Roboto", "Arial", sans-serif;
     -fx-font-size: 20px;
     -fx-text-fill: #333333; /* Dark gray text */
     -fx-text-alignment: center;
     -fx-alignment: center;
     -fx-wrap-text: true; /* Allow text to wrap */
+    -fx-font-weight: bold;
+    -fx-padding: 0 0 10px 0;
 }
 
 .input-label {
+    -fx-font-family: "Roboto", "Arial", sans-serif;
     -fx-font-size: 14px;
     -fx-text-fill: #333333;
-    -fx-padding: 5 0 5 0;
-    -fx-alignment: center;
+    -fx-padding: 5 0 0 0;
+    -fx-alignment: center-left; /* Alinhamento à esquerda */
 }
 
 .input-field {
-    -fx-pref-width: 300px;
     -fx-background-color: #ffffff;
     -fx-border-color: #d3d3d3;
     -fx-border-radius: 8px;
     -fx-background-radius: 8px;
-    -fx-padding: 8px;
+    -fx-padding: 12px;
     -fx-font-size: 14px;
+    -fx-alignment: center-left; /* Texto alinhado à esquerda */
+    -fx-max-width: Infinity; /* Permitir que expanda até o máximo */
+}
+
+/* Estilo para os containers VBox que contêm os inputs */
+.content > HBox > VBox {
+    -fx-alignment: center-left;
+    -fx-spacing: 5px;
+    -fx-fill-width: true;
 }
 
 .input-field:focused {
     -fx-border-color: #0056D2; /* Agibank blue border when focused */
+    -fx-effect: dropshadow(gaussian, rgba(0, 86, 210, 0.1), 4, 0, 0, 0);
 }
 
 .primary-button {
@@ -47,18 +69,60 @@
     -fx-background-radius: 25px;
     -fx-pref-width: 300px;
     -fx-pref-height: 50px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 3, 0, 0, 1);
+    -fx-margin-bottom: 10px;
 }
 
 .primary-button:hover {
-    -fx-background-color: #003f99; /* Darker blue on hover */
+    -fx-background-color: #0066F5; /* Darker blue on hover - matched with dashboard */
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 2);
+}
+
+.register-link, .privacy-link {
+    -fx-font-family: "Roboto", "Arial", sans-serif;
+    -fx-text-fill: #0056D2; /* Agibank blue */
+}
+
+.register-link {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
 }
 
 .privacy-link {
-    -fx-font-size: 12px;
-    -fx-text-fill: #0056D2; /* Agibank blue */
-    -fx-padding: 20 0 0 0;
+    -fx-font-size: 13px;
+    -fx-padding: 10px 0;
 }
 
-.privacy-link:hover {
+.register-link:hover, .privacy-link:hover {
     -fx-underline: true;
+}
+
+/* Error box styling */
+#errorBox {
+    -fx-background-color: #FFF5F5;
+    -fx-background-radius: 8px;
+    -fx-border-color: #FFC0C0;
+    -fx-border-radius: 8px;
+    -fx-border-width: 1px;
+    -fx-padding: 15px;
+    -fx-spacing: 5px;
+    -fx-max-width: 300px;
+    -fx-alignment: center;
+    -fx-margin: 15px 0 0 0;
+}
+
+.error-title {
+    -fx-font-family: "Roboto", "Arial", sans-serif;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #E53E3E;
+}
+
+.error-message {
+    -fx-font-family: "Roboto", "Arial", sans-serif;
+    -fx-font-size: 14px;
+    -fx-text-fill: #666666;
+    -fx-text-alignment: center;
+    -fx-wrap-text: true;
 }

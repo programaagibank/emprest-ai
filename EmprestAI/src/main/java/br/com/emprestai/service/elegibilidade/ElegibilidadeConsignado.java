@@ -3,14 +3,13 @@ package br.com.emprestai.service.elegibilidade;
 import br.com.emprestai.exception.ValidationException;
 import br.com.emprestai.model.Cliente;
 import br.com.emprestai.model.Emprestimo;
-import br.com.emprestai.service.ClienteService;
 import br.com.emprestai.util.EmprestimoParams;
 
-public class ValidatorConsignado {
+public class ElegibilidadeConsignado {
     private static final EmprestimoParams params = EmprestimoParams.getInstance();
 
     // Taxa de Juros
-    public static void verificarTaxaJurosEmprestimoConsig(double juros) {
+    public static void validarTaxaJurosEmprestimoConsig(double juros) {
         if (juros < params.getJurosMinimoConsignado() || juros > params.getJurosMaximoConsignado()) {
             throw new ValidationException("Taxa de juros fora do intervalo permitido (" +
                     params.getJurosMinimoConsignado() + " a " + params.getJurosMaximoConsignado() + "%).");
@@ -18,7 +17,7 @@ public class ValidatorConsignado {
     }
 
     // Carência
-    public static void verificarCarenciaEmprestimoConsig(int carencia) {
+    public static void validarCarenciaEmprestimoConsig(int carencia) {
         if (carencia < 0) throw new ValidationException("Carência não pode ser negativa.");
         if (carencia > params.getCarenciaMaximaConsignado()) {
             throw new ValidationException("Carência excede o limite máximo de " +
@@ -27,7 +26,7 @@ public class ValidatorConsignado {
     }
 
     // Valor Mínimo
-    public static void verificarValorMinimoEmprestimo(double valorSolicitado) {
+    public static void validarValorMinimoEmprestimo(double valorSolicitado) {
         if (valorSolicitado < params.getValorMinimoConsignado()) {
             throw new ValidationException("O valor solicitado (R$ " + valorSolicitado +
                     ") é inferior ao mínimo de R$ " + params.getValorMinimoConsignado() + ".");
@@ -35,8 +34,8 @@ public class ValidatorConsignado {
     }
 
     // Limite de Crédito
-    public static void verificarLimiteCreditoConsignado(Cliente cliente, double valorSolicitado) {
-        double limiteCredito = ClienteService.calcularLimiteCreditoConsignado(cliente);
+    public static void validarLimiteCreditoConsignado(Cliente cliente, double valorSolicitado) {
+        double limiteCredito = cliente.getLimiteCreditoConsignado();
         if (valorSolicitado > limiteCredito) {
             throw new ValidationException("O valor solicitado (R$ " + valorSolicitado +
                     ") excede o limite de crédito consignado disponível (R$ " + limiteCredito + ").");
@@ -44,7 +43,7 @@ public class ValidatorConsignado {
     }
 
     // Idade Máxima Final
-    public static void verificarIdadeClienteConsig(Cliente cliente, int parcelas) {
+    public static void validarIdadeClienteConsig(Cliente cliente, int parcelas) {
         int idade = cliente.getIdade();
         int anos = parcelas / 12;
         int idadeFinal = idade + anos;
@@ -55,8 +54,8 @@ public class ValidatorConsignado {
     }
 
     // Prazo
-    public static void verificarPrazoConsignado(Cliente cliente, int parcelas) {
-        int prazoMaximoConsignado = ClienteService.calcularPrazoMaximoConsignado(cliente);
+    public static void validarPrazoConsignado(Cliente cliente, int parcelas) {
+        int prazoMaximoConsignado = cliente.getPrazoMaximoConsignado();
         if (parcelas < params.getPrazoMinimoConsignado()) {
             throw new ValidationException("Quantidade de parcelas (" + parcelas +
                     ") inferior ao mínimo de " + params.getPrazoMinimoConsignado() + ".");
@@ -68,8 +67,8 @@ public class ValidatorConsignado {
     }
 
     // Margem por Parcela
-    public static void verificarMargemConsignavel(Cliente cliente, double valorParcela) {
-        double margemDisponivel = ClienteService.calcularMargemConsignavelDisponivel(cliente);
+    public static void validarMargemConsignavel(Cliente cliente, double valorParcela) {
+        double margemDisponivel = cliente.getMargemConsignavelDisponivel();
         if (valorParcela > margemDisponivel) {
             throw new ValidationException("O valor da parcela (R$ " + valorParcela +
                     ") excede a margem consignável disponível (R$ " + margemDisponivel + ").");
@@ -77,20 +76,13 @@ public class ValidatorConsignado {
     }
 
     // Elegibilidade do Empréstimo
-    public static void verificarElegibilidadeConsignado(Cliente cliente, Emprestimo emprestimo) {
-        if (emprestimo.getValorParcela() <= 0) throw new ValidationException("Valor da parcela deve ser maior que zero.");
-        if (cliente.getIdade() <= 0) throw new ValidationException("Idade deve ser maior que zero.");
-        if (emprestimo.getQuantidadeParcelas() <= 0) throw new ValidationException("Quantidade de parcelas deve ser maior que zero.");
-        if (emprestimo.getTaxaJuros() <= 0) throw new ValidationException("Taxa de juros deve ser maior que zero.");
-        if (emprestimo.getCarencia() < 0) throw new ValidationException("Carência não pode ser negativa.");
-        if (emprestimo.getValorEmprestimo() <= 0) throw new ValidationException("Valor solicitado deve ser maior que zero.");
-
-        verificarTaxaJurosEmprestimoConsig(emprestimo.getTaxaJuros());
-        verificarCarenciaEmprestimoConsig(emprestimo.getCarencia());
-        verificarValorMinimoEmprestimo(emprestimo.getValorEmprestimo());
-        verificarLimiteCreditoConsignado(cliente, emprestimo.getValorEmprestimo());
-        verificarIdadeClienteConsig(cliente, emprestimo.getQuantidadeParcelas());
-        verificarPrazoConsignado(cliente, emprestimo.getQuantidadeParcelas());
-        verificarMargemConsignavel(cliente, emprestimo.getValorParcela());
+    public static void validarConsignado(Cliente cliente, Emprestimo emprestimo) {
+        validarTaxaJurosEmprestimoConsig(emprestimo.getTaxaJuros());
+        validarCarenciaEmprestimoConsig(emprestimo.getCarencia());
+        validarValorMinimoEmprestimo(emprestimo.getValorEmprestimo());
+        validarLimiteCreditoConsignado(cliente, emprestimo.getValorEmprestimo());
+        validarIdadeClienteConsig(cliente, emprestimo.getQuantidadeParcelas());
+        validarPrazoConsignado(cliente, emprestimo.getQuantidadeParcelas());
+        validarMargemConsignavel(cliente, emprestimo.getValorParcela());
     }
 }

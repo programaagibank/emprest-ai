@@ -14,10 +14,11 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -28,7 +29,7 @@ public class ConfirmacaoPagViewController {
     // --------------------------------------------------------------------------------
     // FXML Components
     // --------------------------------------------------------------------------------
-    @FXML private VBox confirmacaoContainer;
+    @FXML private BorderPane confirmacaoContainer;
     @FXML private Label valorLabel;
     @FXML private Label parcelasLabel;
     @FXML private Label dataLabel;
@@ -36,6 +37,9 @@ public class ConfirmacaoPagViewController {
     @FXML private Button confirmarButton;
     @FXML private Button cancelarButton;
     @FXML private Label mensagemLabel;
+    @FXML private Button homeButton;
+    @FXML private Button profileButton;
+    @FXML private Button exitButton;
 
     // --------------------------------------------------------------------------------
     // Class Properties
@@ -110,13 +114,10 @@ public class ConfirmacaoPagViewController {
         }
 
         try {
-            // Valida a senha usando o cliente do SessionManager
             boolean senhaValida = loginController.validaSenha(senha, SessionManager.getInstance().getClienteLogado().getSenha());
             if (senhaValida) {
                 parcelaController.putListParcelas(parcelasSelecionadas);
-                mensagemLabel.setText("Pagamento confirmado com sucesso!");
-                mensagemLabel.setStyle("-fx-text-fill: #008000;");
-                voltarParaParcelas();
+                exibirTelaSucesso("Pagamento confirmado com sucesso!");
             } else {
                 mensagemLabel.setText("Senha inválida. Tente novamente.");
             }
@@ -126,9 +127,52 @@ public class ConfirmacaoPagViewController {
         }
     }
 
+    private void exibirTelaSucesso(String mensagem) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("confirmacao-sucesso.fxml"));
+            Scene sucessoScene = new Scene(loader.load(), 400, 700);
+            ConfirmacaoSucessoViewController controller = loader.getController();
+            controller.setMensagem(mensagem);
+
+            Stage stage = (Stage) confirmarButton.getScene().getWindow();
+            stage.setScene(sucessoScene);
+            stage.setTitle("EmprestAI - Sucesso");
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            mensagemLabel.setText("Erro ao exibir tela de sucesso: " + e.getMessage());
+        }
+    }
+
     @FXML
     private void onCancelarClick() {
         voltarParaParcelas();
+    }
+
+    @FXML
+    private void onHomeClick() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("dashboard.fxml"));
+            Scene dashboardScene = new Scene(loader.load(), 400, 700);
+            Stage stage = (Stage) homeButton.getScene().getWindow();
+            stage.setScene(dashboardScene);
+            stage.setTitle("EmprestAI - Dashboard");
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            mensagemLabel.setText("Erro ao voltar para o início: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void onProfileClick() {
+        System.out.println("Navegar para a tela de perfil (não implementado).");
+        mensagemLabel.setText("Funcionalidade de perfil ainda não implementada.");
+    }
+
+    @FXML
+    private void onExitClick() {
+        voltarParaLogin();
     }
 
     // --------------------------------------------------------------------------------
@@ -146,12 +190,15 @@ public class ConfirmacaoPagViewController {
     private void voltarParaParcelas() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("parcela.fxml"));
-            Scene parcelaScene = new Scene(loader.load(), 360, 640);
+            Scene parcelaScene = new Scene(loader.load(), 400, 700);
             ParcelaViewController controller = loader.getController();
-            controller.setParcelas(parcelasSelecionadas);
+
             if (parcelaViewController != null && parcelaViewController.getEmprestimo() != null) {
-                controller.setEmprestimo(parcelaViewController.getEmprestimo());
+                controller.setEmprestimo(parcelaViewController.getEmprestimo()); // Ordem crescente
                 controller.setTipoEmprestimo(parcelaViewController.getTipoEmprestimo());
+            } else {
+                voltarParaLogin();
+                return;
             }
 
             Stage stage = (Stage) cancelarButton.getScene().getWindow();
@@ -161,6 +208,8 @@ public class ConfirmacaoPagViewController {
         } catch (IOException e) {
             e.printStackTrace();
             mensagemLabel.setText("Erro ao voltar para parcelas: " + e.getMessage());
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -168,7 +217,7 @@ public class ConfirmacaoPagViewController {
         try {
             SessionManager.getInstance().clearSession();
             FXMLLoader loader = new FXMLLoader(getClass().getResource("login.fxml"));
-            Scene loginScene = new Scene(loader.load(), 360, 640);
+            Scene loginScene = new Scene(loader.load(), 400, 700);
             Stage stage = (Stage) cancelarButton.getScene().getWindow();
             stage.setScene(loginScene);
             stage.setTitle("EmprestAI - Login");

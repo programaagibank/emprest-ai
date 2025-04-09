@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.com.emprestai.view.CadastroClienteViewController"
+      spacing="20" alignment="CENTER" maxWidth="Infinity" styleClass="root" stylesheets="@../css/tela-cadastro.css">
+
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <!-- Header -->
+    <HBox alignment="CENTER" spacing="10.0" styleClass="header">
+        <padding>
+            <Insets bottom="10.0" left="15.0" right="15.0" top="15.0"/>
+        </padding>
+        <Label text="Cadastro de Cliente" styleClass="greeting-label"/>
+    </HBox>
+
+    <!-- Conteúdo -->
+    <VBox styleClass="content" spacing="15" VBox.vgrow="ALWAYS" alignment="TOP_CENTER">
+
+        <VBox spacing="10" maxWidth="400" alignment="CENTER_LEFT">
+
+            <!-- CPF Cliente -->
+            <VBox spacing="5">
+                <Label text="CPF Cliente:" styleClass="info-label"/>
+                <TextField fx:id="cpfField" styleClass="input-field" prefWidth="300"/>
+            </VBox>
+
+            <!-- Nome Cliente -->
+            <VBox spacing="5">
+                <Label text="Nome Cliente:" styleClass="info-label"/>
+                <TextField fx:id="nomeField" styleClass="input-field" prefWidth="300"/>
+            </VBox>
+
+            <!-- Data de Nascimento -->
+            <VBox spacing="5">
+                <Label text="Data de Nascimento:" styleClass="info-label"/>
+                <DatePicker fx:id="dataNascimentoField" styleClass="date-picker" prefWidth="300"/>
+            </VBox>
+
+            <!-- Senha de Acesso -->
+            <VBox spacing="5">
+                <Label text="Senha de Acesso:" styleClass="info-label"/>
+                <PasswordField fx:id="senhaField" styleClass="input-field" prefWidth="300"/>
+            </VBox>
+
+        </VBox>
+
+        <!-- Botões -->
+        <HBox spacing="10.0" alignment="CENTER">
+            <Button text="Cadastrar" onAction="#cadastrarCliente" styleClass="confirm-button" prefWidth="150"/>
+        </HBox>
+    </VBox>
+
+    <!-- Barra de navegação -->
+    <HBox alignment="CENTER" spacing="20.0" styleClass="nav-bar">
+        <padding>
+            <Insets bottom="10.0" left="15.0" right="15.0" top="10.0"/>
+        </padding>
+        <Button fx:id="voltarNavButton" onAction="#onVoltarClick" styleClass="nav-button">
+            <graphic>
+                <ImageView fitHeight="24" fitWidth="24" preserveRatio="true"/>
+            </graphic>
+            <text>Voltar</text>
+        </Button>
+    </HBox>
+</VBox>

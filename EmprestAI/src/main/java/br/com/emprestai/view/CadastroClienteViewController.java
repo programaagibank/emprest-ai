@@ -4,6 +4,7 @@ import br.com.emprestai.controller.ClienteController;
 import br.com.emprestai.dao.ClienteDAO;
 import br.com.emprestai.exception.ApiException;
 import br.com.emprestai.model.Cliente;
+import br.com.emprestai.service.ClienteService;
 import br.com.emprestai.util.SessionManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -44,49 +45,129 @@ public class CadastroClienteViewController {
     // Event Handlers
     // --------------------------------------------------------------------------------
     @FXML
-    private void cadastrarCliente() {
-        try {
-            // Captura dos dados
-            String cpf = cpfField.getText();
-            String nome = nomeField.getText();
-            LocalDate dataNascimento = dataNascimentoField.getValue();
-            String senha = senhaField.getText();
+    public void initialize() {
+        // Formatação do CPF
+        cpfField.setPromptText("Ex: 123.456.789-00");
+        cpfField.textProperty().addListener((observable, oldValue, newValue) -> {
+            javafx.application.Platform.runLater(() -> {
+                String numbersOnly = newValue.replaceAll("[^0-9]", "");
+                if (numbersOnly.length() > 11) numbersOnly = numbersOnly.substring(0, 11);
 
-            // Validação de campos obrigatórios
-            if (cpf.isEmpty() || nome.isEmpty() || senha.isEmpty() || dataNascimento == null) {
-                showError("Todos os campos são obrigatórios.");
-                return;
-            }
+                StringBuilder formatted = new StringBuilder();
+                for (int i = 0; i < numbersOnly.length(); i++) {
+                    if (i == 3 || i == 6) formatted.append(".");
+                    else if (i == 9) formatted.append("-");
+                    formatted.append(numbersOnly.charAt(i));
+                }
 
-            // Criação do objeto Cliente
-            Cliente cliente = new Cliente();
-            cliente.setCpfCliente(cpf);
-            cliente.setNomeCliente(nome);
-            cliente.setDataNascimento(dataNascimento);
-            cliente.setSenha(senha);
+                if (!formatted.toString().equals(newValue)) {
+                    cpfField.setText(formatted.toString());
+                    cpfField.positionCaret(formatted.length());
+                }
+            });
+        });
 
-            // Cadastro no banco
-            Cliente clienteCadastrado = clienteController.post(cliente);
-
-            // Armazena o cliente no SessionManager
-            SessionManager.getInstance().setClienteLogado(clienteCadastrado);
-
-            // Feedback e redirecionamento
-            showInfo("Cliente cadastrado com sucesso! Redirecionando para o dashboard...");
-            limparCampos();
-            irParaDashboard();
-
-        } catch (ApiException e) {
-            showError(e.getMessage());
-        }
+        // Validação da senha (6 dígitos numéricos)
+        senhaField.setPromptText("6 dígitos");
+        senhaField.textProperty().addListener((observable, oldValue, newValue) -> {
+            String numbersOnly = newValue.replaceAll("[^0-9]", "");
+            if (numbersOnly.length() > 6) numbersOnly = numbersOnly.substring(0, 6);
+            senhaField.setText(numbersOnly);
+            senhaField.positionCaret(numbersOnly.length());
+        });
     }
+//    @FXML
+//    private void cadastrarCliente() {
+//        try {
+//            // Captura dos dados
+//            String cpf = cpfField.getText();
+//            String nome = nomeField.getText();
+//            LocalDate dataNascimento = dataNascimentoField.getValue();
+//            String senha = senhaField.getText();
+//
+//            // Validação de campos obrigatórios
+//            if (cpf.isEmpty() || nome.isEmpty() || senha.isEmpty() || dataNascimento == null) {
+//                showError("Todos os campos são obrigatórios.");
+//                return;
+//            }
+//
+//            // Criação do objeto Cliente
+//            Cliente cliente = new Cliente(new ClienteService());
+//            cliente.setCpfCliente(cpf);
+//            cliente.setNomeCliente(nome);
+//            cliente.setDataNascimento(dataNascimento);
+//            cliente.setSenha(senha);
+//
+//            // Cadastro no banco
+//            Cliente clienteCadastrado = clienteController.post(cliente);
+//
+//            // Armazena o cliente no SessionManager
+//            SessionManager.getInstance().setClienteLogado(clienteCadastrado);
+//
+//            // Feedback e redirecionamento
+//            showInfo("Cliente cadastrado com sucesso! Redirecionando para o dashboard...");
+//            limparCampos();
+//            irParaDashboard();
+//
+//        } catch (ApiException e) {
+//            showError(e.getMessage());
+//        }
+//    }
+@FXML
+private void cadastrarCliente() {
+    try {
+        // Captura dos dados
+        String cpf = cpfField.getText().replaceAll("[^0-9]", "");
+        String nome = nomeField.getText();
+        LocalDate dataNascimento = dataNascimentoField.getValue();
+        String senha = senhaField.getText();
+
+        // Validação de campos obrigatórios
+        if (cpf.isEmpty() || nome.isEmpty() || senha.isEmpty() || dataNascimento == null) {
+            showError("Todos os campos são obrigatórios.");
+            return;
+        }
+
+        // Validações adicionais
+        if (cpf.length() != 11) {
+            showError("O CPF deve conter 11 dígitos.");
+            return;
+        }
+
+        if (senha.length() != 6) {
+            showError("A senha deve conter exatamente 6 dígitos.");
+            return;
+        }
+
+        // Criação do objeto Cliente
+        Cliente cliente = new Cliente(new ClienteService());
+        cliente.setCpfCliente(cpf);
+        cliente.setNomeCliente(nome);
+        cliente.setDataNascimento(dataNascimento);
+        cliente.setSenha(senha);
+
+        // Cadastro no banco
+        Cliente clienteCadastrado = clienteController.post(cliente);
+
+        // Armazena o cliente no SessionManager
+        SessionManager.getInstance().setClienteLogado(clienteCadastrado);
+
+        // Feedback e redirecionamento
+        showInfo("Cliente cadastrado com sucesso! Redirecionando para o dashboard...");
+        limparCampos();
+        irParaDashboard();
+
+    } catch (ApiException e) {
+        showError(e.getMessage());
+    }
+}
 
     @FXML
     private void onVoltarClick(ActionEvent event) {
         try {
             SessionManager.getInstance().clearSession(); // Limpa qualquer sessão residual
             FXMLLoader loader = new FXMLLoader(getClass().getResource("login.fxml"));
-            Scene loginScene = new Scene(loader.load(), 360, 640);
+            Scene loginScene = new Scene(loader.load(), 400, 700);
             Stage stage = (Stage) cpfField.getScene().getWindow();
             stage.setScene(loginScene);
             stage.setTitle("EmprestAI - Login");
@@ -109,7 +190,7 @@ public class CadastroClienteViewController {
         try {
             SessionManager.getInstance().clearSession(); // Limpa qualquer sessão residual
             FXMLLoader loader = new FXMLLoader(getClass().getResource("login.fxml"));
-            Scene loginScene = new Scene(loader.load(), 360, 640);
+            Scene loginScene = new Scene(loader.load(), 400, 700);
             Stage stage = (Stage) cpfField.getScene().getWindow();
             stage.setScene(loginScene);
             stage.setTitle("EmprestAI - Login");
@@ -149,7 +230,7 @@ public class CadastroClienteViewController {
     private void irParaDashboard() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("dashboard.fxml"));
-            Scene dashboardScene = new Scene(loader.load(), 360, 640);
+            Scene dashboardScene = new Scene(loader.load(), 400, 700);
             Stage stage = (Stage) cpfField.getScene().getWindow();
             stage.setScene(dashboardScene);
             stage.setTitle("EmprestAI - Dashboard");

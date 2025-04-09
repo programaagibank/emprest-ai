@@ -1,9 +1,9 @@
 package br.com.emprestai.model;
 
+import br.com.emprestai.service.ClienteService;
+
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-
-import br.com.emprestai.service.ClienteService;
 
 public class Cliente {
     private Long idCliente;
@@ -17,6 +17,11 @@ public class Cliente {
     private double valorComprometido;
     private double valorParcelasMensaisConsignado;
     private double valorParcelasMensaisTotal;
+    private final ClienteService clienteService;
+
+    public Cliente(ClienteService clienteService) {
+        this.clienteService = clienteService;
+    }
 
     // Getters e Setters
     public Long getIdCliente() {
@@ -107,7 +112,7 @@ public class Cliente {
         this.valorParcelasMensaisTotal = valorParcelasMensaisTotal;
     }
 
-    // Método para calcular a idade
+    // Metodo para calcular a idade
     public int getIdade() {
         if (dataNascimento == null) {
             return 0;
@@ -117,26 +122,27 @@ public class Cliente {
 
     // Métodos que delegam os cálculos para o EmprestimoService
     public int getPrazoMaximoPessoal() {
-        return ClienteService.calcularPrazoMaximoPessoal(this);
+        return clienteService.calcularPrazoMaximoPessoal(this);
     }
 
     public int getPrazoMaximoConsignado() {
-        return ClienteService.calcularPrazoMaximoConsignado(this);
+        return clienteService.calcularPrazoMaximoConsignado(this);
     }
 
     public double getMargemConsignavelDisponivel() {
-        return ClienteService.calcularMargemConsignavelDisponivel(this);
-    }
-
-    public double getMargemPessoalDisponivel() {
-        return ClienteService.calcularMargemPessoalDisponivel(this);
-    }
-
-    public double getLimiteCreditoPessoal() {
-        return ClienteService.calcularLimiteCreditoPessoal(this);
+        return clienteService.calcularMargemConsignavelDisponivel(this);
     }
 
     public double getLimiteCreditoConsignado() {
-        return ClienteService.calcularLimiteCreditoConsignado(this);
+        return clienteService.calcularLimiteCreditoConsignado(this);
     }
+
+    public double getMargemPessoalDisponivel() {
+        return clienteService.calcularMargemPessoalDisponivel(this);
+    }
+
+    public double getLimiteCreditoPessoal() {
+        return clienteService.calcularLimiteCreditoPessoal(this);
+    }
+
 }

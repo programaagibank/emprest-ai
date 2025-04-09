@@ -3,7 +3,6 @@ package br.com.emprestai.service.calculos;
 import br.com.emprestai.enums.StatusParcelaEnum;
 import br.com.emprestai.model.Emprestimo;
 import br.com.emprestai.model.Parcela;
-import br.com.emprestai.util.ConversorFinanceiro;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -24,6 +23,7 @@ public class CalculadoraParcela {
         BigDecimal denominador = ONE.subtract(umMaisTaxa.pow(-qtdeParcelas, DECIMAL128));
         return valorTotalFinanciado.multiply(BigDecimal.valueOf(taxaJurosMensal / 100)).divide(denominador, DECIMAL128);
     }
+
 
     public static List<Parcela> processarValoresParcela(Emprestimo emprestimo) {
         if (emprestimo.getValorParcela() <= 0 || emprestimo.getTaxaJuros() <= 0 || emprestimo.getQuantidadeParcelas() <= 1) {

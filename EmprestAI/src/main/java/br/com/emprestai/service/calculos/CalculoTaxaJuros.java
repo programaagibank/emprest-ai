@@ -5,9 +5,9 @@ import br.com.emprestai.util.EmprestimoParams;
 
 import java.math.BigDecimal;
 
+import static java.math.BigDecimal.ONE;
 import static java.math.MathContext.DECIMAL128;
 import static java.math.RoundingMode.HALF_UP;
-import static java.math.BigDecimal.ONE;
 
 public class CalculoTaxaJuros {
 

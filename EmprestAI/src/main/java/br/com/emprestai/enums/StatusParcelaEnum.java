@@ -1,7 +1,7 @@
 package br.com.emprestai.enums;
 
 public enum StatusParcelaEnum {
-    PAGA(1), PENDENTE(2), ATRASADA(3), PAGA_EM_ATRASO(4), PAGA_POR_ANTECIPACAO(5);
+    PAGA(1), PENDENTE(2), ATRASADA(3), PAGA_EM_ATRASO(4), PAGA_POR_ANTECIPACAO(5), PARCIAL(6);
     private final int valor;
 
     StatusParcelaEnum(int valor) {this.valor = valor; }

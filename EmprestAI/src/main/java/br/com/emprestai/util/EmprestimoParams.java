@@ -26,11 +26,11 @@ public class EmprestimoParams {
     private int prazoMinimoPessoal = 6;
     private int prazoMaximoPessoal = 30;
     private int prazoMinimoConsignado = 24;
-    private int prazoMaximoConsignado = 94;
+    private int prazoMaximoConsignado = 84;
 
     // Carências
-    private double carenciaMaximaPessoal = 30;
-    private double carenciaMaximaConsignado = 60;
+    private int carenciaMaximaConsignado = 60;
+    private int carenciaMaximaPessoal = 30;
 
     // Idades score minimo
     private  int  scoreMinimoPessoal = 201;
@@ -39,13 +39,13 @@ public class EmprestimoParams {
 
     // Idades máximas
 
-    private double idadeMinimaConsignado = 18;
-    private double idadeMaximaConsignado = 80;
-    private double idadeMaximaPessoal = 75;
-    private double idadeMinimaPessoal = 18;
+    private int idadeMinimaConsignado = 18;
+    private int idadeMaximaConsignado = 80;
+    private int idadeMaximaPessoal = 75;
+    private int idadeMinimaPessoal = 18;
 
     // Percentuais
-    private double margemConsignavel = 35;
+    private double  margemConsignavel = 35;
     private double percentualIofFixo = 0.38;
     private double percentualIofVar = 0.0082;
     private double percentualSegFixo = 0.25;
@@ -150,20 +150,20 @@ public class EmprestimoParams {
         this.prazoMaximoConsignado = prazoMaximoConsignado;
     }
 
-    public double getCarenciaMaximaPessoal() {
-        return carenciaMaximaPessoal;
-    }
-
-    public void setCarenciaMaximaPessoal(double carenciaMaximaPessoal) {
-        this.carenciaMaximaPessoal = carenciaMaximaPessoal;
-    }
-
-    public double getCarenciaMaximaConsignado() {
+    public int getCarenciaMaximaConsignado() {
         return carenciaMaximaConsignado;
     }
 
-    public void setCarenciaMaximaConsignado(double carenciaMaximaConsignado) {
+    public void setCarenciaMaximaConsignado(int carenciaMaximaConsignado) {
         this.carenciaMaximaConsignado = carenciaMaximaConsignado;
+    }
+
+    public int getCarenciaMaximaPessoal() {
+        return carenciaMaximaPessoal;
+    }
+
+    public void setCarenciaMaximaPessoal(int carenciaMaximaPessoal) {
+        this.carenciaMaximaPessoal = carenciaMaximaPessoal;
     }
 
     public int getScoreMinimoPessoal() {
@@ -182,27 +182,27 @@ public class EmprestimoParams {
         this.scoreMinimoConsignado = scoreMinimoConsignado;
     }
 
-    public double getIdadeMinimaConsignado() {
+    public int getIdadeMinimaConsignado() {
         return idadeMinimaConsignado;
     }
 
-    public void setIdadeMinimaConsignado(double idadeMinimaConsignado) {
+    public void setIdadeMinimaConsignado(int idadeMinimaConsignado) {
         this.idadeMinimaConsignado = idadeMinimaConsignado;
     }
 
-    public double getIdadeMaximaConsignado() {
+    public int getIdadeMaximaConsignado() {
         return idadeMaximaConsignado;
     }
 
-    public void setIdadeMaximaConsignado(double idadeMaximaConsignado) {
+    public void setIdadeMaximaConsignado(int idadeMaximaConsignado) {
         this.idadeMaximaConsignado = idadeMaximaConsignado;
     }
 
-    public double getIdadeMaximaPessoal() {
+    public int getIdadeMaximaPessoal() {
         return idadeMaximaPessoal;
     }
 
-    public void setIdadeMaximaPessoal(double idadeMaximaPessoal) {
+    public void setIdadeMaximaPessoal(int idadeMaximaPessoal) {
         this.idadeMaximaPessoal = idadeMaximaPessoal;
     }
 
@@ -210,7 +210,7 @@ public class EmprestimoParams {
         return idadeMinimaPessoal;
     }
 
-    public void setIdadeMinimaPessoal(double idadeMinimaPessoal) {
+    public void setIdadeMinimaPessoal(int idadeMinimaPessoal) {
         this.idadeMinimaPessoal = idadeMinimaPessoal;
     }
 

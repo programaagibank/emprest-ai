@@ -137,20 +137,37 @@ public class PerfilClienteViewController implements Initializable {
 //            e.printStackTrace();
 //        }
 //    }
-@FXML
-private void onHomeClick(ActionEvent event) {
-    try {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/dashboard.fxml"));
-        Parent root = loader.load();
-
-        Scene scene = new Scene(root);
-        Stage stage = (Stage) homeButton.getScene().getWindow();
-        stage.setScene(scene);
-        stage.show();
-    } catch (IOException e) {
-        e.printStackTrace();
+//@FXML
+//private void onHomeClick(ActionEvent event) {
+//    try {
+//        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/dashboard.fxml"));
+//        Parent root = loader.load();
+//
+//        Scene scene = new Scene(root);
+//        Stage stage = (Stage) homeButton.getScene().getWindow();
+//        stage.setScene(scene);
+//        stage.show();
+//    } catch (IOException e) {
+//        e.printStackTrace();
+//    }
+//}
+    @FXML
+    private void onHomeClick() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("dashboard.fxml"));
+            Scene mainScene = new Scene(loader.load(), 400, 700);
+            Stage stage = (Stage) homeButton.getScene().getWindow();
+            stage.setScene(mainScene);
+            stage.setTitle("EmprestAI - Dashboard");
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.err.println("Erro ao carregar dashboard.fxml: " + e.getMessage());
+        }
     }
-}
+
+
+
     @FXML
     private void onProfileClick(ActionEvent event) {
         // Já estamos na tela de perfil, não é necessário fazer nada
@@ -163,7 +180,7 @@ private void onHomeClick(ActionEvent event) {
             SessionManager.getInstance().clearSession();
 
             // Voltar para tela de login
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/login.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("login.fxml"));
             Parent root = loader.load();
 
             Scene scene = new Scene(root);
@@ -174,7 +191,21 @@ private void onHomeClick(ActionEvent event) {
             e.printStackTrace();
         }
     }
-
+//    @FXML
+//    private void onExitClick() {
+//        try {
+//            SessionManager.getInstance().clearSession();
+//            FXMLLoader loader = new FXMLLoader(getClass().getResource("login.fxml"));
+//            Scene mainScene = new Scene(loader.load(), 400, 700);
+//            Stage stage = (Stage) homeButton.getScene().getWindow();
+//            stage.setScene(mainScene);
+//            stage.setTitle("EmprestAI - Login");
+//            stage.show();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            System.err.println("Erro ao carregar login.fxml: " + e.getMessage());
+//        }
+//    }
     @FXML
     private void onEditarPerfilClick(ActionEvent event) {
         // Implementar a lógica para editar o perfil do cliente

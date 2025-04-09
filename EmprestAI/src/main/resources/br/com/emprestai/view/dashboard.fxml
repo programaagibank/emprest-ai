@@ -124,22 +124,16 @@
                             </VBox>
 
                             <!-- Card do ChatBot -->
+                            <!-- Card do ChatBot -->
                             <VBox styleClass="promo-card" spacing="10.0" HBox.hgrow="ALWAYS">
-                                <HBox alignment="CENTER_LEFT" spacing="10">
-                                    <ImageView fitHeight="30" fitWidth="30" preserveRatio="true">
-                                        <image>
-                                            <Image url="@../images/chatbot.png" />
-                                        </image>
-                                    </ImageView>
-                                    <Label styleClass="promo-title" text="ChatBot" wrapText="true" />
-                                </HBox>
-                                <Label styleClass="promo-subtitle" text="Fale com nosso assistente" wrapText="true" />
+                                <Label styleClass="promo-title" text="Assistente Virtual" wrapText="true" />
+                                <Label styleClass="promo-subtitle" text="Fale com nossa assistente" wrapText="true" />
                                 <Region VBox.vgrow="ALWAYS" /> <!-- Espaçador para alinhar o botão na parte inferior -->
                                 <Button fx:id="chatbotButton" onAction="#onChatBot" styleClass="promo-button" text="Conversar">
                                     <graphic>
                                         <ImageView fitHeight="16" fitWidth="16" preserveRatio="true">
                                             <image>
-                                                <Image url="@../images/chatbot.png" />
+                                                <Image url="@../images/chat.png" />
                                             </image>
                                         </ImageView>
                                     </graphic>

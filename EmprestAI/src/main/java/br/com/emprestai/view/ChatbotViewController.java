@@ -3,13 +3,18 @@ package br.com.emprestai.view;
 import br.com.emprestai.model.Cliente;
 import br.com.emprestai.util.SessionManager;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 
 public class ChatbotViewController {
 
-    @FXML private TextArea chatArea;
+    @FXML private VBox chatArea; // Usando VBox em vez de TextArea
     @FXML private TextField chatInput;
     @FXML private Button chatbotButton;
 
@@ -19,15 +24,15 @@ public class ChatbotViewController {
 
     @FXML
     private void initialize() {
-        // Nada a inicializar
+        chatArea.setSpacing(10); // Espaçamento entre mensagens
     }
 
     @FXML
     private void startChatbot() {
-        chatArea.clear();
+        chatArea.getChildren().clear();
         estadoAtual = ChatState.INICIAL;
         Cliente clienteLogado = SessionManager.getInstance().getClienteLogado();
-        appendBotMessage("Oi, " + clienteLogado.getNomeCliente() + "! Sou o Bot do EmprestAI. 😊");
+        appendBotMessage("Oi, " + clienteLogado.getNomeCliente() + "! Sou a Clara do EmprestAI. 😊");
         appendBotMessage("Como posso te ajudar hoje?");
         appendBotMessage("1 - Suporte ao Cliente (perguntas frequentes)\n2 - Educação Financeira (dicas)\n3 - Negociação de Dívidas\nDigite o número da opção:");
         chatbotButton.setDisable(true);
@@ -154,18 +159,37 @@ public class ChatbotViewController {
         }
     }
 
+    private void appendBotMessage(String message) {
+        Image botImage = new Image(getClass().getResourceAsStream("../images/bot-profile.png")); // Imagem do bot
+        ImageView botImageView = new ImageView(botImage);
+        botImageView.setFitWidth(30);
+        botImageView.setFitHeight(30);
+
+        Text text = new Text(message);
+        text.setWrappingWidth(250); // Limita a largura do texto
+
+        HBox messageBox = new HBox(10, botImageView, text);
+        messageBox.setAlignment(Pos.CENTER_LEFT);
+        messageBox.getStyleClass().add("bot-message");
+
+        chatArea.getChildren().add(messageBox);
+    }
+
+    private void appendUserMessage(String message) {
+        Text text = new Text(message);
+        text.setWrappingWidth(250);
+
+        HBox messageBox = new HBox(text);
+        messageBox.setAlignment(Pos.CENTER_RIGHT);
+        messageBox.getStyleClass().add("user-message");
+
+        chatArea.getChildren().add(messageBox);
+    }
+
     private void voltarAoMenu() {
         estadoAtual = ChatState.INICIAL;
         appendBotMessage("Voltando ao menu principal...");
         appendBotMessage("1 - Suporte ao Cliente\n2 - Educação Financeira\n3 - Negociação de Dívidas\nDigite o número da opção:");
-    }
-
-    private void appendBotMessage(String message) {
-        chatArea.appendText("[Bot] " + message + "\n");
-    }
-
-    private void appendUserMessage(String message) {
-        chatArea.appendText("          [Você] " + message + "\n");
     }
 
     private void resetChat() {

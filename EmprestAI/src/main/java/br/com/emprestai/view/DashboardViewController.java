@@ -155,7 +155,7 @@ public class DashboardViewController {
             Scene chatbotScene = new Scene(loader.load(), 350, 500);
             Stage chatbotStage = new Stage();
             chatbotStage.setScene(chatbotScene);
-            chatbotStage.setTitle("EmprestAI - Chatbot");
+            chatbotStage.setTitle("EmprestAI - Chat");
             chatbotStage.show();
         } catch (IOException e) {
             e.printStackTrace();

@@ -1,15 +1,14 @@
-/* whatsapp.css */
 .whatsapp-window {
     -fx-background-color: #ECE5DD;
 }
 
 .whatsapp-header {
-    -fx-background-color: #075E54;
-    -fx-alignment: center-left;
+    -fx-background-color: #00C853;
+    -fx-border-color: #00B248;
+    -fx-border-width: 0 0 1 0;
 }
 
 .whatsapp-title {
-    -fx-font-family: "Arial";
     -fx-font-size: 16px;
     -fx-text-fill: white;
     -fx-font-weight: bold;
@@ -17,36 +16,49 @@
 
 .whatsapp-chat-area {
     -fx-background-color: #ECE5DD;
-    -fx-font-family: "Segoe UI Emoji", "Arial", sans-serif; /* Fonte com suporte a emojis */
-    -fx-font-size: 14px;
+}
+
+.chat-container {
     -fx-padding: 10;
-    -fx-control-inner-background: #ECE5DD;
-    -fx-text-fill: #000000;
 }
 
-.whatsapp-input {
-    -fx-background-color: white;
-    -fx-border-radius: 20;
-    -fx-background-radius: 20;
-    -fx-padding: 8 15 8 15;
-    -fx-font-size: 14px;
-    -fx-border-color: #d3d3d3;
-    -fx-border-width: 1;
+.bot-message {
+    -fx-background-color: #DCF8C6;
+    -fx-padding: 8;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
 }
 
-.whatsapp-start-button {
-    -fx-background-color: #075E54;
-    -fx-text-fill: white;
-    -fx-font-size: 12px;
-    -fx-padding: 5 10 5 10;
-    -fx-background-radius: 5;
-    -fx-font-family: "Arial";
-}
-
-.whatsapp-start-button:hover {
-    -fx-background-color: #054D44;
+.user-message {
+    -fx-background-color: #FFFFFF;
+    -fx-padding: 8;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
 }
 
 .whatsapp-input-area {
     -fx-background-color: #F0F0F0;
+    -fx-border-color: #D9D9D9;
+    -fx-border-width: 1 0 0 0;
+}
+
+.whatsapp-input {
+    -fx-background-color: white;
+    -fx-background-radius: 20;
+    -fx-border-radius: 20;
+    -fx-padding: 5 10;
+}
+
+.whatsapp-start-button {
+    -fx-background-color: #00C853;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 5;
+}
+
+.promo-button {
+    -fx-background-color: transparent; /* Garante que o fundo do botão seja transparente */
+    -fx-border-color: #your-border-color; /* Se houver borda */
+    -fx-border-radius: 5px; /* Ajuste conforme seu design */
+    -fx-text-fill: #your-text-color; /* Cor do texto */
 }

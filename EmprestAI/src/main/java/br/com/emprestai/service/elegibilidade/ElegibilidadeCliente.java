@@ -52,13 +52,6 @@ public class ElegibilidadeCliente {
                     limiteCreditoConsignado, params.getValorMinimoConsignado()));
         }
 
-        // Verifica score mínimo
-        if (cliente.getScore() < params.getScoreMinimoConsignado()) {
-            throw new ElegibilidadeException(String.format(
-                    "Score (%s) inferior ao mínimo exigido para consignado (%s).",
-                    cliente.getScore(), params.getScoreMinimoConsignado()));
-        }
-
         // Verifica prazo máximo
         int prazoMaximoConsignado = cliente.getPrazoMaximoConsignado();
         if (prazoMaximoConsignado < params.getPrazoMinimoConsignado()) {

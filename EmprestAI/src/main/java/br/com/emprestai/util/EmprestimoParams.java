@@ -35,10 +35,7 @@ public class EmprestimoParams {
     // Idades score minimo
     private  int  scoreMinimoPessoal = 201;
 
-    private  int  scoreMinimoConsignado = 201;
-
     // Idades máximas
-
     private int idadeMinimaConsignado = 18;
     private int idadeMaximaConsignado = 80;
     private int idadeMaximaPessoal = 75;
@@ -174,13 +171,6 @@ public class EmprestimoParams {
         this.scoreMinimoPessoal = scoreMinimoPessoal;
     }
 
-    public int getScoreMinimoConsignado() {
-        return scoreMinimoConsignado;
-    }
-
-    public void setScoreMinimoConsignado(int scoreMinimoConsignado) {
-        this.scoreMinimoConsignado = scoreMinimoConsignado;
-    }
 
     public int getIdadeMinimaConsignado() {
         return idadeMinimaConsignado;

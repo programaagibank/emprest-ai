@@ -66,6 +66,7 @@ public class ElegibilidadeConsignado {
         }
     }
 
+
     // Margem por Parcela
     public static void validarMargemConsignavel(Cliente cliente, double valorParcela) {
         double margemDisponivel = cliente.getMargemConsignavelDisponivel();

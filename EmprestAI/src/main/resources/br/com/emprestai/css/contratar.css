@@ -1,19 +1,20 @@
 /* Root styling */
 .root {
-    -fx-background-color: #F5F5F5; /* Fundo claro consistente */
+    -fx-background-color: #F7F7F7;
+    -fx-font-family: "Roboto Light", "Segoe UI Light", sans-serif; /* Fonte mais fina */
 }
 
 /* Header styling */
 .header {
-    -fx-background-color: linear-gradient(to bottom, #0056D2 0%, #00A3FF 70%, rgba(0, 163, 255, 0) 100%);
+    -fx-background-color: linear-gradient(to bottom, #0056D2 0%, #0077CC 50%, #008BE6 100%);
     -fx-alignment: center;
-    -fx-padding: 15px;
+    -fx-padding: 20px 15px; /* Padding aumentado */
 }
 
 .greeting-label {
-    -fx-font-family: "Roboto", "Arial", sans-serif;
-    -fx-font-size: 18px;
-    -fx-font-weight: bold;
+    -fx-font-family: "Roboto Light", "Arial", sans-serif; /* Fonte mais fina */
+    -fx-font-size: 20px; /* Tamanho maior */
+    -fx-font-weight: normal; /* Normal em vez de bold */
     -fx-text-fill: #FFFFFF;
     -fx-wrap-text: true;
     -fx-max-width: 330px;
@@ -24,58 +25,79 @@
     -fx-background-color: transparent;
     -fx-background: transparent;
     -fx-border-color: transparent;
+    -fx-hbar-policy: never;
+    -fx-padding: 5px 0;
 }
 
 .content-scroll .viewport {
     -fx-background-color: transparent;
 }
 
+.content-scroll .scroll-bar:vertical {
+    -fx-background-color: transparent;
+    -fx-background-radius: 0;
+    -fx-padding: 0 5px 0 0; /* Adicionado padding direito */
+}
+
+.content-scroll .scroll-bar:vertical .thumb {
+    -fx-background-color: #DDDDDD;
+    -fx-background-radius: 6px; /* Bordas mais suaves */
+}
+
 /* Main content styling */
 .content {
     -fx-background-color: #FFFFFF;
-    -fx-background-radius: 15px 15px 0 0;
+    -fx-background-radius: 24px 24px 0 0; /* Bordas mais arredondadas */
     -fx-alignment: center;
-    -fx-spacing: 20px;
-    -fx-padding: 15px;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 10, 0, 0, 4);
+    -fx-spacing: 30px; /* Espaçamento maior entre os elementos */
+    -fx-padding: 30px 20px; /* Mais padding */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.08), 12, 0, 0, 4);
 }
 
 /* Section titles */
 .section-title {
-    -fx-font-family: "Roboto", "Arial", sans-serif;
-    -fx-font-size: 16px;
-    -fx-font-weight: bold;
+    -fx-font-family: "Roboto Light", "Arial", sans-serif; /* Fonte mais fina */
+    -fx-font-size: 18px; /* Tamanho maior */
+    -fx-font-weight: normal; /* Normal em vez de bold */
     -fx-text-fill: #333333;
+    -fx-padding: 5px 0 10px 5px; /* Mais padding */
 }
 
 /* Loan info section */
 .loan-info {
-    -fx-background-color: #FFFFFF;
-    -fx-background-radius: 12px;
-    -fx-border-radius: 12px;
-    -fx-border-color: #E0E0E0;
+    -fx-background-color: #FAFAFA;
+    -fx-background-radius: 18px; /* Bordas mais arredondadas */
+    -fx-border-radius: 18px; /* Bordas mais arredondadas */
+    -fx-border-color: #EEEEEE;
     -fx-border-width: 1px;
-    -fx-padding: 15px;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 8, 0, 0, 4);
+    -fx-padding: 20px; /* Mais padding interno */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 10, 0, 0, 3);
     -fx-alignment: center;
-    -fx-spacing: 10px;
+    -fx-spacing: 15px; /* Maior espaçamento interno */
     -fx-max-width: 330px;
+    -fx-transition: all 0.3s ease-in-out;
+}
+
+.loan-info:hover {
+    -fx-background-color: #F0F7FF;
+    -fx-border-color: #D6E4F0;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.12), 12, 0, 0, 5);
 }
 
 /* GridPane labels */
 .info-label {
-    -fx-font-family: "Roboto", "Arial", sans-serif;
-    -fx-font-size: 12px;
+    -fx-font-family: "Roboto Light", "Arial", sans-serif; /* Fonte mais fina */
+    -fx-font-size: 13px; /* Tamanho maior */
     -fx-text-fill: #666666;
     -fx-wrap-text: true;
     -fx-max-width: 180px;
 }
 
 .info-value {
-    -fx-font-family: "Roboto", "Arial", sans-serif;
-    -fx-font-size: 12px;
-    -fx-font-weight: bold;
-    -fx-text-fill: #333333;
+    -fx-font-family: "Roboto Light", "Arial", sans-serif; /* Fonte mais fina */
+    -fx-font-size: 13px; /* Tamanho maior */
+    -fx-font-weight: normal; /* Normal em vez de bold */
+    -fx-text-fill: #0056D2; /* Cor azul para valores */
     -fx-wrap-text: false;
     -fx-max-width: 110px;
     -fx-alignment: center-right;
@@ -83,46 +105,56 @@
 
 /* Terms section */
 .terms-container {
-    -fx-background-color: #FFFFFF;
-    -fx-background-radius: 12px;
-    -fx-border-radius: 12px;
-    -fx-border-color: #E0E0E0;
+    -fx-background-color: #FAFAFA;
+    -fx-background-radius: 18px; /* Bordas mais arredondadas */
+    -fx-border-radius: 18px; /* Bordas mais arredondadas */
+    -fx-border-color: #EEEEEE;
     -fx-border-width: 1px;
-    -fx-padding: 15px;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 8, 0, 0, 4);
+    -fx-padding: 20px; /* Mais padding interno */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 10, 0, 0, 3);
     -fx-alignment: center;
-    -fx-spacing: 10px;
+    -fx-spacing: 15px; /* Maior espaçamento interno */
     -fx-max-width: 330px;
+    -fx-transition: all 0.3s ease-in-out;
+}
+
+.terms-container:hover {
+    -fx-background-color: #F0F7FF;
+    -fx-border-color: #D6E4F0;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.12), 12, 0, 0, 5);
 }
 
 .terms-checkbox {
-    -fx-font-family: "Roboto", "Arial", sans-serif;
-    -fx-font-size: 12px;
-    -fx-text-fill: #333333;
+    -fx-font-family: "Roboto Light", "Arial", sans-serif; /* Fonte mais fina */
+    -fx-font-size: 13px; /* Tamanho maior */
+    -fx-text-fill: #666666;
     -fx-wrap-text: true;
     -fx-max-width: 300px;
+    -fx-padding: 5px 0; /* Adicionado padding vertical */
 }
 
 /* Buttons */
 .confirm-button {
-    -fx-background-color: linear-gradient(to right, #0056D2 0%, #00A3FF 100%);
-    -fx-background-radius: 12px;
-    -fx-text-fill: #FFFFFF;
-    -fx-font-family: "Roboto", "Arial", sans-serif;
-    -fx-font-size: 14px;
-    -fx-font-weight: bold;
-    -fx-padding: 12px 24px;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 10, 0, 0, 4);
+    -fx-background-color: #0056D2;
+    -fx-background-radius: 25px; /* Bordas mais arredondadas */
+    -fx-text-fill: white;
+    -fx-font-family: "Roboto Light", "Arial", sans-serif; /* Fonte mais fina */
+    -fx-font-size: 14px; /* Tamanho maior */
+    -fx-font-weight: normal; /* Normal em vez de bold */
+    -fx-padding: 15px 25px; /* Mais padding */
+    -fx-cursor: hand;
+    -fx-alignment: center;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.08), 3, 0, 0, 1);
 }
 
 .confirm-button:hover {
-    -fx-background-color: linear-gradient(to right, #003A8C 0%, #007ACC 100%);
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 12, 0, 0, 5);
+    -fx-background-color: #0066F5;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 5, 0, 0, 2);
 }
 
 .confirm-button:pressed {
-    -fx-background-color: linear-gradient(to right, #002660 0%, #0056B3 100%);
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 0, 0, 2);
+    -fx-background-color: #003A8C;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 2, 0, 0, 1);
 }
 
 .confirm-button:disabled {
@@ -133,56 +165,47 @@
 
 .secondary-button {
     -fx-background-color: #FFFFFF;
-    -fx-background-radius: 12px;
+    -fx-background-radius: 25px; /* Bordas mais arredondadas */
     -fx-border-color: #E0E0E0;
+    -fx-border-radius: 25px; /* Bordas mais arredondadas */
     -fx-border-width: 1px;
     -fx-text-fill: #666666;
-    -fx-font-family: "Roboto", "Arial", sans-serif;
-    -fx-font-size: 14px;
-    -fx-font-weight: bold;
-    -fx-padding: 12px 24px;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 8, 0, 0, 4);
+    -fx-font-family: "Roboto Light", "Arial", sans-serif; /* Fonte mais fina */
+    -fx-font-size: 14px; /* Tamanho maior */
+    -fx-font-weight: normal; /* Normal em vez de bold */
+    -fx-padding: 15px 25px; /* Mais padding */
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.08), 3, 0, 0, 1);
 }
 
 .secondary-button:hover {
-    -fx-background-color: #F9F9F9;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 10, 0, 0, 5);
+    -fx-background-color: #F0F7FF;
+    -fx-border-color: #D6E4F0;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 5, 0, 0, 2);
 }
 
 .secondary-button:pressed {
-    -fx-background-color: #E0E0E0;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 0, 0, 2);
+    -fx-background-color: #E6E6E6;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 2, 0, 0, 1);
 }
 
-/* Navigation bar */
-.nav-bar {
-    -fx-background-color: #FFFFFF;
-    -fx-border-color: #E0E0E0;
-    -fx-border-width: 0.5px 0 0 0;
-    -fx-padding: 10px 0;
-    -fx-alignment: center;
-    -fx-spacing: 0;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 8, 0, 0, -4);
-}
-
-/* Navigation buttons */
 /* Navigation bar - Modernizada */
 .nav-bar-container {
     -fx-background-color: #FFFFFF;
-    -fx-padding: 8px 0 8px 0;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 10, 0, 0, -3);
+    -fx-padding: 12px 0; /* Mais padding */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.12), 12, 0, 0, -3);
 }
 
 .nav-bar {
     -fx-background-color: transparent;
     -fx-alignment: center;
-    -fx-spacing: 0;
-    -fx-padding: 0;
+    -fx-spacing: 10px; /* Adicionado espaçamento entre os botões */
+    -fx-padding: 0 15px; /* Adicionado padding horizontal */
     -fx-pref-width: 100%;
 }
 
 .nav-button-container {
-    -fx-padding: 0;
+    -fx-padding: 0 5px; /* Adicionado padding horizontal */
     -fx-alignment: center;
     -fx-pref-width: 33.33%; /* Force equal width for 3 buttons */
 }
@@ -192,21 +215,22 @@
     -fx-fill: #F0F7FF;
     -fx-stroke: #E1E9F8;
     -fx-stroke-width: 1;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.08), 4, 0, 0, 1);
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 4, 0, 0, 1);
+    -fx-radius: 18; /* Reduced from 22 */
 }
 
 /* Ícones de navegação */
 .nav-icon {
     -fx-fill: #666666;
-    -fx-scale-x: 1.2;
-    -fx-scale-y: 1.2;
-    -fx-translate-y: -8;
+    -fx-scale-x: 1.0; /* Ícone maior */
+    -fx-scale-y: 1.0; /* Ícone maior */
+    -fx-translate-y: -8; /* Mais espaço do texto */
 }
 
 /* Navigation buttons */
 .nav-button {
     -fx-background-color: transparent;
-    -fx-padding: 0;
+    -fx-padding: 5px 0; /* Adicionado padding vertical */
     -fx-border-width: 0;
     -fx-cursor: hand;
     -fx-transition: all 0.2s ease-in-out;
@@ -218,7 +242,7 @@
 
 .nav-button:hover .nav-button-circle {
     -fx-fill: #EBF3FF;
-    -fx-effect: dropshadow(gaussian, rgba(0, 80, 200, 0.15), 5, 0, 0, 2);
+    -fx-effect: dropshadow(gaussian, rgba(0, 80, 200, 0.12), 5, 0, 0, 2);
 }
 
 .nav-button:hover .nav-button-label {
@@ -227,11 +251,11 @@
 
 /* Label dentro dos botões de navegação */
 .nav-button-label {
-    -fx-font-family: "Roboto", "Arial", sans-serif;
-    -fx-font-size: 11px;
-    -fx-font-weight: bold;
+    -fx-font-family: "Roboto Light", "Arial", sans-serif; /* Fonte mais fina */
+    -fx-font-size: 12px; /* Tamanho maior */
+    -fx-font-weight: normal; /* Normal em vez de bold */
     -fx-text-fill: #666666;
-    -fx-translate-y: 8;
+    -fx-translate-y: 10; /* Mais separado do ícone */
 }
 
 /* Estilo ativo para navegação */

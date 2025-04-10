@@ -1,142 +1,234 @@
-/* Base Styles */
+/* Base Styling - padrão com cartão azul*/
 .root {
-    -fx-background-color: #f5f5f5;
-    -fx-font-family: "Segoe UI", sans-serif;
+    -fx-background-color: #F7F7F7;
+    -fx-font-family: "Roboto Light", "Segoe UI Light", sans-serif; /* Fonte mais fina */
 }
 
 .scroll-pane {
     -fx-background-color: transparent;
-    -fx-padding: 0;
-    -fx-background-insets: 0;
+    -fx-background: transparent;
+    -fx-hbar-policy: never;
+    -fx-padding: 5px 0;
 }
 
 .scroll-pane > .viewport {
     -fx-background-color: transparent;
 }
 
-/* Header Styles */
-.header {
-    -fx-background-color: #3f51b5;
-    -fx-padding: 10px;
-}
-
-.top-bar {
-    -fx-padding: 5px;
-}
-
-.back-button {
+.scroll-pane .scroll-bar:vertical {
     -fx-background-color: transparent;
-    -fx-cursor: hand;
+    -fx-background-radius: 0;
+    -fx-padding: 0 5px 0 0; /* Adicionado padding direito */
 }
 
-.back-button:hover {
-    -fx-opacity: 0.8;
+.scroll-pane .scroll-bar:vertical .thumb {
+    -fx-background-color: #DDDDDD;
+    -fx-background-radius: 6px; /* Bordas mais suaves */
 }
 
-.back-icon {
-    -fx-fill: white;
-    -fx-scale-x: 1.5;
-    -fx-scale-y: 1.5;
+/* Header Styling - Padronizado com o dashboard */
+.header {
+    -fx-background-color: transparent;
+    -fx-padding: 15px 15px 25px 15px; /* Aumentado o padding */
 }
 
-.header-title {
+/* Card Container */
+.card-container {
+    -fx-padding: 5px 0px;
+    -fx-margin: 0 0 20px 0; /* Adicionado margem inferior */
+}
+
+.mastercard-logo {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 2, 0, 0, 1);
+}
+
+/* Card Header styling - Design para o cartão azul */
+.card-header {
+    -fx-background-color: linear-gradient(to right, #0056D2, #0077CC, #008BE6);
+    -fx-background-radius: 18px; /* Bordas mais arredondadas */
+    -fx-padding: 30px; /* Aumentado padding interno */
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 12, 0.5, 0, 4);
+    -fx-min-height: 150px; /* Altura mínima aumentada */
+}
+
+.greeting-label {
+    -fx-font-family: "Roboto Light", "Arial", sans-serif; /* Fonte mais fina */
+    -fx-font-size: 22px; /* Tamanho maior */
+    -fx-text-fill: #FFFFFF;
+    -fx-font-weight: normal; /* Mudado para normal */
+    -fx-padding: 0 0 10px 0; /* Aumentado padding inferior */
+}
+
+.card-number {
+    -fx-font-size: 15px;
+    -fx-text-fill: rgba(255, 255, 255, 0.9);
+    -fx-font-family: "Courier New", monospace;
+    -fx-padding: 0 0 15px 0; /* Aumentado padding inferior */
+    -fx-letter-spacing: 1.5px; /* Maior espaçamento entre letras */
+}
+
+.card-brand {
+    -fx-font-size: 18px;
+    -fx-font-weight: normal; /* Mudado para fonte normal ao invés de bold */
     -fx-text-fill: white;
-    -fx-font-size: 20px;
-    -fx-font-weight: bold;
+    -fx-font-family: "Arial", sans-serif; /* Fonte mais clean */
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 1, 0.3, 0, 1);
+    -fx-padding: 15px 5px 0 0; /* Aumentado padding superior */
 }
 
-/* Profile Content Styles */
-.profile-content {
-    -fx-padding: 20px 15px;
-    -fx-spacing: 20px;
-}
-
-/* Profile Image */
-.profile-image-container {
-    -fx-padding: 10px 0 20px 0;
-}
-
-.profile-image-circle {
-    -fx-fill: #3f51b5;
-}
-
-.profile-initials {
-    -fx-text-fill: white;
-    -fx-font-size: 28px;
-    -fx-font-weight: bold;
-}
-
-.profile-name {
-    -fx-font-size: 24px;
-    -fx-font-weight: bold;
-    -fx-text-fill: #333333;
-}
-
-/* Section Styles */
-.section-container {
-    -fx-background-color: white;
-    -fx-background-radius: 8px;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 0, 0, 2);
-    -fx-padding: 15px;
+/* Content Styling */
+.content {
+    -fx-background-color: #FFFFFF;
+    -fx-background-radius: 24px 24px 0 0; /* Bordas mais arredondadas */
+    -fx-padding: 30px 20px; /* Mais padding */
+    -fx-spacing: 40px; /* Espaçamento maior entre os elementos */
+    -fx-alignment: top-center;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 12, 0, 0, -5);
 }
 
 .section-title {
-    -fx-font-size: 18px;
-    -fx-font-weight: bold;
+    -fx-font-family: "Roboto Light", "Arial", sans-serif; /* Fonte mais fina */
+    -fx-font-size: 20px; /* Tamanho maior */
+    -fx-font-weight: normal; /* Normal em vez de bold */
     -fx-text-fill: #333333;
-    -fx-padding: 0 0 10px 0;
-    -fx-border-color: transparent transparent #e0e0e0 transparent;
+    -fx-padding: 5px 0 10px 5px; /* Mais padding */
+}
+
+/* Profile Specific Styling */
+.profile-header {
+    -fx-padding: 10px 0 20px 0;
+    -fx-alignment: center;
+    -fx-spacing: 15px;
+}
+
+.profile-name {
+    -fx-font-family: "Roboto Light", "Arial", sans-serif;
+    -fx-font-size: 22px;
+    -fx-font-weight: normal;
+    -fx-text-fill: #303030;
+}
+
+.profile-info-section, .financial-info-section {
+    -fx-background-color: white;
+    -fx-background-radius: 18px;
+    -fx-padding: 20px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0, 0, 3);
+    -fx-border-color: #EEEEEE;
+    -fx-border-radius: 18px;
+    -fx-border-width: 1px;
+    -fx-spacing: 15px;
+}
+
+.info-row {
+    -fx-padding: 10px 0;
+    -fx-border-color: transparent transparent #EAEAEA transparent;
     -fx-border-width: 0 0 1px 0;
+    -fx-border-style: dashed;
 }
 
-/* Field Styles */
-.info-field {
-    -fx-padding: 5px 0;
-}
-
-.field-label {
+.info-label {
+    -fx-text-fill: #666666;
     -fx-font-size: 14px;
-    -fx-text-fill: #757575;
-    -fx-padding: 0 0 2px 0;
+    -fx-font-family: "Roboto Light", "Arial", sans-serif;
 }
 
-.field-value {
-    -fx-font-size: 16px;
-    -fx-font-weight: bold;
-    -fx-text-fill: #333333;
+.info-value {
+    -fx-text-fill: #0056D2;
+    -fx-font-size: 14px;
+    -fx-font-weight: normal;
+    -fx-font-family: "Roboto Light", "Arial", sans-serif;
 }
 
-.field-subtitle {
-    -fx-font-size: 12px;
-    -fx-text-fill: #757575;
-    -fx-font-style: italic;
-}
-
-/* Score Progress Bar */
-.score-progress {
-    -fx-accent: #4caf50;
-}
-
-.score-progress .bar {
-    -fx-background-radius: 2px;
-}
-
-.score-progress .track {
-    -fx-background-color: #e0e0e0;
-    -fx-background-radius: 2px;
-}
-
-/* Action Buttons */
-.action-button {
-    -fx-background-color: #3f51b5;
+.edit-profile-button {
+    -fx-background-color: #0056D2;
     -fx-text-fill: white;
     -fx-font-size: 14px;
-    -fx-font-weight: bold;
-    -fx-padding: 12px;
-    -fx-background-radius: 4px;
+    -fx-font-weight: normal;
+    -fx-padding: 12px 25px;
+    -fx-background-radius: 25px;
     -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 3, 0, 0, 1);
 }
 
-.action-button:hover {
-    -fx-background-color: #303f9f;
+.edit-profile-button:hover {
+    -fx-background-color: #0066F5;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 5, 0, 0, 2);
+}
+
+/* Navigation Bar Styling */
+.nav-bar-container {
+    -fx-background-color: #FFFFFF;
+    -fx-padding: 12px 0; /* Mais padding */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.12), 12, 0, 0, -3);
+}
+
+.nav-bar {
+    -fx-background-color: transparent;
+    -fx-alignment: center;
+    -fx-spacing: 10px; /* Adicionado espaçamento entre os botões */
+    -fx-padding: 0 15px; /* Adicionado padding horizontal */
+    -fx-pref-width: 100%;
+}
+
+.nav-button-container {
+    -fx-padding: 0 5px; /* Adicionado padding horizontal */
+    -fx-alignment: center;
+    -fx-pref-width: 33.33%; /* Force equal width for 3 buttons */
+}
+
+/* Círculo de fundo ativo */
+.nav-button-circle {
+    -fx-fill: #F0F7FF;
+    -fx-stroke: #E1E9F8;
+    -fx-stroke-width: 1;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 4, 0, 0, 1);
+    -fx-radius: 18; /* Reduced from 22 */
+}
+
+/* Ícones de navegação */
+.nav-icon {
+    -fx-fill: #666666;
+    -fx-scale-x: 1.0; /* Ícone maior */
+    -fx-scale-y: 1.0; /* Ícone maior */
+    -fx-translate-y: -8; /* Mais espaço do texto */
+}
+
+/* Navigation buttons */
+.nav-button {
+    -fx-background-color: transparent;
+    -fx-padding: 5px 0; /* Adicionado padding vertical */
+    -fx-border-width: 0;
+    -fx-cursor: hand;
+    -fx-transition: all 0.2s ease-in-out;
+}
+
+.nav-button:hover .nav-icon {
+    -fx-fill: #0056D2;
+}
+
+.nav-button:hover .nav-button-circle {
+    -fx-fill: #EBF3FF;
+    -fx-effect: dropshadow(gaussian, rgba(0, 80, 200, 0.12), 5, 0, 0, 2);
+}
+
+.nav-button:hover .nav-button-label {
+    -fx-text-fill: #0056D2;
+}
+
+/* Label dentro dos botões de navegação */
+.nav-button-label {
+    -fx-font-family: "Roboto Light", "Arial", sans-serif; /* Fonte mais fina */
+    -fx-font-size: 12px; /* Tamanho maior */
+    -fx-font-weight: normal; /* Normal em vez de bold */
+    -fx-text-fill: #666666;
+    -fx-translate-y: 10; /* Mais separado do ícone */
+}
+
+/* Estilo ativo para navegação */
+.nav-button-active .nav-icon {
+    -fx-fill: #0056D2;
+}
+
+.nav-button-active .nav-button-label {
+    -fx-text-fill: #0056D2;
 }

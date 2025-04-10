@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.shape.*?>
+
+<?import javafx.scene.Group?>
+<BorderPane styleClass="root" stylesheets="@../css/perfilCliente.css"
+            prefHeight="700.0" prefWidth="400.0"
+            xmlns="http://javafx.com/javafx/17.0.12"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="br.com.emprestai.view.PerfilClienteViewController">
+
+    <!-- Top Section: Cartão fixo com apenas o nome do cliente -->
+    <top>
+        <VBox styleClass="header" spacing="15">
+            <!-- Cartão do Cliente - FIXO -->
+            <StackPane styleClass="card-container">
+                <VBox styleClass="card-header" spacing="10">
+                    <HBox alignment="TOP_LEFT">
+                        <VBox spacing="5">
+                            <Label fx:id="greetingLabel" styleClass="greeting-label" text="[Nome]" />
+                            <Label styleClass="card-number" text="•••• •••• •••• 1234" />
+                        </VBox>
+                    </HBox>
+
+                    <!-- Layout com Mastercard (esquerda) e Agibank (direita) -->
+                    <HBox alignment="BOTTOM_CENTER" spacing="0">
+                        <!-- Logo Mastercard no canto inferior esquerdo (MAIOR) -->
+                        <HBox alignment="BOTTOM_LEFT" HBox.hgrow="ALWAYS">
+                            <StackPane styleClass="mastercard-logo">
+                                <HBox alignment="CENTER" spacing="0">
+                                    <Circle radius="15" fill="#eb001b" />
+                                    <Circle radius="15" fill="#f79e1b" opacity="0.85" translateX="-15" />
+                                </HBox>
+                            </StackPane>
+                        </HBox>
+
+                        <!-- Logo Agibank no canto inferior direito -->
+                        <HBox alignment="BOTTOM_RIGHT" HBox.hgrow="ALWAYS">
+                            <Label styleClass="card-brand" text="Agibank" />
+                        </HBox>
+                    </HBox>
+                </VBox>
+            </StackPane>
+        </VBox>
+    </top>
+
+    <!-- Center Section: Conteúdo do perfil do cliente -->
+    <center>
+        <ScrollPane styleClass="scroll-pane" fitToWidth="true" VBox.vgrow="ALWAYS">
+            <content>
+                <VBox alignment="CENTER" spacing="20.0" styleClass="content" VBox.vgrow="ALWAYS">
+
+                    <!-- Cabeçalho do Perfil -->
+                    <VBox styleClass="profile-header" alignment="CENTER" spacing="15">
+                        <ImageView fitHeight="100" fitWidth="100" preserveRatio="true">
+                            <image>
+                                <Image url="@../images/user.png" />
+                            </image>
+                        </ImageView>
+                        <Label fx:id="nomeClienteLabel" styleClass="profile-name" text="[Nome Completo]" />
+                    </VBox>
+
+                    <!-- Informações do Perfil -->
+                    <VBox styleClass="profile-info-section" spacing="15">
+                        <Label styleClass="section-title" text="Informações Pessoais" />
+
+                        <!-- Nome -->
+                        <HBox styleClass="info-row">
+                            <Label styleClass="info-label" text="Nome:" />
+                            <Region HBox.hgrow="ALWAYS" />
+                            <Label fx:id="nomeCompletoLabel" styleClass="info-value" text="[Nome Completo]" />
+                        </HBox>
+
+                        <!-- Data de Nascimento -->
+                        <HBox styleClass="info-row">
+                            <Label styleClass="info-label" text="Data de Nascimento:" />
+                            <Region HBox.hgrow="ALWAYS" />
+                            <Label fx:id="dataNascimentoLabel" styleClass="info-value" text="[DD/MM/AAAA]" />
+                        </HBox>
+
+                        <!-- Idade -->
+                        <HBox styleClass="info-row">
+                            <Label styleClass="info-label" text="Idade:" />
+                            <Region HBox.hgrow="ALWAYS" />
+                            <Label fx:id="idadeLabel" styleClass="info-value" text="[Idade] anos" />
+                        </HBox>
+
+                        <!-- Score -->
+                        <HBox styleClass="info-row">
+                            <Label styleClass="info-label" text="Score:" />
+                            <Region HBox.hgrow="ALWAYS" />
+                            <Label fx:id="scoreLabel" styleClass="info-value" text="[Score]" />
+                        </HBox>
+
+                        <!-- CPF -->
+                        <HBox styleClass="info-row">
+                            <Label styleClass="info-label" text="CPF:" />
+                            <Region HBox.hgrow="ALWAYS" />
+                            <Label fx:id="cpfLabel" styleClass="info-value" text="[CPF]" />
+                        </HBox>
+                    </VBox>
+
+                    <!-- Informações Financeiras -->
+                    <VBox styleClass="financial-info-section" spacing="15">
+                        <Label styleClass="section-title" text="Informações Financeiras" />
+
+                        <!-- Vencimento Líquido Total -->
+                        <HBox styleClass="info-row">
+                            <Label styleClass="info-label" text="Vencimento Líquido:" />
+                            <Region HBox.hgrow="ALWAYS" />
+                            <Label fx:id="vencimentoLiquidoLabel" styleClass="info-value" text="R$ [Valor]" />
+                        </HBox>
+
+                        <!-- Margem Consignável Disponível -->
+                        <HBox styleClass="info-row">
+                            <Label styleClass="info-label" text="Margem Consignável:" />
+                            <Region HBox.hgrow="ALWAYS" />
+                            <Label fx:id="margemConsignavelLabel" styleClass="info-value" text="R$ [Valor]" />
+                        </HBox>
+
+                        <!-- Limite Crédito Consignado -->
+                        <HBox styleClass="info-row">
+                            <Label styleClass="info-label" text="Limite Consignado:" />
+                            <Region HBox.hgrow="ALWAYS" />
+                            <Label fx:id="limiteConsignadoLabel" styleClass="info-value" text="R$ [Valor]" />
+                        </HBox>
+
+                        <!-- Limite Crédito Pessoal -->
+                        <HBox styleClass="info-row">
+                            <Label styleClass="info-label" text="Limite Pessoal:" />
+                            <Region HBox.hgrow="ALWAYS" />
+                            <Label fx:id="limitePessoalLabel" styleClass="info-value" text="R$ [Valor]" />
+                        </HBox>
+                    </VBox>
+
+                    <!-- Botão para Editar Perfil -->
+                    <Button fx:id="editarPerfilButton" onAction="#onEditarPerfilClick" styleClass="edit-profile-button" text="Editar Perfil" />
+
+                </VBox>
+            </content>
+        </ScrollPane>
+    </center>
+
+    <!-- Bottom Navigation - Igual ao dashboard -->
+    <bottom>
+        <StackPane styleClass="nav-bar-container">
+            <HBox alignment="CENTER" styleClass="nav-bar" HBox.hgrow="ALWAYS">
+                <!-- Make each button container take equal space -->
+                <StackPane styleClass="nav-button-container" HBox.hgrow="ALWAYS" maxWidth="Infinity">
+                    <Button fx:id="homeButton" onAction="#onHomeClick" styleClass="nav-button">
+                        <graphic>
+                            <StackPane>
+                                <Circle styleClass="nav-button-circle" radius="18" visible="false" />
+                                <StackPane>
+                                    <SVGPath styleClass="nav-icon" content="M3,12V19H9V13H15V19H21V12L12,3L3,12Z" />
+                                    <Label styleClass="nav-button-label" text="Início" />
+                                </StackPane>
+                            </StackPane>
+                        </graphic>
+                    </Button>
+                </StackPane>
+
+                <StackPane styleClass="nav-button-container" HBox.hgrow="ALWAYS" maxWidth="Infinity">
+                    <Button fx:id="profileButton" onAction="#onProfileClick" styleClass="nav-button, nav-button-active">
+                        <graphic>
+                            <StackPane>
+                                <Circle styleClass="nav-button-circle" radius="18" />
+                                <StackPane>
+                                    <SVGPath styleClass="nav-icon" content="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z" />
+                                    <Label styleClass="nav-button-label" text="Perfil" />
+                                </StackPane>
+                            </StackPane>
+                        </graphic>
+                    </Button>
+                </StackPane>
+
+                <StackPane styleClass="nav-button-container" HBox.hgrow="ALWAYS" maxWidth="Infinity">
+                    <Button fx:id="exitButton" onAction="#onExitClick" styleClass="nav-button">
+                        <graphic>
+                            <StackPane>
+                                <Circle styleClass="nav-button-circle" radius="18" visible="false" />
+                                <StackPane>
+                                    <SVGPath styleClass="nav-icon" content="M19,3H5C3.89,3 3,3.89 3,5V9H5V5H19V19H5V15H3V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5C21,3.89 20.1,3 19,3M10.08,15.58L11.5,17L16.5,12L11.5,7L10.08,8.41L12.67,11H3V13H12.67L10.08,15.58Z" />
+                                    <Label styleClass="nav-button-label" text="Sair" />
+                                </StackPane>
+                            </StackPane>
+                        </graphic>
+                    </Button>
+                </StackPane>
+            </HBox>
+        </StackPane>
+    </bottom>
+</BorderPane>

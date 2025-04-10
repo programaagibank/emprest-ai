@@ -128,9 +128,9 @@ public class OrdenacaoParcelasViewController {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("parcela.fxml"));
         Scene parcelaScene = new Scene(loader.load(), 400, 700);
         ParcelaViewController parcelaController = loader.getController();
+        parcelaController.setOrdenacaoCrescente(crescente);
         parcelaController.setEmprestimo(emprestimo);
         parcelaController.setTipoEmprestimo(tipoEmprestimo);
-        parcelaController.setOrdenacaoCrescente(crescente);
 
         Stage stage = (Stage) crescenteButton.getScene().getWindow();
         stage.setScene(parcelaScene);

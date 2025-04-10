@@ -108,24 +108,41 @@ public class DashboardViewController {
         // Already on the dashboard, no action needed
     }
 
-    @FXML
-    private void onProfileClick() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/perfilCliente.fxml"));
-            Parent root = loader.load();
-            Scene scene = profileButton.getScene();
-            Stage stage = (Stage) scene.getWindow();
-            scene.setRoot(root);
-            stage.setScene(scene);
-            stage.show();
-        } catch (IOException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Erro ao carregar tela");
-            alert.setHeaderText(null);
-            alert.setContentText("Ocorreu um erro ao carregar a tela de perfil: " + e.getMessage());
-            alert.showAndWait();
-        }
+//    @FXML
+//    private void onProfileClick() {
+//        try {
+//            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/perfilCliente.fxml"));
+//            Parent root = loader.load();
+//            Scene scene = profileButton.getScene();
+//            Stage stage = (Stage) scene.getWindow();
+//            scene.setRoot(root);
+//            stage.setScene(scene);
+//            stage.show();
+//        } catch (IOException e) {
+//            Alert alert = new Alert(Alert.AlertType.ERROR);
+//            alert.setTitle("Erro ao carregar tela");
+//            alert.setHeaderText(null);
+//            alert.setContentText("Ocorreu um erro ao carregar a tela de perfil: " + e.getMessage());
+//            alert.showAndWait();
+//        }
+//    }
+@FXML
+private void onProfileClick() {
+    try {
+        // Carrega o arquivo FXML da tela de perfil
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/br/com/emprestai/view/perfilCliente.fxml"));
+        Parent perfilView = loader.load();
+
+        // Obtém a cena atual
+        Scene currentScene = profileButton.getScene();
+
+        // Substitui o conteúdo da cena atual pelo novo conteúdo
+        currentScene.setRoot(perfilView);
+    } catch (IOException e) {
+        e.printStackTrace();
+        // Exibir alerta de erro caso necessário
     }
+}
 
     @FXML
     private void onExitClick() {

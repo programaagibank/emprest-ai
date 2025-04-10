@@ -13,7 +13,7 @@ public class ClienteService {
     private static final EmprestimoParams params = EmprestimoParams.getInstance();
 
     public double calcularMargemConsignavelDisponivel(Cliente cliente) {
-        if (cliente.getScore() < params.getScoreMinimoPessoal() || cliente.getPrazoMaximoConsignado() <= params.getPrazoMinimoConsignado()) {
+        if (cliente.getScore() < params.getScoreMinimoPessoal() || cliente.getPrazoMaximoConsignado() < params.getPrazoMinimoConsignado()) {
             return 0.0; // Cliente não elegível
         }
         double margem = cliente.getVencimentoConsignavelTotal() * params.getMargemConsignavel() / 100;
@@ -21,7 +21,7 @@ public class ClienteService {
     }
 
     public double calcularMargemPessoalDisponivel(Cliente cliente) {
-        if (cliente.getScore() < params.getScoreMinimoPessoal() || cliente.getPrazoMaximoPessoal() <= params.getPrazoMinimoPessoal()) {
+        if (cliente.getScore() < params.getScoreMinimoPessoal() || cliente.getPrazoMaximoPessoal() < params.getPrazoMinimoPessoal()) {
             return 0.0; // Cliente não elegível
         }
         double margem = cliente.getVencimentoLiquidoTotal() * params.getPercentualRendaPessoal() / 100;
@@ -101,9 +101,8 @@ public class ClienteService {
         }
 
         int prazoPorIdade = calcularPrazoMaximoPorIdade(idade, params.getIdadeMaximaConsignado());
-        int prazoPorScore = getPrazoMaximoConsignadoPorScore(score);
 
-        return Math.min(Math.min(prazoPorIdade, params.getPrazoMaximoConsignado()), prazoPorScore);
+        return Math.min(prazoPorIdade, params.getPrazoMaximoConsignado());
     }
     public static int calcularPrazoMaximoPorIdade(int idade, int idadeMaxima) {
         if (idade <= 0) {
@@ -132,17 +131,6 @@ public class ClienteService {
         if (score <= 700) return 22;
         if (score <= 800) return 26;
         return params.getPrazoMaximoPessoal();
-    }
-
-    private static int getPrazoMaximoConsignadoPorScore(int score) {
-        if (score < params.getScoreMinimoConsignado()) return 0;
-        if (score <= 300) return 12;
-        if (score <= 400) return 24;
-        if (score <= 500) return 36;
-        if (score <= 600) return 48;
-        if (score <= 700) return 60;
-        if (score <= 800) return 72;
-        return params.getPrazoMaximoConsignado();
     }
 }
 

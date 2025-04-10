@@ -88,5 +88,6 @@ public class ElegibilidadePessoal {
         validarCarenciaPessoal(emprestimo.getCarencia());
         validarLimiteCreditoPessoal(cliente, emprestimo.getValorEmprestimo());
         validarMargemPessoal(cliente, emprestimo.getValorParcela());
+
     }
 }

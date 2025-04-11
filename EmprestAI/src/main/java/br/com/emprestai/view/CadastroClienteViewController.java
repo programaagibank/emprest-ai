@@ -28,6 +28,8 @@ public class CadastroClienteViewController {
     private DatePicker dataNascimentoField;
     @FXML
     private PasswordField senhaField;
+    @FXML
+    private PasswordField confirmarSenhaField;
 
     // --------------------------------------------------------------------------------
     // Class Properties
@@ -75,92 +77,73 @@ public class CadastroClienteViewController {
             senhaField.setText(numbersOnly);
             senhaField.positionCaret(numbersOnly.length());
         });
+
+        // Validação da confirmação de senha (6 dígitos numéricos)
+        confirmarSenhaField.setPromptText("6 dígitos");
+        confirmarSenhaField.textProperty().addListener((observable, oldValue, newValue) -> {
+            String numbersOnly = newValue.replaceAll("[^0-9]", "");
+            if (numbersOnly.length() > 6) numbersOnly = numbersOnly.substring(0, 6);
+            confirmarSenhaField.setText(numbersOnly);
+            confirmarSenhaField.positionCaret(numbersOnly.length());
+        });
     }
-//    @FXML
-//    private void cadastrarCliente() {
-//        try {
-//            // Captura dos dados
-//            String cpf = cpfField.getText();
-//            String nome = nomeField.getText();
-//            LocalDate dataNascimento = dataNascimentoField.getValue();
-//            String senha = senhaField.getText();
-//
-//            // Validação de campos obrigatórios
-//            if (cpf.isEmpty() || nome.isEmpty() || senha.isEmpty() || dataNascimento == null) {
-//                showError("Todos os campos são obrigatórios.");
-//                return;
-//            }
-//
-//            // Criação do objeto Cliente
-//            Cliente cliente = new Cliente(new ClienteService());
-//            cliente.setCpfCliente(cpf);
-//            cliente.setNomeCliente(nome);
-//            cliente.setDataNascimento(dataNascimento);
-//            cliente.setSenha(senha);
-//
-//            // Cadastro no banco
-//            Cliente clienteCadastrado = clienteController.post(cliente);
-//
-//            // Armazena o cliente no SessionManager
-//            SessionManager.getInstance().setClienteLogado(clienteCadastrado);
-//
-//            // Feedback e redirecionamento
-//            showInfo("Cliente cadastrado com sucesso! Redirecionando para o dashboard...");
-//            limparCampos();
-//            irParaDashboard();
-//
-//        } catch (ApiException e) {
-//            showError(e.getMessage());
-//        }
-//    }
-@FXML
-private void cadastrarCliente() {
-    try {
-        // Captura dos dados
-        String cpf = cpfField.getText().replaceAll("[^0-9]", "");
-        String nome = nomeField.getText();
-        LocalDate dataNascimento = dataNascimentoField.getValue();
-        String senha = senhaField.getText();
 
-        // Validação de campos obrigatórios
-        if (cpf.isEmpty() || nome.isEmpty() || senha.isEmpty() || dataNascimento == null) {
-            showError("Todos os campos são obrigatórios.");
-            return;
+    @FXML
+    private void cadastrarCliente() {
+        try {
+            // Captura dos dados
+            String cpf = cpfField.getText().replaceAll("[^0-9]", "");
+            String nome = nomeField.getText();
+            LocalDate dataNascimento = dataNascimentoField.getValue();
+            String senha = senhaField.getText();
+            String confirmarSenha = confirmarSenhaField.getText();
+
+            // Validação de campos obrigatórios
+            if (cpf.isEmpty() || nome.isEmpty() || senha.isEmpty() ||
+                    confirmarSenha.isEmpty() || dataNascimento == null) {
+                showError("Todos os campos são obrigatórios.");
+                return;
+            }
+
+            // Validações adicionais
+            if (cpf.length() != 11) {
+                showError("O CPF deve conter 11 dígitos.");
+                return;
+            }
+
+            if (senha.length() != 6) {
+                showError("A senha deve conter exatamente 6 dígitos.");
+                return;
+            }
+
+            // Verifica se as senhas coincidem
+            if (!senha.equals(confirmarSenha)) {
+                showError("As senhas não coincidem.");
+                return;
+            }
+
+            // Criação do objeto Cliente
+            Cliente cliente = new Cliente(new ClienteService());
+            cliente.setCpfCliente(cpf);
+            cliente.setNomeCliente(nome);
+            cliente.setDataNascimento(dataNascimento);
+            cliente.setSenha(senha);
+
+            // Cadastro no banco
+            Cliente clienteCadastrado = clienteController.post(cliente);
+
+            // Armazena o cliente no SessionManager
+            SessionManager.getInstance().setClienteLogado(clienteCadastrado);
+
+            // Feedback e redirecionamento
+            showInfo("Cliente cadastrado com sucesso! Redirecionando para o dashboard...");
+            limparCampos();
+            irParaDashboard();
+
+        } catch (ApiException e) {
+            showError(e.getMessage());
         }
-
-        // Validações adicionais
-        if (cpf.length() != 11) {
-            showError("O CPF deve conter 11 dígitos.");
-            return;
-        }
-
-        if (senha.length() != 6) {
-            showError("A senha deve conter exatamente 6 dígitos.");
-            return;
-        }
-
-        // Criação do objeto Cliente
-        Cliente cliente = new Cliente(new ClienteService());
-        cliente.setCpfCliente(cpf);
-        cliente.setNomeCliente(nome);
-        cliente.setDataNascimento(dataNascimento);
-        cliente.setSenha(senha);
-
-        // Cadastro no banco
-        Cliente clienteCadastrado = clienteController.post(cliente);
-
-        // Armazena o cliente no SessionManager
-        SessionManager.getInstance().setClienteLogado(clienteCadastrado);
-
-        // Feedback e redirecionamento
-        showInfo("Cliente cadastrado com sucesso! Redirecionando para o dashboard...");
-        limparCampos();
-        irParaDashboard();
-
-    } catch (ApiException e) {
-        showError(e.getMessage());
     }
-}
 
     @FXML
     private void onVoltarClick(ActionEvent event) {
@@ -209,6 +192,7 @@ private void cadastrarCliente() {
         nomeField.clear();
         dataNascimentoField.setValue(null);
         senhaField.clear();
+        confirmarSenhaField.clear();
     }
 
     private void showError(String message) {

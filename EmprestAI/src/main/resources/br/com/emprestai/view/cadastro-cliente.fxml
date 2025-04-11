@@ -49,6 +49,11 @@
                 <PasswordField fx:id="senhaField" styleClass="input-field" prefWidth="300"/>
             </VBox>
 
+            <!-- Confirmação de Senha -->
+            <VBox spacing="5">
+                <Label text="Confirmar Senha:" styleClass="info-label"/>
+                <PasswordField fx:id="confirmarSenhaField" styleClass="input-field" prefWidth="300"/>
+            </VBox>
         </VBox>
 
         <!-- Botões -->
